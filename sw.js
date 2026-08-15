@@ -1,4 +1,4 @@
-const CACHE='hip-prehab-v2-github';
+const CACHE='hip-prehab-v5-github';
 const ASSETS=['./','./index.html','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));

@@ -55,8 +55,62 @@ textarea{min-height:72px;resize:vertical}
 .tabbar{position:sticky;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:rgba(15,23,42,.92);backdrop-filter:blur(10px);padding:7px;border:1px solid var(--border);border-radius:16px;margin-top:16px}
 .tabbar button{padding:9px 5px;font-size:12px}.tabbar button.active{outline:1px solid var(--blue);background:#0b1f2a}
 .hidden{display:none!important}
+.inventorygrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.inventoryitem{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px}
+.randomControls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:540px){.inventorygrid,.randomControls{grid-template-columns:1fr}}
 #installBanner{display:none}
 @media(max-width:540px){h1{font-size:24px}.modegrid{grid-template-columns:1fr}.grid3{grid-template-columns:repeat(3,1fr)}.metric b{font-size:21px}.row{flex-direction:column}}
+
+/* V4 */
+.primaryHero{
+  width:100%;font-size:21px;padding:17px;border-radius:16px;
+  background:linear-gradient(180deg,#34d399,#22c55e);color:#052e16;border:0;
+  box-shadow:0 8px 24px rgba(34,197,94,.18)
+}
+.rescueBtn{
+  width:100%;margin-top:9px;border:1px solid #78350f;background:#2a1b09;color:#fde68a;
+}
+.pickerWrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pickerCard{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:10px}
+.pickerTitle{font-size:12px;color:var(--muted);text-align:center;margin-bottom:4px}
+.wheel{
+  position:relative;height:126px;overflow-y:auto;scroll-snap-type:y mandatory;
+  scrollbar-width:none;border-radius:12px;
+  background:linear-gradient(180deg,rgba(11,18,32,.2),rgba(11,18,32,1) 37%,rgba(11,18,32,1) 63%,rgba(11,18,32,.2));
+  -webkit-overflow-scrolling:touch
+}
+.wheel::-webkit-scrollbar{display:none}
+.wheel::before,.wheel::after{
+  content:"";position:sticky;left:0;right:0;height:1px;background:#475569;display:block;z-index:2
+}
+.wheel::before{top:42px}.wheel::after{top:83px}
+.wheelItem{
+  height:42px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;
+  font-size:18px;color:#64748b;transition:.15s
+}
+.wheelItem.selected{font-size:27px;font-weight:850;color:var(--text)}
+.pickerDescriptor{text-align:center;font-size:12px;color:#cbd5e1;min-height:17px;margin-top:4px}
+.sessionMode{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.timerPanel{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px;margin:10px 0}
+.timerClock{font-variant-numeric:tabular-nums;font-size:42px;font-weight:850;letter-spacing:-1px}
+.timerBtns{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.exerciseCurrent{border:1px solid #3b82f6;background:#0b1f35;border-radius:14px;padding:13px;margin:8px 0}
+.countdownHero{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.countNum{font-size:42px;font-weight:900;line-height:.9}
+.phasebar{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
+.phase{padding:7px;border-radius:9px;background:#1f2937;text-align:center;font-size:11px;color:#94a3b8}
+.phase.active{background:#12351e;color:#86efac;font-weight:800}
+.reportGrade{font-size:44px;font-weight:900;line-height:1}
+.prGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prItem{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px}
+.numberEntry{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.healthCard{border-left:4px solid #ef4444}
+@media(max-width:540px){
+ .pickerWrap,.prGrid,.numberEntry{grid-template-columns:1fr 1fr}
+ .timerClock{font-size:38px}
+}
+
 </style>
 </head>
 <body>
@@ -70,6 +124,20 @@ textarea{min-height:72px;resize:vertical}
       <div class="metric"><span>This week</span><b id="weekStarts">0/7</b><small>starts</small></div>
       <div class="metric"><span>Bike</span><b id="weekBike">0</b><small>min</small></div>
     </div>
+    <button id="justStartBtn" class="primaryHero" style="margin-top:12px">START TODAY'S WORKOUT</button>
+    <button id="rescueBtn" class="rescueBtn">I really don't want to work out</button>
+  </section>
+
+  <section id="countdownCard" class="card hidden">
+    <div class="countdownHero">
+      <div><div class="countNum" id="daysToHip">—</div><div class="small">days</div></div>
+      <div><h2 style="margin-bottom:3px">Countdown to new hip</h2><p id="countdownText" style="margin:0"></p></div>
+    </div>
+    <div class="phasebar">
+      <div id="phaseBuild" class="phase">BUILD</div>
+      <div id="phaseMaintain" class="phase">MAINTAIN</div>
+      <div id="phaseRunway" class="phase">SURGERY RUNWAY</div>
+    </div>
   </section>
 
   <section id="installBanner" class="card">
@@ -81,17 +149,49 @@ textarea{min-height:72px;resize:vertical}
   <main id="tabToday">
     <section class="card">
       <h2>How are you today?</h2>
-      <div class="row">
-        <div>
-          <label class="small">Hip pain</label>
-          <input id="pain" type="number" min="0" max="10" step="1" value="6">
+      <p class="small">Swipe each wheel. The app uses this to recommend Full, Minimum, or Flare without making the decision for you.</p>
+      <div class="pickerWrap">
+        <div class="pickerCard">
+          <div class="pickerTitle">HIP PAIN</div>
+          <div id="painWheel" class="wheel" aria-label="Hip pain"></div>
+          <div id="painDescriptor" class="pickerDescriptor"></div>
         </div>
-        <div>
-          <label class="small">Energy</label>
-          <input id="energy" type="number" min="1" max="5" step="1" value="3">
+        <div class="pickerCard">
+          <div class="pickerTitle">ENERGY</div>
+          <div id="energyWheel" class="wheel" aria-label="Energy"></div>
+          <div id="energyDescriptor" class="pickerDescriptor"></div>
         </div>
       </div>
+      <input id="pain" type="hidden" value="6">
+      <input id="energy" type="hidden" value="3">
       <div id="painAdvice" class="callout" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card">
+      <h2>Need variety?</h2>
+      <p>Generate a hip-aware workout from your actual equipment. Random workouts never include deep squats, lunges, running, jumping, or rowing catch work.</p>
+      <div class="randomControls">
+        <div>
+          <label class="small">Time available</label>
+          <select id="randomTime">
+            <option value="10">10 minutes</option>
+            <option value="20">20 minutes</option>
+            <option value="30" selected>30 minutes</option>
+            <option value="40">40 minutes</option>
+          </select>
+        </div>
+        <div>
+          <label class="small">Workout emphasis</label>
+          <select id="randomFocus">
+            <option value="balanced">Balanced</option>
+            <option value="upper">Upper-body strength</option>
+            <option value="cardio">Cardio + upper</option>
+            <option value="prehab">Prehab + upper</option>
+          </select>
+        </div>
+      </div>
+      <button id="randomBtn" class="secondary" style="margin-top:10px">Generate random workout</button>
+      <div id="randomResult" style="margin-top:10px"></div>
     </section>
 
     <section class="card">
@@ -102,9 +202,30 @@ textarea{min-height:72px;resize:vertical}
         <button data-mode="minimum" class="warn">MINIMUM<br><span class="small">10-minute win</span></button>
         <button data-mode="flare" class="danger">FLARE<br><span class="small">protect the hip</span></button>
       </div>
+      <div id="activeWorkoutPanel" class="hidden">
+        <div class="timerPanel">
+          <div class="small">WORKOUT TIME</div>
+          <div id="timerClock" class="timerClock">00:00</div>
+          <div class="timerBtns">
+            <button id="pauseTimerBtn">Pause</button>
+            <button id="rest60Btn">Rest 60</button>
+            <button id="rest90Btn">Rest 90</button>
+          </div>
+          <div id="restStatus" class="small" style="margin-top:7px"></div>
+        </div>
+      </div>
       <div id="workout" style="margin-top:10px"></div>
       <div class="progressbar"><div id="workoutProgress"></div></div>
       <p class="small" id="progressText">0% complete</p>
+      <div id="performanceEntry" class="callout" style="margin:10px 0">
+        <h3>Optional performance notes</h3>
+        <div class="numberEntry">
+          <div><label class="small">Push-ups best set</label><input id="pushupBest" type="number" min="0" placeholder="—"></div>
+          <div><label class="small">Pull-ups best set</label><input id="pullupBest" type="number" min="0" placeholder="—"></div>
+          <div><label class="small">BikeErg meters</label><input id="bikeMeters" type="number" min="0" placeholder="—"></div>
+          <div><label class="small">Bike avg watts</label><input id="bikeWatts" type="number" min="0" placeholder="—"></div>
+        </div>
+      </div>
       <button id="completeBtn" class="primary">Finish & save workout</button>
       <div id="completeMessage"></div>
     </section>
@@ -114,6 +235,10 @@ textarea{min-height:72px;resize:vertical}
     <section class="card">
       <h2>This week</h2>
       <div id="weekList"></div>
+    </section>
+    <section class="card">
+      <h2>Sunday report card</h2>
+      <div id="sundayReport"></div>
     </section>
     <section class="card">
       <h2>Weekly summary</h2>
@@ -132,8 +257,26 @@ textarea{min-height:72px;resize:vertical}
       <div id="trendSummary" class="callout" style="margin-top:12px"></div>
     </section>
     <section class="card">
+      <h2>Pre-op personal records</h2>
+      <div id="prList" class="prGrid"></div>
+      <p class="small">These are the records that matter during prehab—not squat/deadlift maxes.</p>
+    </section>
+    <section class="card">
       <h2>Recent sessions</h2>
       <div id="recentSessions"></div>
+    </section>
+  </main>
+
+  <main id="tabEquipment" class="hidden">
+    <section class="card">
+      <h2>Your equipment</h2>
+      <p>This is the equipment currently built into your program and random workout generator.</p>
+      <div id="equipmentTabList" class="inventorygrid"></div>
+    </section>
+    <section class="card">
+      <h2>How the app uses it</h2>
+      <p><b>Primary cardio:</b> Concept2 BikeErg. <b>Secondary:</b> Airdyne and comfortable treadmill walking. The rower is intentionally de-emphasized because the catch position currently bothers your hip.</p>
+      <p><b>Strength:</b> kettlebells, pull-up bar, bench, bands, and selected rack/barbell work that does not require painful hip depth. Reverse hyper stays optional until you have clinician/PT guidance and confirm it is comfortable.</p>
     </section>
   </main>
 
@@ -143,10 +286,25 @@ textarea{min-height:72px;resize:vertical}
       <label class="small">Program start date</label>
       <input id="startDate" type="date">
       <p class="small">The schedule automatically repeats weekly from this start date.</p>
+      <label class="small">Target hip replacement date</label>
+      <input id="surgeryDate" type="date">
+      <p class="small">Leave blank until scheduled. The dashboard will automatically switch into a countdown and surgery-runway view.</p>
       <label class="small">Morning reminder target</label>
       <input id="reminderTime" type="time" value="06:00">
       <p class="small">This app cannot push reminders by itself when used as a simple web app. Use the iPhone setup instructions below to create a Home Screen icon and optional daily reminder.</p>
     </section>
+    <section class="card">
+      <h2>Home gym inventory</h2>
+      <p class="small">The random workout generator uses this inventory.</p>
+      <div id="inventoryList" class="inventorygrid"></div>
+    </section>
+
+    <section class="card healthCard">
+      <h2>Apple Health & Fitness</h2>
+      <p><b>GitHub web app:</b> progress stays in this app and cannot write workouts to Apple Health or update Activity rings.</p>
+      <p class="small">A future native iPhone version can use HealthKit. V4 stores workout type, duration and performance fields so that migration can map cleanly to HealthKit workouts later.</p>
+    </section>
+
     <section class="card">
       <h2>Data backup</h2>
       <p>Progress is saved on this device. Export occasionally so you can restore it later.</p>
@@ -159,10 +317,11 @@ textarea{min-height:72px;resize:vertical}
     </section>
   </main>
 
-  <nav class="tabbar">
+  <nav class="tabbar" style="grid-template-columns:repeat(5,1fr)">
     <button data-tab="Today" class="active">Today</button>
     <button data-tab="Week">Week</button>
     <button data-tab="Progress">Progress</button>
+    <button data-tab="Equipment">Equipment</button>
     <button data-tab="Settings">Settings</button>
   </nav>
 </div>
@@ -199,9 +358,250 @@ const FLARE = [
  ['Win condition','10 calm minutes and stop']
 ];
 
+
+const PAIN_LABELS = ['None','Very low','Very low','Mild','Mild','Moderate','Moderate','High','Severe','Very severe','Extreme'];
+const ENERGY_LABELS = ['Empty','Low','Okay','Good','Excellent'];
+let workoutTimerSec=0, timerInterval=null, timerRunning=false, restInterval=null, restRemaining=0;
+let currentGeneratedRandom=null;
+
+function makeWheel(id,min,max,value,labelFn){
+  const el=document.getElementById(id);
+  el.innerHTML='<div style="height:42px"></div>'+
+    Array.from({length:max-min+1},(_,i)=>`<div class="wheelItem" data-value="${i+min}">${i+min}</div>`).join('')+
+    '<div style="height:42px"></div>';
+  const items=[...el.querySelectorAll('.wheelItem')];
+  const update=()=>{
+    const center=el.scrollTop+el.clientHeight/2;
+    let best=items[0],dist=Infinity;
+    items.forEach(it=>{
+      const c=it.offsetTop+it.offsetHeight/2, d=Math.abs(c-center);
+      if(d<dist){dist=d;best=it}
+    });
+    items.forEach(x=>x.classList.toggle('selected',x===best));
+    const val=Number(best.dataset.value);
+    document.getElementById(id==='painWheel'?'pain':'energy').value=val;
+    if(id==='painWheel') document.getElementById('painDescriptor').textContent=PAIN_LABELS[val];
+    else document.getElementById('energyDescriptor').textContent=ENERGY_LABELS[val-1];
+    updatePainAdvice();
+  };
+  let t;
+  el.addEventListener('scroll',()=>{clearTimeout(t);t=setTimeout(update,60)},{passive:true});
+  requestAnimationFrame(()=>{
+    const target=items.find(x=>Number(x.dataset.value)===Number(value));
+    if(target){el.scrollTop=target.offsetTop-42}
+    update();
+  });
+}
+function setWheelValue(id,val){
+  const el=document.getElementById(id); if(!el)return;
+  const target=el.querySelector(`[data-value="${val}"]`);
+  if(target){el.scrollTo({top:target.offsetTop-42,behavior:'instant'});}
+  setTimeout(()=>{el.dispatchEvent(new Event('scroll'))},10);
+}
+function formatTimer(sec){
+  const m=Math.floor(sec/60),s=sec%60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function startWorkoutTimer(){
+  document.getElementById('activeWorkoutPanel').classList.remove('hidden');
+  if(!timerRunning){
+    timerRunning=true;
+    timerInterval=setInterval(()=>{workoutTimerSec++;document.getElementById('timerClock').textContent=formatTimer(workoutTimerSec)},1000);
+  }
+  document.getElementById('pauseTimerBtn').textContent='Pause';
+  document.getElementById('workout').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function toggleTimer(){
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('pauseTimerBtn').textContent='Resume'}
+  else{timerRunning=true;timerInterval=setInterval(()=>{workoutTimerSec++;document.getElementById('timerClock').textContent=formatTimer(workoutTimerSec)},1000);document.getElementById('pauseTimerBtn').textContent='Pause'}
+}
+function startRest(seconds){
+  clearInterval(restInterval);restRemaining=seconds;
+  document.getElementById('restStatus').textContent=`Rest ${restRemaining}s`;
+  restInterval=setInterval(()=>{
+    restRemaining--;
+    document.getElementById('restStatus').textContent=restRemaining>0?`Rest ${restRemaining}s`:'Rest complete — next set.';
+    if(restRemaining<=0)clearInterval(restInterval);
+  },1000);
+}
+function chooseRecommendedMode(){
+  const pain=Number(document.getElementById('pain').value),energy=Number(document.getElementById('energy').value);
+  return pain>=8?'flare':(energy<=2||pain>=7?'minimum':'full');
+}
+function justStart(){
+  mode=chooseRecommendedMode();
+  renderWorkout();
+  startWorkoutTimer();
+}
+function rescueWorkout(){
+  mode='minimum';
+  const pain=Number(document.getElementById('pain').value);
+  const upper=sample(RANDOM_POOLS.upper,2);
+  const items=pain>=8?
+    [['BikeErg','5 min very easy if comfortable'],...upper,['Breathing','2 min easy breathing']] :
+    [['BikeErg','2 min easy'],...upper,['Farmer carry','2 × 30 sec'],['BikeErg','Easy until 10:00']];
+  currentGeneratedRandom={title:"10-minute Rescue",focus:"rescue",mins:10,items};
+  document.getElementById('randomResult').innerHTML=
+    `<div class="callout"><h3>10-minute Rescue</h3><p class="small">No debate. This is today's win.</p>`+
+    items.map(x=>`<div class="exercise"><span><b>${x[0]}</b><small>${x[1]}</small></span></div>`).join('')+
+    `<button id="useRandomBtn" class="primary">Start the 10-minute rescue</button></div>`;
+  document.getElementById('useRandomBtn').addEventListener('click',()=>{startWorkoutTimer();document.getElementById('randomResult').scrollIntoView({behavior:'smooth'})});
+  document.getElementById('randomResult').scrollIntoView({behavior:'smooth'});
+}
+function renderCountdown(){
+  const card=document.getElementById('countdownCard'), raw=state.surgeryDate;
+  if(!raw){card.classList.add('hidden');return}
+  const target=new Date(raw+'T12:00:00'),today=new Date();today.setHours(12,0,0,0);
+  const days=Math.ceil((target-today)/86400000);
+  card.classList.remove('hidden');
+  document.getElementById('daysToHip').textContent=Math.max(0,days);
+  ['phaseBuild','phaseMaintain','phaseRunway'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  let phase,txt;
+  if(days>42){phase='phaseBuild';txt='Build fitness and strength reserve while protecting the hip.'}
+  else if(days>14){phase='phaseMaintain';txt='Maintain gains. Avoid flare-ups, injury, and unnecessary training experiments.'}
+  else{phase='phaseRunway';txt='Surgery runway: stay consistent, rested, and follow your surgical team’s instructions.'}
+  document.getElementById(phase).classList.add('active');
+  document.getElementById('countdownText').textContent=txt;
+}
+function renderPRs(){
+  const s=state.sessions||[];
+  const nums=(key)=>s.map(x=>Number(x[key]||0)).filter(Boolean);
+  const max=(a)=>a.length?Math.max(...a):'—';
+  const bikeDur=s.filter(x=>x.type==='bike').map(x=>Number(x.duration||0));
+  const prs=[
+    ['Push-ups',max(nums('pushupBest')),'best unbroken set'],
+    ['Pull-ups',max(nums('pullupBest')),'best unbroken set'],
+    ['BikeErg',max(bikeDur),'longest logged minutes'],
+    ['Bike meters',max(nums('bikeMeters')),'best entered distance'],
+    ['Avg watts',max(nums('bikeWatts')),'best entered average'],
+    ['Start streak',calcStreak(),'current consecutive days']
+  ];
+  document.getElementById('prList').innerHTML=prs.map(x=>`<div class="prItem"><span class="small">${x[0]}</span><div style="font-size:25px;font-weight:850">${x[1]}</div><span class="small">${x[2]}</span></div>`).join('');
+}
+function priorWeekSessions(){
+ const [mon]=weekBounds();
+ const a=new Date(mon);a.setDate(mon.getDate()-7);
+ const b=new Date(mon);b.setDate(mon.getDate()-1);b.setHours(23,59,59,999);
+ return state.sessions.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=a&&d<=b});
+}
+function renderSundayReport(){
+ const w=sessionsThisWeek(), prior=priorWeekSessions();
+ const starts=w.length, mins=w.reduce((a,b)=>a+(b.duration||0),0);
+ const strength=w.filter(x=>x.type==='strength').length;
+ const bike=w.filter(x=>x.type==='bike').reduce((a,b)=>a+(b.duration||0),0);
+ const avg=w.length?w.reduce((a,b)=>a+Number(b.pain||0),0)/w.length:null;
+ const pavg=prior.length?prior.reduce((a,b)=>a+Number(b.pain||0),0)/prior.length:null;
+ let grade=starts===7?'A+':starts===6?'A':starts===5?'B+':starts===4?'B':starts===3?'C':'—';
+ let observation='';
+ if(starts>=6) observation='Consistency is the win. Do not reward it by suddenly making the program harder.';
+ else if(starts>=4) observation='Good base. Convert one missed day next week into a 10-minute Minimum start.';
+ else observation='Reset the target: win tomorrow morning. One start is enough to restart momentum.';
+ if(avg!==null&&pavg!==null){
+   const d=avg-pavg;
+   observation+=' '+(d<=-0.5?`Pain reporting improved by ${Math.abs(d).toFixed(1)} vs. last week.`:d>=0.5?`Pain reporting rose ${d.toFixed(1)} vs. last week; favor symptom control and tell your clinician if worsening persists.`:'Pain reporting was broadly stable week over week.');
+ }
+ document.getElementById('sundayReport').innerHTML=
+  `<div style="display:grid;grid-template-columns:auto 1fr;gap:15px;align-items:center"><div><div class="reportGrade">${grade}</div><div class="small">THIS WEEK</div></div>`+
+  `<div><b>${starts}/7 starts</b><br>${mins} total min · ${strength} strength · ${bike} BikeErg min<br><span class="small">Avg pain ${avg===null?'—':avg.toFixed(1)}/10</span></div></div>`+
+  `<div class="callout" style="margin-top:12px"><b>Coach's note</b><p style="margin-bottom:0">${observation}</p></div>`;
+}
+
+const EQUIPMENT = [
+  ['Concept2 BikeErg','Primary low-impact conditioning'],
+  ['Concept2 Rower','Available; catch currently causes moderate hip discomfort'],
+  ['Schwinn Airdyne','Short conditioning / variety if comfortable'],
+  ['Peloton Tread','Flat or modest walking only as tolerated; no running programmed'],
+  ['Squat rack + barbell','~350 lb bumper plates; conservative use during prehab'],
+  ['53 lb kettlebell','Deadlifts, rows, carries'],
+  ['35 lb kettlebells ×2','Presses, rows, carries, floor press'],
+  ['12 lb kettlebell','Light warm-up / rehab work'],
+  ['Flat bench','Support, presses, elevated movements'],
+  ['AbMat','Optional trunk work'],
+  ['Westside reverse hyper','Optional; not currently a core exercise'],
+  ['~20 lb medicine ball','Optional upper-body / trunk work'],
+  ['Rogue box','Approx. 16 / 20 / 24 in; high sit-to-stands only for now'],
+  ['Long resistance bands','Small / medium / heavy / extra-heavy'],
+  ['Mini hip bands','Multiple resistance levels'],
+  ['Pull-up bar','Pull-ups and controlled upper-body pulling']
+];
+
+const RANDOM_POOLS = {
+  upper: [
+    ['Push-ups','8–15 reps; stop 2–3 reps before failure'],
+    ['Pull-ups','2–4 reps; no grinding'],
+    ['Supported 1-arm KB row','35 lb × 8–12 each side'],
+    ['KB floor press','2 × 35 lb × 8–12'],
+    ['Seated KB press','12 or 35 lb as comfortable × 6–10 each side'],
+    ['Band row','12–15 reps'],
+    ['Band Pallof press','8–12 each side'],
+    ['Farmer carry','2 × 35 lb for 30–45 sec']
+  ],
+  lowerSafe: [
+    ['Elevated KB deadlift','53 lb × 8; elevate to a comfortable start height'],
+    ['High sit-to-stand','8–12 reps; remain above painful depth'],
+    ['Standing mini-band hip abduction','8–10 each side; small controlled range'],
+    ['Glute bridge','8–12 only if comfortable']
+  ],
+  cardio: [
+    ['BikeErg','Conversational effort'],
+    ['Airdyne','Easy/moderate only if hip remains comfortable'],
+    ['Tread walk','Short, flat, comfortable walking only; stop if limp worsens']
+  ]
+};
+
+function sample(arr,n){
+  const copy=[...arr], result=[];
+  while(copy.length && result.length<n){
+    result.push(copy.splice(Math.floor(Math.random()*copy.length),1)[0]);
+  }
+  return result;
+}
+function renderInventory(){
+  const content=EQUIPMENT.map(x=>`<div class="inventoryitem"><b>${x[0]}</b><div class="small">${x[1]}</div></div>`).join('');
+  const a=document.getElementById('inventoryList'), b=document.getElementById('equipmentTabList');
+  if(a)a.innerHTML=content;if(b)b.innerHTML=content;
+}
+function generateRandomWorkout(){
+  const mins=Number(document.getElementById('randomTime').value);
+  const focus=document.getElementById('randomFocus').value;
+  const pain=Number(document.getElementById('pain').value);
+  let items=[], title='';
+  if(pain>=8){
+    title='Hip-flare random session';
+    items=[['BikeErg','5–10 min very easy if comfortable'],...sample(RANDOM_POOLS.upper,2)];
+  } else if(focus==='cardio'){
+    title='Cardio + upper';
+    items=[['BikeErg',`${Math.max(5,Math.round(mins*.55))} min conversational effort`],...sample(RANDOM_POOLS.upper,mins<=10?1:3)];
+  } else if(focus==='upper'){
+    title='Upper-body strength';
+    items=[['BikeErg','3–5 min easy warm-up'],...sample(RANDOM_POOLS.upper,mins<=10?3:5)];
+  } else if(focus==='prehab'){
+    title='Prehab + upper';
+    items=[['BikeErg','3–5 min easy warm-up'],...sample(RANDOM_POOLS.lowerSafe,mins<=10?1:2),...sample(RANDOM_POOLS.upper,mins<=10?2:3)];
+  } else {
+    title='Balanced hip-aware session';
+    items=[['BikeErg','3–5 min easy warm-up'],...sample(RANDOM_POOLS.lowerSafe,1),...sample(RANDOM_POOLS.upper,mins<=10?2:4)];
+  }
+  if(mins>=30 && focus!=='cardio') items.push(['BikeErg','5–10 min easy/moderate finish']);
+  document.getElementById('randomResult').innerHTML=
+    `<div class="callout"><h3>${title}</h3><p class="small">Generated for ~${mins} minutes. Treat this as variety, not permission to test painful hip range.</p>`+
+    items.map(x=>`<div class="exercise"><span><b>${x[0]}</b><small>${x[1]}</small></span></div>`).join('')+
+    `<button id="useRandomBtn" class="primary">Use this workout today</button></div>`;
+  document.getElementById('useRandomBtn').addEventListener('click',()=>{
+    const date=localDateStr();
+    const pain=Number(document.getElementById('pain').value), energy=Number(document.getElementById('energy').value);
+    const existing=state.sessions.findIndex(x=>x.date===date);
+    const rec={date,name:'Random — '+title,type:focus==='cardio'?'bike':'strength',mode:'random',pain,energy,duration:mins,checks:[],completed:true,pushupBest:null,pullupBest:null,bikeMeters:null,bikeWatts:null};
+    if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
+    save();
+    document.getElementById('randomResult').insertAdjacentHTML('beforeend','<p class="success">✓ Random workout saved. Variety counts; consistency is still the goal.</p>');
+    renderMetrics();renderWeek();renderProgress();
+  });
+}
+
 const STORAGE_KEY='hipPrehabV2';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
-  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00'
+  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', surgeryDate:''
 };
 let mode='full';
 let deferredPrompt=null;
@@ -219,10 +619,11 @@ function renderToday(){
  document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${rec.duration||0} min` : `${p.name}. Your only obligation is to start.`;
  document.getElementById('sessionName').textContent=p.name;
  document.getElementById('sessionWhy').textContent=p.why;
- if(rec){mode=rec.mode||'full';document.getElementById('pain').value=rec.pain??6;document.getElementById('energy').value=rec.energy??3}
+ if(rec){mode=(rec.mode==='random'?'full':(rec.mode||'full'));setWheelValue('painWheel',rec.pain??6);setWheelValue('energyWheel',rec.energy??3)}
  renderWorkout();
  updatePainAdvice();
  renderMetrics();
+ renderCountdown();
 }
 
 function renderWorkout(){
@@ -263,12 +664,17 @@ function completeWorkout(){
  const defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
  const pain=Number(document.getElementById('pain').value), energy=Number(document.getElementById('energy').value);
  const existing=state.sessions.findIndex(x=>x.date===date);
- const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:defaultMinutes,checks,completed:true};
+ const actualMinutes=workoutTimerSec>=60?Math.max(1,Math.round(workoutTimerSec/60)):defaultMinutes;
+ const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:actualMinutes,checks,completed:true,
+   pushupBest:Number(document.getElementById('pushupBest').value)||null,
+   pullupBest:Number(document.getElementById('pullupBest').value)||null,
+   bikeMeters:Number(document.getElementById('bikeMeters').value)||null,
+   bikeWatts:Number(document.getElementById('bikeWatts').value)||null};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
  save();
  const msg=motivation(rec);
  document.getElementById('completeMessage').innerHTML=`<p class="success">✓ ${msg}</p>`;
- renderMetrics(); renderWeek(); renderProgress();
+ if(timerRunning){clearInterval(timerInterval);timerRunning=false} renderMetrics(); renderWeek(); renderProgress(); renderPRs();
 }
 
 function motivation(rec){
@@ -320,6 +726,7 @@ function renderWeek(){
  let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
           starts>=4?'Solid week. Your next win is simply converting one missed day into a 10-minute Minimum day.':
           'The program is designed for imperfect weeks. Focus only on getting the next start.';
+ renderSundayReport();
  document.getElementById('weeklySummary').innerHTML=`<p><b>${starts}/7 starts</b> · ${mins} total min · average reported pain ${avgPain}/10.</p><p>${text}</p>`;
 }
 
@@ -341,23 +748,25 @@ function renderProgress(){
    } else trend=`You have ${recent.length} logged sessions. Keep stacking starts; the app will compare pain trends once there is more history.`;
  }
  document.getElementById('trendSummary').textContent=trend;
+ renderPRs();
  document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>`<div class="dayrow"><span>${fmtDate(x.date)}</span><span>${x.name}<br><span class="small">${x.mode.toUpperCase()} · pain ${x.pain}/10</span></span><span>${x.duration||0}m</span></div>`).join('')||'<p>No sessions saved yet.</p>';
 }
 
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;renderWorkout()}));
-document.getElementById('pain').addEventListener('input',updatePainAdvice);
-document.getElementById('energy').addEventListener('input',updatePainAdvice);
 document.getElementById('completeBtn').addEventListener('click',completeWorkout);
 
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
  document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
- ['Today','Week','Progress','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
+ ['Today','Week','Progress','Equipment','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
  if(b.dataset.tab==='Week')renderWeek();
  if(b.dataset.tab==='Progress')renderProgress();
+ if(b.dataset.tab==='Equipment')renderInventory();
 }));
 
 document.getElementById('startDate').value=state.startDate;
 document.getElementById('startDate').addEventListener('change',e=>{state.startDate=e.target.value;save()});
+document.getElementById('surgeryDate').value=state.surgeryDate||'';
+document.getElementById('surgeryDate').addEventListener('change',e=>{state.surgeryDate=e.target.value;save();renderCountdown()});
 document.getElementById('reminderTime').value=state.reminderTime||'06:00';
 document.getElementById('reminderTime').addEventListener('change',e=>{state.reminderTime=e.target.value;save()});
 
@@ -380,8 +789,17 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
  if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}
 });
 
+makeWheel('painWheel',0,10,6,v=>PAIN_LABELS[v]);
+makeWheel('energyWheel',1,5,3,v=>ENERGY_LABELS[v-1]);
+document.getElementById('justStartBtn').addEventListener('click',justStart);
+document.getElementById('rescueBtn').addEventListener('click',rescueWorkout);
+document.getElementById('pauseTimerBtn').addEventListener('click',toggleTimer);
+document.getElementById('rest60Btn').addEventListener('click',()=>startRest(60));
+document.getElementById('rest90Btn').addEventListener('click',()=>startRest(90));
+document.getElementById('randomBtn').addEventListener('click',generateRandomWorkout);
+renderInventory();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
-renderToday();renderWeek();renderProgress();
+renderToday();renderWeek();renderProgress();renderPRs();renderCountdown();
 </script>
 </body>
 </html>
