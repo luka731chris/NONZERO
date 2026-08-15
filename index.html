@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Prehab">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Chris's Prehab</title>
+<style>
+:root{
+ --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
+ --green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--blue:#38bdf8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0f172a,#111827);color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(34px + env(safe-area-inset-bottom))}
+.card{background:rgba(17,24,39,.96);border:1px solid var(--border);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.hero{border-left:5px solid var(--green)}
+h1{font-size:28px;margin:6px 0 4px} h2{font-size:19px;margin:0 0 10px} h3{font-size:16px;margin:0 0 8px}
+p{color:#cbd5e1;line-height:1.45;margin:8px 0}
+.small{font-size:12px;color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metric{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:11px 6px}
+.metric b{display:block;font-size:24px;margin:2px 0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#13321d;color:#86efac;font-size:12px;font-weight:800}
+button,select,input{font:inherit}
+button{border:1px solid var(--border);background:var(--panel);color:var(--text);padding:12px;border-radius:13px;font-weight:750}
+button.primary{width:100%;background:var(--green);color:#052e16;border:0}
+button.secondary{width:100%}
+button.active{outline:2px solid var(--green);background:#102817}
+button.warn.active{outline-color:var(--yellow);background:#302409}
+button.danger.active{outline-color:var(--red);background:#321314}
+.modegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.exercise{display:flex;gap:12px;padding:13px 0;border-top:1px solid #253042;align-items:flex-start}
+.exercise:first-child{border-top:0}
+.exercise input[type=checkbox]{transform:scale(1.4);margin-top:4px}
+.exercise small{display:block;color:#cbd5e1;line-height:1.35;margin-top:4px}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+select,input[type=number],textarea{
+width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:11px}
+textarea{min-height:72px;resize:vertical}
+.progressbar{height:12px;background:#1f2937;border-radius:999px;overflow:hidden}
+.progressbar>div{height:100%;background:var(--green);width:0}
+.dayrow{display:grid;grid-template-columns:48px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #253042;align-items:center}
+.dayrow:first-child{border-top:0}
+.statusdot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#475569;margin-right:6px}
+.statusdot.done{background:var(--green)} .statusdot.miss{background:var(--red)}
+.callout{background:#0b1220;border:1px solid #334155;border-radius:14px;padding:12px}
+.success{color:#86efac;font-weight:800}.warning{color:#fcd34d}.dangertext{color:#fca5a5}
+.tabbar{position:sticky;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:rgba(15,23,42,.92);backdrop-filter:blur(10px);padding:7px;border:1px solid var(--border);border-radius:16px;margin-top:16px}
+.tabbar button{padding:9px 5px;font-size:12px}.tabbar button.active{outline:1px solid var(--blue);background:#0b1f2a}
+.hidden{display:none!important}
+#installBanner{display:none}
+@media(max-width:540px){h1{font-size:24px}.modegrid{grid-template-columns:1fr}.grid3{grid-template-columns:repeat(3,1fr)}.metric b{font-size:21px}.row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="card hero">
+    <span class="badge">NON-ZERO DAY</span>
+    <h1 id="todayHeading">Today</h1>
+    <p id="todaySub"></p>
+    <div class="grid3">
+      <div class="metric"><span>Streak</span><b id="streak">0</b><small>days</small></div>
+      <div class="metric"><span>This week</span><b id="weekStarts">0/7</b><small>starts</small></div>
+      <div class="metric"><span>Bike</span><b id="weekBike">0</b><small>min</small></div>
+    </div>
+  </section>
+
+  <section id="installBanner" class="card">
+    <h2>Install this app</h2>
+    <p>Tap the button below to install it like a normal app.</p>
+    <button id="installBtn" class="primary">Install on this device</button>
+  </section>
+
+  <main id="tabToday">
+    <section class="card">
+      <h2>How are you today?</h2>
+      <div class="row">
+        <div>
+          <label class="small">Hip pain</label>
+          <input id="pain" type="number" min="0" max="10" step="1" value="6">
+        </div>
+        <div>
+          <label class="small">Energy</label>
+          <input id="energy" type="number" min="1" max="5" step="1" value="3">
+        </div>
+      </div>
+      <div id="painAdvice" class="callout" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card">
+      <h2 id="sessionName">Today's session</h2>
+      <p id="sessionWhy"></p>
+      <div class="modegrid">
+        <button data-mode="full" class="active">FULL<br><span class="small">planned session</span></button>
+        <button data-mode="minimum" class="warn">MINIMUM<br><span class="small">10-minute win</span></button>
+        <button data-mode="flare" class="danger">FLARE<br><span class="small">protect the hip</span></button>
+      </div>
+      <div id="workout" style="margin-top:10px"></div>
+      <div class="progressbar"><div id="workoutProgress"></div></div>
+      <p class="small" id="progressText">0% complete</p>
+      <button id="completeBtn" class="primary">Finish & save workout</button>
+      <div id="completeMessage"></div>
+    </section>
+  </main>
+
+  <main id="tabWeek" class="hidden">
+    <section class="card">
+      <h2>This week</h2>
+      <div id="weekList"></div>
+    </section>
+    <section class="card">
+      <h2>Weekly summary</h2>
+      <div id="weeklySummary"></div>
+    </section>
+  </main>
+
+  <main id="tabProgress" class="hidden">
+    <section class="card">
+      <h2>Progress</h2>
+      <div class="grid3">
+        <div class="metric"><span>Total starts</span><b id="totalStarts">0</b></div>
+        <div class="metric"><span>Strength</span><b id="totalStrength">0</b><small>sessions</small></div>
+        <div class="metric"><span>Bike</span><b id="totalBike">0</b><small>minutes</small></div>
+      </div>
+      <div id="trendSummary" class="callout" style="margin-top:12px"></div>
+    </section>
+    <section class="card">
+      <h2>Recent sessions</h2>
+      <div id="recentSessions"></div>
+    </section>
+  </main>
+
+  <main id="tabSettings" class="hidden">
+    <section class="card">
+      <h2>Program settings</h2>
+      <label class="small">Program start date</label>
+      <input id="startDate" type="date">
+      <p class="small">The schedule automatically repeats weekly from this start date.</p>
+      <label class="small">Morning reminder target</label>
+      <input id="reminderTime" type="time" value="06:00">
+      <p class="small">This app cannot push reminders by itself when used as a simple web app. Use the iPhone setup instructions below to create a Home Screen icon and optional daily reminder.</p>
+    </section>
+    <section class="card">
+      <h2>Data backup</h2>
+      <p>Progress is saved on this device. Export occasionally so you can restore it later.</p>
+      <div class="row">
+        <button id="exportBtn">Export progress</button>
+        <button id="importBtn">Import progress</button>
+      </div>
+      <input id="importFile" type="file" accept="application/json" class="hidden">
+      <button id="resetBtn" class="secondary" style="margin-top:8px">Reset all progress</button>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-tab="Today" class="active">Today</button>
+    <button data-tab="Week">Week</button>
+    <button data-tab="Progress">Progress</button>
+    <button data-tab="Settings">Settings</button>
+  </nav>
+</div>
+
+<script>
+const PROGRAM = {
+  0:{name:'Recovery',why:'Keep the habit while giving the hip a low-stress day.',type:'recovery',
+    full:[['BikeErg','10–15 min very easy'],['Standing hip abduction','1–2 × 8 each side, small comfortable range'],['Band row','2 × 12'],['Breathing','2 min relaxed breathing']],
+    minimum:[['BikeErg','5–10 min very easy'],['Upper-body band work','Easy rows/presses until 10:00']]},
+  1:{name:'Strength A — Upper + Hinge',why:'Build strength without forcing deep hip flexion.',type:'strength',
+    full:[['BikeErg warm-up','4 min easy'],['Elevated KB deadlift','53 lb — 3 × 8; elevate the bell enough to stay comfortable'],['Push-ups','3 × 8–12; stop 2–3 reps before failure'],['Supported 1-arm KB row','35 lb — 3 × 10 each side'],['Seated KB or band press','2–3 × 8 each side'],['Farmer carry','2 × 35 lb — 3 × 30 sec']],
+    minimum:[['BikeErg','2 min easy'],['Elevated KB deadlift','53 lb — 2 × 8'],['Push-ups','2 × 8–12'],['Supported KB row','35 lb — 2 × 8 each side'],['BikeErg','Easy until 10:00']]},
+  2:{name:'BikeErg — Aerobic',why:'Build cardiovascular fitness with minimal impact.',type:'bike',
+    full:[['Easy spin','5 min'],['Steady aerobic ride','15–20 min conversational effort'],['Easy spin','5 min']],
+    minimum:[['BikeErg','10 min continuous easy/moderate riding']]},
+  3:{name:'Strength B — Prehab + Upper',why:'Maintain upper-body strength and train tolerable hip-supporting musculature.',type:'strength',
+    full:[['BikeErg warm-up','4 min easy'],['High sit-to-stand','3 × 10; remain above painful depth'],['Pull-ups','3 × 2–3; no grinding'],['KB floor press','2 × 35 lb — 3 × 8–10'],['Standing mini-band hip abduction','2 × 10 each side, small range'],['Glute bridge','2 × 10 only if comfortable'],['Band Pallof press','2 × 10 each side']],
+    minimum:[['BikeErg','2 min easy'],['High sit-to-stand','2 × 8'],['Pull-ups','2 × 2'],['KB floor press','2 × 35 lb — 2 × 8'],['Pallof press','2 × 8 each side']]},
+  4:{name:'BikeErg — Aerobic',why:'Add aerobic volume without accumulating painful walking mileage.',type:'bike',
+    full:[['Easy spin','5 min'],['Steady aerobic ride','20–25 min conversational effort'],['Easy spin','5 min']],
+    minimum:[['BikeErg','10 min easy/moderate']]},
+  5:{name:'Strength — Alternating',why:'Third weekly strength exposure while keeping total workload manageable.',type:'strength',
+    full:[['BikeErg warm-up','4 min easy'],['Elevated KB deadlift','53 lb — 2 × 8'],['Push-ups','2 × 10–15'],['Pull-ups','2 × 2–3'],['KB floor press','2 × 35 lb — 2 × 8–10'],['Farmer carry','2 × 35 lb — 3 × 30 sec']],
+    minimum:[['BikeErg','2 min easy'],['Push-ups','2 × 10'],['KB row','2 × 8 each side'],['Farmer carry','2 × 30 sec'],['BikeErg','Easy until 10:00']]},
+  6:{name:'Long BikeErg',why:'Your main low-impact endurance builder.',type:'bike',
+    full:[['Easy spin','5 min'],['Steady BikeErg','30–35 min conversational effort'],['Easy spin','5 min'],['Optional','Add 5 min only if hip and energy are good']],
+    minimum:[['BikeErg','10 min easy/moderate. Long ride can wait.']]}
+};
+
+const FLARE = [
+ ['BikeErg','5–10 min very easy ONLY if riding feels comfortable'],
+ ['Upper body','Easy push-ups, band rows or floor press if desired'],
+ ['Avoid today','Loaded lower-body work, long walks, deep flexion, anything increasing your limp'],
+ ['Win condition','10 calm minutes and stop']
+];
+
+const STORAGE_KEY='hipPrehabV2';
+let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
+  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00'
+};
+let mode='full';
+let deferredPrompt=null;
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function localDateStr(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function weekdayIndex(){return new Date().getDay()}
+function todayProgram(){return PROGRAM[weekdayIndex()]}
+function fmtDate(s){return new Date(s+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
+function todaySessionRecord(){return state.sessions.find(x=>x.date===localDateStr())}
+
+function renderToday(){
+ const p=todayProgram(), rec=todaySessionRecord();
+ document.getElementById('todayHeading').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+ document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${rec.duration||0} min` : `${p.name}. Your only obligation is to start.`;
+ document.getElementById('sessionName').textContent=p.name;
+ document.getElementById('sessionWhy').textContent=p.why;
+ if(rec){mode=rec.mode||'full';document.getElementById('pain').value=rec.pain??6;document.getElementById('energy').value=rec.energy??3}
+ renderWorkout();
+ updatePainAdvice();
+ renderMetrics();
+}
+
+function renderWorkout(){
+ const p=todayProgram();
+ const items=mode==='flare'?FLARE:p[mode];
+ document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+ const rec=todaySessionRecord();
+ const checks=(rec&&rec.mode===mode&&rec.checks)||[];
+ document.getElementById('workout').innerHTML=items.map((x,i)=>`
+ <label class="exercise"><input type="checkbox" data-check="${i}" ${checks[i]?'checked':''}>
+ <span><b>${x[0]}</b><small>${x[1]}</small></span></label>`).join('');
+ document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',updateWorkoutProgress));
+ updateWorkoutProgress();
+}
+
+function updateWorkoutProgress(){
+ const c=[...document.querySelectorAll('[data-check]')];
+ const done=c.filter(x=>x.checked).length;
+ const pct=c.length?Math.round(done/c.length*100):0;
+ document.getElementById('workoutProgress').style.width=pct+'%';
+ document.getElementById('progressText').textContent=`${pct}% complete · ${done}/${c.length} steps`;
+}
+
+function updatePainAdvice(){
+ const p=Number(document.getElementById('pain').value);
+ const e=Number(document.getElementById('energy').value);
+ let txt='';
+ if(p>=8) txt='High-pain day. FLARE mode is the correct workout, not a consolation prize.';
+ else if(p>=6) txt='Usual symptom range: use comfortable ROM and immediately modify anything that increases pain, compensation, or limping.';
+ else txt='Better symptom day. Keep the prescribed ROM—do not “test” the hip with deep or heavy work.';
+ if(e<=2) txt+=' Low energy: Minimum mode is fully acceptable.';
+ document.getElementById('painAdvice').textContent=txt;
+}
+
+function completeWorkout(){
+ const date=localDateStr(), p=todayProgram();
+ const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ const defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
+ const pain=Number(document.getElementById('pain').value), energy=Number(document.getElementById('energy').value);
+ const existing=state.sessions.findIndex(x=>x.date===date);
+ const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:defaultMinutes,checks,completed:true};
+ if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
+ save();
+ const msg=motivation(rec);
+ document.getElementById('completeMessage').innerHTML=`<p class="success">✓ ${msg}</p>`;
+ renderMetrics(); renderWeek(); renderProgress();
+}
+
+function motivation(rec){
+ const streak=calcStreak();
+ if(rec.mode==='flare') return `Smart training. You protected the hip and kept the streak alive — ${streak} day${streak===1?'':'s'}.`;
+ if(rec.mode==='minimum') return `Ten minutes beat zero. That is exactly how this becomes permanent — ${streak}-day streak.`;
+ if(streak>=14) return `Two weeks of identity change. You are no longer “trying to restart” — you are training consistently.`;
+ if(streak>=7) return `A full week of starts. That matters more than any single hard workout.`;
+ return `Non-zero day complete. Stack another one tomorrow.`;
+}
+
+function weekBounds(){
+ const now=new Date(); const day=now.getDay(); const diff=(day+6)%7;
+ const mon=new Date(now); mon.setDate(now.getDate()-diff); mon.setHours(0,0,0,0);
+ const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+ return [mon,sun];
+}
+function sessionsThisWeek(){
+ const [a,b]=weekBounds();
+ return state.sessions.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=a&&d<=new Date(b.getTime()+86400000-1)})
+}
+function calcStreak(){
+ const set=new Set(state.sessions.filter(s=>s.completed).map(s=>s.date));
+ let d=new Date(), streak=0;
+ if(!set.has(localDateStr(d))){d.setDate(d.getDate()-1)}
+ while(set.has(localDateStr(d))){streak++;d.setDate(d.getDate()-1)}
+ return streak;
+}
+function renderMetrics(){
+ const w=sessionsThisWeek();
+ const bike=w.filter(s=>s.type==='bike').reduce((a,b)=>a+(b.duration||0),0);
+ document.getElementById('streak').textContent=calcStreak();
+ document.getElementById('weekStarts').textContent=`${w.length}/7`;
+ document.getElementById('weekBike').textContent=bike;
+}
+
+function renderWeek(){
+ const [mon]=weekBounds(), byDate=Object.fromEntries(state.sessions.map(s=>[s.date,s]));
+ const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+ let html='';
+ for(let i=0;i<7;i++){
+   const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=byDate[ds];
+   const program=PROGRAM[(i+1)%7];
+   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${program.name}</span><span class="small">${r?r.mode.toUpperCase():'—'}</span></div>`;
+ }
+ document.getElementById('weekList').innerHTML=html;
+ const w=sessionsThisWeek(), starts=w.length, mins=w.reduce((a,b)=>a+(b.duration||0),0);
+ const avgPain=w.length?(w.reduce((a,b)=>a+(b.pain||0),0)/w.length).toFixed(1):'—';
+ let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
+          starts>=4?'Solid week. Your next win is simply converting one missed day into a 10-minute Minimum day.':
+          'The program is designed for imperfect weeks. Focus only on getting the next start.';
+ document.getElementById('weeklySummary').innerHTML=`<p><b>${starts}/7 starts</b> · ${mins} total min · average reported pain ${avgPain}/10.</p><p>${text}</p>`;
+}
+
+function renderProgress(){
+ const s=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('totalStarts').textContent=s.length;
+ document.getElementById('totalStrength').textContent=s.filter(x=>x.type==='strength').length;
+ document.getElementById('totalBike').textContent=s.filter(x=>x.type==='bike').reduce((a,b)=>a+(b.duration||0),0);
+ const recent=s.slice(0,14), old=s.slice(14,28);
+ let trend='Keep logging sessions; your first useful trend summary appears as history builds.';
+ if(recent.length>=5){
+   const rp=recent.reduce((a,b)=>a+(b.pain||0),0)/recent.length;
+   const op=old.length?old.reduce((a,b)=>a+(b.pain||0),0)/old.length:null;
+   if(op!==null){
+     const diff=rp-op;
+     trend=diff<-0.5?`Reported pain is trending down by about ${Math.abs(diff).toFixed(1)} points versus the prior period. Preserve what is working.`:
+           diff>0.5?`Reported pain is trending up by about ${diff.toFixed(1)} points. Favor Minimum/Flare modes and discuss worsening symptoms with your clinician.`:
+           `Reported pain is relatively stable. Consistency and pre-op fitness remain the priority.`;
+   } else trend=`You have ${recent.length} logged sessions. Keep stacking starts; the app will compare pain trends once there is more history.`;
+ }
+ document.getElementById('trendSummary').textContent=trend;
+ document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>`<div class="dayrow"><span>${fmtDate(x.date)}</span><span>${x.name}<br><span class="small">${x.mode.toUpperCase()} · pain ${x.pain}/10</span></span><span>${x.duration||0}m</span></div>`).join('')||'<p>No sessions saved yet.</p>';
+}
+
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;renderWorkout()}));
+document.getElementById('pain').addEventListener('input',updatePainAdvice);
+document.getElementById('energy').addEventListener('input',updatePainAdvice);
+document.getElementById('completeBtn').addEventListener('click',completeWorkout);
+
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
+ ['Today','Week','Progress','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
+ if(b.dataset.tab==='Week')renderWeek();
+ if(b.dataset.tab==='Progress')renderProgress();
+}));
+
+document.getElementById('startDate').value=state.startDate;
+document.getElementById('startDate').addEventListener('change',e=>{state.startDate=e.target.value;save()});
+document.getElementById('reminderTime').value=state.reminderTime||'06:00';
+document.getElementById('reminderTime').addEventListener('change',e=>{state.reminderTime=e.target.value;save()});
+
+document.getElementById('exportBtn').addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hip-prehab-progress.json';a.click();URL.revokeObjectURL(a.href);
+});
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',async e=>{
+ try{const txt=await e.target.files[0].text();state=JSON.parse(txt);save();location.reload()}catch{alert('Could not import that file.')}
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+ if(confirm('Reset all saved progress?')){localStorage.removeItem(STORAGE_KEY);location.reload()}
+});
+
+window.addEventListener('beforeinstallprompt',e=>{
+ e.preventDefault(); deferredPrompt=e; document.getElementById('installBanner').style.display='block';
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+ if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}
+});
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+renderToday();renderWeek();renderProgress();
+</script>
+</body>
+</html>

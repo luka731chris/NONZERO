@@ -1,0 +1,10 @@
+{
+  "name": "Chris's Hip Prehab Training",
+  "short_name": "Prehab",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "Daily hip prehab, strength, BikeErg, progress tracking, and motivational feedback."
+}
