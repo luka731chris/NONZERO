@@ -1,10 +1,10 @@
 {
-  "name": "Chris's Hip Prehab Training V5",
+  "name": "Chris's Hip Prehab Training V7",
   "short_name": "Prehab",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Daily hip prehab, strength, BikeErg, progress tracking, and motivational feedback."
+  "description": "Adaptive hip prehab with live session metrics, PM5 companion tracking, persistent timers, milestones, and post-workout feedback."
 }
