@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0b0b0b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Prehab">
+<meta name="apple-mobile-web-app-title" content="NONZERO">
 
 <link rel="manifest" href="./manifest.webmanifest">
-<title>Chris's Prehab</title>
+<link rel="apple-touch-icon" href="./assets/nonzero-icon-180.png">
+<title>NONZERO — Hip Prehab & Fitness</title>
 <style>
 :root{
- --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
- --green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--blue:#38bdf8;
+ --bg:#090909;--card:#111111;--panel:#0b0b0b;--border:#3a3422;--text:#f8fafc;--muted:#aaa28e;
+ --green:#d4af37;--yellow:#f59e0b;--red:#ef4444;--blue:#d4af37;
 }
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#0f172a,#111827);color:var(--text);
+body{margin:0;background:linear-gradient(180deg,#090909,#12100a);color:var(--text);
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .wrap{max-width:760px;margin:auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(34px + env(safe-area-inset-bottom))}
 .card{background:rgba(17,24,39,.96);border:1px solid var(--border);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 12px 28px rgba(0,0,0,.18)}
@@ -27,12 +28,12 @@ p{color:#cbd5e1;line-height:1.45;margin:8px 0}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .metric{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:11px 6px}
 .metric b{display:block;font-size:24px;margin:2px 0}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#13321d;color:#86efac;font-size:12px;font-weight:800}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#2a220b;color:#f4d66d;font-size:12px;font-weight:800}
 button,select,input{font:inherit}
 button{border:1px solid var(--border);background:var(--panel);color:var(--text);padding:12px;border-radius:13px;font-weight:750}
-button.primary{width:100%;background:var(--green);color:#052e16;border:0}
+button.primary{width:100%;background:var(--green);color:#171006;border:0}
 button.secondary{width:100%}
-button.active{outline:2px solid var(--green);background:#102817}
+button.active{outline:2px solid var(--green);background:#2a220b}
 button.warn.active{outline-color:var(--yellow);background:#302409}
 button.danger.active{outline-color:var(--red);background:#321314}
 .modegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
@@ -65,8 +66,8 @@ textarea{min-height:72px;resize:vertical}
 /* V4 */
 .primaryHero{
   width:100%;font-size:21px;padding:17px;border-radius:16px;
-  background:linear-gradient(180deg,#34d399,#22c55e);color:#052e16;border:0;
-  box-shadow:0 8px 24px rgba(34,197,94,.18)
+  background:linear-gradient(180deg,#f0cf68,#d4af37);color:#171006;border:0;
+  box-shadow:0 8px 24px rgba(212,175,55,.20)
 }
 .rescueBtn{
   width:100%;margin-top:9px;border:1px solid #78350f;background:#2a1b09;color:#fde68a;
@@ -95,7 +96,7 @@ textarea{min-height:72px;resize:vertical}
 .pickerAdjust button{padding:8px 4px;font-size:18px}.pickerHint{text-align:center;font-size:10px;color:#64748b;margin-top:3px}
 .decisionCard{border:1px solid #2563eb;background:linear-gradient(180deg,#0b1f35,#111827)}
 .decisionTitle{font-size:22px;font-weight:900;letter-spacing:-.3px}.decisionMeta{color:#bfdbfe;margin-top:4px}.choiceGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:12px}
-.choiceGrid button{min-height:58px}.altPicker{margin-top:10px;padding-top:10px;border-top:1px solid #334155}.milestoneTrack{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.milestone{background:#0b1220;border:1px solid #334155;border-radius:12px;padding:9px 5px;text-align:center;min-height:76px}.milestone.earned{border-color:#22c55e;background:#102817}.milestone .icon{font-size:20px}.milestone small{display:block;color:#94a3b8;margin-top:4px;line-height:1.15}.reflectionGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}.reflectionGrid button.selected{outline:2px solid #60a5fa;background:#0b1f35}.insightCard{border-left:4px solid #60a5fa}
+.choiceGrid button{min-height:58px}.altPicker{margin-top:10px;padding-top:10px;border-top:1px solid #334155}.milestoneTrack{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.milestone{background:#0b1220;border:1px solid #334155;border-radius:12px;padding:9px 5px;text-align:center;min-height:76px}.milestone.earned{border-color:#d4af37;background:#2a220b}.milestone .icon{font-size:20px}.milestone small{display:block;color:#94a3b8;margin-top:4px;line-height:1.15}.reflectionGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}.reflectionGrid button.selected{outline:2px solid #60a5fa;background:#0b1f35}.insightCard{border-left:4px solid #60a5fa}
 .pickerDescriptor{text-align:center;font-size:12px;color:#cbd5e1;min-height:17px;margin-top:4px}
 .sessionMode{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
 .timerPanel{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px;margin:10px 0}
@@ -107,7 +108,7 @@ textarea{min-height:72px;resize:vertical}
 .countNum{font-size:42px;font-weight:900;line-height:.9}
 .phasebar{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
 .phase{padding:7px;border-radius:9px;background:#1f2937;text-align:center;font-size:11px;color:#94a3b8}
-.phase.active{background:#12351e;color:#86efac;font-weight:800}
+.phase.active{background:#2a220b;color:#f4d66d;font-weight:800}
 .reportGrade{font-size:44px;font-weight:900;line-height:1}
 .prGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .prItem{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px}
@@ -124,7 +125,7 @@ textarea{min-height:72px;resize:vertical}
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NON-ZERO DAY</span>
+    <span class="badge">NONZERO · ZERO EXCUSES. ALL IN.</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p>
     <div class="grid3">
@@ -346,6 +347,7 @@ textarea{min-height:72px;resize:vertical}
   <main id="tabSettings" class="hidden">
     <section class="card">
       <h2>Program settings</h2>
+      <p class="small"><b>NONZERO v0.7.0</b> · restored from hip-prehab v7 · build 2026.08.23</p>
       <label class="small">Program start date</label>
       <input id="startDate" type="date">
       <p class="small">The schedule automatically repeats weekly from this start date.</p>
@@ -1007,7 +1009,7 @@ document.getElementById('reminderTime').addEventListener('change',e=>{state.remi
 
 document.getElementById('exportBtn').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hip-prehab-progress.json';a.click();URL.revokeObjectURL(a.href);
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nonzero-progress.json';a.click();URL.revokeObjectURL(a.href);
 });
 document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change',async e=>{

@@ -3,7 +3,7 @@
 > **AUTO-GENERATED FILE — DO NOT EDIT DIRECTLY.**  
 > Edit `BACKLOG.json`, then run `npm run roadmap`. GitHub Actions will also rebuild this file automatically when the backlog changes.
 >
-> **Baseline:** `index.html` from 2026-08-23 is the current implemented app unless a newer version is explicitly promoted to baseline.
+> **Baseline:** `NONZERO v0.7.0 — restored from hip-prehab v7 on 2026-08-23` from 2026-08-23 is the current implemented app unless a newer version is explicitly promoted to baseline.
 
 ---
 
@@ -43,13 +43,9 @@ Changing those values in `BACKLOG.json` automatically changes the score and sort
 
 | ID | Feature | Priority | Status | V | F | E | D | Index | Why now |
 |---|---|---:|---|---:|---:|---:|---:|---:|---|
-| NZ-005 | Hip-replacement countdown | P1 | 🟢 Ready | 4 | 3 | 1 | 0 | 12.00 | Very low effort, high motivational visibility |
-| NZ-001 | Persistent workout + rest timers | P1 | 🟢 Ready | 5 | 3 | 2 | 0 | 7.50 | Core workout-use friction; useful every session |
-| NZ-002 | Polished hip-pain + energy controls | P1 | 🟢 Ready | 5 | 3 | 2 | 0 | 7.50 | Readiness drives the entire adaptive experience |
-| NZ-003 | Flexible day swap / reschedule | P1 | 🟢 Ready | 5 | 3 | 2 | 0 | 7.50 | Real schedules break rigid weekly plans |
-| NZ-004 | Sunday report card | P1 | 🟢 Ready | 5 | 2 | 2 | 0 | 5.00 | Makes progress visible and reinforces consistency |
-| NZ-006 | Home-gym equipment inventory UI | P1 | 🟢 Ready | 5 | 2 | 2 | 0 | 5.00 | Foundation for personalized/random workouts |
-| NZ-007 | Better mobile/PWA behavior | P1 | 🟡 Define | 5 | 3 | 3 | 0 | 5.00 | App is primarily used like a phone app |
+| NZ-001 | Add dedicated rest timer to persistent workout timer | P1 | 🟢 Ready | 5 | 3 | 1 | 0 | 15.00 | v7 already has a persistent workout timer; add quick rest intervals without losing session state |
+| NZ-006 | Make home-gym inventory user-toggleable | P1 | 🟢 Ready | 5 | 2 | 2 | 0 | 5.00 | v7 displays the full inventory; toggles make personalization and random generation truly equipment-aware |
+| NZ-007 | Further mobile/PWA polish beyond v7 baseline | P1 | 🟢 Ready | 5 | 3 | 3 | 0 | 5.00 | v7 is already installable/PWA-capable; remaining work is iPhone polish, caching/update UX and touch refinement |
 
 ### NEXT — Make NONZERO adaptive and personalized
 
@@ -57,25 +53,21 @@ Changing those values in `BACKLOG.json` automatically changes the score and sort
 |---|---|---:|---|---:|---:|---:|---:|---:|---|
 | NZ-015 | Workout substitution / swap exercise | P1 | 🟡 Define | 5 | 3 | 3 | 0 | 5.00 | Lets user adapt around pain or preference mid-workout |
 | NZ-014 | Cardio workout library expansion | P2 | 🟢 Ready | 4 | 2 | 2 | 0 | 4.00 | Adds variety across BikeErg, rower, Airdyne, treadmill |
-| NZ-018 | Pre-op consistency score | P2 | 🟡 Define | 4 | 2 | 2 | 0 | 4.00 | Measures adherence rather than raw intensity |
-| NZ-012 | Generator constraints: hip pain + energy | P1 | 🔵 Dependency | 5 | 3 | 3 | 1 | 3.75 | Makes random workouts safe and relevant |
-| NZ-011 | Generator constraints: equipment | P1 | 🔵 Dependency | 5 | 2 | 2 | 1 | 3.33 | Prevents impossible workout recommendations |
+| NZ-012 | Random generator constraint: hip pain + energy | P1 | 🟢 Ready | 5 | 3 | 3 | 1 | 3.75 | v7 adapts random workouts for severe pain; extend logic to energy and finer readiness bands |
+| NZ-011 | Random generator constraint: enabled equipment | P1 | 🔵 Dependency | 5 | 2 | 2 | 1 | 3.33 | v7 random generation uses safe pools; next step is filtering those pools by user-enabled inventory |
 | NZ-016 | Workout history detail view | P2 | 🟢 Ready | 3 | 2 | 2 | 0 | 3.00 | Makes progress data more useful |
 | NZ-013 | Generator constraints: recent training | P2 | 🟡 Define | 4 | 2 | 3 | 0 | 2.67 | Avoids repeating the same movement patterns |
-| NZ-010 | Random workout generator | P1 | 🔵 Dependency | 5 | 2 | 3 | 1 | 2.50 | High-value variety without decision fatigue |
-| NZ-017 | Personal bests / trend highlights | P2 | 🟡 Define | 4 | 1 | 2 | 0 | 2.00 | Adds motivation without overcomplicating the UI |
 
 ### LATER — Connected fitness + native experience
 
 | ID | Feature | Priority | Status | V | F | E | D | Index | Dependency / rationale |
 |---|---|---:|---|---:|---:|---:|---:|---:|---|
-| NZ-022 | PM5 pairing instructions UX | P2 | 🟢 Ready | 3 | 1 | 1 | 0 | 3.00 | Can improve guidance before full automatic sync exists |
 | NZ-024 | Write completed workouts to Apple Health | P1 | 🔵 Dependency | 5 | 3 | 4 | 2 | 2.50 | Enables centralized workout history |
 | NZ-025 | Apple Fitness ring contribution | P1 | 🔵 Dependency | 5 | 3 | 4 | 2 | 2.50 | Depends on properly recorded HealthKit workouts/energy |
 | NZ-027 | Native iPhone shell / wrapper | P1 | 🟡 Define | 5 | 3 | 5 | 1 | 2.50 | Likely prerequisite for deeper HealthKit integration |
-| NZ-023 | HealthKit architecture | P1 | 🟡 Define | 5 | 3 | 5 | 2 | 2.14 | Requires native iOS layer/wrapper |
-| NZ-021 | PM5 metric capture | P2 | 🔵 Dependency | 5 | 2 | 4 | 2 | 1.67 | Capture meters, time, pace/power, calories where supported |
-| NZ-020 | PM5 pairing architecture | P2 | 🟡 Define | 4 | 2 | 4 | 1 | 1.60 | Determine browser vs native integration path |
+| NZ-023 | Native HealthKit architecture and migration layer | P1 | 🟡 Define | 5 | 3 | 5 | 2 | 2.14 | v7 intentionally stores HealthKit-ready workout fields; native entitlement/write architecture remains future work |
+| NZ-021 | Automate PM5 metric capture beyond manual/experimental v7 capture | P2 | 🔵 Dependency | 5 | 2 | 4 | 2 | 1.67 | v7 supports manual ErgData metrics and experimental live FTMS; automate reliable capture where platform permits |
+| NZ-020 | Harden PM5 pairing architecture beyond experimental v7 path | P2 | 🟡 Define | 4 | 2 | 4 | 1 | 1.60 | v7 contains browser FTMS experimentation and iPhone ErgData guidance; production-grade integration still needs architecture work |
 | NZ-026 | Launch matching Apple workout | P2 | 🔵 Dependency | 5 | 2 | 5 | 2 | 1.43 | Explore iPhone/Watch supported workflow |
 | NZ-028 | Apple Watch companion experience | P3 | ⚪ Later | 4 | 2 | 5 | 2 | 1.14 | Longer-term native product evolution |
 
@@ -83,12 +75,9 @@ Changing those values in `BACKLOG.json` automatically changes the score and sort
 
 ## 4. Recommended Build Order
 
-1. **NZ-005 — Hip-replacement countdown** — score 12.00; Configurable date; days remaining shown without overwhelming UI
-2. **NZ-001 — Persistent workout + rest timers** — score 7.50; Timer persists across tabs/navigation and supports pause/reset
-3. **NZ-002 — Polished hip-pain + energy controls** — score 7.50; Fast thumb-friendly controls; current values always obvious
-4. **NZ-003 — Flexible day swap / reschedule** — score 7.50; Move today's workout without corrupting weekly tracking
-5. **NZ-004 — Sunday report card** — score 5.00; Weekly adherence, starts, mode mix, strength/cardio, encouragement
-6. **NZ-006 — Home-gym equipment inventory UI** — score 5.00; User can enable/disable owned equipment and changes persist
+1. **NZ-001 — Add dedicated rest timer to persistent workout timer** — score 15.00; Workout timer remains persistent and user can launch/pause/reset common rest intervals during strength work
+2. **NZ-006 — Make home-gym inventory user-toggleable** — score 5.00; User can enable/disable owned or currently available equipment; choices persist and feed workout generation
+3. **NZ-007 — Further mobile/PWA polish beyond v7 baseline** — score 5.00; Installable feel, safe areas, touch targets, persistent app state
 
 ---
 
@@ -115,34 +104,40 @@ Changing those values in `BACKLOG.json` automatically changes the score and sort
 - [x] Export / import progress
 - [x] Reset progress
 - [x] LocalStorage persistence (`hipPrehabV2`)
+- [x] Wheel-style hip-pain and energy readiness controls (recovered v7)
+- [x] Choose-another-day workout selection / flexible session substitution (recovered v7)
+- [x] Sunday report card with week-over-week observations (recovered v7)
+- [x] Configurable hip-replacement countdown and preparation phases (recovered v7)
+- [x] Hip-aware random workout generator with time and emphasis controls (recovered v7)
+- [x] Pre-op personal records and progress highlights (recovered v7)
+- [x] Per-session prehab score plus average prehab score (recovered v7)
+- [x] PM5 / ErgData connection instructions with experimental browser Bluetooth path (recovered v7)
+- [x] Persistent active workout timer with visibility/pagehide persistence (recovered v7)
+- [x] Live workout metrics panel including active time, meters, watts, calories, stress-busted score and prehab score (recovered v7)
+- [x] Post-workout hip and effort reflection capture (recovered v7)
+- [x] Milestone tracking (recovered v7)
+- [x] PWA manifest, service worker and iOS Home Screen metadata
+- [x] NONZERO black/gold branding and app-icon assets
 
 ### Active backlog
 
 | ID | Feature | Area | Priority | Status | Target | Score | Acceptance signal |
 |---|---|---|---:|---|---|---:|---|
-| NZ-005 | Hip-replacement countdown | Motivation | P1 | 🟢 Ready | NOW | 12.00 | Configurable date; days remaining shown without overwhelming UI |
-| NZ-001 | Persistent workout + rest timers | Workout UX | P1 | 🟢 Ready | NOW | 7.50 | Timer persists across tabs/navigation and supports pause/reset |
-| NZ-002 | Polished hip-pain + energy controls | Readiness | P1 | 🟢 Ready | NOW | 7.50 | Fast thumb-friendly controls; current values always obvious |
-| NZ-003 | Flexible day swap / reschedule | Planning | P1 | 🟢 Ready | NOW | 7.50 | Move today's workout without corrupting weekly tracking |
-| NZ-004 | Sunday report card | Progress | P1 | 🟢 Ready | NOW | 5.00 | Weekly adherence, starts, mode mix, strength/cardio, encouragement |
-| NZ-006 | Home-gym equipment inventory UI | Personalization | P1 | 🟢 Ready | NOW | 5.00 | User can enable/disable owned equipment and changes persist |
-| NZ-007 | Better mobile/PWA behavior | Platform | P1 | 🟡 Define | NOW | 5.00 | Installable feel, safe areas, touch targets, persistent app state |
+| NZ-001 | Add dedicated rest timer to persistent workout timer | Workout UX | P1 | 🟢 Ready | NOW | 15.00 | Workout timer remains persistent and user can launch/pause/reset common rest intervals during strength work |
+| NZ-006 | Make home-gym inventory user-toggleable | Personalization | P1 | 🟢 Ready | NOW | 5.00 | User can enable/disable owned or currently available equipment; choices persist and feed workout generation |
+| NZ-007 | Further mobile/PWA polish beyond v7 baseline | Platform | P1 | 🟢 Ready | NOW | 5.00 | Installable feel, safe areas, touch targets, persistent app state |
 | NZ-015 | Workout substitution / swap exercise | Workout UX | P1 | 🟡 Define | NEXT | 5.00 | Swap an exercise while preserving workout intent and hip constraints |
 | NZ-014 | Cardio workout library expansion | Programming | P2 | 🟢 Ready | NEXT | 4.00 | Adds safe options for BikeErg, rower, Airdyne, Peloton Tread |
-| NZ-018 | Pre-op consistency score | Progress | P2 | 🟡 Define | NEXT | 4.00 | Rewards adherence and appropriate adaptation |
-| NZ-012 | Generator constraints: hip pain + energy | Workout engine | P1 | 🔵 Dependency | NEXT | 3.75 | FLARE/low-energy states materially change generated workout |
-| NZ-011 | Generator constraints: equipment | Workout engine | P1 | 🔵 Dependency | NEXT | 3.33 | Generator never prescribes unavailable equipment |
+| NZ-012 | Random generator constraint: hip pain + energy | Workout engine | P1 | 🟢 Ready | NEXT | 3.75 | FLARE/low-energy states materially change generated workout |
+| NZ-011 | Random generator constraint: enabled equipment | Workout engine | P1 | 🔵 Dependency | NEXT | 3.33 | Generator never prescribes unavailable equipment |
 | NZ-016 | Workout history detail view | Progress | P2 | 🟢 Ready | NEXT | 3.00 | Open a past session and see completed work / mode / metrics |
 | NZ-013 | Generator constraints: recent training | Workout engine | P2 | 🟡 Define | NEXT | 2.67 | Avoid undesirable repetition within defined recovery window |
-| NZ-010 | Random workout generator | Workout engine | P1 | 🔵 Dependency | NEXT | 2.50 | Generates viable workout from enabled equipment/readiness |
-| NZ-017 | Personal bests / trend highlights | Progress | P2 | 🟡 Define | NEXT | 2.00 | Positive progress surfaced without encouraging unsafe intensity |
-| NZ-022 | PM5 pairing instructions UX | Integration | P2 | 🟢 Ready | LATER | 3.00 | Clear step-by-step pairing help available in app |
 | NZ-024 | Write completed workouts to Apple Health | Integration | P1 | 🔵 Dependency | LATER | 2.50 | Completed NONZERO sessions appear correctly in Apple Health |
 | NZ-025 | Apple Fitness ring contribution | Integration | P1 | 🔵 Dependency | LATER | 2.50 | Eligible workout activity contributes through supported HealthKit path |
 | NZ-027 | Native iPhone shell / wrapper | Platform | P1 | 🟡 Define | LATER | 2.50 | Native layer supports HealthKit while preserving NONZERO UX |
-| NZ-023 | HealthKit architecture | Integration | P1 | 🟡 Define | LATER | 2.14 | Choose native wrapper/app approach and data model |
-| NZ-021 | PM5 metric capture | Integration | P2 | 🔵 Dependency | LATER | 1.67 | Save useful erg metrics into NONZERO workout history |
-| NZ-020 | PM5 pairing architecture | Integration | P2 | 🟡 Define | LATER | 1.60 | Technical spike documents viable connection approach |
+| NZ-023 | Native HealthKit architecture and migration layer | Integration | P1 | 🟡 Define | LATER | 2.14 | Choose native wrapper/app approach and data model |
+| NZ-021 | Automate PM5 metric capture beyond manual/experimental v7 capture | Integration | P2 | 🔵 Dependency | LATER | 1.67 | Save useful erg metrics into NONZERO workout history |
+| NZ-020 | Harden PM5 pairing architecture beyond experimental v7 path | Integration | P2 | 🟡 Define | LATER | 1.60 | Technical spike documents viable connection approach |
 | NZ-026 | Launch matching Apple workout | Integration | P2 | 🔵 Dependency | LATER | 1.43 | Minimize manual work to start corresponding workout on Apple devices |
 | NZ-028 | Apple Watch companion experience | Platform | P3 | ⚪ Later | LATER | 1.14 | Watch-first controls only after iPhone/native foundations are stable |
 

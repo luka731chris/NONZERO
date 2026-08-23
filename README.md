@@ -1,54 +1,47 @@
 # NONZERO Fitness App
 
-This repository is the **single authoritative source of truth** for the current NONZERO home-fitness / hip-prehab app and its product-development roadmap.
+This repository is the **single authoritative source of truth** for NONZERO: the current hip-friendly home-fitness app, its installable web-app files, and its dynamic product roadmap.
 
-## What is live today
+## Current application baseline
 
-`index.html` is the current implemented application baseline. It is a dependency-free browser app with local persistence and can be opened directly or hosted with GitHub Pages.
+**NONZERO v0.7.0** is restored directly from the latest verified pre-NONZERO application lineage: **`hip_prehab_v7_github_pages_ready`**. The recovery was performed on August 23, 2026 after an older app implementation was accidentally promoted during repository consolidation.
 
-Implemented baseline:
-- Today / Week / Progress / Settings tabs
-- Hip-pain and energy inputs
-- FULL / MINIMUM / FLARE modes
-- Strength A — Upper + Hinge
-- Strength B — Prehab + Upper
-- BikeErg aerobic and long sessions
-- Recovery session
-- Exercise completion tracking
-- Finish/save workout
-- Weekly summary and recent-session history
-- Program start date and reminder settings
+`index.html` is the canonical live app. It preserves the v7 functionality and adds NONZERO naming, black/gold branding, iOS/PWA icon assets, and an explicit build marker in Settings.
+
+### Implemented today
+
+- Today / Week / Progress / Equipment / Settings experience
+- Hip-friendly Strength A and Strength B programming
+- BikeErg aerobic, long-cardio, recovery and flare-safe programming
+- FULL / MINIMUM / FLARE plus rescue/random workout paths
+- Wheel-style hip-pain and energy readiness controls
+- Recommendation logic that considers pain, energy and recent workout feedback
+- Choose-another-day session substitution
+- Hip-aware random workout generator
+- Persistent active-workout timer
+- Live workout metrics panel
+- Exercise completion and workout saving
+- PM5 / ErgData manual metric capture plus experimental browser FTMS path
+- Sunday report card and week-over-week observations
+- Hip-replacement countdown with preparation phases
+- Milestones, pre-op personal records and prehab scoring
+- Post-workout hip/effort reflection
+- Home-gym equipment inventory display
 - Export/import/reset progress
-- LocalStorage persistence using `hipPrehabV2`
-
-## Product directions preserved in the backlog
-
-The repository retains the current development direction for:
-- Home-gym equipment inventory
-- Hip-friendly programming
-- A/B strength workouts
-- Cardio library
-- Random/adaptive workout generator
-- Persistent workout/rest timers
-- Polished pain and energy controls
-- Sunday report card
-- Hip-replacement countdown
-- PM5 integration concepts
-- Apple Health / HealthKit integration
-- Workout launching on Apple devices
-- Apple Fitness ring contribution
-- Flexible day swapping / rescheduling
+- LocalStorage persistence using the historical `hipPrehabV2` key so existing browser data remains compatible
+- PWA manifest + service worker
+- iOS Home Screen metadata and NONZERO icon assets
 
 ## Dynamic roadmap system
 
 The roadmap is generated, not hand-maintained.
 
 - `BACKLOG.json` — **product-planning source of truth**
-- `ROADMAP.md` — generated, human-readable roadmap; do not edit manually
-- `scripts/build-roadmap.js` — recalculates scores, sorts priorities, and regenerates the roadmap
-- `scripts/validate-backlog.js` — validates backlog structure and scoring inputs
-- `.github/workflows/roadmap.yml` — automatically rebuilds and commits the roadmap when backlog inputs change
-- `.github/workflows/quality.yml` — validates backlog + generated roadmap on pushes and pull requests
+- `ROADMAP.md` — generated roadmap; do not edit manually
+- `scripts/build-roadmap.js` — scores, sorts, and regenerates the roadmap
+- `scripts/validate-backlog.js` — validates backlog data
+- `.github/workflows/roadmap.yml` — regenerates `ROADMAP.md` after backlog changes
+- `.github/workflows/quality.yml` — validates pushes and pull requests
 
 Priority formula:
 
@@ -56,32 +49,28 @@ Priority formula:
 Priority Index = (Value × Frequency) / (Effort + Dependency Risk)
 ```
 
-### Update the roadmap locally
+Use natural-language requests such as “add X,” “move Y to NOW,” or “raise Z to P1” as instructions to update **`BACKLOG.json`**, then regenerate `ROADMAP.md`.
+
+## Local checks
 
 ```bash
 npm run roadmap
 npm test
 ```
 
-### Update it conversationally
-
-A natural-language request such as:
-
-> Add automatic warm-up selection. High value, used most workouts, low-to-medium effort, no dependency. Put it in NOW.
-
-should be translated into a structured change to `BACKLOG.json`. Once the backlog is committed, GitHub automatically regenerates `ROADMAP.md`.
-
 ## GitHub Pages
 
-A Pages deployment workflow is included at `.github/workflows/pages.yml`.
+`.github/workflows/pages.yml` deploys the repository to GitHub Pages.
 
-For a new repository:
-1. Upload this repository with the files at the repository root.
+For a new or corrected repository:
+
+1. Put the **contents of this folder directly at the GitHub repository root**.
 2. Use `main` as the default branch.
-3. In **Settings → Pages**, choose **GitHub Actions** as the source if GitHub has not already selected it.
-4. Run the **Deploy NONZERO to GitHub Pages** workflow once, or push a change to `index.html`.
+3. In **Settings → Pages**, choose **GitHub Actions** as the deployment source.
+4. Push/commit the files. The Pages workflow will deploy `index.html` plus its PWA assets.
+5. On iPhone, open the deployed URL in Safari and use **Share → Add to Home Screen**.
 
-After that, changes to `index.html` on `main` deploy automatically.
+Because this recovery changes the service-worker cache name, the corrected build should replace the older cached web-app files after redeployment. If an existing Home Screen copy still looks old, close it completely, open the GitHub Pages URL once in Safari, refresh, then relaunch the Home Screen app.
 
 ## Repository structure
 
@@ -89,37 +78,39 @@ After that, changes to `index.html` on `main` deploy automatically.
 NONZERO-Fitness-App/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   │   └── feature_request.yml
 │   └── workflows/
-│       ├── pages.yml
-│       ├── quality.yml
-│       └── roadmap.yml
+├── assets/
+│   ├── nonzero-icon-180.png
+│   ├── nonzero-icon-192.png
+│   ├── nonzero-icon-512.png
+│   └── nonzero-icon-1024.png
 ├── docs/
+│   ├── HIP-PREHAB-V7-RECOVERY.md
 │   ├── PROJECT-HANDOFF.md
 │   ├── SOURCE-OF-TRUTH.md
 │   └── original-prehab-program.html
 ├── scripts/
 │   ├── build-roadmap.js
 │   └── validate-backlog.js
-├── .gitignore
 ├── BACKLOG.json
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── index.html
+├── manifest.webmanifest
 ├── package.json
 ├── README.md
 ├── ROADMAP.md
+├── sw.js
 └── TRANSFER-INSTRUCTIONS.md
 ```
 
-## Home-gym inventory currently preserved
+## Home-gym inventory preserved in the app
 
 - Concept2 Rower with PM5
 - Concept2 BikeErg with PM5
 - Schwinn Airdyne
 - Peloton Tread
-- Squat rack and barbell
-- ~350 lb bumper plates
+- Squat rack + barbell + ~350 lb bumper plates
 - 53 lb kettlebell ×1
 - 35 lb kettlebell ×2
 - 12 lb kettlebell ×1
@@ -132,6 +123,4 @@ NONZERO-Fitness-App/
 - Long resistance bands
 - Hip mini-bands
 
-## Source-of-truth rules
-
-See [`docs/SOURCE-OF-TRUTH.md`](docs/SOURCE-OF-TRUTH.md). The key rule is simple: **edit `BACKLOG.json`; generate `ROADMAP.md`; treat `index.html` as the current implemented app baseline.**
+See `docs/SOURCE-OF-TRUTH.md` for the rules that prevent future version drift.

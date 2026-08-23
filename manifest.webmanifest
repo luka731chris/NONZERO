@@ -1,10 +1,14 @@
 {
-  "name": "Chris's Hip Prehab Training V7",
-  "short_name": "Prehab",
+  "name": "NONZERO — Hip Prehab & Fitness",
+  "short_name": "NONZERO",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "description": "Adaptive hip prehab with live session metrics, PM5 companion tracking, persistent timers, milestones, and post-workout feedback."
+  "background_color": "#090909",
+  "theme_color": "#0b0b0b",
+  "description": "Adaptive hip-friendly training built around consistency: readiness, random workouts, persistent timers, PM5 companion tracking, progress and pre-op preparation.",
+  "icons": [
+    {"src":"./assets/nonzero-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./assets/nonzero-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
 }
