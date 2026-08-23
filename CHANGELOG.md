@@ -1,3 +1,10 @@
+## v0.8.1 — Hard-reset deployment
+- Unregisters prior service workers on first load.
+- Deletes prior Cache Storage entries.
+- Forces a one-time hard-reset reload.
+- Uses network-only navigation in the replacement service worker.
+- Adds a temporary deployment verification banner.
+
 # Changelog
 
 ## v0.8.0 — 2026-08-23
