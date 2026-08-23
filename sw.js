@@ -1,4 +1,4 @@
-const CACHE='nonzero-v0.7.0-20260823';
+const CACHE='nonzero-v0.7.1-20260823';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/nonzero-icon-180.png','./assets/nonzero-icon-192.png','./assets/nonzero-icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));

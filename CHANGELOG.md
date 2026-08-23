@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.1 — 2026-08-23
+- Broadened GitHub Pages deployment triggers to all runtime app assets.
+- Bumped service-worker cache to force stale iOS/PWA caches to refresh.
+- Added a temporary top-right v0.7.1 build badge for deployment verification.
+
+
 ## Transfer baseline — 2026-08-23
 
 - Recovered the latest implemented single-file workout app.
