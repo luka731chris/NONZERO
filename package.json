@@ -1,0 +1,12 @@
+{
+  "name": "nonzero-fitness-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "NONZERO home fitness app with generated product roadmap and backlog automation",
+  "scripts": {
+    "roadmap": "node scripts/build-roadmap.js",
+    "roadmap:check": "node scripts/build-roadmap.js --check",
+    "backlog:validate": "node scripts/validate-backlog.js",
+    "test": "npm run backlog:validate && npm run roadmap:check"
+  }
+}
