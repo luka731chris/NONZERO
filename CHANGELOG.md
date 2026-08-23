@@ -1,9 +1,12 @@
 # Changelog
 
-## v0.7.1 — 2026-08-23
-- Broadened GitHub Pages deployment triggers to all runtime app assets.
-- Bumped service-worker cache to force stale iOS/PWA caches to refresh.
-- Added a temporary top-right v0.7.1 build badge for deployment verification.
+## v0.8.0 — 2026-08-23
+
+- Restored the exact full-feature hip-prehab v7 application as the canonical NONZERO app baseline.
+- Preserved equipment inventory, adaptive readiness wheels, alternate-day workouts, random workout generation, persistent workout/rest timers, Sunday report card, hip-replacement countdown, PM5 metrics, milestones/PRs, and post-workout reflection.
+- Added unmistakable v0.8.0 build markers.
+- Changed service-worker navigation handling to network-first and bumped the cache namespace to eliminate stale deployed HTML.
+- Retained the dynamic backlog/roadmap and GitHub automation infrastructure.
 
 
 ## Transfer baseline — 2026-08-23

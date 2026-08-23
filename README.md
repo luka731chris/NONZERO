@@ -1,4 +1,7 @@
-# NONZERO Fitness App
+# NONZERO
+
+**Canonical build: v0.8.0 — recovered full-feature hip-prehab v7+ baseline (2026-08-23).**
+
 
 This repository is the **single authoritative source of truth** for NONZERO: the current hip-friendly home-fitness app, its installable web-app files, and its dynamic product roadmap.
 
