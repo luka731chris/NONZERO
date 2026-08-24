@@ -1,3 +1,5 @@
+> **Canonical deployment:** NONZERO v0.8.2 CLEAN BRANCH BUILD. GitHub Pages must use **Deploy from a branch → main → /(root)**. This release intentionally has no custom Pages workflow and no service worker.
+
 # NONZERO
 
 **Canonical build: v0.8.0 — recovered full-feature hip-prehab v7+ baseline (2026-08-23).**

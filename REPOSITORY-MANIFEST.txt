@@ -1,29 +1,25 @@
-NONZERO v0.7.0 — Corrected GitHub Master
-Build: 2026-08-23
-Canonical app lineage: hip_prehab_v7_github_pages_ready
-
-SOURCE OF TRUTH
-- index.html                  Current implemented app
-- manifest.webmanifest       PWA metadata
-- sw.js                      Service worker / cache version
-- BACKLOG.json               Product backlog database
-- ROADMAP.md                 Generated roadmap
-
-RECOVERY / CONTINUITY
-- docs/HIP-PREHAB-V7-RECOVERY.md
-- docs/SOURCE-OF-TRUTH.md
-- docs/PROJECT-HANDOFF.md
-- CHANGELOG.md
-
-AUTOMATION
-- scripts/build-roadmap.js
-- scripts/validate-backlog.js
-- .github/workflows/roadmap.yml
-- .github/workflows/quality.yml
-- .github/workflows/pages.yml
-
-IOS / PWA ICONS
-- assets/nonzero-icon-180.png
-- assets/nonzero-icon-192.png
-- assets/nonzero-icon-512.png
-- assets/nonzero-icon-1024.png
+./.github/ISSUE_TEMPLATE/feature_request.yml
+./.github/workflows/quality.yml
+./.github/workflows/roadmap.yml
+./.gitignore
+./BACKLOG.json
+./CHANGELOG.md
+./CONTRIBUTING.md
+./DEPLOY-THIS-REPO.md
+./README.md
+./REPOSITORY-MANIFEST.txt
+./ROADMAP.md
+./TRANSFER-INSTRUCTIONS.md
+./assets/nonzero-icon-1024.png
+./assets/nonzero-icon-180.png
+./assets/nonzero-icon-192.png
+./assets/nonzero-icon-512.png
+./docs/HIP-PREHAB-V7-RECOVERY.md
+./docs/PROJECT-HANDOFF.md
+./docs/SOURCE-OF-TRUTH.md
+./docs/original-prehab-program.html
+./index.html
+./manifest.webmanifest
+./package.json
+./scripts/build-roadmap.js
+./scripts/validate-backlog.js

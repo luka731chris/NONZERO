@@ -125,8 +125,8 @@ textarea{min-height:72px;resize:vertical}
 </style>
 </head>
 <body>
-<div id="deploymentVerification" style="position:fixed;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top));z-index:99999;background:#f5c400;color:#050505;border:3px solid #050505;border-radius:14px;padding:10px 14px;text-align:center;font:900 14px/1.2 -apple-system,BlinkMacSystemFont,Arial,sans-serif;letter-spacing:.03em;box-shadow:0 8px 30px rgba(0,0,0,.35)">DEPLOYMENT VERIFIED • NONZERO v0.8.1 HARD RESET</div>
-<div id="buildStamp">NONZERO v0.8.1 • HARD RESET</div>
+<div id="deploymentVerification" style="position:fixed;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top));z-index:99999;background:#f5c400;color:#050505;border:3px solid #050505;border-radius:14px;padding:10px 14px;text-align:center;font:900 14px/1.2 -apple-system,BlinkMacSystemFont,Arial,sans-serif;letter-spacing:.03em;box-shadow:0 8px 30px rgba(0,0,0,.35)">NONZERO v0.8.2 • CLEAN BRANCH BUILD • FULL RECOVERED APP</div>
+<div id="buildStamp">NONZERO v0.8.2 • CLEAN BRANCH BUILD</div>
 <div class="wrap">
   <section class="card hero">
     <span class="badge">NON-ZERO DAY</span>
@@ -387,7 +387,7 @@ textarea{min-height:72px;resize:vertical}
 
     <section class="card" id="buildInfoCard">
       <h2>Build information</h2>
-      <p><b>NONZERO v0.8.1</b></p>
+      <p><b>NONZERO v0.8.2</b></p>
       <p class="small">Recovered from the full hip-prehab v7 feature build and promoted as the canonical post-v7 baseline · build 2026.08.23.</p>
     </section>
 
@@ -1044,24 +1044,12 @@ document.getElementById('rest60Btn').addEventListener('click',()=>startRest(60))
 document.getElementById('rest90Btn').addEventListener('click',()=>startRest(90));
 document.getElementById('randomBtn').addEventListener('click',generateRandomWorkout);
 renderInventory();
+// CLEAN BRANCH BUILD: remove any legacy workers/caches, but do not install a new worker.
 if('serviceWorker' in navigator){
-(async()=>{
-  try{
-    const regs=await navigator.serviceWorker.getRegistrations();
-    await Promise.all(regs.map(r=>r.unregister()));
-    if('caches' in window){
-      const keys=await caches.keys();
-      await Promise.all(keys.map(k=>caches.delete(k)));
-    }
-    const u=new URL(location.href);
-    if(!u.searchParams.has('hardreset')){
-      u.searchParams.set('hardreset','081');
-      location.replace(u.toString());
-      return;
-    }
-    setTimeout(()=>navigator.serviceWorker.register('./sw.js?v=081').catch(()=>{}),1200);
-  }catch(e){console.warn('NONZERO hard reset cleanup failed',e)}
-})();
+  navigator.serviceWorker.getRegistrations().then(regs=>Promise.all(regs.map(r=>r.unregister()))).catch(()=>{});
+}
+if('caches' in window){
+  caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).catch(()=>{});
 }
 renderToday();renderWeek();renderProgress();renderPRs();renderMilestones();renderCountdown();restoreTimer();updateLiveMetrics();
 </script>

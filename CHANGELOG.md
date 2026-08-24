@@ -1,3 +1,13 @@
+# Changelog
+
+## v0.8.2 — Clean branch deployment
+- Preserves the full recovered workout application.
+- Removes the custom GitHub Pages deployment workflow.
+- Removes the service worker and all new offline app-shell caching.
+- Unregisters/deletes legacy workers and caches on load.
+- Adds an unmistakable v0.8.2 clean-build verification banner.
+- Intended exclusively for GitHub Pages: `main` → `/(root)`.
+
 ## v0.8.1 — Hard-reset deployment
 - Unregisters prior service workers on first load.
 - Deletes prior Cache Storage entries.
