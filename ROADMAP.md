@@ -2,7 +2,7 @@
 
 > **Purpose:** Keep one lightweight, GitHub-native source of truth for what NONZERO should build next, why it matters, and what is already complete.
 >
-> **Baseline:** **NONZERO v3.3 (2026-08-29)** is the current implemented baseline: `index.html` phone/PWA + `/wall/` 4K web display + native Roku Wall/screensaver + optional Cloudflare Worker/KV shared state.
+> **Baseline:** **NONZERO v4.0 (2026-08-29)** is the current implemented baseline: `index.html` phone/PWA + `/wall/` 4K web display + native Roku Wall/screensaver + optional Cloudflare Worker/KV shared state.
 
 ---
 
@@ -176,6 +176,7 @@ These are already present in `index.html` and should not be re-added as backlog 
 | NZ-036 | Zero-hardware Wall home + active sync | Wall / Platform | P1 | ✅ Done | NOW | Wall remains a read-only shared-state display and refreshes automatically during active workouts |
 | NZ-037 | Native Roku Wall + screensaver | Wall / Platform | P1 | ✅ Done | NOW | Native Roku SceneGraph client renders shared state as app + selectable screensaver; Home remains Roku-controlled |
 | NZ-038 | Roku foreground automation experiment | Wall / Platform | P3 | 🟡 Define | LATER | Explore supported local-launch/deep-link paths without forcibly interrupting media or relying on unsupported hacks |
+| NZ-039 | 6-digit Roku pairing | Wall / Platform | P1 | ✅ Done | NOW | Phone generates 5-minute one-time code; Roku exchanges it for a read-only wall token; no URL/key typing on TV |
 | NZ-030 | Live PM5 telemetry on Wall Mode | Wall / Integration | P2 | 🔵 Dependency | LATER | Active Concept2 workout can surface live time, pace/power, meters and calories on the 4K wall |
 | NZ-031 | Wall ambient rotation / milestone scenes | Wall / Motivation | P2 | 🟡 Define | NEXT | Idle wall rotates restrained motivational/progress scenes without becoming visually noisy |
 | NZ-032 | Cloud state conflict/version hardening | Platform | P2 | 🟡 Define | NEXT | State API supports revision/ETag semantics before any second writable client is introduced |
@@ -349,3 +350,16 @@ After each meaningful development session:
 6. Update `CHANGELOG.md` when implementation changes.
 
 This file is the **product-planning source of truth**. `README.md` describes the product; `CHANGELOG.md` describes what changed; `ROADMAP.md` describes what should happen next and why.
+
+## Shipped in v4.0
+- Performance Wall visual redesign.
+- Six-digit Roku pairing retained as the default setup path.
+- Two-second cloud state refresh + local live-timer interpolation.
+- Performance telemetry contract for HR / watts / cadence / distance.
+- 4K-ready artwork pipeline and browser 4K Wall.
+
+## Next Wall priorities
+- Direct low-latency PM5 telemetry bridge for sub-second Concept2 metrics.
+- Apple Watch / HealthKit heart-rate relay to the active workout state.
+- Animated pre-workout countdown and post-workout achievement sequence.
+- Configurable idle/screen-saver rotation with trends and weekly targets.

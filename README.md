@@ -1,3 +1,9 @@
+# NONZERO v4
+
+NONZERO v4 adds the Performance Wall: a premium garage-TV experience with six-digit pairing, automatic READY/LIVE/COMPLETE states, live workout timing, and a Peloton-inspired telemetry layout.
+
+**New in v4.0:** the Roku/garage Wall is now a premium performance display with automatic READY/LIVE/COMPLETE states, a large live timer, current-movement focus, performance rail, animated progress, and the v3.4 six-digit pairing flow preserved underneath it.
+
 # NONZERO Fitness
 
 NONZERO is a local-first fitness consistency app with FULL / MINIMUM / FLARE workout modes and a dedicated 4K garage Wall Mode.

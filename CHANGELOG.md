@@ -1,3 +1,24 @@
+# NONZERO Changelog
+
+## v4.0 — Performance Wall
+- Rebuilt Roku Wall into a premium performance dashboard with READY/LIVE/COMPLETE/PAIR states.
+- Added large live timer, current-movement focus, performance telemetry rail, KPI strip, progress glow, ambient animation, and live-state pulse.
+- Increased Wall cloud refresh from 5 seconds to 2 seconds and added local 1-second timer interpolation.
+- Added optional live telemetry contract for HR, watts, cadence, and distance.
+- Preserved v3.4 one-time 6-digit pairing and read-only Wall-token security.
+- Added 4K source background asset and FHD-optimized Roku composition for 4K-TV scaling.
+- Rebuilt browser Wall to match the v4 design and use six-digit pairing.
+
+# NONZERO v3.4 — 6-Digit Roku Pairing
+
+- Replaced Roku Worker URL + private-key entry with a single 6-digit pairing code.
+- Added phone-side **Generate 6-digit pairing code** control.
+- Added Worker `/pair/start` and `/pair/claim` one-time exchange endpoints.
+- Roku now receives a random wall-only token; the phone private sync key is never exposed to the TV.
+- Wall tokens are read-only; Worker rejects state writes authenticated with a wall token.
+- Pair codes expire after 5 minutes and are single-use.
+- Updated Roku status/error messaging so pairing, cloud-unavailable, and no-state conditions are distinct.
+
 # NONZERO v3.3.1 — Sync Key Visibility
 
 - Added **Show / Hide** control beside the Cloud Sync private key.

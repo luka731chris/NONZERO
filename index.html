@@ -204,7 +204,12 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <button id="syncNowBtn">Sync now</button>
       </div>
       <div class="syncstatus"><span id="syncDot" class="syncdot"></span><span id="syncStatus">Local only</span></div>
-      <p class="small">Use the same Worker URL and private key once on the garage Wall Mode setup screen. The key is stored only in each device's browser.</p>
+      <div class="settingblock" style="margin-top:18px">
+        <label class="small">Roku Wall pairing</label>
+        <button id="pairRokuBtn" type="button">Generate 6-digit pairing code</button>
+        <div id="rokuPairCode" class="callout hidden" style="margin-top:10px;text-align:center;font-size:34px;font-weight:900;letter-spacing:.18em"></div>
+        <p id="rokuPairHelp" class="small">On the Roku Wall, press * and enter only the 6-digit code shown here. No Worker URL or private key is entered on the TV.</p>
+      </div>
     </section>
     <section class="card">
       <h2>Data backup</h2>
@@ -328,6 +333,25 @@ async function pullCloudState({force=false}={}){
 function makeSyncKey(){
  const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
  return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+}
+function makePairCode(){
+ const a=new Uint32Array(1);crypto.getRandomValues(a);
+ return String(a[0]%1000000).padStart(6,'0');
+}
+async function createRokuPairCode(){
+ saveCloudConfig();
+ const codeEl=document.getElementById('rokuPairCode'),help=document.getElementById('rokuPairHelp');
+ if(!cloudReady()){setSyncStatus('Configure cloud sync first','err');help.textContent='Add the Worker URL and private sync key on this phone first, then generate the Roku code.';return}
+ const code=makePairCode();
+ try{
+   help.textContent='Creating one-time Roku pairing code…';
+   const res=await fetch(cloudConfig.endpoint+'/pair/start',{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:JSON.stringify({code}),cache:'no-store'});
+   if(!res.ok) throw new Error('Pair '+res.status);
+   const data=await res.json();
+   codeEl.textContent=code;codeEl.classList.remove('hidden');
+   const mins=Math.max(1,Math.round(Number(data.expiresIn||300)/60));
+   help.textContent='Enter this code on the Roku Wall. It expires in '+mins+' minutes and works once.';
+ }catch(err){console.warn(err);codeEl.classList.add('hidden');help.textContent='Could not create a pairing code. Deploy the v4 Worker, then try again.';setSyncStatus('Pairing unavailable','err')}
 }
 function localDateStr(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
 function weekdayIndex(){return new Date().getDay()}
@@ -587,6 +611,7 @@ document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
  const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
 });
 document.getElementById('syncNowBtn').addEventListener('click',async()=>{saveCloudConfig();await pullCloudState({force:false});await pushCloudState()});
+document.getElementById('pairRokuBtn').addEventListener('click',createRokuPairCode);
 document.getElementById('wallLaunchBtn').addEventListener('click',()=>{location.href='./wall/'});
 setSyncStatus(cloudReady()?'Cloud configured':'Local only',cloudReady()?'ok':'');
 

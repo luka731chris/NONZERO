@@ -1,57 +1,30 @@
-# NONZERO v3.3 — Roku Wall + Screensaver Setup
+# NONZERO Wall v4 — Roku Setup
 
-## What this release does
+## 1. Deploy the cloud update
 
-The Roku client is a native SceneGraph application that reads the same Cloudflare Worker `/state` document used by the phone app and web Wall. It is read-only.
+Deploy `cloud/worker.js` to the existing Cloudflare Worker before installing the Roku v4 package. Keep the existing `NONZERO_STATE` KV binding. No workout-data migration is required.
 
-- Launch the **NONZERO Wall** tile for the persistent garage landing view.
-- Press **Home** at any time to return to normal Roku Home / Netflix / other apps.
-- Select **NONZERO Wall** as the Roku screensaver so idle Roku sessions fall back to NONZERO automatically.
-- While NONZERO is foregrounded, state refreshes every 5 seconds and changes automatically as the phone starts/updates/completes a workout.
-- Press `*` inside NONZERO Wall to re-enter pairing settings.
+## 2. Sideload the Roku package
 
-## 1. Enable Roku developer mode
+Use the Roku developer installer and upload:
 
-On the Roku remote, press:
+`roku/NONZERO-Roku-v4.0-sideload.zip`
 
-`Home ×3 → Up ×2 → Right → Left → Right → Left → Right`
+The public Worker endpoint is already compiled into the app. The private sync key is not.
 
-Accept the developer agreement, create a developer password, and note the Roku's IP/installer URL.
+## 3. Pair with six digits
 
-## 2. Sideload the Roku build
+1. On the phone, open NONZERO → Settings → **Roku Wall pairing**.
+2. Tap **Generate 6-digit pairing code**.
+3. On the Roku Wall, press `*`.
+4. Enter the six digits and choose **Pair Wall**.
 
-1. From a computer/phone on the same network, open the Roku developer installer URL.
-2. Sign in as `rokudev` with the password you created.
-3. Upload `roku/NONZERO-Roku-v3.3-sideload.zip` from this release.
-4. Install it. Roku should launch NONZERO Wall immediately.
+The code expires after five minutes and can be claimed once. The Worker exchanges it for a long random read-only Wall token, which the Roku stores in its registry.
 
-> Roku development devices permit only one sideloaded development app at a time. Installing another sideloaded app replaces this development build.
+## 4. Normal use
 
-## 3. Pair NONZERO
+Leave NONZERO Wall open. It refreshes shared workout state every two seconds and updates the active workout timer locally every second. The UI switches automatically between READY, LIVE, and COMPLETE without Roku remote interaction.
 
-On first launch, press `OK` or `*`.
+## 5. Re-pair
 
-Enter:
-
-1. **Worker URL** — the same Cloudflare Worker URL configured in the phone app.
-2. **Private sync key** — the same private sync key configured in the phone app.
-
-The values are stored in the Roku app's local registry. The client then reads `GET <worker>/state` with `X-NONZERO-Key`.
-
-## 4. Make NONZERO your practical garage home
-
-Roku's system Home screen cannot be replaced by a third-party app. The intended interaction is:
-
-`NONZERO Wall → Home button → Roku Home / Netflix → launch NONZERO tile → Wall`
-
-Move the NONZERO tile to the first position on Roku Home for the fastest return.
-
-## 5. Make NONZERO the screensaver
-
-After installation, open Roku screensaver settings and choose **NONZERO Wall** as the active screensaver, then choose the desired idle delay.
-
-When Roku calls the app's `RunScreenSaver()` entry point, NONZERO renders the same shared Wall state in screensaver mode. Setup dialogs are disabled while running as a screensaver.
-
-## Current platform limitation
-
-Starting a workout on the phone does **not** forcibly interrupt Netflix or another foreground Roku app. When NONZERO is already foregrounded, the display updates automatically. If another Roku app is foregrounded, press Home and launch NONZERO when you want the workout dashboard visible.
+Press `*` at any time to pair the Wall again. Generate a fresh code in the phone app first.

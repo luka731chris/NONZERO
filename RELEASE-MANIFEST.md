@@ -1,29 +1,34 @@
-# NONZERO v3.3.1 — Release Manifest
+# NONZERO v4.0 — Performance Wall
 
-**Release date:** 2026-08-29  
-**Baseline:** v3.3 — Native Roku Wall + Screensaver
+Release date: 2026-08-29
 
-## Included
-- `index.html` — phone/PWA workout experience.
-- `wall/index.html` — 4K web Wall fallback.
-- `roku/` — native Roku SceneGraph Wall/screensaver source.
-- `roku/NONZERO-Roku-v3.3-sideload.zip` — upload this directly to Roku Development Application Installer.
-- `ROKU-SETUP.md` — developer-mode, sideload, pairing, screensaver, and daily-use instructions.
-- `cloud/worker.js` — shared-state API and Concept2 proxy.
-- `CLOUD-SYNC-SETUP.md` — Worker/KV shared-state setup.
-- `CONCEPT2-INTEGRATION.md` — Concept2 completed-workout bridge.
-- `ROADMAP.md` — NZ-036/NZ-037 shipped; Roku foreground automation remains an optional later experiment.
-- `CHANGELOG.md` — v3.3 release notes.
+## What ships
 
-## Roku architecture
-`Phone/PWA → Cloudflare Worker/KV ← Roku Wall / Roku screensaver`
+- `index.html` — phone/PWA app with one-time 6-digit Roku pairing.
+- `cloud/worker.js` — Cloudflare Worker supporting 6-digit pairing, read-only Wall tokens, shared state, and Concept2 proxy support.
+- `cloud/wrangler.toml.example` — Worker/KV binding example.
+- `roku/` — Roku SceneGraph Performance Wall source and packaged sideload ZIP.
+- `wall/index.html` — browser/mini-PC 4K Performance Wall using the same 6-digit pairing flow.
+- `ROKU-SETUP.md` — Roku deployment and pairing instructions.
+- `CLOUD-SYNC-SETUP.md` — Worker deployment and cloud-sync instructions.
+- `WALL-V4-DESIGN.md` — v4 visual architecture and telemetry contract.
+- `CHANGELOG.md`, `ROADMAP.md`, `README.md`, `CONCEPT2-INTEGRATION.md`.
 
-The Roku client is read-only and uses the same `X-NONZERO-Key` pairing secret as the web Wall. It does not require a Raspberry Pi, mini-PC, Fire TV, or separate home server.
+## v4 Wall highlights
 
-## Platform boundary
-Roku's OS Home screen remains Roku-controlled. NONZERO is the practical garage landing surface and selectable screensaver, with the Home button providing an immediate path back to Roku apps.
+- Peloton-style performance hierarchy with a large live timer, current movement, progress strip, performance rail, and KPI row.
+- Automatic visual states: READY, LIVE, COMPLETE, and PAIR.
+- 2-second cloud polling for much faster phone-to-wall state transitions.
+- Live timer interpolation on the Wall between cloud updates.
+- Optional telemetry fields for heart rate, power, cadence, and distance when they are present in `activeWorkout.liveMetrics`.
+- Animated ambient sweep, live-state breathing indicator, and progress glow.
+- 4K source background asset plus FHD Roku SceneGraph composition optimized for clean 4K-TV upscaling.
+- Six-digit pairing only; no Worker URL or private sync key entry on the Roku.
 
+## Deployment order
 
-## v3.3.1 patch
-- Cloud Sync settings now include a Show / Hide toggle for the private sync key.
-- The key remains masked by default; no cloud schema or Roku compatibility changes.
+1. Deploy `cloud/worker.js` to the existing NONZERO Cloudflare Worker.
+2. Publish the root app and `/wall/` files to GitHub Pages.
+3. Sideload `roku/NONZERO-Roku-v4.0-sideload.zip` to the Roku developer installer.
+4. In the phone app, open Settings → Roku Wall pairing → Generate 6-digit pairing code.
+5. On the Roku, press `*`, enter the six digits, and select **Pair Wall**.
