@@ -1,50 +1,33 @@
+# NONZERO Changelog
+
+## v3.3 — Roku Wall + Screensaver (2026-08-29)
+
+- Added native Roku SceneGraph Wall client under `roku/`.
+- Added `RunScreenSaver()` entry point so the same client can operate as the selected Roku screensaver.
+- Added first-launch Roku pairing using Worker URL + private sync key, stored in the Roku registry.
+- Roku client polls shared NONZERO state every 5 seconds and remains read-only.
+- Added Roku remote behavior: `*` opens pairing; Home exits naturally to Roku Home.
+- Added `ROKU-SETUP.md` and a ready-to-sideload Roku ZIP.
+- Retained web `/wall/` as a browser/fallback display.
+- Reframed dedicated kiosk hardware as optional rather than required.
+
+
+## v3.1 — Workout Controls + Metrics + Concept2 Bridge (2026-08-28)
+- Added persistent workout timer with Start/Pause.
+- Added **Clear timer** without clearing exercise completion.
+- Added **Restart workout** to clear today’s checkoffs/timer while preserving readiness inputs.
+- Added robust post-workout metrics: actual duration, RPE, post-workout pain/energy, distance, calories, pace, watts, cadence/stroke rate, HR, drag factor, and notes.
+- Added Concept2 completed-workout bridge through the existing Cloudflare Worker and Concept2 Online Logbook API.
+- Bumped shared-state schema to v4.
 # Changelog
 
-## v0.8.2 — Clean branch deployment
-- Preserves the full recovered workout application.
-- Removes the custom GitHub Pages deployment workflow.
-- Removes the service worker and all new offline app-shell caching.
-- Unregisters/deletes legacy workers and caches on load.
-- Adds an unmistakable v0.8.2 clean-build verification banner.
-- Intended exclusively for GitHub Pages: `main` → `/(root)`.
+## v3.0 — 2026-08-28 — 4K Wall + Shared Cloud State
 
-## v0.8.1 — Hard-reset deployment
-- Unregisters prior service workers on first load.
-- Deletes prior Cache Storage entries.
-- Forces a one-time hard-reset reload.
-- Uses network-only navigation in the replacement service worker.
-- Adds a temporary deployment verification banner.
-
-# Changelog
-
-## v0.8.0 — 2026-08-23
-
-- Restored the exact full-feature hip-prehab v7 application as the canonical NONZERO app baseline.
-- Preserved equipment inventory, adaptive readiness wheels, alternate-day workouts, random workout generation, persistent workout/rest timers, Sunday report card, hip-replacement countdown, PM5 metrics, milestones/PRs, and post-workout reflection.
-- Added unmistakable v0.8.0 build markers.
-- Changed service-worker navigation handling to network-first and bumped the cache namespace to eliminate stale deployed HTML.
-- Retained the dynamic backlog/roadmap and GitHub automation infrastructure.
-
-
-## Transfer baseline — 2026-08-23
-
-- Recovered the latest implemented single-file workout app.
-- Packaged it as a GitHub-ready repository with `index.html`.
-- Preserved the earlier prehab program under `docs/`.
-- Added a project handoff that separates implemented features from roadmap requests.
-
-## Repository consolidation — 2026-08-23
-
-- Consolidated the complete current NONZERO app into one GitHub-ready source-of-truth repository.
-- Added generated roadmap/backlog workflow with `BACKLOG.json` as the planning source of truth.
-- Added backlog validation and repository quality checks.
-- Added GitHub Pages deployment workflow for the web app.
-- Added source-of-truth and contribution documentation plus a GitHub feature-request template.
-
-## 2026-08-23 — v0.7.0 recovery
-
-- Restored the canonical app implementation from `hip_prehab_v7_github_pages_ready`.
-- Preserved recovered v7 readiness wheels, adaptive recommendations, alternate-day selection, random workouts, persistent workout timing, live metrics, Sunday report card, surgery countdown, PM5 concepts, milestones, PRs, prehab scoring, reflection, equipment inventory, and PWA support.
-- Added NONZERO naming, black/gold branding, iOS/PWA icon assets, explicit build identifier, and a new service-worker cache version.
-- Reconciled `BACKLOG.json` so recovered features are not incorrectly listed as unimplemented.
-- Added a recovery provenance document and stronger source-of-truth safeguards.
+- Added native 3840×2160-oriented `/wall/` dashboard for garage TV use.
+- Added distance-readable workout, progress, streak, week starts, BikeErg minutes, total starts, clock/date, and rotating NONZERO motivation.
+- Added Wall Mode launcher to phone app.
+- Added local-first shared-state architecture using a Cloudflare Worker + KV.
+- Added phone cloud configuration, secure random sync-key generation, manual sync, queued background sync, and offline fallback.
+- Added Wall Mode pairing and 10-second read-only cloud polling.
+- Added cloud setup documentation and deployable Worker source.
+- Preserved `hipPrehabV2` local storage compatibility and existing session history.
