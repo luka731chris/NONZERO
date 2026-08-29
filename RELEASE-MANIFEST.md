@@ -1,4 +1,4 @@
-# NONZERO v3.3 — Release Manifest
+# NONZERO v3.3.1 — Release Manifest
 
 **Release date:** 2026-08-29  
 **Baseline:** v3.3 — Native Roku Wall + Screensaver
@@ -22,3 +22,8 @@ The Roku client is read-only and uses the same `X-NONZERO-Key` pairing secret as
 
 ## Platform boundary
 Roku's OS Home screen remains Roku-controlled. NONZERO is the practical garage landing surface and selectable screensaver, with the Home button providing an immediate path back to Roku apps.
+
+
+## v3.3.1 patch
+- Cloud Sync settings now include a Show / Hide toggle for the private sync key.
+- The key remains masked by default; no cloud schema or Roku compatibility changes.

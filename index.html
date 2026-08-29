@@ -56,7 +56,7 @@ textarea{min-height:72px;resize:vertical}
 .syncdot{width:9px;height:9px;border-radius:50%;background:#64748b;display:inline-block;flex:0 0 auto}
 .syncdot.ok{background:var(--green)} .syncdot.busy{background:var(--yellow)} .syncdot.err{background:var(--red)}
 input[type=text],input[type=password],input[type=url]{width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:11px}
-.settingblock{margin:12px 0}.settingblock label{display:block;margin-bottom:5px}
+.settingblock{margin:12px 0}.settingblock label{display:block;margin-bottom:5px}.secretrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.secretrow button{white-space:nowrap;padding:11px 14px}
 .wallLaunch{margin-top:10px}
 .timerpanel{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px;margin:12px 0}.timerreadout{font-size:34px;font-variant-numeric:tabular-nums;font-weight:850;letter-spacing:.5px}.timerbuttons{display:flex;gap:6px;flex-wrap:wrap}.timerbuttons button{padding:9px 11px;font-size:12px}.workoutactions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.postmetrics{margin-top:14px;border-top:1px solid #253042;padding-top:14px}.metricsgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metricsgrid .wide{grid-column:1/-1}.field label{display:block;margin:0 0 5px;font-size:12px;color:var(--muted)}.field input,.field select,.field textarea{width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:11px}.ergbar{display:flex;gap:8px;align-items:center;margin:10px 0}.ergbar button{flex:1}.ergstatus{font-size:12px;color:var(--muted);margin-top:6px}
 @media(max-width:540px){h1{font-size:24px}.modegrid{grid-template-columns:1fr}.grid3{grid-template-columns:repeat(3,1fr)}.metric b{font-size:21px}.row{flex-direction:column}}
@@ -197,7 +197,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       </div>
       <div class="settingblock">
         <label class="small" for="syncKey">Private sync key</label>
-        <input id="syncKey" type="password" placeholder="Generate or paste your shared key">
+        <div class="secretrow"><input id="syncKey" type="password" autocomplete="off" spellcheck="false" placeholder="Generate or paste your shared key"><button id="toggleSyncKeyBtn" type="button" class="secondary" aria-pressed="false" aria-label="Show private sync key">Show</button></div>
       </div>
       <div class="row">
         <button id="generateSyncKeyBtn">Generate key</button>
@@ -575,6 +575,14 @@ document.getElementById('cloudEndpoint').value=cloudConfig.endpoint||'';
 document.getElementById('syncKey').value=cloudConfig.syncKey||'';
 document.getElementById('cloudEndpoint').addEventListener('change',()=>{saveCloudConfig();pullCloudState()});
 document.getElementById('syncKey').addEventListener('change',()=>{saveCloudConfig();pullCloudState()});
+document.getElementById('toggleSyncKeyBtn').addEventListener('click',()=>{
+ const field=document.getElementById('syncKey'),btn=document.getElementById('toggleSyncKeyBtn');
+ const showing=field.type==='text';
+ field.type=showing?'password':'text';
+ btn.textContent=showing?'Show':'Hide';
+ btn.setAttribute('aria-pressed',String(!showing));
+ btn.setAttribute('aria-label',(showing?'Show':'Hide')+' private sync key');
+});
 document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
  const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
 });

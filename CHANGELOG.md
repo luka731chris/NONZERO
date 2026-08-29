@@ -1,3 +1,9 @@
+# NONZERO v3.3.1 — Sync Key Visibility
+
+- Added **Show / Hide** control beside the Cloud Sync private key.
+- Private key remains masked by default and storage/sync behavior is unchanged.
+- Added accessible pressed-state and label updates for the visibility control.
+
 # NONZERO Changelog
 
 ## v3.3 — Roku Wall + Screensaver (2026-08-29)
