@@ -2,7 +2,7 @@
 
 > **Purpose:** Keep one lightweight, GitHub-native source of truth for what NONZERO should build next, why it matters, and what is already complete.
 >
-> **Baseline:** **NONZERO v4.0 (2026-08-29)** is the current implemented baseline: `index.html` phone/PWA + `/wall/` 4K web display + native Roku Wall/screensaver + optional Cloudflare Worker/KV shared state.
+> **Baseline:** **NONZERO v3.1 (2026-08-28)** is the current implemented baseline: `index.html` phone/PWA + `/wall/` 4K display + optional Cloudflare Worker/KV shared state.
 
 ---
 
@@ -155,8 +155,6 @@ These are already present in `index.html` and should not be re-added as backlog 
 - [x] **NZ-035 — Concept2 Logbook completed-workout bridge**
 - [x] Wall Mode read-only polling to avoid cross-device write conflicts
 - [x] Offline-first phone behavior with cloud fallback/recovery
-- [x] **NZ-036 — Zero-hardware Wall home behavior / faster active sync**
-- [x] **NZ-037 — Native Roku Wall + screensaver client**
 
 ### Active backlog
 
@@ -172,11 +170,7 @@ These are already present in `index.html` and should not be re-added as backlog 
 | NZ-033 | Workout restart + clear-timer controls | Workout UX | P1 | ✅ Done | NOW | Restart clears today’s checkoffs/timer; Clear timer resets only elapsed time |
 | NZ-034 | Robust post-workout metrics | Progress | P1 | ✅ Done | NOW | Save duration, RPE, post-pain/energy, erg metrics, HR and notes |
 | NZ-035 | Concept2 Logbook result bridge | Integration | P1 | ✅ Done | NOW | Import latest ErgData-synced Concept2 result through Worker without exposing token to browser |
-| NZ-029 | Optional external kiosk watchdog | Wall / Platform | P3 | ⚪ Later | LATER | Only needed if a future dedicated display host replaces native Roku/web clients |
-| NZ-036 | Zero-hardware Wall home + active sync | Wall / Platform | P1 | ✅ Done | NOW | Wall remains a read-only shared-state display and refreshes automatically during active workouts |
-| NZ-037 | Native Roku Wall + screensaver | Wall / Platform | P1 | ✅ Done | NOW | Native Roku SceneGraph client renders shared state as app + selectable screensaver; Home remains Roku-controlled |
-| NZ-038 | Roku foreground automation experiment | Wall / Platform | P3 | 🟡 Define | LATER | Explore supported local-launch/deep-link paths without forcibly interrupting media or relying on unsupported hacks |
-| NZ-039 | 6-digit Roku pairing | Wall / Platform | P1 | ✅ Done | NOW | Phone generates 5-minute one-time code; Roku exchanges it for a read-only wall token; no URL/key typing on TV |
+| NZ-029 | Wall kiosk auto-launch + watchdog | Wall / Platform | P2 | 🟢 Ready | NEXT | Garage PC boots directly into `/wall/`, recovers browser/display after restart, and exposes connection health |
 | NZ-030 | Live PM5 telemetry on Wall Mode | Wall / Integration | P2 | 🔵 Dependency | LATER | Active Concept2 workout can surface live time, pace/power, meters and calories on the 4K wall |
 | NZ-031 | Wall ambient rotation / milestone scenes | Wall / Motivation | P2 | 🟡 Define | NEXT | Idle wall rotates restrained motivational/progress scenes without becoming visually noisy |
 | NZ-032 | Cloud state conflict/version hardening | Platform | P2 | 🟡 Define | NEXT | State API supports revision/ETag semantics before any second writable client is introduced |
@@ -277,8 +271,6 @@ Keep durable product decisions here so future development does not accidentally 
 | 2026-08-28 | Use Concept2 Online Logbook API as the completed-workout bridge | ErgData already syncs to Logbook; Worker keeps Concept2 token out of the browser while direct PM5 remains the live-telemetry path |
 | 2026-08-28 | Use local-first Cloudflare Worker + KV for lightweight shared state | Keeps the phone functional offline while avoiding a home server or full database stack |
 | 2026-08-28 | Keep Wall Mode read-only initially | Eliminates avoidable multi-writer merge conflicts while the phone remains the workout control surface |
-| 2026-08-29 | Native Roku becomes preferred garage Wall client | Uses existing TV hardware; native app + screensaver consume the same read-only cloud state with no Pi/mini-PC dependency |
-| 2026-08-29 | Do not attempt to replace Roku system Home | Roku Home remains OS-controlled; NONZERO acts as the practical landing screen and idle screensaver |
 
 ---
 
@@ -351,15 +343,22 @@ After each meaningful development session:
 
 This file is the **product-planning source of truth**. `README.md` describes the product; `CHANGELOG.md` describes what changed; `ROADMAP.md` describes what should happen next and why.
 
-## Shipped in v4.0
-- Performance Wall visual redesign.
-- Six-digit Roku pairing retained as the default setup path.
-- Two-second cloud state refresh + local live-timer interpolation.
-- Performance telemetry contract for HR / watts / cadence / distance.
-- 4K-ready artwork pipeline and browser 4K Wall.
 
-## Next Wall priorities
-- Direct low-latency PM5 telemetry bridge for sub-second Concept2 metrics.
-- Apple Watch / HealthKit heart-rate relay to the active workout state.
-- Animated pre-workout countdown and post-workout achievement sequence.
-- Configurable idle/screen-saver rotation with trends and weekly targets.
+---
+
+## 2026-08-30 — ErgData-First Architecture Update
+
+### Shipped — Phone v3.4 + Worker v3 + Roku v4.3.1
+
+- ✅ ErgData is the sole PM5 Bluetooth recorder on Erg days.
+- ✅ iOS App automation can POST `/intent/erg/start` without foregrounding NONZERO.
+- ✅ Worker-created active session immediately overrides Wall schedule.
+- ✅ Session survives switching among iPhone apps because workout truth lives in cloud state, not a foreground JavaScript loop.
+- ✅ Worker cron reconciles a newly uploaded Concept2 result and completes the NONZERO session automatically.
+- ✅ Phone retains manual Start / Pause / Reset as fallback controls.
+- ✅ Roku v4.3.1 distinguishes ErgData automation sessions without falsely presenting Logbook data as live PM5 telemetry.
+- 🔵 True live PM5 metric relay remains a separate architecture spike; do not create a competing PM5 Bluetooth recorder inside NONZERO.
+
+### Durable decision
+
+**ErgData-first is the default Concept2 operating model.** On Erg days, optimize for one foreground app: ErgData. NONZERO should be triggerable by automation and operate as the persistent orchestration / Wall / history layer.
