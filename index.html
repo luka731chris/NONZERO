@@ -67,7 +67,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 </style>
 
 <script>
-/* NONZERO v3.10.2 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.11 — fail-safe BikeErg Shortcut controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -167,7 +167,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.10.2</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.11</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -438,7 +438,7 @@ const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
   startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
-if(!state._meta) state._meta={updatedAt:Date.now(),schema:7};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:8,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -447,9 +447,12 @@ let mode='full';
 let deferredPrompt=null;
 let syncTimer=null;
 let workoutTimerInterval=null;
+let cloudRevision=Number(state?._meta?.revision||0);
+let canonicalSyncInterval=null;
+let cloudPushInFlight=false;
 
 function save({sync=true}={}){
- state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:7};
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:8,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  if(sync) queueCloudPush();
 }
@@ -472,36 +475,85 @@ async function cloudRequest(method,body){
    method,headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},
    body:body?JSON.stringify(body):undefined,cache:'no-store'
  });
- if(!res.ok) throw new Error('Sync '+res.status);
- return res.status===204?null:res.json();
+ let data=null;try{data=await res.json()}catch{}
+ if(!res.ok){
+   const err=new Error(data?.error||('Sync '+res.status));err.status=res.status;err.data=data;throw err;
+ }
+ return data;
+}
+function applyCanonicalState(payload,{render=true}={}){
+ const remoteState=payload?.state;
+ if(!remoteState)return false;
+ state=remoteState;
+ cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
+ state._meta={...(state._meta||{}),schema:8,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
+ if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
+ if(!state.ergDataFirst)state.ergDataFirst={enabled:true};
+ if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+ if(render){
+   renderToday();renderWeek();renderProgress();renderTimer();
+   if(document.getElementById('startDate'))document.getElementById('startDate').value=state.startDate;
+   if(document.getElementById('reminderTime'))document.getElementById('reminderTime').value=state.reminderTime||'06:00';
+   if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();
+   renderPreop();
+ }
+ return true;
 }
 function queueCloudPush(){
- if(!cloudReady()) return;
+ if(!cloudReady())return;
  clearTimeout(syncTimer);
- syncTimer=setTimeout(pushCloudState,450);
+ syncTimer=setTimeout(()=>pushCloudState(),180);
 }
-async function pushCloudState(){
- if(!cloudReady()) return;
- try{setSyncStatus('Syncing…','busy');await cloudRequest('PUT',{state,updatedAt:state._meta?.updatedAt||Date.now()});setSyncStatus('Synced','ok')}
- catch(err){console.warn(err);setSyncStatus('Offline · saved locally','err')}
+async function pushCloudState({retry=true}={}){
+ if(!cloudReady()||cloudPushInFlight)return false;
+ cloudPushInFlight=true;
+ const snapshot=JSON.parse(JSON.stringify(state));
+ try{
+   setSyncStatus('Syncing…','busy');
+   const payload=await cloudRequest('PUT',{state:snapshot,baseRevision:cloudRevision});
+   applyCanonicalState(payload,{render:false});
+   setSyncStatus('Synced','ok');
+   return true;
+ }catch(err){
+   if(err.status===409 && err.data?.current){
+     const localAW=snapshot.activeWorkout,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout;
+     applyCanonicalState(remotePayload,{render:false});
+     const lp=Number(localAW?.progressUpdatedAt||0),rp=Number(remoteAW?.progressUpdatedAt||0);
+     if(localAW && lp>rp){
+       state.activeWorkout={...(state.activeWorkout||{}),mode:localAW.mode,checks:localAW.checks||[],pain:localAW.pain,energy:localAW.energy,progressUpdatedAt:lp,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
+       localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+       cloudPushInFlight=false;
+       if(retry)return pushCloudState({retry:false});
+     }
+     setSyncStatus('Synced · cloud reconciled','ok');
+     renderToday();renderWeek();renderProgress();renderTimer();
+     return false;
+   }
+   console.warn(err);setSyncStatus('Offline · saved locally','err');return false;
+ }finally{
+   cloudPushInFlight=false;
+ }
 }
 async function pullCloudState({force=false}={}){
- if(!cloudReady()) return false;
+ if(!cloudReady())return false;
  try{
    setSyncStatus('Checking cloud…','busy');
    const remote=await cloudRequest('GET');
-   const remoteState=remote?.state;
-   const remoteTime=Number(remote?.updatedAt||remoteState?._meta?.updatedAt||0);
+   if(!remote?.state){await pushCloudState();return true}
+   const remoteRev=Number(remote?.revision??remote.state?._meta?.revision??0);
+   const remoteTime=Number(remote?.updatedAt||remote.state?._meta?.updatedAt||0);
    const localTime=Number(state?._meta?.updatedAt||0);
-   if(remoteState && (force || remoteTime>localTime)){
-      state=remoteState;if(!state._meta)state._meta={updatedAt:remoteTime||Date.now(),schema:7};if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};if(!state.ergDataFirst)state.ergDataFirst={enabled:true};if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
-      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-      renderToday();renderWeek();renderProgress();renderTimer();setInterval(renderTimer,1000);setInterval(()=>{if(cloudReady()&&state.activeWorkout?.date===localDateStr()&&['active','paused'].includes(state.activeWorkout.status))pushCloudState()},5000);
-      document.getElementById('startDate').value=state.startDate;
-      document.getElementById('reminderTime').value=state.reminderTime||'06:00';if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();renderPreop();
-   } else if(!remoteState){await pushCloudState();return true}
+   if(force || remoteRev>cloudRevision || remoteTime>localTime)applyCanonicalState(remote,{render:true});
+   cloudRevision=Math.max(cloudRevision,remoteRev);
    setSyncStatus('Synced','ok');return true;
  }catch(err){console.warn(err);setSyncStatus('Offline · using local state','err');return false}
+}
+function startCanonicalSyncLoop(){
+ if(canonicalSyncInterval)clearInterval(canonicalSyncInterval);
+ canonicalSyncInterval=setInterval(()=>{
+   if(document.visibilityState==='visible'&&cloudReady())pullCloudState();
+ },2000);
 }
 function makeSyncKey(){
  const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
@@ -566,9 +618,30 @@ function renderWorkout(){
  document.getElementById('workout').innerHTML=items.map((x,i)=>`
  <label class="exercise"><input type="checkbox" data-check="${i}" ${checks[i]?'checked':''}>
  <span><b>${x[0]}</b><small>${x[1]}</small></span></label>`).join('');
- document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',()=>{updateWorkoutProgress();saveActiveWorkout()}));
+ document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',handleExerciseCheckChange));
  updateWorkoutProgress();
  ensureTimerLoop();
+}
+
+async function handleExerciseCheckChange(){
+ updateWorkoutProgress();
+ const now=Date.now();
+ const a=ensureActiveWorkout(state.activeWorkout?.status||'ready');
+ a.checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ a.progressUpdatedAt=now;
+ a.updatedAt=now;
+
+ const isErg=['bike','row','ski','erg'].includes(String(a.type||'').toLowerCase());
+ if(!isErg && !['active','paused','running'].includes(String(a.status||'').toLowerCase())){
+   a.status='active';a.statusUpdatedAt=now;
+   if(!a.timer?.running){
+     a.timer={elapsedMs:Number(a.timer?.elapsedMs||0),running:true,startedAt:now};
+     a.timerUpdatedAt=now;
+   }
+ }
+ save({sync:false});
+ renderTimer();
+ if(cloudReady())await pushCloudState();
 }
 
 function timerState(){
@@ -605,20 +678,20 @@ function renderTimer(){
 function ensureActiveWorkout(status='ready'){
  const p=todayProgram();const existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
  const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
- state.activeWorkout={...existing,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:existing.timer||{elapsedMs:0,running:false,startedAt:null},status,sessionId:existing.sessionId||('nz-'+Date.now().toString(36)),updatedAt:Date.now()};
+ const now=Date.now();state.activeWorkout={...existing,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:existing.timer||{elapsedMs:0,running:false,startedAt:null},status,sessionId:existing.sessionId||('nz-'+now.toString(36)),progressUpdatedAt:existing.progressUpdatedAt||now,statusUpdatedAt:existing.statusUpdatedAt||now,timerUpdatedAt:existing.timerUpdatedAt||now,updatedAt:now};
  return state.activeWorkout;
 }
 async function startTimer(){
  const a=ensureActiveWorkout('active'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
- if(!t.running){t.running=true;t.startedAt=Date.now()} a.timer=t;a.status='active';a.updatedAt=Date.now();save();renderTimer();if(cloudReady())await pushCloudState();
+ const now=Date.now();if(!t.running){t.running=true;t.startedAt=now} a.timer=t;a.timerUpdatedAt=now;a.status='active';a.statusUpdatedAt=now;a.updatedAt=now;save();renderTimer();if(cloudReady())await pushCloudState();
 }
 async function pauseTimer(){
  const a=ensureActiveWorkout('paused'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
- if(t.running){t.elapsedMs=timerElapsed();t.running=false;t.startedAt=null} a.timer=t;a.status='paused';a.updatedAt=Date.now();save();renderTimer();if(cloudReady())await pushCloudState();
+ const now=Date.now();if(t.running){t.elapsedMs=timerElapsed();t.running=false;t.startedAt=null} a.timer=t;a.timerUpdatedAt=now;a.status='paused';a.statusUpdatedAt=now;a.updatedAt=now;save();renderTimer();if(cloudReady())await pushCloudState();
 }
 async function restartWorkout(){
  if(!confirm('Reset today’s workout? This clears the timer and checkoffs but keeps pain/energy inputs.'))return;
- const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},status:'ready',sessionId:'nz-'+Date.now().toString(36),updatedAt:Date.now()};save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+ const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},status:'ready',sessionId:'nz-'+Date.now().toString(36),progressUpdatedAt:Date.now(),statusUpdatedAt:Date.now(),timerUpdatedAt:Date.now(),updatedAt:Date.now()};save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 function prefillMetrics(rec=null){
  const p=todayProgram(),elapsed=timerElapsed();
@@ -651,7 +724,7 @@ async function importLatestConcept2({silent=false}={}){
 function saveActiveWorkout({preserveTimer=true}={}){
  const p=todayProgram();const prev=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
  const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
- state.activeWorkout={...prev,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:preserveTimer?(prev.timer||{elapsedMs:0,running:false,startedAt:null}):{elapsedMs:0,running:false,startedAt:null},status:prev.status||'ready',sessionId:prev.sessionId||('nz-'+Date.now().toString(36)),concept2:prev.concept2||null,updatedAt:Date.now()};
+ state.activeWorkout={...prev,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:preserveTimer?(prev.timer||{elapsedMs:0,running:false,startedAt:null}):{elapsedMs:0,running:false,startedAt:null},status:prev.status||'ready',sessionId:prev.sessionId||('nz-'+Date.now().toString(36)),concept2:prev.concept2||null,progressUpdatedAt:Date.now(),updatedAt:Date.now()};
  save();renderTimer();
 }
 
@@ -861,13 +934,13 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 });
 
 
-renderToday();renderWeek();renderProgress();renderTimer();setInterval(renderTimer,1000);setInterval(()=>{if(cloudReady()&&state.activeWorkout?.date===localDateStr()&&['active','paused'].includes(state.activeWorkout.status))pushCloudState()},5000);
+renderToday();renderWeek();renderProgress();renderTimer();setInterval(renderTimer,1000);startCanonicalSyncLoop();
 if(cloudReady()) pullCloudState();
 window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}renderTimer()});
-document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())await pushCloudState()}else{if(cloudReady())await pullCloudState({force:true});renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.10.2: one-link BikeErg Shortcuts setup.
+// NONZERO v3.11: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
