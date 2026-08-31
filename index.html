@@ -69,7 +69,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.9.1</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.10</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -222,7 +222,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       <p class="small">The countdown adapts motivation and phase graphics. It does not override instructions from your surgeon or physical therapist.</p>
     </section>
     <section class="card">
-      <h2>BikeErg Auto-Launch · Easy Setup</h2>
+      <h2>BikeErg Auto-Launch · One-Tap Setup</h2>
       <p><b>Goal:</b> after one setup, your normal workout is simply <b>wake PM5 → open ErgData → ride</b>. NONZERO starts automatically and the Wall switches from Ambient to Performance.</p>
       <label class="small" style="display:flex;align-items:center;gap:10px"><input id="ergDataFirstEnabled" type="checkbox" checked style="width:auto"> Enable BikeErg auto-launch</label>
 
@@ -242,7 +242,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <button id="copyOpenShortcutsBtn" disabled>2 · COPY LINK + OPEN SHORTCUTS</button>
         <button id="testSimpleErgBtn" disabled>TEST · START NONZERO + WALL</button>
       </div>
-      <div id="simpleErgStatus" class="callout" style="margin-top:10px">Not configured yet.</div>
+      <div id="simpleErgStatus" class="callout" style="margin-top:10px">Not configured yet. Link creation now happens entirely on this phone.</div>
       <button id="resetSimpleErgBtn" class="secondary" style="margin-top:8px" disabled>Reset automation link</button>
       <p class="small">Important: iOS does not expose “PM5 connected inside ErgData” as a Shortcuts trigger. Opening or switching to ErgData is therefore the reliable automatic trigger. Do not create an ErgData-closes automation; switching to Music, Mail, Teams, or Roku Remote must not stop your session.</p>
 
@@ -769,7 +769,13 @@ window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState(
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.9.1: one-link BikeErg Shortcuts setup.
+// NONZERO v3.10: one-link BikeErg Shortcuts setup.
+async function sha256HexLocal(value){
+ const data=new TextEncoder().encode(String(value));
+ const digest=await crypto.subtle.digest('SHA-256',data);
+ return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+}
+
 let simpleBikeErgUrl=localStorage.getItem('nz_simple_bikeerg_url')||'';
 
 function renderSimpleBikeErgSetup(){
@@ -786,22 +792,40 @@ function renderSimpleBikeErgSetup(){
 }
 
 async function createSimpleBikeErgLink(){
- if(!cloudReady())return alert('Cloud Sync must be configured first.');
+ const status=document.getElementById('simpleErgStatus');
  const btn=document.getElementById('createSimpleErgLinkBtn');
+ saveCloudConfig();
+ const endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint);
+ const syncKey=(document.getElementById('syncKey')?.value||cloudConfig.syncKey||'').trim();
+
+ if(!/^https:\/\//i.test(endpoint)){
+   if(status)status.innerHTML='<b>SETUP BLOCKED:</b> Cloudflare Worker URL is missing.';
+   return;
+ }
+ if(syncKey.length<16){
+   if(status)status.innerHTML='<b>SETUP BLOCKED:</b> Cloud Sync key is missing.';
+   return;
+ }
+ if(!window.crypto?.subtle){
+   if(status)status.innerHTML='<b>SETUP BLOCKED:</b> Secure browser crypto is unavailable. Open NONZERO from its normal HTTPS GitHub Pages address.';
+   return;
+ }
+
  if(btn){btn.disabled=true;btn.textContent='CREATING…'}
+ if(status)status.textContent='Creating secure BikeErg link on this phone…';
+
  try{
-   const r=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/automation/bikeerg/setup',{
-     method:'POST',
-     headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},
-     body:'{}'
-   });
-   const d=await r.json();
-   if(!r.ok||!d.triggerUrl)throw new Error(d.error||'Could not create link');
-   simpleBikeErgUrl=d.triggerUrl;
+   const userHash=await sha256HexLocal(syncKey);
+   simpleBikeErgUrl=endpoint+'/automation/bikeerg/direct/'+userHash;
    localStorage.setItem('nz_simple_bikeerg_url',simpleBikeErgUrl);
+   if(status)status.innerHTML='<b>✓ SHORTCUT LINK READY.</b><br>No Cloudflare setup call was required. Tap “COPY LINK + OPEN SHORTCUTS.”';
    renderSimpleBikeErgSetup();
- }catch(e){alert('Could not create the automation link: '+e.message)}
- finally{if(btn)btn.disabled=false;renderSimpleBikeErgSetup()}
+ }catch(e){
+   if(status)status.innerHTML='<b>LINK CREATION FAILED</b><br>'+escapeHtml(e?.message||String(e));
+ }finally{
+   if(btn)btn.disabled=false;
+   if(!simpleBikeErgUrl)btn.textContent='1 · CREATE MY SHORTCUT LINK';
+ }
 }
 
 async function copyAndOpenShortcuts(){
@@ -830,13 +854,10 @@ async function testSimpleBikeErg(){
 }
 
 async function resetSimpleBikeErg(){
- if(!confirm('Reset this automation link? Your existing Shortcuts automation will stop working until you paste the replacement link.'))return;
- try{
-   await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/automation/bikeerg/revoke',{
-     method:'POST',headers:{'X-NONZERO-Key':cloudConfig.syncKey}
-   });
- }catch{}
- simpleBikeErgUrl='';localStorage.removeItem('nz_simple_bikeerg_url');renderSimpleBikeErgSetup();
+ if(!confirm('Clear the saved BikeErg Shortcut link from this phone?'))return;
+ simpleBikeErgUrl='';
+ localStorage.removeItem('nz_simple_bikeerg_url');
+ renderSimpleBikeErgSetup();
 }
 
 document.getElementById('createSimpleErgLinkBtn')?.addEventListener('click',createSimpleBikeErgLink);
