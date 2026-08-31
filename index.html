@@ -69,9 +69,9 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.8</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.9</span>
     <h1 id="todayHeading">Today</h1>
-    <p id="todaySub"></p>
+    <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
       <div class="metric"><span>Streak</span><b id="streak">0</b><small>days</small></div>
       <div class="metric"><span>This week</span><b id="weekStarts">0/7</b><small>starts</small></div>
@@ -85,11 +85,6 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
     <button id="installBtn" class="primary">Install on this device</button>
   </section>
 
-  <section class="card">
-    <h2>Garage Wall Mode</h2>
-    <p class="small">Native 4K UHD dashboard for the garage TV. Cloud sync keeps it on the same NONZERO state as this phone.</p>
-    <button id="wallLaunchBtn" class="secondary wallLaunch">Open 4K Wall Mode</button>
-  </section>
 
   <main id="tabToday">
     <div id="preopBanner" class="preopBanner">
@@ -102,7 +97,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       </div>
     </div>
     <section class="card">
-      <h2>How are you today?</h2>
+      <h2>Today's readiness</h2>
       <div class="row">
         <div>
           <label class="small">Hip pain</label>
@@ -113,11 +108,11 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
           <input id="energy" type="number" min="1" max="5" step="1" value="3">
         </div>
       </div>
-      <div id="painAdvice" class="callout" style="margin-top:10px"></div>
+      <div id="painAdvice" class="callout" style="margin-top:8px"></div>
     </section>
 
     <section class="card">
-      <h2 id="sessionName">Today's session</h2>
+      <div class="small" style="font-weight:800;letter-spacing:.12em;color:#d4af37">TODAY'S WORK</div><h2 id="sessionName" style="margin-top:3px">Today's session</h2>
       <p id="sessionWhy"></p>
       <div class="modegrid">
         <button data-mode="full" class="active">FULL<br><span class="small">planned session</span></button>
@@ -136,7 +131,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <button id="restartWorkoutBtn" class="danger">↻ Reset</button>
       </div>
       <div class="ergFirstCard" id="ergFirstCard">
-        <div class="ergFirstHead"><div><div class="ergFirstTitle">ERGDATA FIRST</div><div class="small">One foreground app on Erg days</div></div><span class="autoBadge">AUTO ORCHESTRATION</span></div>
+        <div class="ergFirstHead"><div><div class="ergFirstTitle">BIKEERG AUTO</div><div class="small">Open ErgData → NONZERO starts → Wall switches automatically</div></div><span class="autoBadge">AUTO ORCHESTRATION</span></div>
         <div class="statusgrid">
           <div class="statuschip">NONZERO SESSION<b id="ergNzStatus" class="wait">READY</b></div>
           <div class="statuschip">GARAGE WALL<b id="ergWallStatus" class="wait">AMBIENT</b></div>
@@ -147,7 +142,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
           <a id="openErgDataBtn" href="https://apps.apple.com/us/app/ergdata/id561716382" target="_blank" rel="noopener">Open / Install ErgData</a>
           <button id="importC2QuickBtn">Check result now</button>
         </div>
-        <div class="ergnote">Preferred flow: open ErgData and train. An iPhone Shortcuts automation tells the NONZERO Worker to start the session, the Roku switches to Performance automatically, and the Worker reconciles the finished ErgData/Concept2 result. NONZERO does not compete for the PM5 Bluetooth connection.</div>
+        <div class="ergnote"><b>Normal flow:</b> wake PM5 → open ErgData → ride. NONZERO starts automatically; no need to open Wall controls on the phone.</div>
       </div>
       <div class="workoutactions">
         <button id="reviewMetricsBtn">Post-workout metrics</button>
@@ -174,7 +169,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
           <div class="field wide"><label>Workout notes</label><textarea id="metricNotes" placeholder="What felt strong, what hurt, what to change next time"></textarea></div>
         </div>
       </div>
-      <button id="completeBtn" class="primary">Finish & save workout</button>
+      <button id="completeBtn" class="primary">✓ Finish & save workout</button>
       <div id="completeMessage"></div>
     </section>
   </main>
@@ -251,7 +246,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       <button id="resetSimpleErgBtn" class="secondary" style="margin-top:8px" disabled>Reset automation link</button>
       <p class="small">Important: iOS does not expose “PM5 connected inside ErgData” as a Shortcuts trigger. Opening or switching to ErgData is therefore the reliable automatic trigger. Do not create an ErgData-closes automation; switching to Music, Mail, Teams, or Roku Remote must not stop your session.</p>
 
-      <h2>Roku Wall schedule</h2>
+      <h2>Roku Wall</h2><p class="small">Wall management belongs here—not on the Today screen. Pairing, schedule, and display behavior stay available without competing with workout controls.</p><h3 style="margin-bottom:6px">Schedule</h3>
       <p>Set the daily Wall phases. A started or paused workout always overrides this schedule and keeps the TV in Performance mode.</p>
       <div class="wallScheduleGrid">
         <div class="settingblock"><label class="small" for="wallAmbientTime">Ambient starts</label><input id="wallAmbientTime" type="time" value="06:00"></div>
@@ -774,7 +769,7 @@ window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState(
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.8: one-link BikeErg Shortcuts setup.
+// NONZERO v3.9: one-link BikeErg Shortcuts setup.
 let simpleBikeErgUrl=localStorage.getItem('nz_simple_bikeerg_url')||'';
 
 function renderSimpleBikeErgSetup(){
