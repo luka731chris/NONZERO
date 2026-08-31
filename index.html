@@ -69,7 +69,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.9</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.9.1</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -769,7 +769,7 @@ window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState(
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.9: one-link BikeErg Shortcuts setup.
+// NONZERO v3.9.1: one-link BikeErg Shortcuts setup.
 let simpleBikeErgUrl=localStorage.getItem('nz_simple_bikeerg_url')||'';
 
 function renderSimpleBikeErgSetup(){
@@ -792,7 +792,7 @@ async function createSimpleBikeErgLink(){
  try{
    const r=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/automation/bikeerg/setup',{
      method:'POST',
-     headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.key},
+     headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},
      body:'{}'
    });
    const d=await r.json();
@@ -833,7 +833,7 @@ async function resetSimpleBikeErg(){
  if(!confirm('Reset this automation link? Your existing Shortcuts automation will stop working until you paste the replacement link.'))return;
  try{
    await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/automation/bikeerg/revoke',{
-     method:'POST',headers:{'X-NONZERO-Key':cloudConfig.key}
+     method:'POST',headers:{'X-NONZERO-Key':cloudConfig.syncKey}
    });
  }catch{}
  simpleBikeErgUrl='';localStorage.removeItem('nz_simple_bikeerg_url');renderSimpleBikeErgSetup();
