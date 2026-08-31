@@ -65,11 +65,109 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 ''
 .ergFirstCard{border:1px solid rgba(213,163,56,.42);background:linear-gradient(180deg,rgba(213,163,56,.08),rgba(10,15,22,.68));border-radius:16px;padding:14px;margin:12px 0}.ergFirstHead{display:flex;justify-content:space-between;align-items:center;gap:10px}.ergFirstTitle{font-weight:900;letter-spacing:.08em}.statusgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.statuschip{border:1px solid var(--border);border-radius:11px;padding:9px 10px;background:#0b1119;font-size:12px}.statuschip b{display:block;font-size:13px;margin-top:2px}.statuschip .ok{color:#55d67a}.statuschip .wait{color:#d5a338}.automationSteps{font-size:12px;line-height:1.45;color:var(--muted);margin-top:10px}.copyrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.copyrow button{min-height:44px}.tinycode{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all;color:#aeb8c6;margin-top:6px}.autoBadge{font-size:11px;border:1px solid rgba(85,214,122,.4);color:#55d67a;padding:4px 8px;border-radius:999px;white-space:nowrap}@media(max-width:520px){.statusgrid,.copyrow{grid-template-columns:1fr}}
 </style>
+
+<script>
+/* NONZERO v3.10.2 — fail-safe BikeErg Shortcut controller.
+   Intentionally independent from the main application runtime. */
+(function(){
+  const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
+
+  function esc(v){
+    return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function status(html){
+    const el=document.getElementById('simpleErgStatus');
+    if(el) el.innerHTML=html;
+  }
+  async function sha256(v){
+    if(!window.crypto || !window.crypto.subtle) throw new Error('Secure browser crypto is unavailable.');
+    const b=new TextEncoder().encode(String(v));
+    const d=await crypto.subtle.digest('SHA-256',b);
+    return Array.from(new Uint8Array(d),x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  function cfg(){
+    let c={endpoint:'',syncKey:''};
+    try{ c={...c,...JSON.parse(localStorage.getItem(CFG)||'{}')}; }catch(e){}
+    const ep=document.getElementById('cloudEndpoint')?.value || c.endpoint || '';
+    const sk=document.getElementById('syncKey')?.value || c.syncKey || '';
+    c.endpoint=String(ep).trim().replace(/\/+$/,'');
+    c.syncKey=String(sk).trim();
+    try{ localStorage.setItem(CFG,JSON.stringify(c)); }catch(e){}
+    return c;
+  }
+  function enableReady(link){
+    try{localStorage.setItem(LINK,link)}catch(e){}
+    const copy=document.getElementById('copyOpenShortcutsBtn');
+    const test=document.getElementById('testSimpleErgBtn');
+    const reset=document.getElementById('resetSimpleErgBtn');
+    if(copy)copy.disabled=false;
+    if(test)test.disabled=false;
+    if(reset)reset.disabled=false;
+    const btn=document.getElementById('createSimpleErgLinkBtn');
+    if(btn){btn.disabled=false;btn.textContent='RECREATE MY SHORTCUT LINK';}
+  }
+
+  window.nzShortcutCreate = async function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    const btn=document.getElementById('createSimpleErgLinkBtn');
+    if(btn){btn.disabled=true;btn.textContent='CREATING…';}
+    status('<b>Creating secure BikeErg link…</b>');
+    try{
+      const c=cfg();
+      if(!/^https:\/\//i.test(c.endpoint)) throw new Error('Cloudflare Worker URL is missing in Cloud Sync.');
+      if(c.syncKey.length<16) throw new Error('Private Cloud Sync key is missing.');
+      const h=await sha256(c.syncKey);
+      const link=c.endpoint+'/automation/bikeerg/direct/'+h;
+      enableReady(link);
+      status('<b>✓ SHORTCUT LINK READY.</b><br>Tap <b>COPY LINK + OPEN SHORTCUTS</b>.');
+    }catch(e){
+      if(btn){btn.disabled=false;btn.textContent='1 · CREATE MY SHORTCUT LINK';}
+      status('<b>SETUP ERROR:</b> '+esc(e && e.message ? e.message : e));
+    }
+    return false;
+  };
+
+  window.nzShortcutCopyOpen = async function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    const link=localStorage.getItem(LINK)||'';
+    if(!link){status('<b>No link yet.</b> Tap CREATE MY SHORTCUT LINK first.');return false;}
+    let copied=false;
+    try{await navigator.clipboard.writeText(link);copied=true}catch(e){}
+    if(!copied){
+      try{
+        const ta=document.createElement('textarea');
+        ta.value=link; ta.setAttribute('readonly',''); ta.style.position='fixed';ta.style.opacity='0';
+        document.body.appendChild(ta);ta.focus();ta.select();
+        copied=document.execCommand('copy');ta.remove();
+      }catch(e){}
+    }
+    status(copied
+      ? '<b>✓ LINK COPIED.</b><br>Opening Shortcuts…'
+      : '<b>LINK READY.</b><br>Copy this URL manually if iOS blocks clipboard:<br><textarea readonly style="width:100%;min-height:92px;margin-top:8px">'+esc(link)+'</textarea>');
+    if(copied){ setTimeout(()=>{ location.href='shortcuts://'; },120); }
+    return false;
+  };
+
+  window.nzShortcutReset = function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    localStorage.removeItem(LINK);
+    const btn=document.getElementById('createSimpleErgLinkBtn');
+    if(btn){btn.disabled=false;btn.textContent='1 · CREATE MY SHORTCUT LINK';}
+    const copy=document.getElementById('copyOpenShortcutsBtn');
+    const test=document.getElementById('testSimpleErgBtn');
+    const reset=document.getElementById('resetSimpleErgBtn');
+    if(copy)copy.disabled=true;if(test)test.disabled=true;if(reset)reset.disabled=true;
+    status('Not configured yet.');
+    return false;
+  };
+})();
+</script>
+
 </head>
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.10.1</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.10.2</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -238,12 +336,12 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       </div>
 
       <div style="display:grid;gap:8px;margin-top:10px">
-        <button id="createSimpleErgLinkBtn" class="primary">1 · CREATE MY SHORTCUT LINK</button>
-        <button id="copyOpenShortcutsBtn" disabled>2 · COPY LINK + OPEN SHORTCUTS</button>
+        <button id="createSimpleErgLinkBtn" class="primary" type="button" onclick="return nzShortcutCreate(event)">1 · CREATE MY SHORTCUT LINK</button>
+        <button id="copyOpenShortcutsBtn" type="button" onclick="return nzShortcutCopyOpen(event)" disabled>2 · COPY LINK + OPEN SHORTCUTS</button>
         <button id="testSimpleErgBtn" disabled>TEST · START NONZERO + WALL</button>
       </div>
       <div id="simpleErgStatus" class="callout" style="margin-top:10px">Not configured yet. Link creation now happens entirely on this phone.</div>
-      <button id="resetSimpleErgBtn" class="secondary" style="margin-top:8px" disabled>Reset automation link</button>
+      <button id="resetSimpleErgBtn" type="button" onclick="return nzShortcutReset(event)" class="secondary" style="margin-top:8px" disabled>Reset automation link</button>
       <p class="small">Important: iOS does not expose “PM5 connected inside ErgData” as a Shortcuts trigger. Opening or switching to ErgData is therefore the reliable automatic trigger. Do not create an ErgData-closes automation; switching to Music, Mail, Teams, or Roku Remote must not stop your session.</p>
 
       <h2>Roku Wall</h2><p class="small">Wall management belongs here—not on the Today screen. Pairing, schedule, and display behavior stay available without competing with workout controls.</p><h3 style="margin-bottom:6px">Schedule</h3>
@@ -769,7 +867,7 @@ window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState(
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.10.1: one-link BikeErg Shortcuts setup.
+// NONZERO v3.10.2: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
@@ -860,10 +958,7 @@ async function resetSimpleBikeErg(){
  renderSimpleBikeErgSetup();
 }
 
-document.getElementById('createSimpleErgLinkBtn')?.addEventListener('click',createSimpleBikeErgLink);
-document.getElementById('copyOpenShortcutsBtn')?.addEventListener('click',copyAndOpenShortcuts);
 document.getElementById('testSimpleErgBtn')?.addEventListener('click',testSimpleBikeErg);
-document.getElementById('resetSimpleErgBtn')?.addEventListener('click',resetSimpleBikeErg);
 renderSimpleBikeErgSetup();
 
 </script>
