@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+
+<title>NONZERO v3.3 ·  Fitness</title>
+<style>
+:root{
+ --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
+ --green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--blue:#38bdf8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0f172a,#111827);color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(34px + env(safe-area-inset-bottom))}
+.card{background:rgba(17,24,39,.96);border:1px solid var(--border);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.hero{border-left:5px solid var(--green)}
+h1{font-size:28px;margin:6px 0 4px} h2{font-size:19px;margin:0 0 10px} h3{font-size:16px;margin:0 0 8px}
+p{color:#cbd5e1;line-height:1.45;margin:8px 0}
+.small{font-size:12px;color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metric{text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:11px 6px}
+.metric b{display:block;font-size:24px;margin:2px 0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#13321d;color:#86efac;font-size:12px;font-weight:800}
+button,select,input{font:inherit}
+button{border:1px solid var(--border);background:var(--panel);color:var(--text);padding:12px;border-radius:13px;font-weight:750}
+button.primary{width:100%;background:var(--green);color:#052e16;border:0}
+button.secondary{width:100%}
+button.active{outline:2px solid var(--green);background:#102817}
+button.warn.active{outline-color:var(--yellow);background:#302409}
+button.danger.active{outline-color:var(--red);background:#321314}
+.modegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.exercise{display:flex;gap:12px;padding:13px 0;border-top:1px solid #253042;align-items:flex-start}
+.exercise:first-child{border-top:0}
+.exercise input[type=checkbox]{transform:scale(1.4);margin-top:4px}
+.exercise small{display:block;color:#cbd5e1;line-height:1.35;margin-top:4px}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+select,input[type=number],textarea{
+width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:11px}
+textarea{min-height:72px;resize:vertical}
+.progressbar{height:12px;background:#1f2937;border-radius:999px;overflow:hidden}
+.progressbar>div{height:100%;background:var(--green);width:0}
+.dayrow{display:grid;grid-template-columns:48px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #253042;align-items:center}
+.dayrow:first-child{border-top:0}
+.statusdot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#475569;margin-right:6px}
+.statusdot.done{background:var(--green)} .statusdot.miss{background:var(--red)}
+.callout{background:#0b1220;border:1px solid #334155;border-radius:14px;padding:12px}
+.success{color:#86efac;font-weight:800}.warning{color:#fcd34d}.dangertext{color:#fca5a5}
+.tabbar{position:sticky;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:rgba(15,23,42,.92);backdrop-filter:blur(10px);padding:7px;border:1px solid var(--border);border-radius:16px;margin-top:16px}
+.tabbar button{padding:9px 5px;font-size:12px}.tabbar button.active{outline:1px solid var(--blue);background:#0b1f2a}
+.hidden{display:none!important}
+#installBanner{display:none}
+.syncstatus{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)}
+.syncdot{width:9px;height:9px;border-radius:50%;background:#64748b;display:inline-block;flex:0 0 auto}
+.syncdot.ok{background:var(--green)} .syncdot.busy{background:var(--yellow)} .syncdot.err{background:var(--red)}
+input[type=text],input[type=password],input[type=url]{width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:11px}
+.settingblock{margin:12px 0}.settingblock label{display:block;margin-bottom:5px}
+.wallLaunch{margin-top:10px}
+.timerpanel{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px;margin:12px 0}.timerreadout{font-size:34px;font-variant-numeric:tabular-nums;font-weight:850;letter-spacing:.5px}.timerbuttons{display:flex;gap:6px;flex-wrap:wrap}.timerbuttons button{padding:9px 11px;font-size:12px}.workoutactions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.postmetrics{margin-top:14px;border-top:1px solid #253042;padding-top:14px}.metricsgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metricsgrid .wide{grid-column:1/-1}.field label{display:block;margin:0 0 5px;font-size:12px;color:var(--muted)}.field input,.field select,.field textarea{width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:11px}.ergbar{display:flex;gap:8px;align-items:center;margin:10px 0}.ergbar button{flex:1}.ergstatus{font-size:12px;color:var(--muted);margin-top:6px}
+@media(max-width:540px){h1{font-size:24px}.modegrid{grid-template-columns:1fr}.grid3{grid-template-columns:repeat(3,1fr)}.metric b{font-size:21px}.row{flex-direction:column}}
+
+.durableControls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.durableControls button{font-weight:850;min-height:48px}.erglaunch{display:grid;grid-template-columns:1.25fr 1fr;gap:8px;margin:10px 0}.erglaunch a,.erglaunch button{display:flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;border-radius:12px;font-weight:850}.erglaunch a{background:#111a25;border:1px solid var(--border);color:var(--text)}.sessionstate{font-size:12px;color:var(--muted);margin-top:7px}.sessionstate.live{color:#55d67a}.sessionstate.paused{color:#d5a338}.ergnote{font-size:12px;color:var(--muted);line-height:1.45;margin-top:8px}.wallScheduleGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.preopBanner{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:14px;padding:13px 15px;margin-bottom:12px;background:#0a1017}.preopBanner.done{border-left-color:#55d67a}.preopBig{font-size:25px;font-weight:900;letter-spacing:-.02em}.preopMeta{font-size:12px;color:var(--muted);margin-top:4px}.surgeryGrid{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}@media(max-width:520px){.wallScheduleGrid{grid-template-columns:1fr}.erglaunch{grid-template-columns:1fr}}
+''
+.ergFirstCard{border:1px solid rgba(213,163,56,.42);background:linear-gradient(180deg,rgba(213,163,56,.08),rgba(10,15,22,.68));border-radius:16px;padding:14px;margin:12px 0}.ergFirstHead{display:flex;justify-content:space-between;align-items:center;gap:10px}.ergFirstTitle{font-weight:900;letter-spacing:.08em}.statusgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.statuschip{border:1px solid var(--border);border-radius:11px;padding:9px 10px;background:#0b1119;font-size:12px}.statuschip b{display:block;font-size:13px;margin-top:2px}.statuschip .ok{color:#55d67a}.statuschip .wait{color:#d5a338}.automationSteps{font-size:12px;line-height:1.45;color:var(--muted);margin-top:10px}.copyrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.copyrow button{min-height:44px}.tinycode{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all;color:#aeb8c6;margin-top:6px}.autoBadge{font-size:11px;border:1px solid rgba(85,214,122,.4);color:#55d67a;padding:4px 8px;border-radius:999px;white-space:nowrap}@media(max-width:520px){.statusgrid,.copyrow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="card hero">
+    <span class="badge">NONZERO · PHONE</span>
+    <h1 id="todayHeading">Today</h1>
+    <p id="todaySub"></p>
+    <div class="grid3">
+      <div class="metric"><span>Streak</span><b id="streak">0</b><small>days</small></div>
+      <div class="metric"><span>This week</span><b id="weekStarts">0/7</b><small>starts</small></div>
+      <div class="metric"><span>Bike</span><b id="weekBike">0</b><small>min</small></div>
+    </div>
+  </section>
+
+  <section id="installBanner" class="card">
+    <h2>Install this app</h2>
+    <p>Tap the button below to install it like a normal app.</p>
+    <button id="installBtn" class="primary">Install on this device</button>
+  </section>
+
+  <section class="card">
+    <h2>Garage Wall Mode</h2>
+    <p class="small">Native 4K UHD dashboard for the garage TV. Cloud sync keeps it on the same NONZERO state as this phone.</p>
+    <button id="wallLaunchBtn" class="secondary wallLaunch">Open 4K Wall Mode</button>
+  </section>
+
+  <main id="tabToday">
+    <div id="preopBanner" class="preopBanner"><div class="small">PRE-OP MISSION</div><div id="preopBig" class="preopBig">SURGERY DATE TBD</div><div id="preopMeta" class="preopMeta">Set the date in Settings when it is scheduled. NONZERO will turn it into a live countdown.</div></div>
+    <section class="card">
+      <h2>How are you today?</h2>
+      <div class="row">
+        <div>
+          <label class="small">Hip pain</label>
+          <input id="pain" type="number" min="0" max="10" step="1" value="6">
+        </div>
+        <div>
+          <label class="small">Energy</label>
+          <input id="energy" type="number" min="1" max="5" step="1" value="3">
+        </div>
+      </div>
+      <div id="painAdvice" class="callout" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card">
+      <h2 id="sessionName">Today's session</h2>
+      <p id="sessionWhy"></p>
+      <div class="modegrid">
+        <button data-mode="full" class="active">FULL<br><span class="small">planned session</span></button>
+        <button data-mode="minimum" class="warn">MINIMUM<br><span class="small">10-minute win</span></button>
+        <button data-mode="flare" class="danger">FLARE<br><span class="small">protect the hip</span></button>
+      </div>
+      <div id="workout" style="margin-top:10px"></div>
+      <div class="progressbar"><div id="workoutProgress"></div></div>
+      <p class="small" id="progressText">0% complete</p>
+      <div class="timerpanel">
+        <div><div class="small">WORKOUT TIMER</div><div id="timerReadout" class="timerreadout">00:00</div><div id="sessionState" class="sessionstate">READY · Wall follows schedule</div></div>
+      </div>
+      <div class="durableControls">
+        <button id="timerStartBtn" class="primary">▶ Start</button>
+        <button id="timerPauseBtn">Ⅱ Pause</button>
+        <button id="restartWorkoutBtn" class="danger">↻ Reset</button>
+      </div>
+      <div class="ergFirstCard" id="ergFirstCard">
+        <div class="ergFirstHead"><div><div class="ergFirstTitle">ERGDATA FIRST</div><div class="small">One foreground app on Erg days</div></div><span class="autoBadge">AUTO ORCHESTRATION</span></div>
+        <div class="statusgrid">
+          <div class="statuschip">NONZERO SESSION<b id="ergNzStatus" class="wait">READY</b></div>
+          <div class="statuschip">GARAGE WALL<b id="ergWallStatus" class="wait">AMBIENT</b></div>
+          <div class="statuschip">CONCEPT2 RESULT<b id="ergC2Status" class="wait">WAITING</b></div>
+          <div class="statuschip">APPLE HEALTH<b id="ergHealthStatus" class="ok">ERGDATA PATH</b></div>
+        </div>
+        <div class="erglaunch">
+          <a id="openErgDataBtn" href="https://apps.apple.com/us/app/ergdata/id561716382" target="_blank" rel="noopener">Open / Install ErgData</a>
+          <button id="importC2QuickBtn">Check result now</button>
+        </div>
+        <div class="ergnote">Preferred flow: open ErgData and train. An iPhone Shortcuts automation tells the NONZERO Worker to start the session, the Roku switches to Performance automatically, and the Worker reconciles the finished ErgData/Concept2 result. NONZERO does not compete for the PM5 Bluetooth connection.</div>
+      </div>
+      <div class="workoutactions">
+        <button id="reviewMetricsBtn">Post-workout metrics</button>
+        <button id="completeBtnTop" class="secondary">Finish workout</button>
+      </div>
+      <div id="postMetrics" class="postmetrics hidden">
+        <h3>Post-workout metrics</h3>
+        <p class="small">Timer and Concept2 data prefill what they can. Edit anything before saving.</p>
+        <div class="ergbar"><button id="importC2Btn">Import latest Concept2 workout</button></div>
+        <div id="ergStatus" class="ergstatus">Concept2 import uses ErgData → Online Logbook → NONZERO.</div>
+        <div class="metricsgrid">
+          <div class="field"><label>Duration (min)</label><input id="metricDuration" type="number" min="0" step="0.1"></div>
+          <div class="field"><label>Session RPE (1–10)</label><input id="metricRpe" type="number" min="1" max="10" step="1"></div>
+          <div class="field"><label>Post-workout hip pain (0–10)</label><input id="metricPainAfter" type="number" min="0" max="10" step="1"></div>
+          <div class="field"><label>Post-workout energy (1–5)</label><input id="metricEnergyAfter" type="number" min="1" max="5" step="1"></div>
+          <div class="field"><label>Distance (m)</label><input id="metricDistance" type="number" min="0" step="1"></div>
+          <div class="field"><label>Calories</label><input id="metricCalories" type="number" min="0" step="1"></div>
+          <div class="field"><label>Avg pace / 500m</label><input id="metricPace" type="text" placeholder="2:15.0"></div>
+          <div class="field"><label>Avg watts</label><input id="metricWatts" type="number" min="0" step="1"></div>
+          <div class="field"><label>Avg cadence / stroke rate</label><input id="metricRate" type="number" min="0" step="1"></div>
+          <div class="field"><label>Avg HR</label><input id="metricAvgHr" type="number" min="0" step="1"></div>
+          <div class="field"><label>Max HR</label><input id="metricMaxHr" type="number" min="0" step="1"></div>
+          <div class="field"><label>Drag factor</label><input id="metricDrag" type="number" min="0" step="1"></div>
+          <div class="field wide"><label>Workout notes</label><textarea id="metricNotes" placeholder="What felt strong, what hurt, what to change next time"></textarea></div>
+        </div>
+      </div>
+      <button id="completeBtn" class="primary">Finish & save workout</button>
+      <div id="completeMessage"></div>
+    </section>
+  </main>
+
+  <main id="tabWeek" class="hidden">
+    <section class="card">
+      <h2>This week</h2>
+      <div id="weekList"></div>
+    </section>
+    <section class="card">
+      <h2>Weekly summary</h2>
+      <div id="weeklySummary"></div>
+    </section>
+  </main>
+
+  <main id="tabProgress" class="hidden">
+    <section class="card">
+      <h2>Progress</h2>
+      <div class="grid3">
+        <div class="metric"><span>Total starts</span><b id="totalStarts">0</b></div>
+        <div class="metric"><span>Strength</span><b id="totalStrength">0</b><small>sessions</small></div>
+        <div class="metric"><span>Bike</span><b id="totalBike">0</b><small>minutes</small></div>
+      </div>
+      <div id="trendSummary" class="callout" style="margin-top:12px"></div>
+    </section>
+    <section class="card">
+      <h2>Recent sessions</h2>
+      <div id="recentSessions"></div>
+    </section>
+  </main>
+
+  <main id="tabSettings" class="hidden">
+    <section class="card">
+      <h2>Program settings</h2>
+      <label class="small">Program start date</label>
+      <input id="startDate" type="date">
+      <p class="small">The schedule automatically repeats weekly from this start date.</p>
+      <label class="small">Morning reminder target</label>
+      <input id="reminderTime" type="time" value="06:00">
+      <p class="small">This app cannot push reminders by itself when used as a simple web app. Use the iPhone setup instructions below to create a Home Screen icon and optional daily reminder.</p>
+    </section>
+    <section class="card">
+      <h2>Hip surgery countdown</h2>
+      <p>Leave this blank while the date is TBD. Once scheduled, NONZERO will automatically add a live pre-op countdown and phase messaging to the phone and Roku Wall.</p>
+      <div class="surgeryGrid">
+        <div class="settingblock"><label class="small" for="surgeryDate">Surgery date</label><input id="surgeryDate" type="date"></div>
+        <button id="clearSurgeryDateBtn">Clear date</button>
+      </div>
+      <div id="surgeryPlanPreview" class="callout" style="margin-top:10px">TBD · current hip-smart program remains active.</div>
+      <p class="small">The countdown adapts motivation and phase graphics. It does not override instructions from your surgeon or physical therapist.</p>
+    </section>
+    <section class="card">
+      <h2>ErgData-first automation</h2>
+      <p>Once configured, opening ErgData can start NONZERO + the Performance Wall without opening NONZERO first.</p>
+      <label class="small" style="display:flex;align-items:center;gap:10px"><input id="ergDataFirstEnabled" type="checkbox" checked style="width:auto"> Enable ErgData-first orchestration</label>
+      <div class="copyrow">
+        <button id="copyErgStartUrlBtn">Copy start endpoint</button>
+        <button id="copySyncKeyBtn">Copy sync key</button>
+      </div>
+      <div id="ergStartUrlPreview" class="tinycode">Configure Cloud Sync to generate the endpoint.</div>
+      <div class="automationSteps"><b>One-time setup — only one automation:</b><br>1. Tap <b>Copy start endpoint</b> here.<br>2. In Apple Shortcuts: Automation → + → App → choose <b>ErgData</b> → <b>Is Opened</b> → Run Immediately.<br>3. Add action <b>Get Contents of URL</b> and paste the copied endpoint.<br>4. Expand the action → Method <b>POST</b> → Headers → add <b>X-NONZERO-Key</b> as the header name.<br>5. Return here, tap <b>Copy sync key</b>, then paste it as that header's value.<br>6. Save the automation. Do <b>not</b> create an “ErgData closes” automation.<br><br>After that, normal Erg days are simply: <b>wake PM5 → open ErgData → train.</b></div>
+      <button id="testErgAutomationBtn" style="margin-top:10px">Test automatic Erg start</button>
+      <div id="ergAutomationStatus" class="small" style="margin-top:7px"></div>
+    </section>
+    <section class="card">
+      <h2>Roku Wall schedule</h2>
+      <p>Set the daily Wall phases. A started or paused workout always overrides this schedule and keeps the TV in Performance mode.</p>
+      <div class="wallScheduleGrid">
+        <div class="settingblock"><label class="small" for="wallAmbientTime">Ambient starts</label><input id="wallAmbientTime" type="time" value="06:00"></div>
+        <div class="settingblock"><label class="small" for="wallNightTime">Night starts</label><input id="wallNightTime" type="time" value="20:30"></div>
+        <div class="settingblock"><label class="small" for="wallDeepTime">Deep Hibernate</label><input id="wallDeepTime" type="time" value="01:00"></div>
+      </div>
+      <label class="small" style="display:flex;align-items:center;gap:10px;margin-top:12px"><input id="wallScheduleEnabled" type="checkbox" checked style="width:auto"> Enable automatic Wall schedule</label>
+    </section>
+    <section class="card">
+      <h2>Cloud sync</h2>
+      <p>Optional lightweight sync keeps this phone and the garage Wall Mode on one state. Local storage remains the offline fallback.</p>
+      <div class="settingblock">
+        <label class="small" for="cloudEndpoint">Cloudflare Worker URL</label>
+        <input id="cloudEndpoint" type="url" placeholder="https://nonzero-sync.your-subdomain.workers.dev">
+      </div>
+      <div class="settingblock">
+        <label class="small" for="syncKey">Private sync key</label>
+        <input id="syncKey" type="password" placeholder="Generate or paste your shared key">
+      </div>
+      <div class="row">
+        <button id="generateSyncKeyBtn">Generate key</button>
+        <button id="syncNowBtn">Sync now</button>
+      </div>
+      <div class="syncstatus"><span id="syncDot" class="syncdot"></span><span id="syncStatus">Local only</span></div>
+      <p class="small">Cloud Sync is the secure connection behind NONZERO. The Roku no longer needs this private key entered on the TV.</p>
+    </section>
+    <section class="card" id="rokuPairingCard">
+      <h2>Roku Wall pairing</h2>
+      <p>Pair the garage Wall with a one-time six-digit code. No Worker URL or private sync key needs to be typed on the TV.</p>
+      <button id="generatePairCodeBtn" class="primary">Generate 6-digit pairing code</button>
+      <div id="pairCodeBox" class="hidden" style="margin-top:12px;text-align:center;border:1px solid var(--line);border-radius:14px;padding:16px;background:#080c11">
+        <div class="small">ONE-TIME CODE</div>
+        <div id="pairCodeValue" style="font-size:42px;font-weight:900;letter-spacing:.18em;color:var(--gold);margin:6px 0">------</div>
+        <div id="pairCodeStatus" class="small">Enter this code on the Roku Wall. It expires in 10 minutes.</div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Data backup</h2>
+      <p>Progress is saved locally first and, when configured, mirrored to your private cloud state. Export remains available as an independent backup.</p>
+      <div class="row">
+        <button id="exportBtn">Export progress</button>
+        <button id="importBtn">Import progress</button>
+      </div>
+      <input id="importFile" type="file" accept="application/json" class="hidden">
+      <button id="resetBtn" class="secondary" style="margin-top:8px">Reset all progress</button>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-tab="Today" class="active">Today</button>
+    <button data-tab="Week">Week</button>
+    <button data-tab="Progress">Progress</button>
+    <button data-tab="Settings">Settings</button>
+  </nav>
+</div>
+
+<script>
+const PROGRAM = {
+  0:{name:'Recovery',why:'Keep the habit while giving the hip a low-stress day.',type:'recovery',
+    full:[['BikeErg','10–15 min very easy'],['Standing hip abduction','1–2 × 8 each side, small comfortable range'],['Band row','2 × 12'],['Breathing','2 min relaxed breathing']],
+    minimum:[['BikeErg','5–10 min very easy'],['Upper-body band work','Easy rows/presses until 10:00']]},
+  1:{name:'Strength A — Upper + Hinge',why:'Build strength without forcing deep hip flexion.',type:'strength',
+    full:[['BikeErg warm-up','4 min easy'],['Elevated KB deadlift','53 lb — 3 × 8; elevate the bell enough to stay comfortable'],['Push-ups','3 × 8–12; stop 2–3 reps before failure'],['Supported 1-arm KB row','35 lb — 3 × 10 each side'],['Seated KB or band press','2–3 × 8 each side'],['Farmer carry','2 × 35 lb — 3 × 30 sec']],
+    minimum:[['BikeErg','2 min easy'],['Elevated KB deadlift','53 lb — 2 × 8'],['Push-ups','2 × 8–12'],['Supported KB row','35 lb — 2 × 8 each side'],['BikeErg','Easy until 10:00']]},
+  2:{name:'BikeErg — Aerobic',why:'Build cardiovascular fitness with minimal impact.',type:'bike',
+    full:[['Easy spin','5 min'],['Steady aerobic ride','15–20 min conversational effort'],['Easy spin','5 min']],
+    minimum:[['BikeErg','10 min continuous easy/moderate riding']]},
+  3:{name:'Strength B — Prehab + Upper',why:'Maintain upper-body strength and train tolerable hip-supporting musculature.',type:'strength',
+    full:[['BikeErg warm-up','4 min easy'],['High sit-to-stand','3 × 10; remain above painful depth'],['Pull-ups','3 × 2–3; no grinding'],['KB floor press','2 × 35 lb — 3 × 8–10'],['Standing mini-band hip abduction','2 × 10 each side, small range'],['Glute bridge','2 × 10 only if comfortable'],['Band Pallof press','2 × 10 each side']],
+    minimum:[['BikeErg','2 min easy'],['High sit-to-stand','2 × 8'],['Pull-ups','2 × 2'],['KB floor press','2 × 35 lb — 2 × 8'],['Pallof press','2 × 8 each side']]},
+  4:{name:'BikeErg — Aerobic',why:'Add aerobic volume without accumulating painful walking mileage.',type:'bike',
+    full:[['Easy spin','5 min'],['Steady aerobic ride','20–25 min conversational effort'],['Easy spin','5 min']],
+    minimum:[['BikeErg','10 min easy/moderate']]},
+  5:{name:'Strength — Alternating',why:'Third weekly strength exposure while keeping total workload manageable.',type:'strength',
+    full:[['BikeErg warm-up','4 min easy'],['Elevated KB deadlift','53 lb — 2 × 8'],['Push-ups','2 × 10–15'],['Pull-ups','2 × 2–3'],['KB floor press','2 × 35 lb — 2 × 8–10'],['Farmer carry','2 × 35 lb — 3 × 30 sec']],
+    minimum:[['BikeErg','2 min easy'],['Push-ups','2 × 10'],['KB row','2 × 8 each side'],['Farmer carry','2 × 30 sec'],['BikeErg','Easy until 10:00']]},
+  6:{name:'Long BikeErg',why:'Your main low-impact endurance builder.',type:'bike',
+    full:[['Easy spin','5 min'],['Steady BikeErg','30–35 min conversational effort'],['Easy spin','5 min'],['Optional','Add 5 min only if hip and energy are good']],
+    minimum:[['BikeErg','10 min easy/moderate. Long ride can wait.']]}
+};
+
+const FLARE = [
+ ['BikeErg','5–10 min very easy ONLY if riding feels comfortable'],
+ ['Upper body','Easy push-ups, band rows or floor press if desired'],
+ ['Avoid today','Loaded lower-body work, long walks, deep flexion, anything increasing your limp'],
+ ['Win condition','10 calm minutes and stop']
+];
+
+const STORAGE_KEY='hipPrehabV2';
+const CLOUD_CONFIG_KEY='nonzeroCloudV1';
+let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
+  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
+};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:7};
+if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
+if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
+if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
+let cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'null')||{endpoint:'',syncKey:''};
+let mode='full';
+let deferredPrompt=null;
+let syncTimer=null;
+let workoutTimerInterval=null;
+
+function save({sync=true}={}){
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:7};
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+ if(sync) queueCloudPush();
+}
+function normalizeEndpoint(v){return String(v||'').trim().replace(/\/$/,'')}
+function cloudReady(){return /^https:\/\//i.test(cloudConfig.endpoint||'') && String(cloudConfig.syncKey||'').length>=16}
+function setSyncStatus(text,kind=''){
+ const label=document.getElementById('syncStatus'),dot=document.getElementById('syncDot');
+ if(label) label.textContent=text;
+ if(dot) dot.className='syncdot '+kind;
+}
+function saveCloudConfig(){
+ cloudConfig.endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint);
+ cloudConfig.syncKey=(document.getElementById('syncKey')?.value||cloudConfig.syncKey).trim();
+ localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cloudConfig));
+ setSyncStatus(cloudReady()?'Cloud configured':'Local only',cloudReady()?'ok':'');
+}
+async function cloudRequest(method,body){
+ if(!cloudReady()) return null;
+ const res=await fetch(cloudConfig.endpoint+'/state',{
+   method,headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},
+   body:body?JSON.stringify(body):undefined,cache:'no-store'
+ });
+ if(!res.ok) throw new Error('Sync '+res.status);
+ return res.status===204?null:res.json();
+}
+function queueCloudPush(){
+ if(!cloudReady()) return;
+ clearTimeout(syncTimer);
+ syncTimer=setTimeout(pushCloudState,450);
+}
+async function pushCloudState(){
+ if(!cloudReady()) return;
+ try{setSyncStatus('Syncing…','busy');await cloudRequest('PUT',{state,updatedAt:state._meta?.updatedAt||Date.now()});setSyncStatus('Synced','ok')}
+ catch(err){console.warn(err);setSyncStatus('Offline · saved locally','err')}
+}
+async function pullCloudState({force=false}={}){
+ if(!cloudReady()) return false;
+ try{
+   setSyncStatus('Checking cloud…','busy');
+   const remote=await cloudRequest('GET');
+   const remoteState=remote?.state;
+   const remoteTime=Number(remote?.updatedAt||remoteState?._meta?.updatedAt||0);
+   const localTime=Number(state?._meta?.updatedAt||0);
+   if(remoteState && (force || remoteTime>localTime)){
+      state=remoteState;if(!state._meta)state._meta={updatedAt:remoteTime||Date.now(),schema:7};if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};if(!state.ergDataFirst)state.ergDataFirst={enabled:true};if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      renderToday();renderWeek();renderProgress();renderTimer();setInterval(renderTimer,1000);setInterval(()=>{if(cloudReady()&&state.activeWorkout?.date===localDateStr()&&['active','paused'].includes(state.activeWorkout.status))pushCloudState()},5000);
+      document.getElementById('startDate').value=state.startDate;
+      document.getElementById('reminderTime').value=state.reminderTime||'06:00';if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();renderPreop();
+   } else if(!remoteState){await pushCloudState();return true}
+   setSyncStatus('Synced','ok');return true;
+ }catch(err){console.warn(err);setSyncStatus('Offline · using local state','err');return false}
+}
+function makeSyncKey(){
+ const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
+ return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+}
+function localDateStr(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function weekdayIndex(){return new Date().getDay()}
+function surgeryDaysRemaining(){
+ const ds=state.surgeryPlan?.date;if(!ds)return null;
+ const target=new Date(ds+'T12:00:00'),today=new Date(localDateStr()+'T12:00:00');
+ return Math.round((target-today)/86400000);
+}
+function preopPhase(days=surgeryDaysRemaining()){
+ if(days==null)return {name:'DATE TBD',directive:'Set the surgery date when scheduled.'};
+ if(days<0)return {name:'POST-OP',directive:'Follow the clinician-cleared recovery plan before resuming pre-op training.'};
+ if(days===0)return {name:'SURGERY DAY',directive:'Protect the work. Follow your surgical team’s instructions.'};
+ if(days<=3)return {name:'FINAL APPROACH',directive:'Recover, stay loose, and arrive ready. Do not chase extra volume.'};
+ if(days<=14)return {name:'ARRIVE READY',directive:'Maintain fitness and consistency; prioritize recovery over last-minute volume.'};
+ if(days<=42)return {name:'CONSISTENCY BLOCK',directive:'Keep stacking repeatable sessions. Arrive fit, not beat up.'};
+ if(days<=84)return {name:'BUILD CAPACITY',directive:'Build aerobic capacity and repeatable strength while protecting the hip.'};
+ return {name:'BUILD BASE',directive:'Stack strength, aerobic capacity, and consistency while protecting the hip.'};
+}
+function todayProgram(){
+ const base=PROGRAM[weekdayIndex()],days=surgeryDaysRemaining(),phase=preopPhase(days);
+ if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
+ if(days==null)return base;
+ return {...base,why:base.why+' · '+phase.name+': '+phase.directive};
+}
+function renderPreop(){
+ const days=surgeryDaysRemaining(),phase=preopPhase(days),big=document.getElementById('preopBig'),meta=document.getElementById('preopMeta'),preview=document.getElementById('surgeryPlanPreview'),dateInput=document.getElementById('surgeryDate');
+ if(dateInput)dateInput.value=state.surgeryPlan?.date||'';
+ if(days==null){if(big)big.textContent='SURGERY DATE TBD';if(meta)meta.textContent='Set the date in Settings when it is scheduled. NONZERO will turn it into a live countdown.';if(preview)preview.textContent='TBD · current hip-smart program remains active.';return}
+ const unit=Math.abs(days)===1?'DAY':'DAYS';
+ if(big)big.textContent=days>0?`${days} ${unit} TO SURGERY`:days===0?'SURGERY DAY':`${Math.abs(days)} ${unit} POST-OP`;
+ if(meta)meta.textContent=`${phase.name} · ${phase.directive}`;
+ if(preview)preview.textContent=`${state.surgeryPlan.date} · ${days>0?days+' days remaining':days===0?'today':Math.abs(days)+' days post-op'} · ${phase.name}`;
+}
+
+function fmtDate(s){return new Date(s+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
+function todaySessionRecord(){return state.sessions.find(x=>x.date===localDateStr())}
+
+function renderToday(){
+ renderPreop();
+ const p=todayProgram(), rec=todaySessionRecord();
+ document.getElementById('todayHeading').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+ document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${rec.duration||0} min` : `${p.name}. Your only obligation is to start.`;
+ document.getElementById('sessionName').textContent=p.name;
+ document.getElementById('sessionWhy').textContent=p.why;
+ if(rec){mode=rec.mode||'full';document.getElementById('pain').value=rec.pain??6;document.getElementById('energy').value=rec.energy??3}
+ renderWorkout();
+ updatePainAdvice();
+ renderMetrics();
+}
+
+function renderWorkout(){
+ const p=todayProgram();
+ const items=mode==='flare'?FLARE:p[mode];
+ document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+ const rec=todaySessionRecord();
+ const active=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ const checks=(rec&&rec.mode===mode&&rec.checks)||(active&&active.mode===mode&&active.checks)||[];
+ document.getElementById('workout').innerHTML=items.map((x,i)=>`
+ <label class="exercise"><input type="checkbox" data-check="${i}" ${checks[i]?'checked':''}>
+ <span><b>${x[0]}</b><small>${x[1]}</small></span></label>`).join('');
+ document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',()=>{updateWorkoutProgress();saveActiveWorkout()}));
+ updateWorkoutProgress();
+ ensureTimerLoop();
+}
+
+function timerState(){
+ if(!state.activeWorkout||state.activeWorkout.date!==localDateStr()) return {elapsedMs:0,running:false,startedAt:null};
+ return state.activeWorkout.timer||{elapsedMs:0,running:false,startedAt:null};
+}
+function timerElapsed(){
+ const t=timerState();
+ return Math.max(0,Number(t.elapsedMs||0)+(t.running&&t.startedAt?Date.now()-Number(t.startedAt):0));
+}
+function fmtTimer(ms){const total=Math.floor(ms/1000),h=Math.floor(total/3600),m=Math.floor((total%3600)/60),s=total%60;return h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function ergIntentUrl(){return cloudReady()?cloudConfig.endpoint.replace(/\/$/,'')+'/intent/erg/start':''}
+async function callErgIntent(action='start'){
+ if(!cloudReady())throw new Error('Configure Cloud Sync first');
+ const res=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/intent/erg/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:JSON.stringify({source:'nonzero-phone',requestedAt:Date.now()})});
+ const body=await res.json();if(!res.ok)throw new Error(body.error||('HTTP '+res.status));return body;
+}
+function renderErgOrchestration(){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ const live=a&&['active','paused','running'].includes(a.status||'');
+ const n=document.getElementById('ergNzStatus'),w=document.getElementById('ergWallStatus'),c=document.getElementById('ergC2Status');
+ if(n){n.textContent=live?(a.status==='paused'?'PAUSED':'ACTIVE'):'READY';n.className=live?'ok':'wait'}
+ if(w){w.textContent=live?'PERFORMANCE':'SCHEDULED';w.className=live?'ok':'wait'}
+ if(c){c.textContent=a?.concept2?.id?'SYNCED':'WAITING';c.className=a?.concept2?.id?'ok':'wait'}
+ const prev=document.getElementById('ergStartUrlPreview');if(prev)prev.textContent=ergIntentUrl()||'Configure Cloud Sync to generate the endpoint.';
+ const en=document.getElementById('ergDataFirstEnabled');if(en)en.checked=state.ergDataFirst?.enabled!==false;
+}
+function renderTimer(){
+ const el=document.getElementById('timerReadout');if(!el)return;el.textContent=fmtTimer(timerElapsed());
+ const st=document.getElementById('sessionState');const status=state.activeWorkout?.date===localDateStr()?(state.activeWorkout.status||'ready'):'ready';
+ if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · Wall locked to Performance':status==='paused'?'PAUSED · Wall stays in Performance':status==='complete'?'COMPLETE':'READY · Wall follows schedule';}
+ renderErgOrchestration();
+}
+function ensureActiveWorkout(status='ready'){
+ const p=todayProgram();const existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
+ const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ state.activeWorkout={...existing,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:existing.timer||{elapsedMs:0,running:false,startedAt:null},status,sessionId:existing.sessionId||('nz-'+Date.now().toString(36)),updatedAt:Date.now()};
+ return state.activeWorkout;
+}
+async function startTimer(){
+ const a=ensureActiveWorkout('active'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
+ if(!t.running){t.running=true;t.startedAt=Date.now()} a.timer=t;a.status='active';a.updatedAt=Date.now();save();renderTimer();if(cloudReady())await pushCloudState();
+}
+async function pauseTimer(){
+ const a=ensureActiveWorkout('paused'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
+ if(t.running){t.elapsedMs=timerElapsed();t.running=false;t.startedAt=null} a.timer=t;a.status='paused';a.updatedAt=Date.now();save();renderTimer();if(cloudReady())await pushCloudState();
+}
+async function restartWorkout(){
+ if(!confirm('Reset today’s workout? This clears the timer and checkoffs but keeps pain/energy inputs.'))return;
+ const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},status:'ready',sessionId:'nz-'+Date.now().toString(36),updatedAt:Date.now()};save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+}
+function prefillMetrics(rec=null){
+ const p=todayProgram(),elapsed=timerElapsed();
+ const get=(id)=>document.getElementById(id);if(!get('metricDuration'))return;
+ if(!get('metricDuration').value)get('metricDuration').value=(elapsed?elapsed/60000:(mode==='minimum'||mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30))).toFixed(1);
+ if(!get('metricPainAfter').value)get('metricPainAfter').value=document.getElementById('pain').value;
+ if(!get('metricEnergyAfter').value)get('metricEnergyAfter').value=document.getElementById('energy').value;
+ if(rec){
+   get('metricDuration').value=rec.durationMinutes||get('metricDuration').value;get('metricDistance').value=rec.distance||'';get('metricCalories').value=rec.calories||'';get('metricPace').value=rec.pace||'';get('metricWatts').value=rec.avgWatts||'';get('metricRate').value=rec.rate||'';get('metricAvgHr').value=rec.avgHr||'';get('metricMaxHr').value=rec.maxHr||'';get('metricDrag').value=rec.dragFactor||'';
+ }
+}
+function collectPostMetrics(){
+ const n=id=>{const v=document.getElementById(id)?.value;return v===''||v==null?null:Number(v)};
+ return {duration:n('metricDuration'),rpe:n('metricRpe'),painAfter:n('metricPainAfter'),energyAfter:n('metricEnergyAfter'),distance:n('metricDistance'),calories:n('metricCalories'),pace:document.getElementById('metricPace')?.value.trim()||null,avgWatts:n('metricWatts'),rate:n('metricRate'),avgHr:n('metricAvgHr'),maxHr:n('metricMaxHr'),dragFactor:n('metricDrag'),notes:document.getElementById('metricNotes')?.value.trim()||null};
+}
+async function importLatestConcept2({silent=false}={}){
+ const status=document.getElementById('ergStatus');
+ if(!cloudReady()){status.textContent='Configure Cloud Sync first; the Worker safely holds the Concept2 token.';return}
+ try{
+   if(!silent)status.textContent='Checking Concept2 Logbook…';
+   const res=await fetch(cloudConfig.endpoint+'/concept2/latest?from='+encodeURIComponent(localDateStr()),{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'});
+   const body=await res.json();if(!res.ok)throw new Error(body.error||('Concept2 '+res.status));
+   const r=body.result;if(!r){if(!silent)status.textContent='No completed ErgData workout found yet.';return}
+   const mapped={durationMinutes:r.time?Number(r.time)/600:null,distance:r.distance||null,calories:r.calories_total||null,pace:r.time&&r.distance?secondsToPace(r.time,r.distance):'',avgWatts:avgWattsFromWattMinutes(r.wattminutes_total,r.time),rate:r.stroke_rate||null,avgHr:r.heart_rate?.average||null,maxHr:r.heart_rate?.max||null,dragFactor:r.drag_factor||null};
+   prefillMetrics(mapped);state.activeWorkout={...(state.activeWorkout||{}),concept2:{id:r.id,date:r.date,type:r.type,source:r.source||'Concept2 Logbook',importedAt:Date.now()},ergMetrics:mapped,updatedAt:Date.now()};save();renderErgOrchestration();
+   if(!silent)status.textContent=`Imported ${r.type||'erg'} workout · ${r.distance||0} m · ${r.time_formatted||((Number(r.time||0)/600).toFixed(1)+' min')} · source ${r.source||'Logbook'}.`;
+ }catch(err){if(!silent)status.textContent='Concept2 import unavailable: '+err.message}
+}
+
+function saveActiveWorkout({preserveTimer=true}={}){
+ const p=todayProgram();const prev=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
+ const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ state.activeWorkout={...prev,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:preserveTimer?(prev.timer||{elapsedMs:0,running:false,startedAt:null}):{elapsedMs:0,running:false,startedAt:null},status:prev.status||'ready',sessionId:prev.sessionId||('nz-'+Date.now().toString(36)),concept2:prev.concept2||null,updatedAt:Date.now()};
+ save();renderTimer();
+}
+
+function updateWorkoutProgress(){
+ const c=[...document.querySelectorAll('[data-check]')];
+ const done=c.filter(x=>x.checked).length;
+ const pct=c.length?Math.round(done/c.length*100):0;
+ document.getElementById('workoutProgress').style.width=pct+'%';
+ document.getElementById('progressText').textContent=`${pct}% complete · ${done}/${c.length} steps`;
+}
+
+function updatePainAdvice(){
+ const p=Number(document.getElementById('pain').value);
+ const e=Number(document.getElementById('energy').value);
+ let txt='';
+ if(p>=8) txt='High-pain day. FLARE mode is the correct workout, not a consolation prize.';
+ else if(p>=6) txt='Usual symptom range: use comfortable ROM and immediately modify anything that increases pain, compensation, or limping.';
+ else txt='Better symptom day. Keep the prescribed ROM—do not “test” the hip with deep or heavy work.';
+ if(e<=2) txt+=' Low energy: Minimum mode is fully acceptable.';
+ document.getElementById('painAdvice').textContent=txt;
+}
+
+function completeWorkout(){
+ const date=localDateStr(), p=todayProgram();
+ const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ const defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
+ const pain=Number(document.getElementById('pain').value), energy=Number(document.getElementById('energy').value);
+ const post=collectPostMetrics();const timerMs=timerElapsed();
+ const existing=state.sessions.findIndex(x=>x.date===date);
+ const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:post.duration??(timerMs?Math.round(timerMs/6000)/10:defaultMinutes),checks,completed:true,postMetrics:post,timerMs,concept2:state.activeWorkout?.concept2||null};
+ if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
+ state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},status:'complete',updatedAt:Date.now()};
+ save();
+ const msg=motivation(rec);
+ document.getElementById('completeMessage').innerHTML=`<p class="success">✓ ${msg}</p>`;
+ renderMetrics(); renderWeek(); renderProgress();
+}
+
+function motivation(rec){
+ const streak=calcStreak();
+ if(rec.mode==='flare') return `Smart training. You protected the hip and kept the streak alive — ${streak} day${streak===1?'':'s'}.`;
+ if(rec.mode==='minimum') return `Ten minutes beat zero. That is exactly how this becomes permanent — ${streak}-day streak.`;
+ if(streak>=14) return `Two weeks of identity change. You are no longer “trying to restart” — you are training consistently.`;
+ if(streak>=7) return `A full week of starts. That matters more than any single hard workout.`;
+ return `Non-zero day complete. Stack another one tomorrow.`;
+}
+
+function weekBounds(){
+ const now=new Date(); const day=now.getDay(); const diff=(day+6)%7;
+ const mon=new Date(now); mon.setDate(now.getDate()-diff); mon.setHours(0,0,0,0);
+ const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+ return [mon,sun];
+}
+function sessionsThisWeek(){
+ const [a,b]=weekBounds();
+ return state.sessions.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=a&&d<=new Date(b.getTime()+86400000-1)})
+}
+function calcStreak(){
+ const set=new Set(state.sessions.filter(s=>s.completed).map(s=>s.date));
+ let d=new Date(), streak=0;
+ if(!set.has(localDateStr(d))){d.setDate(d.getDate()-1)}
+ while(set.has(localDateStr(d))){streak++;d.setDate(d.getDate()-1)}
+ return streak;
+}
+function renderMetrics(){
+ const w=sessionsThisWeek();
+ const bike=w.filter(s=>s.type==='bike').reduce((a,b)=>a+(b.duration||0),0);
+ document.getElementById('streak').textContent=calcStreak();
+ document.getElementById('weekStarts').textContent=`${w.length}/7`;
+ document.getElementById('weekBike').textContent=bike;
+}
+
+function renderWeek(){
+ const [mon]=weekBounds(), byDate=Object.fromEntries(state.sessions.map(s=>[s.date,s]));
+ const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+ let html='';
+ for(let i=0;i<7;i++){
+   const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=byDate[ds];
+   const program=PROGRAM[(i+1)%7];
+   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${program.name}</span><span class="small">${r?r.mode.toUpperCase():'—'}</span></div>`;
+ }
+ document.getElementById('weekList').innerHTML=html;
+ const w=sessionsThisWeek(), starts=w.length, mins=w.reduce((a,b)=>a+(b.duration||0),0);
+ const avgPain=w.length?(w.reduce((a,b)=>a+(b.pain||0),0)/w.length).toFixed(1):'—';
+ let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
+          starts>=4?'Solid week. Your next win is simply converting one missed day into a 10-minute Minimum day.':
+          'The program is designed for imperfect weeks. Focus only on getting the next start.';
+ document.getElementById('weeklySummary').innerHTML=`<p><b>${starts}/7 starts</b> · ${mins} total min · average reported pain ${avgPain}/10.</p><p>${text}</p>`;
+}
+
+function renderProgress(){
+ const s=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('totalStarts').textContent=s.length;
+ document.getElementById('totalStrength').textContent=s.filter(x=>x.type==='strength').length;
+ document.getElementById('totalBike').textContent=s.filter(x=>x.type==='bike').reduce((a,b)=>a+(b.duration||0),0);
+ const recent=s.slice(0,14), old=s.slice(14,28);
+ let trend='Keep logging sessions; your first useful trend summary appears as history builds.';
+ if(recent.length>=5){
+   const rp=recent.reduce((a,b)=>a+(b.pain||0),0)/recent.length;
+   const op=old.length?old.reduce((a,b)=>a+(b.pain||0),0)/old.length:null;
+   if(op!==null){
+     const diff=rp-op;
+     trend=diff<-0.5?`Reported pain is trending down by about ${Math.abs(diff).toFixed(1)} points versus the prior period. Preserve what is working.`:
+           diff>0.5?`Reported pain is trending up by about ${diff.toFixed(1)} points. Favor Minimum/Flare modes and discuss worsening symptoms with your clinician.`:
+           `Reported pain is relatively stable. Consistency and pre-op fitness remain the priority.`;
+   } else trend=`You have ${recent.length} logged sessions. Keep stacking starts; the app will compare pain trends once there is more history.`;
+ }
+ document.getElementById('trendSummary').textContent=trend;
+ document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>`<div class="dayrow"><span>${fmtDate(x.date)}</span><span>${x.name}<br><span class="small">${x.mode.toUpperCase()} · pain ${x.pain}/10</span></span><span>${x.duration||0}m</span></div>`).join('')||'<p>No sessions saved yet.</p>';
+}
+
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;renderWorkout();saveActiveWorkout()}));
+document.getElementById('pain').addEventListener('input',()=>{updatePainAdvice();saveActiveWorkout()});
+document.getElementById('energy').addEventListener('input',()=>{updatePainAdvice();saveActiveWorkout()});
+document.getElementById('completeBtn').addEventListener('click',completeWorkout);
+document.getElementById('timerStartBtn').addEventListener('click',startTimer);
+document.getElementById('timerPauseBtn').addEventListener('click',pauseTimer);
+document.getElementById('restartWorkoutBtn').addEventListener('click',restartWorkout);
+document.getElementById('reviewMetricsBtn').addEventListener('click',()=>{document.getElementById('postMetrics').classList.toggle('hidden');prefillMetrics()});
+document.getElementById('importC2Btn').addEventListener('click',()=>importLatestConcept2());
+document.getElementById('importC2QuickBtn').addEventListener('click',()=>importLatestConcept2());
+document.getElementById('completeBtnTop').addEventListener('click',completeWorkout);
+
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
+ ['Today','Week','Progress','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
+ if(b.dataset.tab==='Week')renderWeek();
+ if(b.dataset.tab==='Progress')renderProgress();
+}));
+
+document.getElementById('startDate').value=state.startDate;
+document.getElementById('startDate').addEventListener('change',e=>{state.startDate=e.target.value;save()});
+document.getElementById('reminderTime').value=state.reminderTime||'06:00';if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();renderPreop();
+document.getElementById('reminderTime').addEventListener('change',e=>{state.reminderTime=e.target.value;save()});
+document.getElementById('ergDataFirstEnabled').addEventListener('change',e=>{state.ergDataFirst={enabled:e.target.checked};save();renderErgOrchestration()});
+document.getElementById('copyErgStartUrlBtn').addEventListener('click',async()=>{const u=ergIntentUrl();if(!u)return alert('Configure Cloud Sync first.');try{await navigator.clipboard.writeText(u);document.getElementById('ergAutomationStatus').textContent='Start endpoint copied.'}catch{prompt('Copy this endpoint:',u)}});
+document.getElementById('copySyncKeyBtn').addEventListener('click',async()=>{if(!cloudConfig.syncKey)return alert('Configure Cloud Sync first.');try{await navigator.clipboard.writeText(cloudConfig.syncKey);document.getElementById('ergAutomationStatus').textContent='Sync key copied. Treat it like a password.'}catch{prompt('Copy this private key:',cloudConfig.syncKey)}});
+document.getElementById('testErgAutomationBtn').addEventListener('click',async()=>{const el=document.getElementById('ergAutomationStatus');try{el.textContent='Starting test session…';await callErgIntent('start');await pullCloudState();renderToday();renderTimer();el.textContent='Success — Roku should enter Performance on its next poll.'}catch(e){el.textContent='Test failed: '+e.message}});
+
+function renderWallScheduleSettings(){
+ const s=state.wallSchedule||{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
+ document.getElementById('wallAmbientTime').value=s.ambient||'06:00';document.getElementById('wallNightTime').value=s.night||'20:30';document.getElementById('wallDeepTime').value=s.deep||'01:00';document.getElementById('wallScheduleEnabled').checked=s.enabled!==false;
+}
+function saveWallSchedule(){state.wallSchedule={enabled:document.getElementById('wallScheduleEnabled').checked,ambient:document.getElementById('wallAmbientTime').value||'06:00',night:document.getElementById('wallNightTime').value||'20:30',deep:document.getElementById('wallDeepTime').value||'01:00'};save();}
+renderWallScheduleSettings();['wallAmbientTime','wallNightTime','wallDeepTime','wallScheduleEnabled'].forEach(id=>document.getElementById(id).addEventListener('change',saveWallSchedule));
+function saveSurgeryPlan(){state.surgeryPlan={...(state.surgeryPlan||{}),date:document.getElementById('surgeryDate')?.value||'',label:'RIGHT HIP'};save();renderPreop();renderToday();}
+document.getElementById('surgeryDate')?.addEventListener('change',saveSurgeryPlan);
+document.getElementById('clearSurgeryDateBtn')?.addEventListener('click',()=>{document.getElementById('surgeryDate').value='';saveSurgeryPlan()});
+renderPreop();
+
+
+
+async function generateRokuPairCode(){
+ const btn=document.getElementById('generatePairCodeBtn'),box=document.getElementById('pairCodeBox'),value=document.getElementById('pairCodeValue'),status=document.getElementById('pairCodeStatus');
+ saveCloudConfig();
+ if(!cloudReady()){
+   alert('Configure Cloud Sync first: enter the Worker URL, generate/paste the private sync key, then tap Sync now.');
+   return;
+ }
+ try{
+   btn.disabled=true;btn.textContent='Generating…';status.textContent='Creating one-time pairing code…';box.classList.remove('hidden');
+   const res=await fetch(cloudConfig.endpoint+'/pair/create',{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:'{}',cache:'no-store'});
+   const body=await res.json();
+   if(!res.ok||!body.code) throw new Error(body.error||('Pairing '+res.status));
+   value.textContent=body.code;
+   const mins=Math.max(1,Math.round(Number(body.expiresInSeconds||600)/60));
+   status.textContent='Enter this code on the Roku Wall. Expires in about '+mins+' minutes.';
+ }catch(err){
+   value.textContent='------';status.textContent='Could not create pairing code: '+err.message;
+ }finally{btn.disabled=false;btn.textContent='Generate 6-digit pairing code'}
+}
+document.getElementById('generatePairCodeBtn').addEventListener('click',generateRokuPairCode);
+
+document.getElementById('cloudEndpoint').value=cloudConfig.endpoint||'';
+document.getElementById('syncKey').value=cloudConfig.syncKey||'';
+document.getElementById('cloudEndpoint').addEventListener('change',()=>{saveCloudConfig();pullCloudState()});
+document.getElementById('syncKey').addEventListener('change',()=>{saveCloudConfig();pullCloudState()});
+document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
+ const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
+});
+document.getElementById('syncNowBtn').addEventListener('click',async()=>{saveCloudConfig();await pullCloudState({force:false});await pushCloudState()});
+document.getElementById('wallLaunchBtn').addEventListener('click',()=>{location.href='./wall/'});
+setSyncStatus(cloudReady()?'Cloud configured':'Local only',cloudReady()?'ok':'');
+
+document.getElementById('exportBtn').addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hip-prehab-progress.json';a.click();URL.revokeObjectURL(a.href);
+});
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',async e=>{
+ try{const txt=await e.target.files[0].text();state=JSON.parse(txt);save();location.reload()}catch{alert('Could not import that file.')}
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+ if(confirm('Reset all saved progress? Cloud sync will mirror the reset after reload.')){localStorage.removeItem(STORAGE_KEY);location.reload()}
+});
+
+window.addEventListener('beforeinstallprompt',e=>{
+ e.preventDefault(); deferredPrompt=e; document.getElementById('installBanner').style.display='block';
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+ if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}
+});
+
+
+renderToday();renderWeek();renderProgress();renderTimer();setInterval(renderTimer,1000);setInterval(()=>{if(cloudReady()&&state.activeWorkout?.date===localDateStr()&&['active','paused'].includes(state.activeWorkout.status))pushCloudState()},5000);
+if(cloudReady()) pullCloudState();
+window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}renderTimer()});
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
+window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
+</script>
+</body>
+</html>
