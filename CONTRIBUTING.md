@@ -1,26 +1,39 @@
 # Contributing to NONZERO
 
-## Fastest product update
+NONZERO is optimized for reliability and low-friction personal use.
 
-For product planning changes, edit `BACKLOG.json` and run:
+## Development rules
 
-```bash
-npm run roadmap
-npm test
-```
+1. Branch/version forward from the latest working release.
+2. Never modify an archived Basecamp artifact in place.
+3. Pairing/runtime changes require explicit regression testing.
+4. Do not make Roku a second general-purpose state writer.
+5. ErgData remains the PM5 Bluetooth owner unless architecture is deliberately changed.
+6. Avoid phone UI that duplicates Wall information without a phone-specific action.
+7. Preserve saved-state compatibility whenever practical.
+8. Update `CHANGELOG.md` and `ROADMAP.md` with every meaningful release.
+9. Never claim physical Roku/device validation unless it actually occurred.
+10. Prefer incremental releases over simultaneous rewrites of phone, Worker, and Roku.
 
-Commit both `BACKLOG.json` and the regenerated `ROADMAP.md` when working locally. If only `BACKLOG.json` is committed, the roadmap GitHub Action will regenerate and commit `ROADMAP.md` automatically.
+## Versioning convention
 
-## App changes
+Track component versions independently:
 
-The current app is intentionally simple: `index.html` is the runnable baseline. Preserve local data compatibility unless a migration is explicitly designed. When changing behavior:
+- Phone/PWA `v3.x`
+- Worker `v4.x`
+- Roku `v4.3.x`
 
-1. Update `index.html`.
-2. Update `BACKLOG.json` for completed/changed scope.
-3. Run `npm run roadmap`.
-4. Run `npm test`.
-5. Add a concise entry to `CHANGELOG.md`.
+A release note should always state the complete tested combination.
 
-## Generated files
+## Definition of a regression
 
-Do not hand-edit `ROADMAP.md`.
+Any of the following is release-blocking unless explicitly documented:
+- pairing button disappears;
+- Roku can no longer claim a six-digit code;
+- cloud state fails to load;
+- active workout fails to enter Performance;
+- finished workout gets stuck indefinitely in Performance;
+- timer resets because the phone changes apps;
+- a release requires the user to re-enter secrets without necessity;
+- phone Today becomes dominated by administration rather than training.
+
