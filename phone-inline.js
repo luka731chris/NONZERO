@@ -1,5 +1,5 @@
 
-/* NONZERO v3.13 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.14 — fail-safe BikeErg Shortcut controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -315,7 +315,6 @@ function renderWorkout(){
  <span><b>${x[0]}</b><small>${x[1]}</small></span></label>`).join('');
  document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',handleExerciseCheckChange));
  updateWorkoutProgress();
- ensureTimerLoop();
 }
 
 async function handleExerciseCheckChange(){
@@ -339,6 +338,39 @@ async function handleExerciseCheckChange(){
  if(cloudReady())await pushCloudState();
 }
 
+let uiClock={sessionId:"",timerUpdatedAt:-1,running:false,elapsedMs:0,perfAt:0};
+function syncUiClock(force=false){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ const t=a?.timer||{elapsedMs:0,running:false,startedAt:null};
+ const sid=String(a?.sessionId||"");
+ const stamp=Number(a?.timerUpdatedAt||0);
+ if(force||sid!==uiClock.sessionId||stamp!==uiClock.timerUpdatedAt||Boolean(t.running)!==uiClock.running){
+   const live=Math.max(0,Number(t.elapsedMs||0)+(t.running&&t.startedAt?Date.now()-Number(t.startedAt):0));
+   uiClock={sessionId:sid,timerUpdatedAt:stamp,running:Boolean(t.running),elapsedMs:live,perfAt:performance.now()};
+ }
+}
+function uiTimerElapsed(){
+ syncUiClock(false);
+ return Math.max(0,uiClock.elapsedMs+(uiClock.running?(performance.now()-uiClock.perfAt):0));
+}
+function renderTimerFace(){
+ const el=document.getElementById('timerReadout');
+ if(!el)return;
+ const parts=fmtTimerParts(uiTimerElapsed());
+ el.innerHTML=`${parts.main}<span class="hundredths">.${parts.hundredths}</span>`;
+ const lap=document.getElementById('lapReadout');
+ if(lap){
+   const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+   const start=Math.max(0,Number(a?.lapStartElapsedMs||0));
+   lap.textContent=fmtTimer(Math.max(0,uiTimerElapsed()-start));
+ }
+}
+let timerAnimationFrame=0;
+function startSmoothTimer(){
+ if(timerAnimationFrame)cancelAnimationFrame(timerAnimationFrame);
+ const tick=()=>{renderTimerFace();timerAnimationFrame=requestAnimationFrame(tick)};
+ timerAnimationFrame=requestAnimationFrame(tick);
+}
 function timerState(){
  if(!state.activeWorkout||state.activeWorkout.date!==localDateStr()) return {elapsedMs:0,running:false,startedAt:null};
  return state.activeWorkout.timer||{elapsedMs:0,running:false,startedAt:null};
@@ -362,7 +394,6 @@ function currentLapElapsed(){
 function renderLapPanel(){
  const a=state.activeWorkout||{},laps=Array.isArray(a.laps)?a.laps:[];
  const read=document.getElementById('lapReadout'),count=document.getElementById('lapCount'),list=document.getElementById('lapList');
- if(read)read.textContent=fmtTimer(currentLapElapsed());
  if(count)count.textContent=`${laps.length} LAP${laps.length===1?'':'S'}`;
  if(list){
    list.innerHTML=laps.slice().reverse().slice(0,6).map(l=>`<div class="laprow"><span>LAP ${l.number}</span><b>${fmtTimer(l.durationMs)}</b><span class="lapmetrics">${l.rpm?`${Math.round(l.rpm)} RPM`:''}${l.rpm&&l.watts?' · ':''}${l.watts?`${Math.round(l.watts)} W`:''}</span></div>`).join('');
@@ -402,13 +433,11 @@ function renderErgOrchestration(){
  const en=document.getElementById('ergDataFirstEnabled');if(en)en.checked=state.ergDataFirst?.enabled!==false;
 }
 function renderTimer(){
- const el=document.getElementById('timerReadout');if(!el)return;
- const parts=fmtTimerParts(timerElapsed());
- el.innerHTML=`${parts.main}<span class="hundredths">.${parts.hundredths}</span>`;
+ syncUiClock(true);
+ renderTimerFace();
  renderLapPanel();
  const st=document.getElementById('sessionState');const status=state.activeWorkout?.date===localDateStr()?(state.activeWorkout.status||'ready'):'ready';
- if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · Wall locked to Performance':status==='paused'?'PAUSED · Wall stays in Performance':status==='complete'?'COMPLETE':'READY · Wall follows schedule';}
- renderErgOrchestration();
+ if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · PERFORMANCE MODE':status==='paused'?'PAUSED · PERFORMANCE HELD':status==='complete'?'COMPLETE':'READY';}
 }
 function ensureActiveWorkout(status='ready'){
  const p=todayProgram();const existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
@@ -670,18 +699,14 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 });
 
 
-renderToday();renderWeek();renderProgress();renderTimer();
-(function animateTimer(){
-  renderTimer();
-  requestAnimationFrame(animateTimer);
-})();
+renderToday();renderWeek();renderProgress();renderTimer();startSmoothTimer();
 startCanonicalSyncLoop();
 if(cloudReady()) pullCloudState();
 window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}renderTimer()});
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())await pushCloudState()}else{if(cloudReady())await pullCloudState({force:true});renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.13: one-link BikeErg Shortcuts setup.
+// NONZERO v3.14: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);

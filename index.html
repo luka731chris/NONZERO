@@ -64,10 +64,47 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .durableControls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.durableControls button{font-weight:850;min-height:48px}.erglaunch{display:grid;grid-template-columns:1.25fr 1fr;gap:8px;margin:10px 0}.erglaunch a,.erglaunch button{display:flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;border-radius:12px;font-weight:850}.erglaunch a{background:#111a25;border:1px solid var(--border);color:var(--text)}.sessionstate{font-size:12px;color:var(--muted);margin-top:7px}.sessionstate.live{color:#55d67a}.sessionstate.paused{color:#d5a338}.ergnote{font-size:12px;color:var(--muted);line-height:1.45;margin-top:8px}.wallScheduleGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.preopBanner{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:14px;padding:13px 15px;margin-bottom:12px;background:#0a1017}.preopBanner.done{border-left-color:#55d67a}.preopBig{font-size:25px;font-weight:900;letter-spacing:-.02em}.preopMeta{font-size:12px;color:var(--muted);margin-top:4px}.surgeryGrid{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}@media(max-width:520px){.wallScheduleGrid{grid-template-columns:1fr}.erglaunch{grid-template-columns:1fr}}
 ''
 .ergFirstCard{border:1px solid rgba(213,163,56,.42);background:linear-gradient(180deg,rgba(213,163,56,.08),rgba(10,15,22,.68));border-radius:16px;padding:14px;margin:12px 0}.ergFirstHead{display:flex;justify-content:space-between;align-items:center;gap:10px}.ergFirstTitle{font-weight:900;letter-spacing:.08em}.statusgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.statuschip{border:1px solid var(--border);border-radius:11px;padding:9px 10px;background:#0b1119;font-size:12px}.statuschip b{display:block;font-size:13px;margin-top:2px}.statuschip .ok{color:#55d67a}.statuschip .wait{color:#d5a338}.automationSteps{font-size:12px;line-height:1.45;color:var(--muted);margin-top:10px}.copyrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.copyrow button{min-height:44px}.tinycode{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all;color:#aeb8c6;margin-top:6px}.autoBadge{font-size:11px;border:1px solid rgba(85,214,122,.4);color:#55d67a;padding:4px 8px;border-radius:999px;white-space:nowrap}@media(max-width:520px){.statusgrid,.copyrow{grid-template-columns:1fr}}
+
+/* v3.14 Today cockpit */
+#tabToday{display:grid;gap:12px}
+#tabToday.hidden{display:none}
+.hero{padding:12px 14px}
+.hero .grid3,.hero>p+.small{display:none}
+.hero h1{font-size:23px;margin:7px 0 2px}
+#todaySub{font-size:13px;color:var(--muted);margin:0}
+.todayCockpit{background:linear-gradient(180deg,#0d151f,#080d13);border:1px solid #2a3647;border-radius:20px;padding:14px}
+.todayCockpit .timerCaption{text-align:center}
+.timerpanel.cockpitTimer{margin:0;border:0;background:transparent;box-shadow:none;padding:6px 0 12px;text-align:center}
+.timerpanel.cockpitTimer .timerreadout{font-size:clamp(58px,17vw,92px);letter-spacing:-3px}
+.timerpanel.cockpitTimer .hundredths{font-size:.42em}
+.cockpitState{text-align:center}
+.cockpitControls{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+.cockpitControls button{min-height:52px;padding:8px 5px;font-size:12px;font-weight:900}
+.cockpitControls .finishControl{background:#d4af37;color:#071017}
+.lapStrip{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 2px 2px;border-top:1px solid #263344;margin-top:10px}
+.lapStrip .lapreadout{font-size:30px}
+.lapInputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.workoutSnapshot{border:1px solid #263344;border-radius:18px;background:#0b1118;padding:14px}
+.workoutSnapshot h2{margin:3px 0 2px}
+.workoutSnapshot #sessionWhy{margin:2px 0 10px;font-size:12px;line-height:1.35;color:var(--muted)}
+.workoutSnapshot .modegrid{margin-bottom:9px}
+.workoutSnapshot .exercise{padding:11px 4px}
+.workoutSnapshot .exercise b{font-size:15px}
+.workoutSnapshot .exercise small{line-height:1.35}
+.todayUtilityHidden{display:none!important}
+#preopBanner,.readinessCard,#ergFirstCard,.workoutactions,#postMetrics{display:none!important}
+#completeBtn{display:block}
+#completeMessage{margin-top:8px}
+@media(max-width:520px){
+ .cockpitControls{grid-template-columns:repeat(3,1fr)}
+ .cockpitControls .finishControl{grid-column:span 2}
+ .timerpanel.cockpitTimer .timerreadout{font-size:clamp(54px,16vw,78px)}
+}
+
 </style>
 
 <script>
-/* NONZERO v3.13 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.14 — fail-safe BikeErg Shortcut controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -167,7 +204,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.13</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.14</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -185,106 +222,68 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 
 
   <main id="tabToday">
-    <div id="preopBanner" class="preopBanner">
-      <div class="small">PRE-OP MISSION</div>
-      <div id="preopBig" class="preopBig">SURGERY DATE TBD</div>
-      <div id="preopMeta" class="preopMeta">Enter the date below as soon as surgery is scheduled.</div>
-      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:end">
-        <div class="field"><label for="todaySurgeryDate">HIP SURGERY DATE</label><input id="todaySurgeryDate" type="date"></div>
-        <button id="todayClearSurgeryDate" type="button">Clear</button>
-      </div>
-    </div>
-    <section class="card">
-      <h2>Today's readiness</h2>
-      <div class="row">
-        <div>
-          <label class="small">Hip pain</label>
-          <input id="pain" type="number" min="0" max="10" step="1" value="6">
-        </div>
-        <div>
-          <label class="small">Energy</label>
-          <input id="energy" type="number" min="1" max="5" step="1" value="3">
-        </div>
-      </div>
-      <div id="painAdvice" class="callout" style="margin-top:8px"></div>
-    </section>
-
-    <section class="card">
-      <div class="small" style="font-weight:800;letter-spacing:.12em;color:#d4af37">TODAY'S WORK</div><h2 id="sessionName" style="margin-top:3px">Today's session</h2>
-      <p id="sessionWhy"></p>
-      <div class="modegrid">
-        <button data-mode="full" class="active">FULL<br><span class="small">planned session</span></button>
-        <button data-mode="minimum" class="warn">MINIMUM<br><span class="small">10-minute win</span></button>
-        <button data-mode="flare" class="danger">FLARE<br><span class="small">protect the hip</span></button>
-      </div>
-      <div id="workout" style="margin-top:10px"></div>
-      <div class="progressbar"><div id="workoutProgress"></div></div>
-      <p class="small" id="progressText">0% complete</p>
-      <div class="timerpanel">
+    <section class="todayCockpit">
+      <div class="timerpanel cockpitTimer">
         <div class="timerCaption">MASTER WORKOUT · ELAPSED</div>
         <div id="timerReadout" class="timerreadout">00:00<span class="hundredths">.00</span></div>
-        <div id="sessionState" class="sessionstate">READY · Wall follows schedule</div>
+        <div id="sessionState" class="sessionstate cockpitState">READY</div>
       </div>
-      <div class="lapbox" id="lapBox">
-        <div class="laphead">
-          <div><div class="timerCaption">INTERVAL / SPRINT LAP</div><div id="lapReadout" class="lapreadout">00:00.00</div></div>
-          <div class="small" id="lapCount">0 LAPS</div>
+
+      <div class="cockpitControls" aria-label="Workout controls">
+        <button id="timerStartBtn" class="primary">▶ START</button>
+        <button id="timerPauseBtn">Ⅱ PAUSE</button>
+        <button id="lapBtn" class="primary">＋ LAP</button>
+        <button id="restartWorkoutBtn" class="danger">↻ RESET</button>
+        <button id="completeBtn" class="finishControl">✓ FINISH & SAVE</button>
+      </div>
+
+      <div class="lapStrip">
+        <div>
+          <div class="timerCaption" style="text-align:left">CURRENT LAP</div>
+          <div id="lapReadout" class="lapreadout">00:00.00</div>
         </div>
-        <div class="lapgrid">
-          <label>AVG RPM<input id="lapRpm" type="number" inputmode="decimal" min="0" max="250" step="1" placeholder="optional"></label>
-          <label>AVG WATTS<input id="lapWatts" type="number" inputmode="decimal" min="0" max="2500" step="1" placeholder="optional"></label>
-          <button id="lapBtn" class="primary lapBtn">＋ LAP</button>
-        </div>
-        <div class="small" style="margin-top:8px">RPM and watts are manual for now. The lap time is automatic and does not reset the master workout timer.</div>
-        <div id="lapList" class="laplist"></div>
+        <div class="small" id="lapCount">0 LAPS</div>
       </div>
-      <div class="durableControls">
-        <button id="timerStartBtn" class="primary">▶ Start</button>
-        <button id="timerPauseBtn">Ⅱ Pause</button>
-        <button id="restartWorkoutBtn" class="danger">↻ Reset</button>
+      <div class="lapInputs">
+        <label class="small">AVG RPM<input id="lapRpm" type="number" inputmode="decimal" min="0" max="250" step="1" placeholder="optional"></label>
+        <label class="small">AVG WATTS<input id="lapWatts" type="number" inputmode="decimal" min="0" max="2500" step="1" placeholder="optional"></label>
       </div>
-      <div class="ergFirstCard" id="ergFirstCard">
-        <div class="ergFirstHead"><div><div class="ergFirstTitle">BIKEERG AUTO</div><div class="small">Open ErgData → NONZERO starts → Wall switches automatically</div></div><span class="autoBadge">AUTO ORCHESTRATION</span></div>
-        <div class="statusgrid">
-          <div class="statuschip">NONZERO SESSION<b id="ergNzStatus" class="wait">READY</b></div>
-          <div class="statuschip">GARAGE WALL<b id="ergWallStatus" class="wait">AMBIENT</b></div>
-          <div class="statuschip">CONCEPT2 RESULT<b id="ergC2Status" class="wait">WAITING</b></div>
-          <div class="statuschip">APPLE HEALTH<b id="ergHealthStatus" class="ok">ERGDATA PATH</b></div>
-        </div>
-        <div class="erglaunch">
-          <a id="openErgDataBtn" href="https://apps.apple.com/us/app/ergdata/id561716382" target="_blank" rel="noopener">Open / Install ErgData</a>
-          <button id="importC2QuickBtn">Check result now</button>
-        </div>
-        <div class="ergnote"><b>Normal flow:</b> wake PM5 → open ErgData → ride. NONZERO starts automatically; no need to open Wall controls on the phone.</div>
-      </div>
-      <div class="workoutactions">
-        <button id="reviewMetricsBtn">Post-workout metrics</button>
-        <button id="completeBtnTop" class="secondary">Finish workout</button>
-      </div>
-      <div id="postMetrics" class="postmetrics hidden">
-        <h3>Post-workout metrics</h3>
-        <p class="small">Timer and Concept2 data prefill what they can. Edit anything before saving.</p>
-        <div class="ergbar"><button id="importC2Btn">Import latest Concept2 workout</button></div>
-        <div id="ergStatus" class="ergstatus">Concept2 import uses ErgData → Online Logbook → NONZERO.</div>
-        <div class="metricsgrid">
-          <div class="field"><label>Duration (min)</label><input id="metricDuration" type="number" min="0" step="0.1"></div>
-          <div class="field"><label>Session RPE (1–10)</label><input id="metricRpe" type="number" min="1" max="10" step="1"></div>
-          <div class="field"><label>Post-workout hip pain (0–10)</label><input id="metricPainAfter" type="number" min="0" max="10" step="1"></div>
-          <div class="field"><label>Post-workout energy (1–5)</label><input id="metricEnergyAfter" type="number" min="1" max="5" step="1"></div>
-          <div class="field"><label>Distance (m)</label><input id="metricDistance" type="number" min="0" step="1"></div>
-          <div class="field"><label>Calories</label><input id="metricCalories" type="number" min="0" step="1"></div>
-          <div class="field"><label>Avg pace / 500m</label><input id="metricPace" type="text" placeholder="2:15.0"></div>
-          <div class="field"><label>Avg watts</label><input id="metricWatts" type="number" min="0" step="1"></div>
-          <div class="field"><label>Avg cadence / stroke rate</label><input id="metricRate" type="number" min="0" step="1"></div>
-          <div class="field"><label>Avg HR</label><input id="metricAvgHr" type="number" min="0" step="1"></div>
-          <div class="field"><label>Max HR</label><input id="metricMaxHr" type="number" min="0" step="1"></div>
-          <div class="field"><label>Drag factor</label><input id="metricDrag" type="number" min="0" step="1"></div>
-          <div class="field wide"><label>Workout notes</label><textarea id="metricNotes" placeholder="What felt strong, what hurt, what to change next time"></textarea></div>
-        </div>
-      </div>
-      <button id="completeBtn" class="primary">✓ Finish & save workout</button>
+      <div id="lapList" class="laplist"></div>
       <div id="completeMessage"></div>
     </section>
+
+    <section class="workoutSnapshot">
+      <div class="small" style="font-weight:900;letter-spacing:.13em;color:#d4af37">TODAY'S WORK</div>
+      <h2 id="sessionName">Today's session</h2>
+      <p id="sessionWhy"></p>
+      <div class="modegrid">
+        <button data-mode="full" class="active">FULL<br><span class="small">planned</span></button>
+        <button data-mode="minimum" class="warn">MINIMUM<br><span class="small">quick win</span></button>
+        <button data-mode="flare" class="danger">FLARE<br><span class="small">protect</span></button>
+      </div>
+      <div id="workout"></div>
+      <div class="progressbar"><div id="workoutProgress"></div></div>
+      <p class="small" id="progressText">0% complete</p>
+    </section>
+
+    <div class="todayUtilityHidden">
+      <div id="preopBanner"><div id="preopBig"></div><div id="preopMeta"></div><input id="todaySurgeryDate" type="date"><button id="todayClearSurgeryDate">Clear</button></div>
+      <section class="readinessCard"><input id="pain" type="number" value="6"><input id="energy" type="number" value="3"><div id="painAdvice"></div></section>
+      <div id="ergFirstCard">
+        <b id="ergNzStatus"></b><b id="ergWallStatus"></b><b id="ergC2Status"></b><b id="ergHealthStatus"></b>
+        <a id="openErgDataBtn" href="https://apps.apple.com/us/app/ergdata/id561716382"></a>
+        <button id="importC2QuickBtn"></button><div id="ergStartUrlPreview"></div>
+      </div>
+      <div class="workoutactions"><button id="reviewMetricsBtn"></button><button id="completeBtnTop"></button></div>
+      <div id="postMetrics" class="hidden">
+        <button id="importC2Btn"></button><div id="ergStatus"></div>
+        <input id="metricDuration" type="number"><input id="metricRpe" type="number"><input id="metricPainAfter" type="number">
+        <input id="metricEnergyAfter" type="number"><input id="metricDistance" type="number"><input id="metricCalories" type="number">
+        <input id="metricPace" type="text"><input id="metricWatts" type="number"><input id="metricRate" type="number">
+        <input id="metricAvgHr" type="number"><input id="metricMaxHr" type="number"><input id="metricDrag" type="number">
+        <textarea id="metricNotes"></textarea>
+      </div>
+    </div>
   </main>
 
   <main id="tabWeek" class="hidden">
@@ -636,7 +635,6 @@ function renderWorkout(){
  <span><b>${x[0]}</b><small>${x[1]}</small></span></label>`).join('');
  document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',handleExerciseCheckChange));
  updateWorkoutProgress();
- ensureTimerLoop();
 }
 
 async function handleExerciseCheckChange(){
@@ -660,6 +658,39 @@ async function handleExerciseCheckChange(){
  if(cloudReady())await pushCloudState();
 }
 
+let uiClock={sessionId:"",timerUpdatedAt:-1,running:false,elapsedMs:0,perfAt:0};
+function syncUiClock(force=false){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ const t=a?.timer||{elapsedMs:0,running:false,startedAt:null};
+ const sid=String(a?.sessionId||"");
+ const stamp=Number(a?.timerUpdatedAt||0);
+ if(force||sid!==uiClock.sessionId||stamp!==uiClock.timerUpdatedAt||Boolean(t.running)!==uiClock.running){
+   const live=Math.max(0,Number(t.elapsedMs||0)+(t.running&&t.startedAt?Date.now()-Number(t.startedAt):0));
+   uiClock={sessionId:sid,timerUpdatedAt:stamp,running:Boolean(t.running),elapsedMs:live,perfAt:performance.now()};
+ }
+}
+function uiTimerElapsed(){
+ syncUiClock(false);
+ return Math.max(0,uiClock.elapsedMs+(uiClock.running?(performance.now()-uiClock.perfAt):0));
+}
+function renderTimerFace(){
+ const el=document.getElementById('timerReadout');
+ if(!el)return;
+ const parts=fmtTimerParts(uiTimerElapsed());
+ el.innerHTML=`${parts.main}<span class="hundredths">.${parts.hundredths}</span>`;
+ const lap=document.getElementById('lapReadout');
+ if(lap){
+   const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+   const start=Math.max(0,Number(a?.lapStartElapsedMs||0));
+   lap.textContent=fmtTimer(Math.max(0,uiTimerElapsed()-start));
+ }
+}
+let timerAnimationFrame=0;
+function startSmoothTimer(){
+ if(timerAnimationFrame)cancelAnimationFrame(timerAnimationFrame);
+ const tick=()=>{renderTimerFace();timerAnimationFrame=requestAnimationFrame(tick)};
+ timerAnimationFrame=requestAnimationFrame(tick);
+}
 function timerState(){
  if(!state.activeWorkout||state.activeWorkout.date!==localDateStr()) return {elapsedMs:0,running:false,startedAt:null};
  return state.activeWorkout.timer||{elapsedMs:0,running:false,startedAt:null};
@@ -683,7 +714,6 @@ function currentLapElapsed(){
 function renderLapPanel(){
  const a=state.activeWorkout||{},laps=Array.isArray(a.laps)?a.laps:[];
  const read=document.getElementById('lapReadout'),count=document.getElementById('lapCount'),list=document.getElementById('lapList');
- if(read)read.textContent=fmtTimer(currentLapElapsed());
  if(count)count.textContent=`${laps.length} LAP${laps.length===1?'':'S'}`;
  if(list){
    list.innerHTML=laps.slice().reverse().slice(0,6).map(l=>`<div class="laprow"><span>LAP ${l.number}</span><b>${fmtTimer(l.durationMs)}</b><span class="lapmetrics">${l.rpm?`${Math.round(l.rpm)} RPM`:''}${l.rpm&&l.watts?' · ':''}${l.watts?`${Math.round(l.watts)} W`:''}</span></div>`).join('');
@@ -723,13 +753,11 @@ function renderErgOrchestration(){
  const en=document.getElementById('ergDataFirstEnabled');if(en)en.checked=state.ergDataFirst?.enabled!==false;
 }
 function renderTimer(){
- const el=document.getElementById('timerReadout');if(!el)return;
- const parts=fmtTimerParts(timerElapsed());
- el.innerHTML=`${parts.main}<span class="hundredths">.${parts.hundredths}</span>`;
+ syncUiClock(true);
+ renderTimerFace();
  renderLapPanel();
  const st=document.getElementById('sessionState');const status=state.activeWorkout?.date===localDateStr()?(state.activeWorkout.status||'ready'):'ready';
- if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · Wall locked to Performance':status==='paused'?'PAUSED · Wall stays in Performance':status==='complete'?'COMPLETE':'READY · Wall follows schedule';}
- renderErgOrchestration();
+ if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · PERFORMANCE MODE':status==='paused'?'PAUSED · PERFORMANCE HELD':status==='complete'?'COMPLETE':'READY';}
 }
 function ensureActiveWorkout(status='ready'){
  const p=todayProgram();const existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
@@ -991,18 +1019,14 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 });
 
 
-renderToday();renderWeek();renderProgress();renderTimer();
-(function animateTimer(){
-  renderTimer();
-  requestAnimationFrame(animateTimer);
-})();
+renderToday();renderWeek();renderProgress();renderTimer();startSmoothTimer();
 startCanonicalSyncLoop();
 if(cloudReady()) pullCloudState();
 window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}renderTimer()});
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())await pushCloudState()}else{if(cloudReady())await pullCloudState({force:true});renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.13: one-link BikeErg Shortcuts setup.
+// NONZERO v3.14: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
