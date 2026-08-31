@@ -69,7 +69,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.10</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.10.1</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -740,7 +740,7 @@ document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
  const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
 });
 document.getElementById('syncNowBtn').addEventListener('click',async()=>{saveCloudConfig();await pullCloudState({force:false});await pushCloudState()});
-document.getElementById('wallLaunchBtn').addEventListener('click',()=>{location.href='./wall/'});
+document.getElementById('wallLaunchBtn')?.addEventListener('click',()=>{location.href='./wall/'});
 setSyncStatus(cloudReady()?'Cloud configured':'Local only',cloudReady()?'ok':'');
 
 document.getElementById('exportBtn').addEventListener('click',()=>{
@@ -769,7 +769,7 @@ window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState(
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())pushCloudState()}else{if(cloudReady())await pullCloudState();renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.10: one-link BikeErg Shortcuts setup.
+// NONZERO v3.10.1: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
