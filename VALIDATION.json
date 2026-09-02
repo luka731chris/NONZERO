@@ -1,16 +1,16 @@
 {
-  "phone_js_syntax": "PASS",
-  "worker_js_syntax": "PASS",
+  "phone": "v3.15",
+  "worker": "v4.7",
+  "roku": "v4.8.4",
   "roku_xml_parse": "PASS",
   "roku_zip_integrity": "PASS",
-  "phone_version": "3.15",
-  "worker_version": "4.7",
-  "roku_version": "4.7.0",
-  "durable_pairing_preserved": true,
-  "canonical_state_preserved": true,
-  "revision_required_hardening": true,
-  "wall_health": true,
-  "ambient_quote_60pt_preserved": true,
-  "physical_roku_compile": "NOT PERFORMED",
-  "physical_iphone_test": "NOT PERFORMED"
+  "studio_polish_preserved": true,
+  "kpi_day_labels_aligned": "M/T/W/T/F/S/S individual labels preserved",
+  "kpi_glass_oval_treatment_removed": true,
+  "direct_quote_engine_preserved": true,
+  "main_loop_quote_cadence_seconds": 17,
+  "equal_lower_panels_preserved": true,
+  "deep_mode_copy_restored": true,
+  "durable_pairing_preserved_in_worker": true,
+  "physical_roku_test": "NOT PERFORMED"
 }
