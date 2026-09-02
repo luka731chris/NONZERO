@@ -101,10 +101,45 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
  .timerpanel.cockpitTimer .timerreadout{font-size:clamp(54px,16vw,78px)}
 }
 
+
+/* v3.15 intelligent training */
+.cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
+.nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
+.nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
+.nowCard small,.nextCard small{display:block;line-height:1.3;margin-top:4px}
+.statePill{display:inline-flex;border:1px solid #3b4a5d;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:900;letter-spacing:.11em;color:#d4af37}
+.restCard{display:none;text-align:center;border-color:#755f2d}
+.restCard.live{display:block}
+.restClock{font-size:42px;font-weight:950;letter-spacing:-2px}
+.secondaryControls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0 2px}
+.secondaryControls button{font-size:11px;min-height:42px;padding:6px 4px}
+.exerciseV315{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;padding:10px 2px;border-bottom:1px solid #1c2734}
+.exerciseV315.current{background:#111b27;border-radius:12px;padding:10px}
+.exerciseV315 input[type=checkbox]{margin-top:4px}
+.setRow{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.setBtn{width:34px;height:34px;border-radius:50%;padding:0;border:1px solid #435166;background:#121b25;color:#c8d1da;font-size:12px;font-weight:900}
+.setBtn.done{background:#2d6643;border-color:#4ba96a;color:#fff}
+.setBtn.current{border-color:#d4af37;box-shadow:0 0 0 2px #d4af3722}
+.exerciseMeta{font-size:11px;color:var(--muted);margin-top:5px}
+.makeNonzero{background:#d4af37!important;color:#071017!important}
+.reportCard h3,.wallHealthCard h3{margin:2px 0 6px}
+.reportGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.reportMetric{background:#101923;border-radius:10px;padding:8px;text-align:center}
+.reportMetric b{display:block;font-size:20px}
+#wallHealthStatus.ok{color:#55d67a}
+#wallHealthStatus.warn{color:#d4af37}
+#wallHealthStatus.err{color:#d66}
+.diagBox{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:10px;max-height:180px;overflow:auto}
+@media(max-width:520px){
+ .cockpitNow{grid-template-columns:1fr}
+ .secondaryControls{grid-template-columns:repeat(3,1fr)}
+ .reportGrid{grid-template-columns:repeat(3,1fr)}
+}
+
 </style>
 
 <script>
-/* NONZERO v3.14 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.15 — fail-safe BikeErg Shortcut controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -204,7 +239,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.14</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.15</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -236,6 +271,33 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <button id="restartWorkoutBtn" class="danger">↻ RESET</button>
         <button id="completeBtn" class="finishControl">✓ FINISH & SAVE</button>
       </div>
+      <div class="secondaryControls">
+        <button id="prevMoveBtn">← PREV</button>
+        <button id="nextMoveBtn">NEXT →</button>
+        <button id="restBtn">REST 90</button>
+        <button id="quoteBtn">QUOTE</button>
+        <button id="wallModeBtn">WALL</button>
+      </div>
+
+      <div class="restCard" id="restCard">
+        <div class="small">RECOVER</div>
+        <div class="restClock" id="restClock">01:30</div>
+        <div class="small" id="restNext">NEXT UP</div>
+      </div>
+
+      <div class="cockpitNow">
+        <div class="nowCard">
+          <span class="statePill" id="workoutStage">READY</span>
+          <div class="small">CURRENT</div>
+          <b id="currentExercise">Ready to start</b>
+          <small id="currentExerciseDetail">Your only obligation is to start.</small>
+        </div>
+        <div class="nextCard">
+          <div class="small">NEXT UP</div>
+          <b id="nextExercise">—</b>
+          <small id="nextExerciseDetail"></small>
+        </div>
+      </div>
 
       <div class="lapStrip">
         <div>
@@ -254,6 +316,10 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 
     <section class="workoutSnapshot">
       <div class="small" style="font-weight:900;letter-spacing:.13em;color:#d4af37">TODAY'S WORK</div>
+      <div class="secondaryControls" style="grid-template-columns:1fr 1fr;margin:8px 0 10px">
+        <button id="makeNonzeroBtn" class="makeNonzero">MAKE IT NONZERO</button>
+        <button id="adaptiveBtn">ADAPT · 30 MIN</button>
+      </div>
       <h2 id="sessionName">Today's session</h2>
       <p id="sessionWhy"></p>
       <div class="modegrid">
@@ -290,6 +356,10 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
     <section class="card">
       <h2>This week</h2>
       <div id="weekList"></div>
+      <div class="reportCard" id="sundayReportCard">
+        <h3>Weekly Performance Report</h3>
+        <div id="sundayReport"></div>
+      </div>
     </section>
     <section class="card">
       <h2>Weekly summary</h2>
@@ -452,10 +522,15 @@ const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
   startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
-if(!state._meta) state._meta={updatedAt:Date.now(),schema:8,revision:0};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:9,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
+if(!state.trainingPrefs) state.trainingPrefs={restSeconds:90,garageArrival:true};
+if(!Array.isArray(state.eventLog)) state.eventLog=[];
+if(!state.wallPresence) state.wallPresence={};
+if(!state.prs) state.prs={};
+
 let cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'null')||{endpoint:'',syncKey:''};
 let mode='full';
 let deferredPrompt=null;
@@ -466,7 +541,7 @@ let canonicalSyncInterval=null;
 let cloudPushInFlight=false;
 
 function save({sync=true}={}){
- state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:8,revision:cloudRevision};
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:9,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  if(sync) queueCloudPush();
 }
@@ -500,10 +575,15 @@ function applyCanonicalState(payload,{render=true}={}){
  if(!remoteState)return false;
  state=remoteState;
  cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
- state._meta={...(state._meta||{}),schema:8,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
+ state._meta={...(state._meta||{}),schema:9,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
  if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
  if(!state.ergDataFirst)state.ergDataFirst={enabled:true};
  if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
+ if(!state.trainingPrefs)state.trainingPrefs={restSeconds:90,garageArrival:true};
+ if(!Array.isArray(state.eventLog))state.eventLog=[];
+ if(!state.wallPresence)state.wallPresence={};
+ if(!state.prs)state.prs={};
+
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  if(render){
    renderToday();renderWeek();renderProgress();renderTimer();
@@ -535,8 +615,12 @@ async function pushCloudState({retry=true}={}){
      applyCanonicalState(remotePayload,{render:false});
      const lp=Number(localAW?.progressUpdatedAt||0),rp=Number(remoteAW?.progressUpdatedAt||0);
      const ll=Number(localAW?.lapUpdatedAt||0),rl=Number(remoteAW?.lapUpdatedAt||0);
-     if(localAW && (lp>rp || ll>rl)){
-       state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
+     const ls=Number(localAW?.setUpdatedAt||0),rs=Number(remoteAW?.setUpdatedAt||0);
+     const lr=Number(localAW?.restUpdatedAt||0),rr=Number(remoteAW?.restUpdatedAt||0);
+     const localEvents=snapshot.eventLog||[],remoteEvents=state.eventLog||[];
+     state.eventLog=[...new Map([...remoteEvents,...localEvents].map(e=>[e.id,e])).values()].sort((a,b)=>a.at-b.at).slice(-160);
+     if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr)){
+       state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
        cloudPushInFlight=false;
        if(retry)return pushCloudState({retry:false});
@@ -592,6 +676,7 @@ function preopPhase(days=surgeryDaysRemaining()){
  return {name:'BUILD BASE',directive:'Stack strength, aerobic capacity, and consistency while protecting the hip.'};
 }
 function todayProgram(){
+ if(state.customToday?.date===localDateStr())return state.customToday;
  const base=PROGRAM[weekdayIndex()],days=surgeryDaysRemaining(),phase=preopPhase(days);
  if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
  if(days==null)return base;
@@ -610,6 +695,166 @@ function renderPreop(){
 function fmtDate(s){return new Date(s+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
 function todaySessionRecord(){return state.sessions.find(x=>x.date===localDateStr())}
 
+
+function recordEvent(type,detail={}){
+ const e={id:'e-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),at:Date.now(),type,detail};
+ if(!Array.isArray(state.eventLog))state.eventLog=[];
+ state.eventLog.push(e);if(state.eventLog.length>160)state.eventLog=state.eventLog.slice(-160);
+ return e;
+}
+function parseSetCount(detail=''){
+ const s=String(detail);const m=s.match(/(\d+)\s*[×x]\s*/i);
+ if(m)return Math.max(1,Math.min(8,Number(m[1])));
+ return 1;
+}
+function currentItems(){
+ const p=todayProgram();return mode==='flare'?FLARE:(p[mode]||p.full||[]);
+}
+function normalizeSetState(a,items=currentItems()){
+ if(!a.sets||!Array.isArray(a.sets))a.sets=[];
+ a.sets=items.map((x,i)=>{
+   const n=parseSetCount(x[1]);const old=Array.isArray(a.sets[i])?a.sets[i]:[];
+   if(a.checks?.[i])return Array(n).fill(true);
+   return Array.from({length:n},(_,j)=>Boolean(old[j]));
+ });
+ a.checks=a.sets.map(s=>s.length>0&&s.every(Boolean));
+ return a.sets;
+}
+function firstIncompleteIndex(a,items=currentItems()){
+ normalizeSetState(a,items);
+ const auto=a.sets.findIndex(s=>!s.every(Boolean));
+ if(Number.isInteger(a.manualFocusIndex)&&a.manualFocusIndex>=0&&a.manualFocusIndex<items.length&&!a.sets[a.manualFocusIndex].every(Boolean))return a.manualFocusIndex;
+ return auto;
+}
+function nextIncompleteIndex(a,after,items=currentItems()){
+ normalizeSetState(a,items);
+ for(let i=after+1;i<items.length;i++)if(!a.sets[i].every(Boolean))return i;
+ return -1;
+}
+function stageFor(a,items=currentItems()){
+ if(!a||a.status==='ready')return 'READY';
+ if(a.status==='complete')return 'VICTORY';
+ const r=restRemainingMs(a);if(r>0)return 'RECOVER';
+ const idx=firstIncompleteIndex(a,items);
+ if(idx<0)return 'FINISH';
+ const name=String(items[idx]?.[0]||'').toLowerCase();
+ if(idx===0&&(name.includes('warm')||name.includes('easy spin')||name.includes('bikeerg')))return 'WARM-UP';
+ return 'WORK';
+}
+function restRemainingMs(a=state.activeWorkout){
+ const r=a?.restTimer;if(!r?.running||!r.endsAt)return 0;
+ return Math.max(0,Number(r.endsAt)-Date.now());
+}
+async function startRest(seconds=Number(state.trainingPrefs?.restSeconds||90),reason='manual'){
+ const a=ensureActiveWorkout(state.activeWorkout?.status||'active'),now=Date.now();
+ a.restTimer={running:true,seconds,startedAt:now,endsAt:now+seconds*1000,reason};
+ a.restUpdatedAt=now;a.updatedAt=now;recordEvent('rest_start',{seconds,reason});
+ save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+}
+async function clearRest(reason='done'){
+ const a=state.activeWorkout;if(!a)return;
+ if(a.restTimer?.running)recordEvent('rest_end',{reason});
+ a.restTimer={running:false,seconds:0,startedAt:null,endsAt:null,reason};a.restUpdatedAt=Date.now();a.updatedAt=Date.now();
+ save({sync:false});renderWorkout();if(cloudReady())await pushCloudState();
+}
+function renderNowNext(){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null,items=currentItems();
+ const cur=document.getElementById('currentExercise'),curD=document.getElementById('currentExerciseDetail'),nxt=document.getElementById('nextExercise'),nxtD=document.getElementById('nextExerciseDetail'),stage=document.getElementById('workoutStage');
+ if(!cur)return;
+ if(!a){cur.textContent=items[0]?.[0]||'Ready';curD.textContent=items[0]?.[1]||'';nxt.textContent=items[1]?.[0]||'—';nxtD.textContent=items[1]?.[1]||'';stage.textContent='READY';return}
+ normalizeSetState(a,items);const idx=firstIncompleteIndex(a,items),s=stageFor(a,items);
+ stage.textContent=s;
+ if(idx<0){cur.textContent='FINISH STRONG';curD.textContent='All programmed work is complete.';nxt.textContent='SAVE THE WIN';nxtD.textContent='Finish & Save';return}
+ cur.textContent=items[idx][0];curD.textContent=items[idx][1];
+ const ni=nextIncompleteIndex(a,idx,items);nxt.textContent=ni>=0?items[ni][0]:'FINISH & SAVE';nxtD.textContent=ni>=0?items[ni][1]:'Bank the day.';
+}
+function renderRestFace(){
+ const card=document.getElementById('restCard'),clock=document.getElementById('restClock'),next=document.getElementById('restNext'),a=state.activeWorkout;
+ if(!card||!clock)return;
+ const rem=restRemainingMs(a);
+ if(rem<=0){card.classList.remove('live');if(a?.restTimer?.running){a.restTimer.running=false;a.restTimer.endsAt=null;a.restUpdatedAt=Date.now();save({sync:false});}return}
+ card.classList.add('live');const sec=Math.ceil(rem/1000);clock.textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+ const items=currentItems(),idx=firstIncompleteIndex(a,items);next.textContent=idx>=0?`NEXT · ${items[idx][0]}`:'FINISH STRONG';
+}
+async function toggleSet(exIndex,setIndex){
+ const items=currentItems(),a=ensureActiveWorkout('active');normalizeSetState(a,items);
+ const was=Boolean(a.sets[exIndex]?.[setIndex]);a.sets[exIndex][setIndex]=!was;a.checks=a.sets.map(s=>s.every(Boolean));
+ a.progressUpdatedAt=Date.now();a.setUpdatedAt=Date.now();a.manualFocusIndex=a.checks[exIndex]?nextIncompleteIndex(a,exIndex,items):exIndex;
+ if(!a.timer?.running){a.timer={elapsedMs:Number(a.timer?.elapsedMs||0),running:true,startedAt:Date.now()};a.timerUpdatedAt=Date.now()}
+ a.status='active';a.statusUpdatedAt=Date.now();a.updatedAt=Date.now();
+ recordEvent('set_toggle',{exercise:items[exIndex]?.[0],exerciseIndex:exIndex,set:setIndex+1,done:!was});
+ if(!was && !a.checks.every(Boolean))a.restTimer={running:true,seconds:Number(state.trainingPrefs?.restSeconds||90),startedAt:Date.now(),endsAt:Date.now()+Number(state.trainingPrefs?.restSeconds||90)*1000,reason:'set_complete'};
+ save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+}
+async function shiftMovement(dir){
+ const a=ensureActiveWorkout(state.activeWorkout?.status||'ready'),items=currentItems();normalizeSetState(a,items);
+ let idx=firstIncompleteIndex(a,items);if(idx<0)idx=0;idx=Math.max(0,Math.min(items.length-1,idx+dir));a.manualFocusIndex=idx;a.updatedAt=Date.now();
+ recordEvent('movement_focus',{index:idx,name:items[idx]?.[0]});save({sync:false});renderWorkout();if(cloudReady())await pushCloudState();
+}
+async function sendWallCommand(action){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ state.wallCommand={action,at:Date.now(),sessionId:a?.sessionId||null,nonce:'wc-'+Date.now().toString(36)};
+ recordEvent('wall_command',{action});save({sync:false});if(cloudReady())await pushCloudState();
+}
+function makeItNonzero(){
+ mode='minimum';recordEvent('make_it_nonzero',{from:state.activeWorkout?.mode||'full'});renderWorkout();saveActiveWorkout();startTimer();
+}
+function completionRateForExercise(name){
+ const rows=state.sessions.filter(s=>Array.isArray(s.exerciseNames)&&Array.isArray(s.checks));
+ let seen=0,done=0;for(const r of rows){const i=r.exerciseNames.indexOf(name);if(i>=0){seen++;if(r.checks[i])done++}}
+ return seen?done/seen:.5;
+}
+function buildAdaptiveWorkout(minutes=30){
+ const base=PROGRAM[weekdayIndex()],pool=[...(base.full||[])];
+ pool.sort((a,b)=>completionRateForExercise(a[0])-completionRateForExercise(b[0]));
+ const keep=Math.max(3,Math.min(pool.length,Math.round(minutes/6)));
+ const chosen=pool.slice(0,keep);
+ state.customToday={date:localDateStr(),name:`Adaptive ${minutes} · ${base.name}`,why:'Prioritizes today’s planned work with extra weight on movements you have completed less consistently.',type:base.type,full:chosen,minimum:(base.minimum||chosen.slice(0,3))};
+ mode='full';recordEvent('adaptive_workout',{minutes,items:chosen.map(x=>x[0])});save();renderToday();
+}
+function bestKnownWatts(){
+ let best=0;for(const s of state.sessions){best=Math.max(best,Number(s?.postMetrics?.avgWatts||s?.avgWatts||0));for(const l of (s.laps||[]))best=Math.max(best,Number(l?.watts||0))}
+ return best;
+}
+function updatePrCue(a){
+ const watts=Number(a?.laps?.at?.(-1)?.watts||a?.laps?.[a.laps.length-1]?.watts||0),best=bestKnownWatts();
+ if(!watts||!best)return;
+ if(watts>best)a.prCue=`NEW BEST · ${Math.round(watts)} W`;
+ else if(best-watts<=5)a.prCue=`${Math.round(best-watts)} W TO BEST`;
+}
+function weeklyReportData(){
+ const w=sessionsThisWeek(),starts=w.length,mins=Math.round(w.reduce((a,b)=>a+Number(b.duration||0),0)),strength=w.filter(x=>x.type==='strength').length,bike=w.filter(x=>x.type==='bike').reduce((a,b)=>a+Number(b.duration||0),0);
+ const consistency=Math.round((starts/7)*100);
+ let rec=starts>=5?'Protect recovery and repeat this cadence.':starts>=3?'Convert one missed day into a Minimum day next week.':'Reduce the activation barrier: use Make It Nonzero earlier.';
+ return {starts,mins,strength,bike:Math.round(bike),consistency,rec};
+}
+function renderSundayReport(){
+ const el=document.getElementById('sundayReport');if(!el)return;const r=weeklyReportData();
+ el.innerHTML=`<div class="reportGrid"><div class="reportMetric"><b>${r.starts}/7</b><span>starts</span></div><div class="reportMetric"><b>${r.mins}</b><span>minutes</span></div><div class="reportMetric"><b>${r.consistency}%</b><span>consistency</span></div></div><p>${r.rec}</p>`;
+}
+async function fetchWallHealth(){
+ const s=document.getElementById('wallHealthStatus'),d=document.getElementById('wallHealthDetail');if(!s||!cloudReady())return;
+ try{
+  const res=await fetch(cloudConfig.endpoint+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'});const x=await res.json();
+  if(!res.ok||!x?.health)throw new Error(x?.error||'No heartbeat');
+  const age=Math.max(0,Date.now()-Number(x.health.at||0)),fresh=age<90000;
+  s.textContent=fresh?`HEALTHY · ${String(x.health.mode||'').toUpperCase()}`:`STALE · ${Math.round(age/60000)} MIN AGO`;s.className=fresh?'ok':'warn';
+  d.textContent=`Uptime ${Math.round(Number(x.health.uptimeSeconds||0)/60)} min · ${x.health.activeSessionId?'workout '+x.health.activeSessionId:'no active workout'} · Wall ${x.health.version||''}`;
+ }catch(e){s.textContent='NO RECENT WALL HEARTBEAT';s.className='err';d.textContent=String(e.message||e)}
+}
+function diagnosticsText(){
+ const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,recentEvents:events},null,2);
+}
+async function copyDiagnostics(){
+ const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
+}
+function garageArrival(){
+ if(!state.trainingPrefs?.garageArrival||document.visibilityState!=='visible')return;
+ const now=Date.now();if(now-Number(state.wallPresence?.arrivedAt||0)<2*60*60*1000)return;
+ state.wallPresence={arrivedAt:now,message:new Date().getHours()<12?'GOOD MORNING · TODAY IS A TRAINING DAY':'WELCOME BACK · PUT A NUMBER ON THE BOARD'};
+ recordEvent('garage_arrival',{});save();
+}
 function renderToday(){
  renderPreop();
  const p=todayProgram(), rec=todaySessionRecord();
@@ -624,38 +869,32 @@ function renderToday(){
 }
 
 function renderWorkout(){
- const p=todayProgram();
- const items=mode==='flare'?FLARE:p[mode];
+ const p=todayProgram(),items=currentItems();
  document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
- const rec=todaySessionRecord();
- const active=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
- const checks=(rec&&rec.mode===mode&&rec.checks)||(active&&active.mode===mode&&active.checks)||[];
- document.getElementById('workout').innerHTML=items.map((x,i)=>`
- <label class="exercise"><input type="checkbox" data-check="${i}" ${checks[i]?'checked':''}>
- <span><b>${x[0]}</b><small>${x[1]}</small></span></label>`).join('');
+ const rec=todaySessionRecord();const active=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ let checks=(rec&&rec.mode===mode&&rec.checks)||(active&&active.mode===mode&&active.checks)||[];
+ if(active){normalizeSetState(active,items);checks=active.checks}
+ const focus=active?firstIncompleteIndex(active,items):-1;
+ document.getElementById('workout').innerHTML=items.map((x,i)=>{
+   const n=parseSetCount(x[1]),sets=active?.sets?.[i]||Array(n).fill(Boolean(checks[i]));
+   return `<div class="exerciseV315 ${i===focus?'current':''}">
+     <input type="checkbox" data-check="${i}" ${checks[i]?'checked':''} aria-label="Complete ${x[0]}">
+     <div><b>${x[0]}</b><small>${x[1]}</small>
+       <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''} ${i===focus&&!done?'current':''}" data-set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
+       <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
+     </div></div>`}).join('');
  document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',handleExerciseCheckChange));
- updateWorkoutProgress();
+ document.querySelectorAll('[data-set]').forEach(b=>b.addEventListener('click',()=>{const [i,j]=b.dataset.set.split(':').map(Number);toggleSet(i,j)}));
+ updateWorkoutProgress();renderNowNext();renderRestFace();
 }
 
-async function handleExerciseCheckChange(){
- updateWorkoutProgress();
- const now=Date.now();
- const a=ensureActiveWorkout(state.activeWorkout?.status||'ready');
- a.checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
- a.progressUpdatedAt=now;
- a.updatedAt=now;
-
- const isErg=['bike','row','ski','erg'].includes(String(a.type||'').toLowerCase());
- if(!isErg && !['active','paused','running'].includes(String(a.status||'').toLowerCase())){
-   a.status='active';a.statusUpdatedAt=now;
-   if(!a.timer?.running){
-     a.timer={elapsedMs:Number(a.timer?.elapsedMs||0),running:true,startedAt:now};
-     a.timerUpdatedAt=now;
-   }
- }
- save({sync:false});
- renderTimer();
- if(cloudReady())await pushCloudState();
+async function handleExerciseCheckChange(e){
+ const items=currentItems(),now=Date.now(),a=ensureActiveWorkout(state.activeWorkout?.status||'ready');normalizeSetState(a,items);
+ const i=Number(e?.target?.dataset?.check??-1);if(i>=0&&i<a.sets.length)a.sets[i]=a.sets[i].map(()=>Boolean(e.target.checked));
+ a.checks=a.sets.map(s=>s.every(Boolean));a.progressUpdatedAt=now;a.setUpdatedAt=now;a.updatedAt=now;
+ if(!['active','paused','running'].includes(String(a.status||'').toLowerCase())){a.status='active';a.statusUpdatedAt=now;if(!a.timer?.running){a.timer={elapsedMs:Number(a.timer?.elapsedMs||0),running:true,startedAt:now};a.timerUpdatedAt=now}}
+ recordEvent('exercise_toggle',{index:i,name:items[i]?.[0],done:Boolean(e.target.checked)});
+ save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 
 let uiClock={sessionId:"",timerUpdatedAt:-1,running:false,elapsedMs:0,perfAt:0};
@@ -688,7 +927,7 @@ function renderTimerFace(){
 let timerAnimationFrame=0;
 function startSmoothTimer(){
  if(timerAnimationFrame)cancelAnimationFrame(timerAnimationFrame);
- const tick=()=>{renderTimerFace();timerAnimationFrame=requestAnimationFrame(tick)};
+ const tick=()=>{renderTimerFace();renderRestFace();timerAnimationFrame=requestAnimationFrame(tick)};
  timerAnimationFrame=requestAnimationFrame(tick);
 }
 function timerState(){
@@ -760,22 +999,32 @@ function renderTimer(){
  if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · PERFORMANCE MODE':status==='paused'?'PAUSED · PERFORMANCE HELD':status==='complete'?'COMPLETE':'READY';}
 }
 function ensureActiveWorkout(status='ready'){
- const p=todayProgram();const existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
- const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
- const now=Date.now();state.activeWorkout={...existing,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:existing.timer||{elapsedMs:0,running:false,startedAt:null},status,sessionId:existing.sessionId||('nz-'+now.toString(36)),progressUpdatedAt:existing.progressUpdatedAt||now,statusUpdatedAt:existing.statusUpdatedAt||now,timerUpdatedAt:existing.timerUpdatedAt||now,laps:Array.isArray(existing.laps)?existing.laps:[],lapStartElapsedMs:Number(existing.lapStartElapsedMs||0),lapUpdatedAt:Number(existing.lapUpdatedAt||0),updatedAt:now};
- return state.activeWorkout;
+ const p=todayProgram(),items=currentItems(),existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{},now=Date.now();
+ const domChecks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ const checks=domChecks.length===items.length?domChecks:(Array.isArray(existing.checks)?existing.checks:Array(items.length).fill(false));
+ const a={...existing,date:localDateStr(),name:p.name,type:p.type,mode,checks,
+   pain:Number(document.getElementById('pain')?.value??existing.pain??6),
+   energy:Number(document.getElementById('energy')?.value??existing.energy??3),
+   timer:existing.timer||{elapsedMs:0,running:false,startedAt:null},
+   laps:Array.isArray(existing.laps)?existing.laps:[],lapStartElapsedMs:Number(existing.lapStartElapsedMs||0),lapUpdatedAt:Number(existing.lapUpdatedAt||0),
+   sets:Array.isArray(existing.sets)?existing.sets:[],setUpdatedAt:Number(existing.setUpdatedAt||now),
+   restTimer:existing.restTimer||{running:false,seconds:0,startedAt:null,endsAt:null},restUpdatedAt:Number(existing.restUpdatedAt||now),
+   manualFocusIndex:Number.isInteger(existing.manualFocusIndex)?existing.manualFocusIndex:0,
+   status,sessionId:existing.sessionId||('nz-'+now.toString(36)),
+   progressUpdatedAt:existing.progressUpdatedAt||now,statusUpdatedAt:now,timerUpdatedAt:existing.timerUpdatedAt||now,updatedAt:now};
+ normalizeSetState(a,items);state.activeWorkout=a;return a;
 }
 async function startTimer(){
  const a=ensureActiveWorkout('active'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
- const now=Date.now();if(!t.running){t.running=true;t.startedAt=now} a.timer=t;a.timerUpdatedAt=now;a.status='active';a.statusUpdatedAt=now;a.updatedAt=now;save();renderTimer();if(cloudReady())await pushCloudState();
+ const now=Date.now();if(!t.running){t.running=true;t.startedAt=now} a.timer=t;a.timerUpdatedAt=now;a.status='active';a.statusUpdatedAt=now;a.updatedAt=now;recordEvent('workout_start',{sessionId:a.sessionId});save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 async function pauseTimer(){
  const a=ensureActiveWorkout('paused'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
- const now=Date.now();if(t.running){t.elapsedMs=timerElapsed();t.running=false;t.startedAt=null} a.timer=t;a.timerUpdatedAt=now;a.status='paused';a.statusUpdatedAt=now;a.updatedAt=now;save();renderTimer();if(cloudReady())await pushCloudState();
+ const now=Date.now();if(t.running){t.elapsedMs=timerElapsed();t.running=false;t.startedAt=null} a.timer=t;a.timerUpdatedAt=now;a.status='paused';a.statusUpdatedAt=now;a.updatedAt=now;recordEvent('workout_pause',{elapsedMs:t.elapsedMs});save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 async function restartWorkout(){
  if(!confirm('Reset today’s workout? This clears the timer and checkoffs but keeps pain/energy inputs.'))return;
- const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},laps:[],lapStartElapsedMs:0,lapUpdatedAt:Date.now(),status:'ready',sessionId:'nz-'+Date.now().toString(36),progressUpdatedAt:Date.now(),statusUpdatedAt:Date.now(),timerUpdatedAt:Date.now(),updatedAt:Date.now()};save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+ const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},laps:[],lapStartElapsedMs:0,lapUpdatedAt:Date.now(),sets:[],setUpdatedAt:Date.now(),restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},restUpdatedAt:Date.now(),manualFocusIndex:0,status:'ready',sessionId:'nz-'+Date.now().toString(36),progressUpdatedAt:Date.now(),statusUpdatedAt:Date.now(),timerUpdatedAt:Date.now(),updatedAt:Date.now()};recordEvent('workout_reset',{});save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 function prefillMetrics(rec=null){
  const p=todayProgram(),elapsed=timerElapsed();
@@ -813,11 +1062,10 @@ function saveActiveWorkout({preserveTimer=true}={}){
 }
 
 function updateWorkoutProgress(){
- const c=[...document.querySelectorAll('[data-check]')];
- const done=c.filter(x=>x.checked).length;
- const pct=c.length?Math.round(done/c.length*100):0;
- document.getElementById('workoutProgress').style.width=pct+'%';
- document.getElementById('progressText').textContent=`${pct}% complete · ${done}/${c.length} steps`;
+ const items=currentItems(),a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ const checks=a?(normalizeSetState(a,items),a.checks):[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
+ const done=checks.filter(Boolean).length,pct=checks.length?Math.round(done/checks.length*100):0;
+ const bar=document.getElementById('workoutProgress'),txt=document.getElementById('progressText');if(bar)bar.style.width=pct+'%';if(txt)txt.textContent=`${done}/${checks.length} movements · ${pct}% complete`;
 }
 
 function updatePainAdvice(){
@@ -832,19 +1080,16 @@ function updatePainAdvice(){
 }
 
 function completeWorkout(){
- const date=localDateStr(), p=todayProgram();
- const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
- const defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
- const pain=Number(document.getElementById('pain').value), energy=Number(document.getElementById('energy').value);
- const post=collectPostMetrics();const timerMs=timerElapsed();
- const existing=state.sessions.findIndex(x=>x.date===date);
- const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:post.duration??(timerMs?Math.round(timerMs/6000)/10:defaultMinutes),checks,completed:true,postMetrics:post,timerMs,laps:Array.isArray(state.activeWorkout?.laps)?state.activeWorkout.laps:[],concept2:state.activeWorkout?.concept2||null};
+ const date=localDateStr(),p=todayProgram(),a=ensureActiveWorkout('active'),items=currentItems();normalizeSetState(a,items);
+ const checks=a.checks.slice(),defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
+ const pain=Number(document.getElementById('pain')?.value||a.pain||6),energy=Number(document.getElementById('energy')?.value||a.energy||3);
+ const post=collectPostMetrics(),timerMs=timerElapsed(),existing=state.sessions.findIndex(x=>x.date===date),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0);
+ const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:post.duration??(timerMs?Math.round(timerMs/6000)/10:defaultMinutes),checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:Date.now()};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
- state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},status:'complete',updatedAt:Date.now()};
- save();
- const msg=motivation(rec);
- document.getElementById('completeMessage').innerHTML=`<p class="success">✓ ${msg}</p>`;
- renderMetrics(); renderWeek(); renderProgress();
+ state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},status:'complete',statusUpdatedAt:Date.now(),updatedAt:Date.now()};
+ recordEvent('workout_complete',{timerMs,setCount,checks:checks.filter(Boolean).length,total:checks.length});save();
+ const msg=motivation(rec);document.getElementById('completeMessage').innerHTML=`<p class="success">✓ ${msg}</p>`;
+ renderMetrics();renderWeek();renderProgress();renderWorkout();renderTimer();
 }
 
 function motivation(rec){
@@ -896,6 +1141,7 @@ function renderWeek(){
  let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
           starts>=4?'Solid week. Your next win is simply converting one missed day into a 10-minute Minimum day.':
           'The program is designed for imperfect weeks. Focus only on getting the next start.';
+ renderSundayReport();
  document.getElementById('weeklySummary').innerHTML=`<p><b>${starts}/7 starts</b> · ${mins} total min · average reported pain ${avgPain}/10.</p><p>${text}</p>`;
 }
 
@@ -928,6 +1174,16 @@ document.getElementById('timerStartBtn').addEventListener('click',startTimer);
 document.getElementById('timerPauseBtn').addEventListener('click',pauseTimer);
 document.getElementById('lapBtn').addEventListener('click',logLap);
 document.getElementById('restartWorkoutBtn').addEventListener('click',restartWorkout);
+document.getElementById('prevMoveBtn')?.addEventListener('click',()=>shiftMovement(-1));
+document.getElementById('nextMoveBtn')?.addEventListener('click',()=>shiftMovement(1));
+document.getElementById('restBtn')?.addEventListener('click',()=>startRest());
+document.getElementById('quoteBtn')?.addEventListener('click',()=>sendWallCommand('quote-next'));
+document.getElementById('wallModeBtn')?.addEventListener('click',()=>sendWallCommand(state.activeWorkout?.status==='active'?'performance':'ambient'));
+document.getElementById('makeNonzeroBtn')?.addEventListener('click',makeItNonzero);
+document.getElementById('adaptiveBtn')?.addEventListener('click',()=>buildAdaptiveWorkout(30));
+document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
+document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
+
 document.getElementById('reviewMetricsBtn').addEventListener('click',()=>{document.getElementById('postMetrics').classList.toggle('hidden');prefillMetrics()});
 document.getElementById('importC2Btn').addEventListener('click',()=>importLatestConcept2());
 document.getElementById('importC2QuickBtn').addEventListener('click',()=>importLatestConcept2());
@@ -940,6 +1196,11 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()
  if(b.dataset.tab==='Progress')renderProgress();
 }));
 
+const restSel=document.getElementById('restSeconds');if(restSel){restSel.value=String(state.trainingPrefs?.restSeconds||90);restSel.addEventListener('change',e=>{state.trainingPrefs.restSeconds=Number(e.target.value);save();const rb=document.getElementById('restBtn');if(rb)rb.textContent='REST '+e.target.value})}
+const arrivalToggle=document.getElementById('garageArrivalToggle');if(arrivalToggle){arrivalToggle.checked=state.trainingPrefs?.garageArrival!==false;arrivalToggle.addEventListener('change',e=>{state.trainingPrefs.garageArrival=e.target.checked;save()})}
+const restBtn=document.getElementById('restBtn');if(restBtn)restBtn.textContent='REST '+String(state.trainingPrefs?.restSeconds||90);
+garageArrival();document.addEventListener('visibilitychange',()=>{garageArrival();if(document.visibilityState==='visible'){pullCloudState({force:true});fetchWallHealth()}});
+setTimeout(fetchWallHealth,1200);setInterval(fetchWallHealth,60000);
 document.getElementById('startDate').value=state.startDate;
 document.getElementById('startDate').addEventListener('change',e=>{state.startDate=e.target.value;save()});
 document.getElementById('reminderTime').value=state.reminderTime||'06:00';if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();renderPreop();
@@ -1026,7 +1287,7 @@ window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState(
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())await pushCloudState()}else{if(cloudReady())await pullCloudState({force:true});renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
 window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
 
-// NONZERO v3.14: one-link BikeErg Shortcuts setup.
+// NONZERO v3.15: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);

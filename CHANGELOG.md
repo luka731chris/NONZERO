@@ -1,20 +1,4 @@
 # CHANGELOG
-
-## Phone v3.14
-- Removed stale undefined ensureTimerLoop() call that could abort startup.
-- Added monotonic performance.now() timer rendering.
-- Timer face updates independently from cloud/state/UI rendering.
-- Major Today cockpit redesign.
-- Consolidated Start / Pause / Lap / Reset / Finish & Save.
-- Removed connection, readiness and orchestration clutter from visible Today.
-
-## Worker v4.6
-- Unchanged.
-
-## Roku v4.6.0
-- Replaced second-resolution elapsed calculation with roTimespan millisecond interpolation.
-- Timer target refresh ~60 fps.
-- Hid placeholder telemetry panel.
-- Moved massive timer + workout agenda into the former metrics side.
-- Kept current movement context on left.
-- Expanded text wrapping in Performance and Ambient dynamic content.
+Phone v3.15 — set-level tracking, rest timer, stages, Current/Next Up, Wall remote, Make It Nonzero, adaptive builder, weekly report, flight recorder/diagnostics, Wall Health, Garage Arrival, PR cues, conflict-merge extension.
+Worker v4.7 — Wall heartbeat/health routes + revision-required hardening; v4.6 durable pairing/routes retained.
+Roku v4.7.0 — stage-aware Performance, Current/Next Up, rest overlay, set counts, adaptive Performance typography, PR cues, Garage Arrival Ambient, Wall heartbeat. Ambient quote 60pt and v4.6.3 author/flag layout preserved.

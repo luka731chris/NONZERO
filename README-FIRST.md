@@ -1,33 +1,13 @@
-# NONZERO Workout Cockpit — v3.14 / v4.6 / v4.6.0
+# NONZERO Intelligent Training — v3.15 / Worker v4.7 / Roku v4.7.0
 
-## The timer bug found
-The prior phone build still called `ensureTimerLoop()` even though that function no longer existed.
-That exception could stop the startup sequence before the smooth timer animator and canonical sync loop were started. This is fixed.
+This release implements the full 15-item enhancement batch: state-machine presentation, Current/Next Up, phone Wall remote, automatic rest, set-level tracking, PR cue framework, adaptive Performance typography, richer Victory, Make It Nonzero, adaptive 30-minute builder, Garage Arrival-on-open, flight recorder, expanded offline reconciliation, Wall Health watchdog, and Weekly Performance Report.
 
-The Wall also previously tried to derive hundredths from `roDateTime.AsSeconds()`, which is only second-granularity.
-The Wall now anchors the canonical timer once and interpolates locally with `roTimespan.TotalMilliseconds()`.
+External boundaries: live automatic PM5 RPM/Watts still requires the PM5 telemetry bridge; Garage Arrival is phone-app foregrounding rather than geofence hardware; Roku cannot run as a normal hidden app under Netflix, but the cloud workout persists and reconstructs when NONZERO reopens.
 
-## Today page
-Today is now intentionally a workout cockpit:
-- huge elapsed timer
-- Start
-- Pause
-- Lap
-- Reset
-- Finish & Save
-- current lap
-- optional RPM / Watts entry
-- today's workout agenda and checkboxes
+DEPLOY ORDER:
+1. Worker v4.7
+2. Phone v3.15
+3. Roku v4.7.0
+4. Check Phone Settings → Wall Health after ~60 sec
 
-Connection status, pain/energy readiness, ErgData status blocks and post-workout metric clutter are removed from the visible Today page.
-
-## Performance Wall
-- Placeholder performance metrics are completely hidden.
-- The former telemetry side is now used by the master timer and workout agenda.
-- Session/current movement context stays on the left.
-- Dynamic session, current-movement and agenda text has expanded wrapping.
-- Ambient dynamic/agenda wrapping is also expanded.
-
-## Deployment
-Worker v4.6 is unchanged. Do not redeploy it if current health is good.
-Replace GitHub `index.html` with Phone v3.14 and sideload Roku v4.6.0.
+Worker v4.7 preserves durable pairing and the existing v4.6 routes. It also rejects stale unversioned state PUTs after revisioned state exists (HTTP 428), closing the known overwrite hole.

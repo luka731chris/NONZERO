@@ -1,19 +1,4 @@
-# NONZERO Roadmap
+# ROADMAP
+Remaining external integration: live PM5 telemetry; automatic lap RPM/Watts; segment-aware Concept2 result reconciliation; optional true presence/geofence; richer PR history.
 
-## Current stack
-Phone v3.14 · Worker v4.6 · Roku v4.6.0
-
-## P0 physical validation
-- Phone hundredths move continuously while foregrounded.
-- Wall hundredths move continuously rather than jumping on cloud snapshots.
-- Phone / Wall master elapsed remain aligned after 10+ minutes.
-- All five Today controls work.
-- No placeholder telemetry visible.
-- Long exercise names/details wrap correctly.
-- 4:00 Erg warm-up → strength keeps the same master timer.
-
-## Next
-- Live PM5 telemetry bridge.
-- Automatic RPM/Watts lap averages.
-- Concept2 result reconciliation.
-- Compact post-workout review.
+P0 validation: complete a strength session with set buttons; verify auto-rest and Current/Next Up; briefly lose Wi-Fi and verify continuation/reconciliation; verify Wall Health stays fresh overnight; open Netflix mid-workout then reopen NONZERO and verify session reconstruction.

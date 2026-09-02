@@ -1,29 +1,16 @@
 {
   "phone_js_syntax": "PASS",
-  "phone_startup_runtime_bug_removed": true,
-  "phone_timer_engine": "monotonic performance.now + lightweight requestAnimationFrame",
-  "phone_today_overhaul": "PASS",
-  "phone_controls": [
-    "START",
-    "PAUSE",
-    "LAP",
-    "RESET",
-    "FINISH & SAVE"
-  ],
-  "phone_hidden_from_today": [
-    "connection status",
-    "pain/energy readiness",
-    "ErgData orchestration grid",
-    "post-workout metrics"
-  ],
-  "worker": "v4.6 unchanged",
+  "worker_js_syntax": "PASS",
   "roku_xml_parse": "PASS",
   "roku_zip_integrity": "PASS",
-  "roku_timer_engine": "roTimespan.TotalMilliseconds",
-  "roku_timer_target_refresh_ms": 16,
-  "performance_metrics_hidden": true,
-  "timer_and_agenda_right_side": true,
-  "text_wrapping_expanded": true,
+  "phone_version": "3.15",
+  "worker_version": "4.7",
+  "roku_version": "4.7.0",
+  "durable_pairing_preserved": true,
   "canonical_state_preserved": true,
-  "durable_pairing_preserved": true
+  "revision_required_hardening": true,
+  "wall_health": true,
+  "ambient_quote_60pt_preserved": true,
+  "physical_roku_compile": "NOT PERFORMED",
+  "physical_iphone_test": "NOT PERFORMED"
 }
