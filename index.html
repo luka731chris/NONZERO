@@ -102,7 +102,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.15 intelligent training */
+/* v3.16 intelligent training */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -139,7 +139,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 </style>
 
 <script>
-/* NONZERO v3.15 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.16 — fail-safe BikeErg Shortcut controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -239,7 +239,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.15</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.16</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -539,10 +539,16 @@ let workoutTimerInterval=null;
 let cloudRevision=Number(state?._meta?.revision||0);
 let canonicalSyncInterval=null;
 let cloudPushInFlight=false;
+let cloudPushPending=false;
+let cloudPullInFlight=false;
+let localDirty=false;
+let cloudMutationSeq=0;
 
 function save({sync=true}={}){
  state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:9,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+ localDirty=true;
+ cloudMutationSeq++;
  if(sync) queueCloudPush();
 }
 function normalizeEndpoint(v){return String(v||'').trim().replace(/\/$/,'')}
@@ -596,18 +602,30 @@ function applyCanonicalState(payload,{render=true}={}){
 }
 function queueCloudPush(){
  if(!cloudReady())return;
+ cloudPushPending=true;
  clearTimeout(syncTimer);
- syncTimer=setTimeout(()=>pushCloudState(),180);
+ syncTimer=setTimeout(()=>drainCloudPush(),180);
+}
+async function drainCloudPush(){
+ if(!cloudReady())return false;
+ if(cloudPushInFlight){cloudPushPending=true;return false}
+ if(!localDirty && !cloudPushPending)return true;
+ cloudPushPending=false;
+ return pushCloudState();
 }
 async function pushCloudState({retry=true}={}){
- if(!cloudReady()||cloudPushInFlight)return false;
+ if(!cloudReady())return false;
+ if(cloudPushInFlight){cloudPushPending=true;return false}
  cloudPushInFlight=true;
  const snapshot=JSON.parse(JSON.stringify(state));
+ const snapshotSeq=cloudMutationSeq;
  try{
    setSyncStatus('Syncing…','busy');
    const payload=await cloudRequest('PUT',{state:snapshot,baseRevision:cloudRevision});
    applyCanonicalState(payload,{render:false});
-   setSyncStatus('Synced','ok');
+   if(cloudMutationSeq===snapshotSeq)localDirty=false;
+   else cloudPushPending=true;
+   setSyncStatus(localDirty?'Syncing changes…':'Synced',localDirty?'busy':'ok');
    return true;
  }catch(err){
    if(err.status===409 && err.data?.current){
@@ -622,37 +640,66 @@ async function pushCloudState({retry=true}={}){
      if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr)){
        state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-       cloudPushInFlight=false;
-       if(retry)return pushCloudState({retry:false});
+       localDirty=true;
+       cloudMutationSeq++;
+       cloudPushPending=true;
+       if(retry){
+         cloudPushInFlight=false;
+         return pushCloudState({retry:false});
+       }
+     }else if(cloudMutationSeq===snapshotSeq){
+       localDirty=false;
      }
-     setSyncStatus('Synced · cloud reconciled','ok');
+     setSyncStatus(localDirty?'Reconciled · syncing local changes':'Synced · cloud reconciled',localDirty?'busy':'ok');
      renderToday();renderWeek();renderProgress();renderTimer();
-     return false;
+     return !localDirty;
    }
-   console.warn(err);setSyncStatus('Offline · saved locally','err');return false;
+   console.warn(err);
+   cloudPushPending=localDirty;
+   setSyncStatus('Offline · saved locally','err');
+   return false;
  }finally{
    cloudPushInFlight=false;
+   if(cloudPushPending && cloudReady())setTimeout(()=>drainCloudPush(),120);
  }
 }
 async function pullCloudState({force=false}={}){
  if(!cloudReady())return false;
+ if(cloudPullInFlight)return false;
+ if(localDirty || cloudPushInFlight || cloudPushPending){
+   await drainCloudPush();
+   if(localDirty || cloudPushInFlight || cloudPushPending)return false;
+ }
+ cloudPullInFlight=true;
  try{
    setSyncStatus('Checking cloud…','busy');
    const remote=await cloudRequest('GET');
-   if(!remote?.state){await pushCloudState();return true}
+   if(!remote?.state){queueCloudPush();return true}
    const remoteRev=Number(remote?.revision??remote.state?._meta?.revision??0);
    const remoteTime=Number(remote?.updatedAt||remote.state?._meta?.updatedAt||0);
    const localTime=Number(state?._meta?.updatedAt||0);
    if(force || remoteRev>cloudRevision || remoteTime>localTime)applyCanonicalState(remote,{render:true});
    cloudRevision=Math.max(cloudRevision,remoteRev);
-   setSyncStatus('Synced','ok');return true;
- }catch(err){console.warn(err);setSyncStatus('Offline · using local state','err');return false}
+   setSyncStatus('Synced','ok');
+   return true;
+ }catch(err){
+   console.warn(err);
+   setSyncStatus('Offline · using local state','err');
+   return false;
+ }finally{
+   cloudPullInFlight=false;
+ }
+}
+async function resumeCloudSync(){
+ if(!cloudReady())return;
+ if(localDirty || cloudPushPending)await drainCloudPush();
+ if(!localDirty)await pullCloudState();
 }
 function startCanonicalSyncLoop(){
  if(canonicalSyncInterval)clearInterval(canonicalSyncInterval);
  canonicalSyncInterval=setInterval(()=>{
-   if(document.visibilityState==='visible'&&cloudReady())pullCloudState();
- },2000);
+   if(document.visibilityState==='visible'&&cloudReady())resumeCloudSync();
+ },5000);
 }
 function makeSyncKey(){
  const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
@@ -1199,7 +1246,7 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()
 const restSel=document.getElementById('restSeconds');if(restSel){restSel.value=String(state.trainingPrefs?.restSeconds||90);restSel.addEventListener('change',e=>{state.trainingPrefs.restSeconds=Number(e.target.value);save();const rb=document.getElementById('restBtn');if(rb)rb.textContent='REST '+e.target.value})}
 const arrivalToggle=document.getElementById('garageArrivalToggle');if(arrivalToggle){arrivalToggle.checked=state.trainingPrefs?.garageArrival!==false;arrivalToggle.addEventListener('change',e=>{state.trainingPrefs.garageArrival=e.target.checked;save()})}
 const restBtn=document.getElementById('restBtn');if(restBtn)restBtn.textContent='REST '+String(state.trainingPrefs?.restSeconds||90);
-garageArrival();document.addEventListener('visibilitychange',()=>{garageArrival();if(document.visibilityState==='visible'){pullCloudState({force:true});fetchWallHealth()}});
+garageArrival();
 setTimeout(fetchWallHealth,1200);setInterval(fetchWallHealth,60000);
 document.getElementById('startDate').value=state.startDate;
 document.getElementById('startDate').addEventListener('change',e=>{state.startDate=e.target.value;save()});
@@ -1283,11 +1330,30 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 renderToday();renderWeek();renderProgress();renderTimer();startSmoothTimer();
 startCanonicalSyncLoop();
 if(cloudReady()) pullCloudState();
-window.addEventListener('focus',async()=>{if(cloudReady()){await pullCloudState();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}renderTimer()});
-document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(state.activeWorkout?.date===localDateStr())save();if(cloudReady())await pushCloudState()}else{if(cloudReady())await pullCloudState({force:true});renderTimer();setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200)}});
-window.addEventListener('pagehide',()=>{if(state.activeWorkout?.date===localDateStr()){state.activeWorkout.updatedAt=Date.now();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(cloudReady())pushCloudState()}});
+window.addEventListener('focus',async()=>{
+  garageArrival();
+  await resumeCloudSync();
+  setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200);
+  renderTimer();
+});
+document.addEventListener('visibilitychange',async()=>{
+  if(document.visibilityState==='hidden'){
+    if(state.activeWorkout?.date===localDateStr())save({sync:false});
+    if(cloudReady())drainCloudPush();
+  }else{
+    garageArrival();
+    await resumeCloudSync();
+    fetchWallHealth();
+    renderTimer();
+    setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200);
+  }
+});
+window.addEventListener('pagehide',()=>{
+  if(state.activeWorkout?.date===localDateStr())save({sync:false});
+  if(cloudReady())drainCloudPush();
+});
 
-// NONZERO v3.15: one-link BikeErg Shortcuts setup.
+// NONZERO v3.16: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
