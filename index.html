@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.3 ·  Fitness</title>
+<title>NONZERO v3.18 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -88,6 +88,8 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .workoutSnapshot h2{margin:3px 0 2px}
 .workoutSnapshot #sessionWhy{margin:2px 0 10px;font-size:12px;line-height:1.35;color:var(--muted)}
 .workoutSnapshot .modegrid{margin-bottom:9px}
+.workoutPicker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px}.workoutPicker button{min-height:48px;font-weight:900}.workoutPicker .randomize{background:linear-gradient(135deg,#d4af37,#a97818);color:#071017;border-color:#e4c85f}.workoutPicker .restorePlan{background:#111a25}.programBadge{display:inline-flex;align-items:center;gap:6px;border:1px solid #5b4920;border-radius:999px;padding:5px 9px;margin:2px 0 7px;color:#e2c760;font-size:10px;font-weight:900;letter-spacing:.11em}.programBadge.hidden{display:none!important}
+.jointToggle{width:100%;min-height:54px;margin:0 0 10px;border-color:#2f6d91;background:linear-gradient(135deg,#132636,#0e1a26);font-weight:950;letter-spacing:.06em}.jointToggle.active{border-color:#64c7ff;background:linear-gradient(135deg,#123d57,#142d43);box-shadow:0 0 0 1px #64c7ff44 inset}.jointToggle small{display:block;margin-top:3px;color:#9eafbf;font-size:10px;letter-spacing:.02em}.jointToggle.active small{color:#b9e7ff}.jointSummary{display:none;margin:0 0 10px;padding:10px 12px;border:1px solid #234c66;border-radius:13px;background:#0b1822;color:#b9d9e8;font-size:11px;line-height:1.35}.jointSummary.live{display:block}.jointHeader{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0 5px}.jointHeader b{font-size:10px;letter-spacing:.13em;color:#9eafbf}.jointHeader b:last-child{color:#78d2ff}.jointRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid #213043;padding:10px 0}.jointLane{min-width:0;border-radius:12px;padding:9px;background:#0c131c}.jointLane.sam{background:#0b1822;border:1px solid #173b52}.jointLane .exerciseV315{padding:0}.jointLane .exerciseV315 b{font-size:13px}.jointLane .exerciseV315 small{font-size:11px}.jointLane .setBtn{min-width:30px;height:30px;padding:0}.samOnlyLabel{font-size:9px;font-weight:900;letter-spacing:.12em;color:#64c7ff;margin-bottom:5px}@media(max-width:430px){.jointRow{grid-template-columns:1fr}.jointHeader{display:none}.jointLane.sam:before{content:'SAM';display:block;font-size:9px;font-weight:900;letter-spacing:.12em;color:#64c7ff;margin-bottom:5px}}
 .workoutSnapshot .exercise{padding:11px 4px}
 .workoutSnapshot .exercise b{font-size:15px}
 .workoutSnapshot .exercise small{line-height:1.35}
@@ -102,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.17 visibility + timer stability */
+/* v3.18 progressive + joint training intelligence */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -139,7 +141,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 </style>
 
 <script>
-/* NONZERO v3.17 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.18 — fail-safe BikeErg Shortcut controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -239,7 +241,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.17</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.18</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <div class="grid3">
@@ -316,10 +318,17 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 
     <section class="workoutSnapshot">
       <div class="small" style="font-weight:900;letter-spacing:.13em;color:#d4af37">TODAY'S WORK</div>
-      <div class="secondaryControls" style="grid-template-columns:1fr 1fr;margin:8px 0 10px">
+      <div class="secondaryControls" style="grid-template-columns:1fr 1fr;margin:8px 0 8px">
         <button id="makeNonzeroBtn" class="makeNonzero">MAKE IT NONZERO</button>
         <button id="adaptiveBtn">ADAPT · 30 MIN</button>
       </div>
+      <div class="workoutPicker">
+        <button id="randomWorkoutBtn" class="randomize">SURPRISE ME</button>
+        <button id="restorePlanBtn" class="restorePlan">RESTORE PLAN</button>
+      </div>
+      <button id="jointWorkoutBtn" class="jointToggle">JOINT WITH SAM · OFF<small>Build a synchronized goalie-performance lane for this session</small></button>
+      <div id="jointSummary" class="jointSummary"></div>
+      <div id="programBadge" class="programBadge hidden"></div>
       <h2 id="sessionName">Today's session</h2>
       <p id="sessionWhy"></p>
       <div class="modegrid">
@@ -522,7 +531,7 @@ const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
   startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
-if(!state._meta) state._meta={updatedAt:Date.now(),schema:9,revision:0};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:11,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -530,6 +539,7 @@ if(!state.trainingPrefs) state.trainingPrefs={restSeconds:90,garageArrival:true}
 if(!Array.isArray(state.eventLog)) state.eventLog=[];
 if(!state.wallPresence) state.wallPresence={};
 if(!state.prs) state.prs={};
+if(!state.jointToday||state.jointToday.date!==localDateStr())state.jointToday={date:localDateStr(),enabled:false};
 
 let cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'null')||{endpoint:'',syncKey:''};
 let mode='full';
@@ -545,7 +555,7 @@ let localDirty=false;
 let cloudMutationSeq=0;
 
 function save({sync=true}={}){
- state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:9,revision:cloudRevision};
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:11,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  localDirty=true;
  cloudMutationSeq++;
@@ -581,7 +591,7 @@ function applyCanonicalState(payload,{render=true}={}){
  if(!remoteState)return false;
  state=remoteState;
  cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
- state._meta={...(state._meta||{}),schema:9,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
+ state._meta={...(state._meta||{}),schema:11,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
  if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
  if(!state.ergDataFirst)state.ergDataFirst={enabled:true};
  if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -589,6 +599,7 @@ function applyCanonicalState(payload,{render=true}={}){
  if(!Array.isArray(state.eventLog))state.eventLog=[];
  if(!state.wallPresence)state.wallPresence={};
  if(!state.prs)state.prs={};
+ if(!state.jointToday||state.jointToday.date!==localDateStr())state.jointToday={date:localDateStr(),enabled:false};
 
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  if(render){
@@ -629,16 +640,18 @@ async function pushCloudState({retry=true}={}){
    return true;
  }catch(err){
    if(err.status===409 && err.data?.current){
-     const localAW=snapshot.activeWorkout,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout;
+     const localAW=snapshot.activeWorkout,localJoint=snapshot.jointToday,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout,remoteJoint=remotePayload?.state?.jointToday;
      applyCanonicalState(remotePayload,{render:false});
      const lp=Number(localAW?.progressUpdatedAt||0),rp=Number(remoteAW?.progressUpdatedAt||0);
      const ll=Number(localAW?.lapUpdatedAt||0),rl=Number(remoteAW?.lapUpdatedAt||0);
      const ls=Number(localAW?.setUpdatedAt||0),rs=Number(remoteAW?.setUpdatedAt||0);
      const lr=Number(localAW?.restUpdatedAt||0),rr=Number(remoteAW?.restUpdatedAt||0);
+     const jointNewer=Number(localJoint?.updatedAt||0)>Number(remoteJoint?.updatedAt||0);
      const localEvents=snapshot.eventLog||[],remoteEvents=state.eventLog||[];
      state.eventLog=[...new Map([...remoteEvents,...localEvents].map(e=>[e.id,e])).values()].sort((a,b)=>a.at-b.at).slice(-160);
-     if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr)){
-       state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
+     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer){
+       if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr))state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),partnerSets:ls>rs?(localAW.partnerSets||[]):(state.activeWorkout?.partnerSets||[]),partnerChecks:ls>rs?(localAW.partnerChecks||[]):(state.activeWorkout?.partnerChecks||[]),jointEnabled:ls>rs?localAW.jointEnabled:state.activeWorkout?.jointEnabled,partnerProgramSnapshot:ls>rs?(localAW.partnerProgramSnapshot||null):state.activeWorkout?.partnerProgramSnapshot,setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
+       if(jointNewer)state.jointToday=localJoint;
        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
        localDirty=true;
        cloudMutationSeq++;
@@ -726,8 +739,8 @@ function todayProgram(){
  if(state.customToday?.date===localDateStr())return state.customToday;
  const base=PROGRAM[weekdayIndex()],days=surgeryDaysRemaining(),phase=preopPhase(days);
  if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
- if(days==null)return base;
- return {...base,why:base.why+' · '+phase.name+': '+phase.directive};
+ const phased=days==null?base:{...base,why:base.why+' · '+phase.name+': '+phase.directive};
+ return base.type==='strength'?buildProgressivePrescription(phased,weekdayIndex()):phased;
 }
 function renderPreop(){
  const days=surgeryDaysRemaining(),phase=preopPhase(days),big=document.getElementById('preopBig'),meta=document.getElementById('preopMeta'),preview=document.getElementById('surgeryPlanPreview'),dateInput=document.getElementById('surgeryDate');
@@ -750,7 +763,7 @@ function recordEvent(type,detail={}){
  return e;
 }
 function parseSetCount(detail=''){
- const s=String(detail);const m=s.match(/(\d+)\s*[×x]\s*/i);
+ const s=String(detail);const m=s.match(/(\d+)\s*[×x]\s*/i)||s.match(/(\d+)\s+(?:rounds?|sets?)\b/i);
  if(m)return Math.max(1,Math.min(8,Number(m[1])));
  return 1;
 }
@@ -851,13 +864,183 @@ function completionRateForExercise(name){
  let seen=0,done=0;for(const r of rows){const i=r.exerciseNames.indexOf(name);if(i>=0){seen++;if(r.checks[i])done++}}
  return seen?done/seen:.5;
 }
+const STRENGTH_MOVEMENTS={
+ hinge:[
+  {id:'rack-pull',name:'Barbell rack pull from high pins',equipment:'barbell',levels:['3 × 6 @ RPE 6 · pain-free start height','3 × 8 at same load','4 × 6 at same load','Add 5 lb · 3 × 6 @ RPE 7 max']},
+  {id:'elevated-deadlift',name:'Elevated KB deadlift',equipment:'kb53',levels:['3 × 8 @ 53 lb · crisp reps','4 × 8 @ 53 lb','4 × 10 @ 53 lb','5 × 8 @ 53 lb · 75 sec rest']},
+  {id:'kb-rdl',name:'KB Romanian deadlift from blocks',equipment:'kb53',levels:['3 × 8 @ 53 lb · short pain-free range','3 × 10 @ 53 lb','4 × 8 @ 53 lb · 3-sec lower','4 × 10 @ 53 lb']},
+  {id:'band-pullthrough',name:'Band pull-through',equipment:'bands',levels:['3 × 12 · controlled','3 × 15','4 × 12 · 2-sec squeeze','4 × 15 · 60 sec rest']}
+ ],
+ legDrive:[
+  {id:'sit-stand',name:'High box sit-to-stand',equipment:'box',levels:['3 × 8 · pain-free height','3 × 10','4 × 8 · controlled lower','4 × 10 · lower box only if gait stays normal']},
+  {id:'box-squat',name:'High box squat to target',equipment:'rack',levels:['3 × 6 bodyweight · vertical shin','3 × 8 bodyweight','4 × 6 holding 12 lb goblet','4 × 8 @ 12 lb · pain-free depth only']},
+  {id:'bridge',name:'Glute bridge',equipment:'floor',levels:['3 × 10 · 2-sec squeeze','3 × 12','4 × 10 · mini-band','4 × 12 · 60 sec rest']}
+ ],
+ push:[
+  {id:'bench',name:'Barbell bench press',equipment:'barbell',levels:['3 × 6 @ RPE 6 · leave 4 reps','3 × 8 at same load','4 × 6 at same load','Add 5 lb · 3 × 6 @ RPE 7']},
+  {id:'pushup',name:'Push-ups',equipment:'floor',levels:['3 × 8–12 · leave 3 reps','4 × 8–12','4 × 10–15','5 × 8–12 · 75 sec rest']},
+  {id:'floorpress',name:'Double-KB floor press',equipment:'kb35pair',levels:['3 × 8 @ 2×35 lb','3 × 10 @ 2×35 lb','4 × 8 @ 2×35 lb','4 × 10 @ 2×35 lb']},
+  {id:'onearmpres',name:'Half-kneeling or seated 1-arm press',equipment:'kb35',levels:['3 × 6/side @ 35 lb or band','3 × 8/side','4 × 6/side','4 × 8/side · strict']}
+ ],
+ pull:[
+  {id:'row',name:'Supported 1-arm KB row',equipment:'kb35',levels:['3 × 10/side @ 35 lb','4 × 10/side','4 × 12/side','5 × 10/side · 60 sec rest']},
+  {id:'pullup',name:'Pull-ups',equipment:'pullup',levels:['4 × 2 · clean reps','5 × 2','4 × 3','5 × 3 · no grinding']},
+  {id:'bandrow',name:'Heavy band row',equipment:'bands',levels:['3 × 12','4 × 12','4 × 15','5 × 12 · 45 sec rest']}
+ ],
+ carryCore:[
+  {id:'farmer',name:'Farmer carry',equipment:'kb35pair',levels:['4 × 30 sec @ 2×35 lb','4 × 40 sec @ 2×35 lb','5 × 30 sec @ 2×35 lb','5 × 40 sec @ 2×35 lb']},
+  {id:'suitcase',name:'Suitcase carry',equipment:'kb53',levels:['3 × 30 sec/side @ 53 lb','4 × 30 sec/side','4 × 40 sec/side','5 × 30 sec/side']},
+  {id:'pallof',name:'Pallof press',equipment:'bands',levels:['3 × 10/side','3 × 12/side','4 × 10/side · 2-sec hold','4 × 12/side']}
+ ]
+};
+const FINISHERS=[
+ {id:'bike-emom',name:'BikeErg power EMOM',levels:['8 min · 20 sec strong / 40 sec easy','10 min · 20/40','10 min · 25/35','12 min · 25/35']},
+ {id:'carry-bike',name:'Carry + BikeErg circuit',levels:['4 rounds · 30 sec carry + 60 sec bike','5 rounds · 30 sec carry + 60 sec bike','5 rounds · 40 sec carry + 60 sec bike','6 rounds · 40 sec carry + 50 sec bike']},
+ {id:'upper-density',name:'Upper-body density finish',levels:['8 min alternating 6 push-ups + 8 band rows','10 min alternating 6 + 8','10 min alternating 8 + 10','12 min alternating 8 + 10']}
+];
+const SAM_MOVEMENTS={
+ warmup:[
+  {id:'sam-goalie-prep',name:'Goalie movement prep',equipment:'open',levels:['2 rounds · 20 sec split-step + 4 lateral shuffles/side','3 rounds · 20 sec split-step + 4 shuffles/side','3 rounds · add 3 controlled drop-steps/side','2 crisp rounds · deload pace']},
+  {id:'sam-dynamic-mobility',name:'Dynamic goalie mobility',equipment:'open',levels:['2 rounds · ankle rocks, adductor rocks, T-spine reach','3 rounds · 5 reps each side','3 rounds · add controlled single-leg reach','2 easy rounds · full control']}
+ ],
+ power:[
+  {id:'sam-medball-slam',name:'Med-ball power slam',equipment:'medball',levels:['4 × 4 @ 20 lb only if speed stays high','5 × 4 · reset every rep','5 × 5 · 60 sec rest','3 × 4 · fast deload reps']},
+  {id:'sam-box-jump-stick',name:'Low box jump + landing stick',equipment:'box',levels:['4 × 3 · 16-in box max · own the landing','5 × 3 · reset every rep','5 × 4 · stop if landing quality fades','3 × 3 · submaximal deload']},
+  {id:'sam-explosive-pushup',name:'Explosive incline push-up',equipment:'bench',levels:['4 × 4 · hands leave bench only if controlled','5 × 4','5 × 5 · full reset','3 × 4 · smooth deload']}
+ ],
+ lower:[
+  {id:'sam-bar-rdl',name:'Barbell Romanian deadlift',equipment:'barbell',levels:['3 × 6 @ RPE 6 · coach every rep','3 × 8 at same load','4 × 6 · add 5 lb only if perfect','3 × 6 @ ~80% prior load']},
+  {id:'sam-goblet-box',name:'Goblet squat to box',equipment:'kb35',levels:['3 × 8 @ 35 lb · controlled depth','3 × 10 @ 35 lb','4 × 8 @ 35 lb · drive up fast','3 × 8 @ 12–35 lb deload']},
+  {id:'sam-single-leg-rdl',name:'Supported single-leg RDL',equipment:'kb35',levels:['3 × 6/side @ 12–35 lb','3 × 8/side','4 × 6/side · 3-sec lower','3 × 6/side light deload']}
+ ],
+ upper:[
+  {id:'sam-bench',name:'Barbell bench press',equipment:'barbell',levels:['3 × 6 @ RPE 6 · 4 reps in reserve','3 × 8 at same load','4 × 6 · add 5 lb only if fast','3 × 6 @ ~80% prior load']},
+  {id:'sam-pullup',name:'Pull-up or band-assisted pull-up',equipment:'pullup',levels:['4 × 3 clean reps','4 × 4','5 × 3 · controlled lower','3 × 3 easy deload']},
+  {id:'sam-pushrow',name:'Push-up + heavy band row',equipment:'bands',levels:['3 rounds · 8 + 10','4 rounds · 8 + 10','4 rounds · 10 + 12','3 easy rounds · 6 + 8']}
+ ],
+ coordination:[
+  {id:'sam-lateral-stick',name:'Lateral bound + goalie stick',equipment:'open',levels:['3 × 4/side · quiet landing','4 × 4/side','4 × 5/side · react on verbal cue','3 × 3/side deload']},
+  {id:'sam-step-shuffle',name:'Split-step, shuffle, set',equipment:'open',levels:['4 × 15 sec · technical pace','5 × 15 sec','5 × 20 sec · random direction cue','3 × 15 sec easy deload']},
+  {id:'sam-reach-clock',name:'Single-leg reach clock',equipment:'open',levels:['3 rounds/side · 3 directions','3 rounds · 5 directions','4 rounds · faster reset','2 rounds/side deload']}
+ ],
+ trunk:[
+  {id:'sam-pallof',name:'Athletic-stance Pallof press',equipment:'bands',levels:['3 × 8/side · 2-sec hold','3 × 10/side','4 × 8/side · stronger band if square','3 × 8/side easy deload']},
+  {id:'sam-plank-drag',name:'Plank kettlebell drag',equipment:'kb12',levels:['3 × 6/side @ 12 lb','3 × 8/side','4 × 6/side · hips square','3 × 6/side deload']},
+  {id:'sam-carry',name:'Suitcase carry + tall posture',equipment:'kb35',levels:['3 × 30 sec/side @ 35 lb','4 × 30 sec/side','4 × 40 sec/side','3 × 25 sec/side deload']}
+ ],
+ conditioning:[
+  {id:'sam-airdyne',name:'Airdyne goalie intervals',equipment:'airdyne',levels:['8 rounds · 10 sec fast / 50 easy','10 rounds · 10/50','10 rounds · 15/45','6 rounds · 10/50 deload']},
+  {id:'sam-bike',name:'BikeErg power intervals',equipment:'bike',levels:['8 rounds · 10 sec fast / 50 easy','10 rounds · 10/50','10 rounds · 15/45','6 rounds · 10/50 deload']},
+  {id:'sam-shuttle',name:'Short shuffle repeats',equipment:'open',levels:['6 × 15 sec / 45 sec walk','8 × 15/45','8 × 20/40','5 × 15/45 deload']}
+ ],
+ mobility:[
+  {id:'sam-goalie-reset',name:'Goalie mobility reset',equipment:'open',levels:['2 rounds · adductor rock-back, hip flexor, ankle · 30 sec/side','2 rounds · 40 sec/side','3 rounds · 30 sec/side','1 easy round · 30 sec/side']}
+ ]
+};
+function stableHash(value){return [...String(value)].reduce((n,c)=>((n*33+c.charCodeAt(0))>>>0),5381)}
+function programFingerprint(p){return [p?.name,p?.source,(p?.movementIds||[]).join(','),(p?.full||[]).map(x=>x[0]).join('|')].join('::')}
+function samJointSessions(){return state.sessions.filter(s=>s?.completed&&s.jointWithSam===true).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function samProgressionProfile(){
+ const rows=samJointSessions(),count=rows.length,phase=count%4,cycle=Math.floor(count/4)+1,recent=rows.slice(-1)[0];
+ const completion=recent?.partnerChecks?.length?recent.partnerChecks.filter(Boolean).length/recent.partnerChecks.length:1;
+ const deload=phase===3||completion<.7,level=deload?Math.max(0,Math.min(2,cycle-1)):Math.min(2,Math.max(0,cycle-1)+phase);
+ return {count,cycle,phase,level,deload,label:deload?'SAM · QUALITY DELOAD':`SAM · GOALIE BUILD ${cycle}.${phase+1}`};
+}
+function primaryEquipment(item){
+ const s=`${item?.[0]||''} ${item?.[1]||''}`.toLowerCase();
+ if(/barbell|rack pull/.test(s))return 'barbell';if(/bikeerg|bike erg|easy spin|ride/.test(s))return 'bike';if(/airdyne/.test(s))return 'airdyne';
+ if(/pull-up|pullup/.test(s))return 'pullup';if(/band/.test(s))return 'bands';if(/box|sit-to-stand/.test(s))return 'box';if(/bench/.test(s))return 'bench';
+ if(/kettlebell|\bkb\b|carry|deadlift|floor press/.test(s))return 'kb35';return 'open';
+}
+function chooseSamMovement(slot,primaryItem,key){
+ const conflict=primaryEquipment(primaryItem),pool=SAM_MOVEMENTS[slot],free=pool.filter(x=>x.equipment!==conflict&&!(conflict.startsWith('kb')&&x.equipment.startsWith('kb'))),source=free.length?free:pool;
+ return source[stableHash(key+'-'+slot)%source.length];
+}
+function buildSamLane(primaryItems,profile,key){
+ const seq=['power','lower','upper','coordination','trunk','conditioning'];
+ return primaryItems.map((item,i)=>{
+  const slot=i===0?'warmup':i===primaryItems.length-1?'mobility':seq[(i-1)%seq.length],m=chooseSamMovement(slot,item,`${key}-${i}`),level=profile.deload?3:profile.level;
+  return [m.name,m.levels[level],m.id,m.equipment];
+ });
+}
+function buildSamProgram(primary=todayProgram()){
+ const profile=samProgressionProfile(),key=programFingerprint(primary),rotation=`${key}-${profile.cycle}-${profile.phase}`,full=buildSamLane(primary.full||[],profile,rotation+'-full'),minimum=buildSamLane(primary.minimum||primary.full||[],profile,rotation+'-minimum'),flare=buildSamLane(FLARE,profile,rotation+'-flare');
+ return {name:'Sam · Goalkeeper Performance',why:'Coordination, explosive intent, submaximal strength and goalkeeper mobility. Technique and speed earn the next progression; no max-effort lifting.',source:'joint-sam',athlete:'Sam',age:16,progression:profile,primaryFingerprint:key,movementIds:full.map(x=>x[2]),full,minimum,flare};
+}
+function jointEnabled(){return state.jointToday?.date===localDateStr()&&state.jointToday?.enabled===true}
+function currentSamProgram(){
+ if(!jointEnabled())return null;const p=todayProgram(),fingerprint=programFingerprint(p);
+ if(!state.jointToday.samProgram||state.jointToday.samProgram.primaryFingerprint!==fingerprint)state.jointToday.samProgram=buildSamProgram(p);
+ return state.jointToday.samProgram;
+}
+function currentSamItems(){const p=currentSamProgram();return p?(p[mode]||p.full||[]):[]}
+function normalizePartnerSetState(a,items=currentSamItems()){
+ if(!Array.isArray(a.partnerSets))a.partnerSets=[];
+ a.partnerSets=items.map((x,i)=>{const n=parseSetCount(x[1]),old=Array.isArray(a.partnerSets[i])?a.partnerSets[i]:[];if(a.partnerChecks?.[i])return Array(n).fill(true);return Array.from({length:n},(_,j)=>Boolean(old[j]))});
+ a.partnerChecks=a.partnerSets.map(s=>s.length>0&&s.every(Boolean));return a.partnerSets;
+}
+function syncJointToActive(){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;if(!a)return;
+ a.jointEnabled=jointEnabled();a.partnerProgramSnapshot=currentSamProgram();
+ if(a.jointEnabled)normalizePartnerSetState(a);a.updatedAt=Date.now();a.setUpdatedAt=Date.now();
+}
+function refreshJointProgram(){if(jointEnabled())state.jointToday.samProgram=buildSamProgram(todayProgram());syncJointToActive()}
+function toggleJointWorkout(){
+ const was=jointEnabled();state.jointToday={date:localDateStr(),enabled:!was,samProgram:state.jointToday?.samProgram||null,updatedAt:Date.now()};
+ if(!was&&(!state.jointToday.samProgram||state.jointToday.samProgram.primaryFingerprint!==programFingerprint(todayProgram())))state.jointToday.samProgram=buildSamProgram(todayProgram());
+ syncJointToActive();recordEvent('joint_workout_toggle',{enabled:!was,partner:'Sam'});save();renderToday();renderTimer();
+}
+function strengthSessions(){return state.sessions.filter(s=>s?.completed&&s.type==='strength').sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function progressionProfile(){
+ const ss=strengthSessions(),count=ss.length,cycle=Math.floor(count/4)+1,week=count%4;
+ const recent=ss.slice(-2),completion=recent.length?recent.reduce((n,s)=>n+(Array.isArray(s.checks)&&s.checks.length?s.checks.filter(Boolean).length/s.checks.length:1),0)/recent.length:1;
+ const highStress=recent.some(s=>Number(s?.postMetrics?.rpe||0)>=9||Number(s?.postMetrics?.painAfter||s?.pain||0)-Number(s?.pain||0)>1);
+ const level=(week===3||highStress||completion<.75)?Math.max(0,Math.min(2,cycle-1)):Math.min(3,Math.floor(count/4));
+ return {count,cycle,week,level,deload:week===3||highStress||completion<.75};
+}
+function recentMovementIds(limit=4){return new Set(strengthSessions().slice(-limit).flatMap(s=>s.movementIds||[]))}
+function chooseMovement(slot,recent,seedOffset=0){
+ const pool=STRENGTH_MOVEMENTS[slot],fresh=pool.filter(x=>!recent.has(x.id)),source=fresh.length?fresh:pool;
+ return source[(Math.floor(Math.random()*source.length)+seedOffset)%source.length];
+}
+function deterministicMovement(slot,key){const pool=STRENGTH_MOVEMENTS[slot],n=[...String(key)].reduce((a,c)=>((a*31+c.charCodeAt(0))>>>0),7);return pool[n%pool.length]}
+function buildProgressivePrescription(base,day){
+ const pr=progressionProfile(),level=pr.deload?Math.max(0,pr.level-1):pr.level,cycleKey=`${pr.cycle}-${day}`,slots=day===3?['legDrive','push','pull','carryCore']:['hinge','push','pull','carryCore'];
+ const moves=slots.map((slot,i)=>deterministicMovement(slot,cycleKey+'-'+i));
+ const finisher=FINISHERS[([...cycleKey].reduce((a,c)=>a+c.charCodeAt(0),0))%FINISHERS.length],label=pr.deload?'DELOAD / REBUILD':`BUILD ${pr.cycle} · WEEK ${pr.week+1}`;
+ return {...base,name:`${base.name} · ${label}`,why:`${base.why} Progressive compound-functional training: earn reps, then load, then density.`,source:'prescribed-progressive',movementIds:moves.map(x=>x.id).concat(finisher.id),progression:{...pr,level,label},full:[['BikeErg ramp','5 min · easy to moderate'],...moves.map(m=>[m.name,m.levels[level]]),[finisher.name,finisher.levels[level]],['Cooldown','3 min easy']],minimum:[['BikeErg','2 min easy'],...moves.slice(0,3).map(m=>[m.name,m.levels[Math.max(0,level-1)]]),['Finish','Stop at 12 minutes with clean reps']]};
+}
+function resetWorkoutForProgram(program,eventType){
+ const old=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ if(old&&['active','running','paused'].includes(String(old.status||'').toLowerCase())&&!confirm('Replace the workout already in progress? Its timer and checkoffs will reset.'))return false;
+ state.customToday={...program,date:localDateStr(),generatedAt:Date.now()};mode='full';
+ state.activeWorkout=null;if(jointEnabled())state.jointToday.samProgram=buildSamProgram(state.customToday);recordEvent(eventType,{name:program.name,movementIds:program.movementIds||[],progression:program.progression||null});save();renderToday();renderTimer();return true;
+}
+function buildRandomWorkout(){
+ const pain=Number(document.getElementById('pain')?.value??6),energy=Number(document.getElementById('energy')?.value??3),days=surgeryDaysRemaining();
+ if(days!=null&&days<0){alert('Random training stays locked after surgery until your clinician-cleared plan is active.');return}
+ if(pain>=8){resetWorkoutForProgram({name:'Random · Protect the Comeback',why:'High-pain override: maintain the habit without feeding the flare.',type:'recovery',source:'random',progression:{deload:true},movementIds:['easy-bike','bandrow','breathing'],full:FLARE,minimum:FLARE.slice(0,2)},'random_workout');return}
+ const pr=progressionProfile(),recent=recentMovementIds(),slots=['hinge','push','pull','carryCore'];
+ if(pain<=6&&energy>=3)slots.splice(1,0,'legDrive');
+ const moves=slots.map((slot,i)=>chooseMovement(slot,recent,i));
+ const level=pr.deload?Math.max(0,pr.level-1):pr.level,finisher=FINISHERS[Math.floor(Math.random()*FINISHERS.length)];
+ const full=[['BikeErg ramp','5 min · easy to moderate']].concat(moves.map(m=>[m.name,m.levels[level]])).concat([[finisher.name,finisher.levels[level]],["Cooldown","3 min easy + relaxed breathing"]]);
+ const minimum=[['BikeErg','2 min easy'],...moves.slice(0,3).map(m=>[m.name,m.levels[Math.max(0,level-1)]]),['Finish','Stop at 12 minutes with clean reps']];
+ const label=pr.deload?'DELOAD / REBUILD':`BUILD ${pr.cycle} · WEEK ${pr.week+1}`;
+ resetWorkoutForProgram({name:`Random Strength · ${label}`,why:`Trainer-built functional session · ${label}. Hinge, push, pull, bracing and work capacity without deep hip flexion or impact.`,type:'strength',source:'random',movementIds:moves.map(x=>x.id).concat(finisher.id),progression:{...pr,level,label},full,minimum},'random_workout');
+}
+function restorePrescribedWorkout(){
+ if(!state.customToday||state.customToday.date!==localDateStr())return;
+ const old=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
+ if(old&&['active','running','paused'].includes(String(old.status||'').toLowerCase())&&!confirm('Restore today’s prescribed workout and reset the current timer/checkoffs?'))return;
+ delete state.customToday;state.activeWorkout=null;mode='full';if(jointEnabled())state.jointToday.samProgram=buildSamProgram(todayProgram());recordEvent('restore_prescribed',{});save();renderToday();renderTimer();
+}
 function buildAdaptiveWorkout(minutes=30){
  const base=PROGRAM[weekdayIndex()],pool=[...(base.full||[])];
  pool.sort((a,b)=>completionRateForExercise(a[0])-completionRateForExercise(b[0]));
  const keep=Math.max(3,Math.min(pool.length,Math.round(minutes/6)));
  const chosen=pool.slice(0,keep);
- state.customToday={date:localDateStr(),name:`Adaptive ${minutes} · ${base.name}`,why:'Prioritizes today’s planned work with extra weight on movements you have completed less consistently.',type:base.type,full:chosen,minimum:(base.minimum||chosen.slice(0,3))};
- mode='full';recordEvent('adaptive_workout',{minutes,items:chosen.map(x=>x[0])});save();renderToday();
+ resetWorkoutForProgram({date:localDateStr(),name:`Adaptive ${minutes} · ${base.name}`,why:'Prioritizes today’s planned work with extra weight on movements you have completed less consistently.',type:base.type,source:'adaptive',full:chosen,minimum:(base.minimum||chosen.slice(0,3))},'adaptive_workout');
 }
 function bestKnownWatts(){
  let best=0;for(const s of state.sessions){best=Math.max(best,Number(s?.postMetrics?.avgWatts||s?.avgWatts||0));for(const l of (s.laps||[]))best=Math.max(best,Number(l?.watts||0))}
@@ -909,6 +1092,12 @@ function renderToday(){
  document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${rec.duration||0} min` : `${p.name}. Your only obligation is to start.`;
  document.getElementById('sessionName').textContent=p.name;
  document.getElementById('sessionWhy').textContent=p.why;
+ const badge=document.getElementById('programBadge'),isOverride=state.customToday?.date===localDateStr();
+ if(badge){const progressive=p.source==='prescribed-progressive';badge.classList.toggle('hidden',!isOverride&&!progressive);badge.textContent=isOverride?(p.source==='random'?'⚡ RANDOM OVERRIDE · PRESCRIBED PLAN PRESERVED':'↻ ADAPTIVE OVERRIDE · PRESCRIBED PLAN PRESERVED'):progressive?'▲ PROGRESSIVE PRESCRIPTION · REPS → LOAD → DENSITY':''}
+ const restore=document.getElementById('restorePlanBtn');if(restore)restore.disabled=!isOverride;
+ const joint=document.getElementById('jointWorkoutBtn'),summary=document.getElementById('jointSummary'),sam=currentSamProgram();
+ if(joint){joint.classList.toggle('active',jointEnabled());joint.innerHTML=jointEnabled()?'JOINT WITH SAM · ON<small>Tap to return this session to your solo workout</small>':'JOINT WITH SAM · OFF<small>Build a synchronized goalie-performance lane for this session</small>'}
+ if(summary){summary.classList.toggle('live',jointEnabled());summary.textContent=sam?`${sam.progression.label} · Stations avoid same-time equipment conflicts · technique and speed before load · no max-effort lifting.`:''}
  if(rec){mode=rec.mode||'full';document.getElementById('pain').value=rec.pain??6;document.getElementById('energy').value=rec.energy??3}
  renderWorkout();
  updatePainAdvice();
@@ -916,13 +1105,23 @@ function renderToday(){
 }
 
 function renderWorkout(){
- const p=todayProgram(),items=currentItems();
+ const p=todayProgram(),items=currentItems(),samItems=currentSamItems(),joint=jointEnabled();
  document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
  const rec=todaySessionRecord();const active=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
  let checks=(rec&&rec.mode===mode&&rec.checks)||(active&&active.mode===mode&&active.checks)||[];
- if(active){normalizeSetState(active,items);checks=active.checks}
+ if(active){normalizeSetState(active,items);if(joint)normalizePartnerSetState(active,samItems);checks=active.checks}
  const focus=active?firstIncompleteIndex(active,items):-1;
- document.getElementById('workout').innerHTML=items.map((x,i)=>{
+ const lane=(x,i,partner=false)=>{
+   if(!x)return '<div class="exerciseV315"><div><b>Recovery / transition</b><small>Reset equipment and coach the next station.</small></div></div>';
+   const sourceSets=partner?active?.partnerSets:active?.sets,sourceChecks=partner?active?.partnerChecks:checks,n=parseSetCount(x[1]),sets=sourceSets?.[i]||Array(n).fill(Boolean(sourceChecks?.[i])),prefix=partner?'partner-':'';
+   return `<div class="exerciseV315 ${!partner&&i===focus?'current':''}">
+     <input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i]?'checked':''} aria-label="Complete ${partner?'Sam ':''}${x[0]}">
+     <div><b>${x[0]}</b><small>${x[1]}</small>
+       <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''}" data-${prefix}set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
+       <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
+     </div></div>`;
+ };
+ document.getElementById('workout').innerHTML=joint?`<div class="jointHeader"><b>CHRIS · PRIMARY PLAN</b><b>SAM · GOALKEEPER PLAN</b></div>`+items.map((x,i)=>`<div class="jointRow"><div class="jointLane">${lane(x,i)}</div><div class="jointLane sam">${lane(samItems[i],i,true)}</div></div>`).join(''):items.map((x,i)=>{
    const n=parseSetCount(x[1]),sets=active?.sets?.[i]||Array(n).fill(Boolean(checks[i]));
    return `<div class="exerciseV315 ${i===focus?'current':''}">
      <input type="checkbox" data-check="${i}" ${checks[i]?'checked':''} aria-label="Complete ${x[0]}">
@@ -932,6 +1131,8 @@ function renderWorkout(){
      </div></div>`}).join('');
  document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',handleExerciseCheckChange));
  document.querySelectorAll('[data-set]').forEach(b=>b.addEventListener('click',()=>{const [i,j]=b.dataset.set.split(':').map(Number);toggleSet(i,j)}));
+ document.querySelectorAll('[data-partner-check]').forEach(c=>c.addEventListener('change',handlePartnerCheckChange));
+ document.querySelectorAll('[data-partner-set]').forEach(b=>b.addEventListener('click',()=>{const [i,j]=b.dataset.partnerSet.split(':').map(Number);togglePartnerSet(i,j)}));
  updateWorkoutProgress();renderNowNext();renderRestFace();
 }
 
@@ -942,6 +1143,18 @@ async function handleExerciseCheckChange(e){
  if(!['active','paused','running'].includes(String(a.status||'').toLowerCase())){a.status='active';a.statusUpdatedAt=now;if(!a.timer?.running){a.timer={elapsedMs:Number(a.timer?.elapsedMs||0),running:true,startedAt:now};a.timerUpdatedAt=now}}
  recordEvent('exercise_toggle',{index:i,name:items[i]?.[0],done:Boolean(e.target.checked)});
  save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+}
+
+async function togglePartnerSet(exIndex,setIndex){
+ const items=currentSamItems(),a=ensureActiveWorkout('active');normalizePartnerSetState(a,items);const was=Boolean(a.partnerSets[exIndex]?.[setIndex]);
+ a.partnerSets[exIndex][setIndex]=!was;a.partnerChecks=a.partnerSets.map(s=>s.every(Boolean));a.jointEnabled=true;a.partnerProgramSnapshot=currentSamProgram();a.setUpdatedAt=Date.now();a.updatedAt=Date.now();
+ if(!a.timer?.running){a.timer={elapsedMs:Number(a.timer?.elapsedMs||0),running:true,startedAt:Date.now()};a.timerUpdatedAt=Date.now()}a.status='active';a.statusUpdatedAt=Date.now();
+ recordEvent('partner_set_toggle',{partner:'Sam',exercise:items[exIndex]?.[0],exerciseIndex:exIndex,set:setIndex+1,done:!was});save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+}
+async function handlePartnerCheckChange(e){
+ const items=currentSamItems(),a=ensureActiveWorkout('active');normalizePartnerSetState(a,items);const i=Number(e?.target?.dataset?.partnerCheck??-1);
+ if(i>=0&&i<a.partnerSets.length)a.partnerSets[i]=a.partnerSets[i].map(()=>Boolean(e.target.checked));a.partnerChecks=a.partnerSets.map(s=>s.every(Boolean));a.jointEnabled=true;a.partnerProgramSnapshot=currentSamProgram();a.setUpdatedAt=Date.now();a.updatedAt=Date.now();
+ recordEvent('partner_exercise_toggle',{partner:'Sam',index:i,name:items[i]?.[0],done:Boolean(e.target.checked)});save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 
 let uiClock={sessionId:"",timerUpdatedAt:-1,running:false,elapsedMs:0,perfAt:0};
@@ -1048,17 +1261,19 @@ function ensureActiveWorkout(status='ready'){
  const p=todayProgram(),items=currentItems(),existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{},now=Date.now();
  const domChecks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
  const checks=domChecks.length===items.length?domChecks:(Array.isArray(existing.checks)?existing.checks:Array(items.length).fill(false));
- const a={...existing,date:localDateStr(),name:p.name,type:p.type,mode,checks,
+ const a={...existing,date:localDateStr(),name:p.name,type:p.type,programSnapshot:p,mode,checks,
    pain:Number(document.getElementById('pain')?.value??existing.pain??6),
    energy:Number(document.getElementById('energy')?.value??existing.energy??3),
    timer:existing.timer||{elapsedMs:0,running:false,startedAt:null},
    laps:Array.isArray(existing.laps)?existing.laps:[],lapStartElapsedMs:Number(existing.lapStartElapsedMs||0),lapUpdatedAt:Number(existing.lapUpdatedAt||0),
    sets:Array.isArray(existing.sets)?existing.sets:[],setUpdatedAt:Number(existing.setUpdatedAt||now),
+   jointEnabled:jointEnabled(),partnerProgramSnapshot:currentSamProgram()||existing.partnerProgramSnapshot||null,
+   partnerChecks:Array.isArray(existing.partnerChecks)?existing.partnerChecks:[],partnerSets:Array.isArray(existing.partnerSets)?existing.partnerSets:[],
    restTimer:existing.restTimer||{running:false,seconds:0,startedAt:null,endsAt:null},restUpdatedAt:Number(existing.restUpdatedAt||now),
    manualFocusIndex:Number.isInteger(existing.manualFocusIndex)?existing.manualFocusIndex:0,
    status,sessionId:existing.sessionId||('nz-'+now.toString(36)),
    progressUpdatedAt:existing.progressUpdatedAt||now,statusUpdatedAt:now,timerUpdatedAt:existing.timerUpdatedAt||now,updatedAt:now};
- normalizeSetState(a,items);state.activeWorkout=a;return a;
+ normalizeSetState(a,items);if(a.jointEnabled)normalizePartnerSetState(a);state.activeWorkout=a;return a;
 }
 async function startTimer(){
  const a=ensureActiveWorkout('active'),t=a.timer||{elapsedMs:0,running:false,startedAt:null};
@@ -1070,7 +1285,7 @@ async function pauseTimer(){
 }
 async function restartWorkout(){
  if(!confirm('Reset today’s workout? This clears the timer and checkoffs but keeps pain/energy inputs.'))return;
- const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},laps:[],lapStartElapsedMs:0,lapUpdatedAt:Date.now(),sets:[],setUpdatedAt:Date.now(),restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},restUpdatedAt:Date.now(),manualFocusIndex:0,status:'ready',sessionId:'nz-'+Date.now().toString(36),progressUpdatedAt:Date.now(),statusUpdatedAt:Date.now(),timerUpdatedAt:Date.now(),updatedAt:Date.now()};recordEvent('workout_reset',{});save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
+ const p=todayProgram();state.activeWorkout={date:localDateStr(),name:p.name,type:p.type,programSnapshot:p,mode,checks:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:{elapsedMs:0,running:false,startedAt:null},laps:[],lapStartElapsedMs:0,lapUpdatedAt:Date.now(),sets:[],jointEnabled:jointEnabled(),partnerProgramSnapshot:currentSamProgram(),partnerChecks:[],partnerSets:[],setUpdatedAt:Date.now(),restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},restUpdatedAt:Date.now(),manualFocusIndex:0,status:'ready',sessionId:'nz-'+Date.now().toString(36),progressUpdatedAt:Date.now(),statusUpdatedAt:Date.now(),timerUpdatedAt:Date.now(),updatedAt:Date.now()};if(jointEnabled())normalizePartnerSetState(state.activeWorkout);recordEvent('workout_reset',{});save();renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
 function prefillMetrics(rec=null){
  const p=todayProgram(),elapsed=timerElapsed();
@@ -1103,7 +1318,8 @@ async function importLatestConcept2({silent=false}={}){
 function saveActiveWorkout({preserveTimer=true}={}){
  const p=todayProgram();const prev=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{};
  const checks=[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
- state.activeWorkout={...prev,date:localDateStr(),name:p.name,type:p.type,mode,checks,pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:preserveTimer?(prev.timer||{elapsedMs:0,running:false,startedAt:null}):{elapsedMs:0,running:false,startedAt:null},status:prev.status||'ready',sessionId:prev.sessionId||('nz-'+Date.now().toString(36)),concept2:prev.concept2||null,progressUpdatedAt:Date.now(),updatedAt:Date.now()};
+ state.activeWorkout={...prev,date:localDateStr(),name:p.name,type:p.type,programSnapshot:p,mode,checks,jointEnabled:jointEnabled(),partnerProgramSnapshot:currentSamProgram()||prev.partnerProgramSnapshot||null,partnerChecks:Array.isArray(prev.partnerChecks)?prev.partnerChecks:[],partnerSets:Array.isArray(prev.partnerSets)?prev.partnerSets:[],pain:Number(document.getElementById('pain').value),energy:Number(document.getElementById('energy').value),timer:preserveTimer?(prev.timer||{elapsedMs:0,running:false,startedAt:null}):{elapsedMs:0,running:false,startedAt:null},status:prev.status||'ready',sessionId:prev.sessionId||('nz-'+Date.now().toString(36)),concept2:prev.concept2||null,progressUpdatedAt:Date.now(),updatedAt:Date.now()};
+ if(jointEnabled())normalizePartnerSetState(state.activeWorkout);
  save();renderTimer();
 }
 
@@ -1111,7 +1327,7 @@ function updateWorkoutProgress(){
  const items=currentItems(),a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
  const checks=a?(normalizeSetState(a,items),a.checks):[...document.querySelectorAll('[data-check]')].map(x=>x.checked);
  const done=checks.filter(Boolean).length,pct=checks.length?Math.round(done/checks.length*100):0;
- const bar=document.getElementById('workoutProgress'),txt=document.getElementById('progressText');if(bar)bar.style.width=pct+'%';if(txt)txt.textContent=`${done}/${checks.length} movements · ${pct}% complete`;
+ const bar=document.getElementById('workoutProgress'),txt=document.getElementById('progressText');if(bar)bar.style.width=pct+'%';if(txt){let label=`Chris ${done}/${checks.length} movements · ${pct}% complete`;if(jointEnabled()){const samItems=currentSamItems();if(a)normalizePartnerSetState(a,samItems);const partner=a?.partnerChecks||Array(samItems.length).fill(false),samDone=partner.filter(Boolean).length;label+=` · Sam ${samDone}/${partner.length}`}txt.textContent=label}
 }
 
 function updatePainAdvice(){
@@ -1130,7 +1346,7 @@ function completeWorkout(){
  const checks=a.checks.slice(),defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
  const pain=Number(document.getElementById('pain')?.value||a.pain||6),energy=Number(document.getElementById('energy')?.value||a.energy||3);
  const post=collectPostMetrics(),timerMs=timerElapsed(),existing=state.sessions.findIndex(x=>x.date===date),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0);
- const rec={date,name:p.name,type:p.type,mode,pain,energy,duration:post.duration??(timerMs?Math.round(timerMs/6000)/10:defaultMinutes),checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:Date.now()};
+ const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration:post.duration??(timerMs?Math.round(timerMs/6000)/10:defaultMinutes),checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:Date.now()};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
  state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},status:'complete',statusUpdatedAt:Date.now(),updatedAt:Date.now()};
  recordEvent('workout_complete',{timerMs,setCount,checks:checks.filter(Boolean).length,total:checks.length});save();
@@ -1227,6 +1443,9 @@ document.getElementById('quoteBtn')?.addEventListener('click',()=>sendWallComman
 document.getElementById('wallModeBtn')?.addEventListener('click',()=>sendWallCommand(state.activeWorkout?.status==='active'?'performance':'ambient'));
 document.getElementById('makeNonzeroBtn')?.addEventListener('click',makeItNonzero);
 document.getElementById('adaptiveBtn')?.addEventListener('click',()=>buildAdaptiveWorkout(30));
+document.getElementById('randomWorkoutBtn')?.addEventListener('click',buildRandomWorkout);
+document.getElementById('restorePlanBtn')?.addEventListener('click',restorePrescribedWorkout);
+document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJointWorkout);
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
 
@@ -1352,7 +1571,7 @@ window.addEventListener('pagehide',()=>{
   if(cloudReady())drainCloudPush();
 });
 
-// NONZERO v3.17: one-link BikeErg Shortcuts setup.
+// NONZERO v3.18: one-link BikeErg Shortcuts setup.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
