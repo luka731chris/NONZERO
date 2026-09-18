@@ -544,8 +544,10 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <div class="settingsDisclosureBody">
           <p class="small">This secure connection keeps the phone, Pi, and Wall on one state. Local storage remains the offline fallback.</p>
           <div class="settingblock"><label class="small" for="cloudEndpoint">Cloudflare Worker URL</label><input id="cloudEndpoint" type="url" placeholder="https://nonzero-sync.your-subdomain.workers.dev"></div>
-          <div class="settingblock"><label class="small" for="syncKey">Private sync key</label><input id="syncKey" type="password" placeholder="Generate or paste your shared key"></div>
-          <div class="row"><button id="generateSyncKeyBtn">Generate key</button><button id="syncNowBtn">Sync now</button></div>
+          <div class="settingblock"><label class="small" for="syncKey">Private sync key</label><input id="syncKey" type="password" placeholder="Generate or paste your shared key" autocomplete="off"></div>
+          <div class="row"><button id="showSyncKeyBtn" type="button">Show key</button><button id="copySyncKeyBtn" type="button">Copy key</button><button id="shareCloudSetupBtn" type="button">Share setup</button></div>
+          <div id="syncKeyActionStatus" class="small" style="margin-top:8px">These controls reveal or share the existing key without changing it.</div>
+          <div class="row" style="margin-top:10px"><button id="generateSyncKeyBtn">Generate new key</button><button id="syncNowBtn">Sync now</button></div>
         </div>
       </details>
     </section>
@@ -1877,6 +1879,34 @@ document.getElementById('cloudEndpoint').value=cloudConfig.endpoint||'';
 document.getElementById('syncKey').value=cloudConfig.syncKey||'';
 document.getElementById('cloudEndpoint').addEventListener('change',()=>{saveCloudConfig();checkWorkerHealth();pullCloudState()});
 document.getElementById('syncKey').addEventListener('change',()=>{saveCloudConfig();checkWorkerHealth();pullCloudState()});
+function syncKeyStatus(message,isError=false){
+ const el=document.getElementById('syncKeyActionStatus');if(!el)return;el.textContent=message;el.style.color=isError?'#ff8d8d':'';
+}
+async function copyExistingSyncKey(){
+ const input=document.getElementById('syncKey'),key=String(input?.value||cloudConfig.syncKey||'').trim();
+ if(!key){syncKeyStatus('No saved sync key was found.',true);return}
+ try{
+  if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(key);
+  else{const was=input.type;input.type='text';input.focus();input.select();if(!document.execCommand('copy'))throw new Error('Copy unavailable');input.setSelectionRange(0,0);input.type=was}
+  syncKeyStatus('Existing sync key copied. Nothing was changed.');
+ }catch{syncKeyStatus('Could not copy automatically. Tap Show key, then press and hold the key.',true)}
+}
+document.getElementById('showSyncKeyBtn')?.addEventListener('click',()=>{
+ const input=document.getElementById('syncKey'),btn=document.getElementById('showSyncKeyBtn');if(!input)return;
+ const reveal=input.type==='password';input.type=reveal?'text':'password';btn.textContent=reveal?'Hide key':'Show key';syncKeyStatus(reveal?'Existing key revealed. It has not been changed.':'Key hidden again.');
+});
+document.getElementById('copySyncKeyBtn')?.addEventListener('click',copyExistingSyncKey);
+document.getElementById('shareCloudSetupBtn')?.addEventListener('click',async()=>{
+ const endpoint=String(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint||'').trim();
+ const key=String(document.getElementById('syncKey')?.value||cloudConfig.syncKey||'').trim();
+ if(!endpoint||!key){syncKeyStatus('The Worker URL or saved sync key is missing.',true);return}
+ const shareText=`NONZERO AutoPilot setup\n\nWorker URL:\n${endpoint}\n\nPrivate sync key:\n${key}\n\nKeep this message private.`;
+ try{
+  if(navigator.share)await navigator.share({title:'NONZERO AutoPilot setup',text:shareText});
+  else location.href=`mailto:?subject=${encodeURIComponent('NONZERO AutoPilot setup')}&body=${encodeURIComponent(shareText)}`;
+  syncKeyStatus('Share sheet opened. Choose Mail to send it to yourself.');
+ }catch(err){if(err?.name!=='AbortError')syncKeyStatus('Sharing was unavailable. Use Copy key instead.',true)}
+});
 document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
  const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
 });
