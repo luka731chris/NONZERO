@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.20 · Intelligent Training</title>
+<title>NONZERO v3.21 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -44,6 +44,7 @@ textarea{min-height:72px;resize:vertical}
 .progressbar>div{height:100%;background:var(--green);width:0}
 .dayrow{display:grid;grid-template-columns:48px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #253042;align-items:center}
 .dayrow:first-child{border-top:0}
+.dayrow.planDay{cursor:pointer;border-radius:13px;padding:11px 9px;margin:2px -9px;transition:.16s background,.16s border-color}.dayrow.planDay:hover,.dayrow.planDay:focus-within{background:#162131}.dayrow.planDay button{padding:7px 9px;min-height:36px;font-size:11px;color:#b9e7ff;border-color:#28506a}.dayrow.planDay .customMark{color:#d4af37;font-size:10px;font-weight:900;letter-spacing:.08em}
 .statusdot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#475569;margin-right:6px}
 .statusdot.done{background:var(--green)} .statusdot.miss{background:var(--red)}
 .callout{background:#0b1220;border:1px solid #334155;border-radius:14px;padding:12px}
@@ -104,7 +105,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.20 contextual cockpit + finish review + unified history + guided setup */
+/* v3.21 contextual cockpit + editable programming + smart workout variations */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -148,6 +149,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .editSheetPanel{width:min(100%,560px);background:#101923;border:1px solid #3a4a60;border-radius:22px;padding:18px;box-shadow:0 24px 80px #000}
 .editTimeGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.editTimeGrid label{font-size:12px;color:var(--muted)}.editTimeGrid input{margin-top:5px;font-size:22px;text-align:center;font-variant-numeric:tabular-nums}
 .editSheetActions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editSheetActions button{min-height:48px}.editSheetActions .saveTime{background:var(--green);color:#052e16;border:0}
+.programSheetPanel{width:min(100%,700px);max-height:92vh;overflow:auto;background:#101923;border:1px solid #3a4a60;border-radius:22px;padding:18px;box-shadow:0 24px 80px #000}.programSheetHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.programSheetHead button{flex:0 0 auto;padding:8px 11px}.recommendGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}.recommendCard{min-height:96px;text-align:left;padding:11px;border-color:#3b4a5d}.recommendCard b{display:block;margin-bottom:5px}.recommendCard small{display:block;color:var(--muted);line-height:1.3}.recommendCard.active{outline:2px solid #d4af37;background:#241f12}.programExercise{border:1px solid #2a3748;border-radius:15px;background:#0b1119;padding:11px;margin:9px 0}.programExerciseTop{display:grid;grid-template-columns:1fr auto;gap:8px}.programExerciseTop button{padding:8px 10px;color:#fca5a5}.prescriptionGrid{display:grid;grid-template-columns:.65fr .8fr 1fr;gap:7px;margin-top:8px}.prescriptionGrid label,.programExercise>label{font-size:10px;color:var(--muted);letter-spacing:.05em}.prescriptionGrid input,.programExercise input{margin-top:4px;padding:9px}.programEditorActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:-18px;background:linear-gradient(180deg,transparent 0,#101923 22%);padding:24px 0 2px}.programEditorActions .saveProgram{background:var(--green);color:#052e16;border:0}.hipGuardrail{border-left:4px solid #d4af37;background:#151710;padding:10px 12px;border-radius:11px;font-size:12px;line-height:1.4;color:#dce3ea}.variationTabs{display:flex;gap:7px;overflow:auto;padding-bottom:4px;margin:10px 0}.variationTabs button{white-space:nowrap;padding:9px 11px;font-size:11px}.addExerciseBtn{width:100%;border-style:dashed;margin-top:8px}@media(max-width:600px){.recommendGrid{grid-template-columns:1fr}.prescriptionGrid{grid-template-columns:repeat(3,1fr)}.programSheetPanel{padding:14px}.programEditorActions{bottom:-14px}}
 .sectionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.sectionHead h2,.sectionHead p{margin-top:0}.segmentControl{display:flex;gap:4px;background:#09111b;border:1px solid var(--border);border-radius:12px;padding:3px}.segmentControl button{padding:7px 9px;min-height:34px;font-size:11px;border:0}.segmentControl button.active{outline:0;background:#1a3345;color:#b9e7ff}
 .historyWeekSummary{display:grid;gap:9px;margin-top:10px}.historyWeekSummary .reportCard{margin:0}
 .systemStatusBar{display:flex;align-items:center;gap:8px;width:100%;margin-top:9px;padding:8px 10px;text-align:left;border-radius:12px;background:#0a1119}.systemStatusBar .systemDot{width:9px;height:9px;border-radius:50%;background:#64748b;flex:none}.systemStatusBar.ok .systemDot{background:var(--green)}.systemStatusBar.warn .systemDot{background:var(--yellow)}.systemStatusBar.err .systemDot{background:var(--red)}.systemStatusBar b{font-size:11px}.systemStatusBar span:last-child{margin-left:auto;font-size:10px;color:var(--muted)}
@@ -266,7 +268,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.20</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.21</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -390,10 +392,29 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
   <main id="tabPlan" class="hidden">
     <section class="card">
       <h2>Seven-day plan</h2>
-      <p class="small">Your prescribed rhythm, with completed days marked automatically.</p>
+      <p class="small">Tap any day to view every movement, adjust sets, reps, weight or notes, or choose a smart hip-aware variation.</p>
       <div id="weekList"></div>
     </section>
   </main>
+
+  <div id="programDayEditor" class="editSheet hidden" role="dialog" aria-modal="true" aria-labelledby="programEditorTitle">
+    <div class="programSheetPanel">
+      <div class="programSheetHead">
+        <div><div class="small" id="programEditorDate">PROGRAMMED DAY</div><h2 id="programEditorTitle">Workout details</h2><p class="small" id="programEditorWhy"></p></div>
+        <button id="closeProgramEditorBtn" aria-label="Close workout editor">✕</button>
+      </div>
+      <div class="hipGuardrail" id="programGuardrail">Hip guardrails remain active.</div>
+      <div id="variationTabs" class="variationTabs"></div>
+      <div id="recommendGrid" class="recommendGrid"></div>
+      <div class="small" style="font-weight:900;letter-spacing:.12em;margin-top:14px">EXERCISE PRESCRIPTION</div>
+      <div id="programExerciseEditor"></div>
+      <button id="addProgramExerciseBtn" class="addExerciseBtn">＋ ADD EXERCISE</button>
+      <div class="programEditorActions">
+        <button id="restoreProgramDayBtn">RESTORE PRESCRIBED</button>
+        <button id="saveProgramDayBtn" class="saveProgram">SAVE THIS DAY</button>
+      </div>
+    </div>
+  </div>
 
   <main id="tabHistory" class="hidden">
     <section class="card">
@@ -622,7 +643,7 @@ const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
   startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
-if(!state._meta) state._meta={updatedAt:Date.now(),schema:12,revision:0};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:13,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -630,6 +651,7 @@ if(!state.trainingPrefs) state.trainingPrefs={restSeconds:90,garageArrival:true}
 if(!Array.isArray(state.eventLog)) state.eventLog=[];
 if(!state.wallPresence) state.wallPresence={};
 if(!state.prs) state.prs={};
+if(!state.programOverrides||typeof state.programOverrides!=='object')state.programOverrides={};
 if(!state.jointToday||state.jointToday.date!==localDateStr())state.jointToday={date:localDateStr(),enabled:false};
 
 let cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'null')||{endpoint:'',syncKey:''};
@@ -646,7 +668,7 @@ let localDirty=false;
 let cloudMutationSeq=0;
 
 function save({sync=true}={}){
- state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:12,revision:cloudRevision};
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:13,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  localDirty=true;
  cloudMutationSeq++;
@@ -813,7 +835,15 @@ function makeSyncKey(){
  return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
 }
 function localDateStr(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
-function weekdayIndex(){return new Date().getDay()}
+function weekdayIndex(date=new Date()){return date.getDay()}
+function dateFromLocalStr(value){return new Date(String(value)+'T12:00:00')}
+function programForDate(dateString){
+ const override=state.programOverrides?.[dateString];if(override)return override;
+ const d=dateFromLocalStr(dateString),base=PROGRAM[weekdayIndex(d)],days=surgeryDaysRemaining(),phase=preopPhase(days);
+ if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
+ const phased=days==null?base:{...base,why:base.why+' · '+phase.name+': '+phase.directive};
+ return base.type==='strength'?buildProgressivePrescription(phased,weekdayIndex(d)):phased;
+}
 function surgeryDaysRemaining(){
  const ds=state.surgeryPlan?.date;if(!ds)return null;
  const target=new Date(ds+'T12:00:00'),today=new Date(localDateStr()+'T12:00:00');
@@ -831,6 +861,7 @@ function preopPhase(days=surgeryDaysRemaining()){
 }
 function todayProgram(){
  if(state.customToday?.date===localDateStr())return state.customToday;
+ const edited=state.programOverrides?.[localDateStr()];if(edited)return edited;
  const base=PROGRAM[weekdayIndex()],days=surgeryDaysRemaining(),phase=preopPhase(days);
  if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
  const phased=days==null?base:{...base,why:base.why+' · '+phase.name+': '+phase.directive};
@@ -1033,6 +1064,24 @@ const FINISHERS=[
  {id:'carry-bike',name:'Carry + BikeErg circuit',levels:['4 rounds · 30 sec carry + 60 sec bike','5 rounds · 30 sec carry + 60 sec bike','5 rounds · 40 sec carry + 60 sec bike','6 rounds · 40 sec carry + 50 sec bike']},
  {id:'upper-density',name:'Upper-body density finish',levels:['8 min alternating 6 push-ups + 8 band rows','10 min alternating 6 + 8','10 min alternating 8 + 10','12 min alternating 8 + 10']}
 ];
+const BIKE_VARIATIONS={
+ endurance:{label:'AEROBIC BASE',summary:'Smooth sustained work for repeatable low-impact volume.',name:'BikeErg · Aerobic Base',why:'Build aerobic capacity without impact or deep loaded hip flexion.',full:[['Easy spin','5 min · RPE 2–3'],['Steady aerobic ride','25 min · RPE 4–5 · conversational cadence'],['Cadence finish','4 × 20 sec quick legs / 40 sec easy · stay seated'],['Easy spin','4 min']],minimum:[['BikeErg','12 min continuous · RPE 3–4']]},
+ intervals:{label:'INTERVALS',summary:'Controlled threshold repeats with full seated recovery.',name:'BikeErg · Seated Intervals',why:'Raise aerobic power with controlled work bouts and no impact.',full:[['Progressive warm-up','6 min · include 3 × 10 sec cadence pickups'],['Work intervals','6 × 2 min @ RPE 7 / 2 min easy'],['Aerobic settle','5 min · RPE 4'],['Easy spin','4 min']],minimum:[['Warm-up','3 min easy'],['Intervals','6 × 45 sec strong / 75 sec easy · seated'],['Cooldown','2 min']]},
+ hills:{label:'HILLS',summary:'Resistance-based climbing simulation—seated, stable and joint-aware.',name:'BikeErg · Seated Hills',why:'Build leg endurance and posterior-chain support without standing climbs.',full:[['Easy spin','6 min'],['Rolling hills','4 rounds · 3 min heavier damper/RPE 6 + 2 min light/RPE 3'],['Summit pushes','4 × 20 sec RPE 7 / 70 sec easy · seated'],['Easy spin','4 min']],minimum:[['Warm-up','3 min'],['Seated hills','5 × 1 min RPE 6 / 1 min easy'],['Cooldown','2 min']]},
+ cyclocross:{label:'CYCLOCROSS',summary:'Frequent cadence and resistance changes without dismounts or impact.',name:'BikeErg · Cyclocross Simulation',why:'Train repeatable surges, cadence control and recovery while remaining seated.',full:[['Course preview','6 min easy with 3 cadence changes'],['Cross circuit','5 rounds · 2 min tempo RPE 5 + 30 sec surge RPE 7 + 90 sec easy'],['Technical cadence','6 × 15 sec fast legs / 45 sec easy · light resistance'],['Easy spin','4 min']],minimum:[['Warm-up','3 min'],['Cross circuit','6 × 30 sec surge / 90 sec easy · seated'],['Cooldown','2 min']]},
+ recovery:{label:'RECOVERY SPIN',summary:'Circulation and range without chasing output.',name:'BikeErg · Recovery Spin',why:'Keep movement comfortable on a higher-pain or low-energy day.',full:[['Easy spin','15–20 min · RPE 2–3 · comfortable cadence'],['Mobility reset','2 min relaxed breathing; stop if gait or hip pain worsens']],minimum:[['BikeErg','8–10 min very easy · stop if symptoms increase']]}
+};
+function strengthVariationPrograms(dateString){
+ const pr=progressionProfile(),level=pr.deload?Math.max(0,pr.level-1):Math.min(3,pr.level),pain=dateString===localDateStr()?Number(document.getElementById('pain')?.value??6):6,protect=pain>=7;
+ const at=(slot,index=0)=>{const p=STRENGTH_MOVEMENTS[slot],m=p[index%p.length];return [m.name,m.levels[protect?0:level]]};
+ const common={type:'strength',source:'smart-variation',progression:{...pr,level,hipAware:true}};
+ return [
+  {...common,variationId:'support',name:'Strength · Hip Support + Total Body',why:'Strengthen glutes, hip stabilizers, trunk, push and pull patterns with controlled range.',summary:'Most balanced · supporting structures + main muscle groups',full:[['BikeErg ramp','5 min easy'],at('legDrive',2),['Standing mini-band hip abduction','3 × 10/side · small comfortable range'],at('push',2),at('pull',0),at('carryCore',2),['Cooldown','3 min easy']],minimum:[['BikeErg','2 min easy'],at('legDrive',2),at('push',2),at('pull',0)]},
+  {...common,variationId:'posterior',name:'Strength · Posterior Chain + Core',why:'Prioritize glutes, hamstrings, back and bracing while avoiding deep hip flexion.',summary:'Glutes + hamstrings + back · shallow, supported ranges',full:[['BikeErg ramp','5 min easy'],at('hinge',protect?3:1),['Glute bridge','3 × 10 · only if comfortable'],at('pull',2),at('push',0),at('carryCore',1),['Cooldown','3 min easy']],minimum:[['BikeErg','2 min easy'],at('hinge',protect?3:1),at('pull',2),at('carryCore',1)]},
+  {...common,variationId:'upper-stability',name:'Strength · Upper + Hip Stability',why:'Build the major upper-body groups while training pelvic and lateral-hip control.',summary:'Upper-body emphasis · lateral hip + anti-rotation support',full:[['BikeErg ramp','5 min easy'],at('push',0),at('pull',1),['Standing band hip abduction','3 × 10/side · hold support'],['High sit-to-stand','3 × 8 · pain-free height only'],at('carryCore',0),['Pallof press','3 × 10/side']],minimum:[['BikeErg','2 min easy'],at('push',0),at('pull',1),['Standing band hip abduction','2 × 8/side']]}
+ ];
+}
+function bikeVariationPrograms(){return Object.entries(BIKE_VARIATIONS).map(([variationId,x])=>({...x,variationId,type:'bike',source:'smart-variation'}))}
 const SAM_MOVEMENTS={
  warmup:[
   {id:'sam-goalie-prep',name:'Goalie movement prep',equipment:'open',levels:['2 rounds · 20 sec split-step + 4 lateral shuffles/side','3 rounds · 20 sec split-step + 4 shuffles/side','3 rounds · add 3 controlled drop-steps/side','2 crisp rounds · deload pace']},
@@ -1575,16 +1624,57 @@ function renderMetrics(){
  document.getElementById('weekBike').textContent=fmtMinutes(bike);
 }
 
+let editingProgramDate='',editingProgram=null,editingVariationType='';
+function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function splitPrescription(detail=''){
+ const raw=String(detail).trim(),m=raw.match(/^(\d+)\s*[×x]\s*([^@·;]+?)(?:\s*@\s*([^·;]+))?(?:\s*[·;]\s*(.*))?$/i);
+ if(!m)return {sets:'',reps:'',weight:'',notes:raw};
+ return {sets:m[1]||'',reps:(m[2]||'').trim(),weight:(m[3]||'').trim(),notes:(m[4]||'').trim()};
+}
+function joinPrescription(row){
+ const lead=row.sets&&row.reps?`${row.sets} × ${row.reps}`:row.reps||'';const load=row.weight?`@ ${row.weight}`:'';return [lead,load,row.notes].filter(Boolean).join(' · ')||'As programmed';
+}
+function programRows(program){return (program?.full||[]).map(x=>{const p=splitPrescription(x[1]);return {name:x[0],...p}})}
+function renderProgramExercises(){
+ const box=document.getElementById('programExerciseEditor');if(!box||!editingProgram)return;const rows=editingProgram.editorRows||programRows(editingProgram);editingProgram.editorRows=rows;
+ box.innerHTML=rows.map((r,i)=>`<div class="programExercise" data-program-row="${i}"><div class="programExerciseTop"><label>EXERCISE<input data-pfield="name" value="${esc(r.name)}" aria-label="Exercise name"></label><button data-remove-program-row="${i}" aria-label="Remove ${esc(r.name)}">REMOVE</button></div><div class="prescriptionGrid"><label>SETS<input data-pfield="sets" type="text" inputmode="numeric" value="${esc(r.sets)}" placeholder="3"></label><label>REPS / TIME<input data-pfield="reps" type="text" value="${esc(r.reps)}" placeholder="8 or 30 sec"></label><label>WEIGHT<input data-pfield="weight" type="text" value="${esc(r.weight)}" placeholder="35 lb / band"></label></div><label style="display:block;margin-top:8px">COACHING NOTES<input data-pfield="notes" value="${esc(r.notes)}" placeholder="Range, tempo, pain guardrail"></label></div>`).join('');
+ box.querySelectorAll('[data-pfield]').forEach(input=>input.addEventListener('input',e=>{const row=Number(e.target.closest('[data-program-row]').dataset.programRow);editingProgram.editorRows[row][e.target.dataset.pfield]=e.target.value}));
+ box.querySelectorAll('[data-remove-program-row]').forEach(btn=>btn.addEventListener('click',()=>{editingProgram.editorRows.splice(Number(btn.dataset.removeProgramRow),1);renderProgramExercises()}));
+}
+function editorCandidates(type){return type==='strength'?strengthVariationPrograms(editingProgramDate):bikeVariationPrograms()}
+function renderProgramRecommendations(){
+ const tabs=document.getElementById('variationTabs'),grid=document.getElementById('recommendGrid');
+ tabs.innerHTML=`<button data-variation-type="strength" class="${editingVariationType==='strength'?'active':''}">STRENGTH OPTIONS</button><button data-variation-type="bike" class="${editingVariationType==='bike'?'active':''}">BIKEERG OPTIONS</button>`;
+ tabs.querySelectorAll('[data-variation-type]').forEach(b=>b.addEventListener('click',()=>{editingVariationType=b.dataset.variationType;renderProgramRecommendations()}));
+ grid.innerHTML=editorCandidates(editingVariationType).map((p,i)=>`<button class="recommendCard" data-recommend-index="${i}"><b>${esc(p.name)}</b><small>${esc(p.summary||p.why)}</small></button>`).join('');
+ grid.querySelectorAll('[data-recommend-index]').forEach(btn=>btn.addEventListener('click',()=>{const p=editorCandidates(editingVariationType)[Number(btn.dataset.recommendIndex)];editingProgram=JSON.parse(JSON.stringify(p));editingProgram.editorRows=programRows(editingProgram);document.getElementById('programEditorTitle').textContent=editingProgram.name;document.getElementById('programEditorWhy').textContent=editingProgram.why;grid.querySelectorAll('.recommendCard').forEach(x=>x.classList.toggle('active',x===btn));renderProgramExercises()}));
+}
+function openProgramDayEditor(dateString){
+ editingProgramDate=dateString;editingProgram=JSON.parse(JSON.stringify(programForDate(dateString)));editingProgram.editorRows=programRows(editingProgram);editingVariationType=editingProgram.type==='strength'?'strength':'bike';
+ document.getElementById('programEditorDate').textContent=dateFromLocalStr(dateString).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();document.getElementById('programEditorTitle').textContent=editingProgram.name;document.getElementById('programEditorWhy').textContent=editingProgram.why;
+ const pain=dateString===localDateStr()?Number(document.getElementById('pain')?.value??6):null;document.getElementById('programGuardrail').textContent=pain>=8?'High-pain guardrail: favor Recovery Spin or upper-body work; no loaded lower-body exercise.':pain>=7?'Elevated-pain guardrail: use supported patterns, short pain-free range and seated BikeErg work.':'Hip-smart guardrail: no deep flexion, impact, standing climbs or painful range; stop if pain or limp increases.';
+ document.getElementById('restoreProgramDayBtn').disabled=!state.programOverrides?.[dateString];renderProgramRecommendations();renderProgramExercises();document.getElementById('programDayEditor').classList.remove('hidden');
+}
+function closeProgramDayEditor(){editingProgramDate='';editingProgram=null;document.getElementById('programDayEditor').classList.add('hidden')}
+function addProgramExercise(){if(!editingProgram)return;editingProgram.editorRows.push({name:'New exercise',sets:'3',reps:'8',weight:'',notes:'Comfortable, controlled range'});renderProgramExercises();setTimeout(()=>document.querySelector('#programExerciseEditor .programExercise:last-child input')?.focus(),30)}
+function saveProgramDay(){
+ if(!editingProgramDate||!editingProgram)return;const rows=(editingProgram.editorRows||[]).filter(r=>String(r.name).trim()).map(r=>[String(r.name).trim(),joinPrescription(r)]);if(!rows.length)return alert('Add at least one exercise.');
+ const saved={...editingProgram,date:editingProgramDate,full:rows,editorRows:undefined,source:editingProgram.source||'manual-plan-edit',editedAt:Date.now()};delete saved.editorRows;state.programOverrides[editingProgramDate]=saved;
+ if(editingProgramDate===localDateStr()){state.customToday=null;state.activeWorkout=null;if(jointEnabled())state.jointToday.samProgram=buildSamProgram(saved)}recordEvent('program_day_saved',{date:editingProgramDate,name:saved.name,type:saved.type,exerciseCount:rows.length});save();closeProgramDayEditor();renderWeek();renderToday();renderTimer();
+}
+function restoreProgramDay(){if(!editingProgramDate)return;if(state.programOverrides?.[editingProgramDate]){delete state.programOverrides[editingProgramDate];if(editingProgramDate===localDateStr()){state.activeWorkout=null;if(jointEnabled())state.jointToday.samProgram=buildSamProgram(todayProgram())}recordEvent('program_day_restored',{date:editingProgramDate});save()}const d=editingProgramDate;closeProgramDayEditor();renderWeek();renderToday();if(d===localDateStr())renderTimer()}
+
 function renderWeek(){
  const [mon]=weekBounds(), byDate=Object.fromEntries(state.sessions.map(s=>[s.date,s]));
  const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
  let html='';
  for(let i=0;i<7;i++){
    const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=byDate[ds];
-   const program=PROGRAM[(i+1)%7];
-   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${program.name}</span><span class="small">${r?r.mode.toUpperCase():'—'}</span></div>`;
+   const program=programForDate(ds),custom=Boolean(state.programOverrides?.[ds]);
+   html+=`<div class="dayrow planDay" data-plan-date="${ds}"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${esc(program.name)}${custom?'<br><span class="customMark">CUSTOMIZED</span>':''}</span><button data-view-plan="${ds}">${r?r.mode.toUpperCase():'VIEW / EDIT'}</button></div>`;
  }
  document.getElementById('weekList').innerHTML=html;
+ document.querySelectorAll('[data-plan-date]').forEach(row=>row.addEventListener('click',e=>{if(!e.target.closest('[data-plan-date]'))return;openProgramDayEditor(row.dataset.planDate)}));
  const w=sessionsThisWeek(), starts=w.length, mins=w.reduce((a,b)=>a+Number(b.duration||0),0);
  const avgPain=w.length?(w.reduce((a,b)=>a+(b.pain||0),0)/w.length).toFixed(1):'—';
  let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
@@ -1635,6 +1725,11 @@ document.getElementById('adaptiveBtn')?.addEventListener('click',()=>buildAdapti
 document.getElementById('randomWorkoutBtn')?.addEventListener('click',buildRandomWorkout);
 document.getElementById('restorePlanBtn')?.addEventListener('click',restorePrescribedWorkout);
 document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJointWorkout);
+document.getElementById('closeProgramEditorBtn')?.addEventListener('click',closeProgramDayEditor);
+document.getElementById('addProgramExerciseBtn')?.addEventListener('click',addProgramExercise);
+document.getElementById('saveProgramDayBtn')?.addEventListener('click',saveProgramDay);
+document.getElementById('restoreProgramDayBtn')?.addEventListener('click',restoreProgramDay);
+document.getElementById('programDayEditor')?.addEventListener('click',e=>{if(e.target.id==='programDayEditor')closeProgramDayEditor()});
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
 document.getElementById('systemStatusButton')?.addEventListener('click',()=>{document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('setupChecklistDetails')?.setAttribute('open','');setTimeout(()=>document.getElementById('guidedSetupCard')?.scrollIntoView({behavior:'smooth',block:'start'}),50)});
@@ -1649,7 +1744,7 @@ document.getElementById('sessionTimeEditor')?.addEventListener('click',e=>{if(e.
 document.getElementById('cancelFinishReviewBtn')?.addEventListener('click',closeFinishReview);
 document.getElementById('confirmFinishBtn')?.addEventListener('click',confirmFinishReview);
 document.getElementById('finishReview')?.addEventListener('click',e=>{if(e.target.id==='finishReview')closeFinishReview()});
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('programDayEditor')?.classList.contains('hidden'))closeProgramDayEditor();if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
 document.querySelectorAll('[data-history-range]').forEach(b=>b.addEventListener('click',()=>{historyRange=b.dataset.historyRange;renderProgress()}));
 
 document.getElementById('reviewMetricsBtn').addEventListener('click',()=>{document.getElementById('postMetrics').classList.toggle('hidden');prefillMetrics()});
