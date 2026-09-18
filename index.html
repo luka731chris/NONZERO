@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.18.2 · Intelligent Training</title>
+<title>NONZERO v3.20 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -104,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.18 progressive + joint training intelligence */
+/* v3.20 contextual cockpit + finish review + unified history + guided setup */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -115,6 +115,8 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .restClock{font-size:42px;font-weight:950;letter-spacing:-2px}
 .secondaryControls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0 2px}
 .secondaryControls button{font-size:11px;min-height:42px;padding:6px 4px}
+.todayCockpit>.secondaryControls{grid-template-columns:repeat(3,1fr)}
+.todayCockpit #quoteBtn,.todayCockpit #wallModeBtn{display:none}
 .exerciseV315{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;padding:10px 2px;border-bottom:1px solid #1c2734}
 .exerciseV315.current{background:#111b27;border-radius:12px;padding:10px}
 .exerciseV315 input[type=checkbox]{margin-top:4px}
@@ -132,16 +134,39 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 #wallHealthStatus.warn{color:#d4af37}
 #wallHealthStatus.err{color:#d66}
 .diagBox{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:10px;max-height:180px;overflow:auto}
+.settingsDisclosure{border-top:1px solid #263344;margin-top:10px;padding-top:2px}
+.settingsDisclosure summary{cursor:pointer;list-style:none;padding:13px 2px;font-weight:900;color:#dbe5ef;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.settingsDisclosure summary::-webkit-details-marker{display:none}
+.settingsDisclosure summary:after{content:'＋';color:var(--muted);font-size:18px}
+.settingsDisclosure[open] summary:after{content:'−'}
+.settingsDisclosureBody{padding:0 2px 12px}
+.settingsStatus{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #263344;background:#0a1119;border-radius:13px;padding:11px 12px;margin:8px 0}
+.settingsStatus b{font-size:13px}.settingsStatus span{font-size:11px;color:var(--muted);text-align:right}
+.wallCommandGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:9px}.wallCommandGrid button{min-height:46px}
+.sessionTimeCell{display:flex;align-items:center;gap:7px;justify-content:flex-end}.editTimeBtn{padding:7px 9px;min-height:36px;font-size:11px;color:#b9e7ff;border-color:#28506a}
+.editSheet{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.68);display:flex;align-items:flex-end;justify-content:center;padding:14px}
+.editSheetPanel{width:min(100%,560px);background:#101923;border:1px solid #3a4a60;border-radius:22px;padding:18px;box-shadow:0 24px 80px #000}
+.editTimeGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.editTimeGrid label{font-size:12px;color:var(--muted)}.editTimeGrid input{margin-top:5px;font-size:22px;text-align:center;font-variant-numeric:tabular-nums}
+.editSheetActions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editSheetActions button{min-height:48px}.editSheetActions .saveTime{background:var(--green);color:#052e16;border:0}
+.sectionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.sectionHead h2,.sectionHead p{margin-top:0}.segmentControl{display:flex;gap:4px;background:#09111b;border:1px solid var(--border);border-radius:12px;padding:3px}.segmentControl button{padding:7px 9px;min-height:34px;font-size:11px;border:0}.segmentControl button.active{outline:0;background:#1a3345;color:#b9e7ff}
+.historyWeekSummary{display:grid;gap:9px;margin-top:10px}.historyWeekSummary .reportCard{margin:0}
+.systemStatusBar{display:flex;align-items:center;gap:8px;width:100%;margin-top:9px;padding:8px 10px;text-align:left;border-radius:12px;background:#0a1119}.systemStatusBar .systemDot{width:9px;height:9px;border-radius:50%;background:#64748b;flex:none}.systemStatusBar.ok .systemDot{background:var(--green)}.systemStatusBar.warn .systemDot{background:var(--yellow)}.systemStatusBar.err .systemDot{background:var(--red)}.systemStatusBar b{font-size:11px}.systemStatusBar span:last-child{margin-left:auto;font-size:10px;color:var(--muted)}
+.setupChecklist{display:grid;gap:7px;margin-top:8px}.setupStep{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:center;border:1px solid #263344;border-radius:12px;padding:9px;background:#0a1119}.setupStep i{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#263344;color:#cbd5e1;font-style:normal;font-size:11px;font-weight:900}.setupStep.done i{background:#184c2a;color:#86efac}.setupStep.warn i{background:#554017;color:#fcd34d}.setupStep b{display:block;font-size:12px}.setupStep span{font-size:10px;color:var(--muted)}
+.controlHidden{display:none!important}.cockpitControls[data-state="ready"] #timerPauseBtn,.cockpitControls[data-state="ready"] #lapBtn,.cockpitControls[data-state="ready"] #restartWorkoutBtn,.cockpitControls[data-state="ready"] #completeBtn{display:none}.cockpitControls[data-state="active"] #timerStartBtn,.cockpitControls[data-state="active"] #restartWorkoutBtn{display:none}.cockpitControls[data-state="paused"] #timerPauseBtn,.cockpitControls[data-state="paused"] #lapBtn{display:none}.cockpitControls[data-state="complete"] button{display:none}.cockpitControls[data-state="ready"]{grid-template-columns:1fr}.cockpitControls[data-state="active"]{grid-template-columns:1fr 1fr 1.25fr}.cockpitControls[data-state="paused"]{grid-template-columns:1fr 1fr 1.25fr}
+.finishReviewMeta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.finishReviewMeta .callout{padding:10px}.finishReviewMeta b{display:block;font-size:16px}.finishFields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.finishFields label,.sessionEditFields label{font-size:11px;color:var(--muted)}.finishFields input,.finishFields select,.finishFields textarea,.sessionEditFields input,.sessionEditFields select,.sessionEditFields textarea{margin-top:4px}.wideField{grid-column:1/-1}
+.sessionEditFields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.dangerAction{color:#fca5a5;border-color:#713535}.undoToast{position:fixed;z-index:1100;left:14px;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:560px;margin:auto;background:#172232;border:1px solid #42536a;border-radius:15px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 14px 44px #000}.undoToast span{flex:1;font-size:12px}.undoToast button{padding:7px 10px;color:#b9e7ff}
 @media(max-width:520px){
  .cockpitNow{grid-template-columns:1fr}
  .secondaryControls{grid-template-columns:repeat(3,1fr)}
  .reportGrid{grid-template-columns:repeat(3,1fr)}
+ .dayrow.sessionRow{grid-template-columns:52px 1fr}.sessionRow .sessionTimeCell{grid-column:2;justify-content:space-between}
+ .sectionHead{display:block}.segmentControl{margin:8px 0;width:max-content}.finishFields,.sessionEditFields{grid-template-columns:1fr 1fr}
 }
 
 </style>
 
 <script>
-/* NONZERO v3.18 — fail-safe BikeErg Shortcut controller.
+/* NONZERO v3.20 — fail-safe BikeErg Shortcut fallback controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -241,9 +266,10 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.18.2</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.20</span>
     <h1 id="todayHeading">Today</h1>
-    <p id="todaySub"></p><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
+    <p id="todaySub"></p><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
+    <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
     <div class="grid3">
       <div class="metric"><span>Streak</span><b id="streak">0</b><small>days</small></div>
       <div class="metric"><span>This week</span><b id="weekStarts">0/7</b><small>starts</small></div>
@@ -273,7 +299,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <button id="restartWorkoutBtn" class="danger">↻ RESET</button>
         <button id="completeBtn" class="finishControl">✓ FINISH & SAVE</button>
       </div>
-      <div class="secondaryControls">
+      <div class="secondaryControls" id="workoutSecondaryControls">
         <button id="prevMoveBtn">← PREV</button>
         <button id="nextMoveBtn">NEXT →</button>
         <button id="restBtn">REST 90</button>
@@ -361,38 +387,42 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
     </div>
   </main>
 
-  <main id="tabWeek" class="hidden">
+  <main id="tabPlan" class="hidden">
     <section class="card">
-      <h2>This week</h2>
+      <h2>Seven-day plan</h2>
+      <p class="small">Your prescribed rhythm, with completed days marked automatically.</p>
       <div id="weekList"></div>
-      <div class="reportCard" id="sundayReportCard">
-        <h3>Weekly Performance Report</h3>
-        <div id="sundayReport"></div>
-      </div>
-    </section>
-    <section class="card">
-      <h2>Weekly summary</h2>
-      <div id="weeklySummary"></div>
     </section>
   </main>
 
-  <main id="tabProgress" class="hidden">
+  <main id="tabHistory" class="hidden">
     <section class="card">
-      <h2>Progress</h2>
+      <div class="sectionHead"><div><h2>History</h2><p class="small">Review trends and correct any saved session.</p></div><div class="segmentControl"><button data-history-range="week">Week</button><button data-history-range="all" class="active">All time</button></div></div>
       <div class="grid3">
-        <div class="metric"><span>Total starts</span><b id="totalStarts">0</b></div>
+        <div class="metric"><span id="historyStartsLabel">Total starts</span><b id="totalStarts">0</b></div>
         <div class="metric"><span>Strength</span><b id="totalStrength">0</b><small>sessions</small></div>
         <div class="metric"><span>Bike</span><b id="totalBike">0</b><small>minutes</small></div>
       </div>
       <div id="trendSummary" class="callout" style="margin-top:12px"></div>
+      <div id="historyWeekSummary" class="historyWeekSummary hidden">
+        <div class="reportCard" id="sundayReportCard"><h3>Weekly performance</h3><div id="sundayReport"></div></div>
+        <div id="weeklySummary" class="callout"></div>
+      </div>
     </section>
     <section class="card">
-      <h2>Recent sessions</h2>
+      <h2 id="sessionListTitle">Recent sessions</h2>
       <div id="recentSessions"></div>
     </section>
   </main>
 
   <main id="tabSettings" class="hidden">
+    <section class="card" id="guidedSetupCard">
+      <div class="sectionHead"><div><h2>System readiness</h2><p class="small" id="setupSummary">Checking your NONZERO system.</p></div></div>
+      <details class="settingsDisclosure" id="setupChecklistDetails">
+        <summary>Connection checklist</summary>
+        <div class="settingsDisclosureBody"><div id="setupChecklist" class="setupChecklist"></div></div>
+      </details>
+    </section>
     <section class="card">
       <h2>Program settings</h2>
       <label class="small">Program start date</label>
@@ -413,83 +443,144 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       <p class="small">The countdown adapts motivation and phase graphics. It does not override instructions from your surgeon or physical therapist.</p>
     </section>
     <section class="card">
-      <h2>BikeErg Auto-Launch · One-Tap Setup</h2>
-      <p><b>Goal:</b> after one setup, your normal workout is simply <b>wake PM5 → open ErgData → ride</b>. NONZERO starts automatically and the Wall switches from Ambient to Performance.</p>
-      <label class="small" style="display:flex;align-items:center;gap:10px"><input id="ergDataFirstEnabled" type="checkbox" checked style="width:auto"> Enable BikeErg auto-launch</label>
-
-      <div class="callout" style="margin-top:12px;border-color:#5b4920">
-        <div style="font-weight:900;font-size:17px;margin-bottom:8px">ONE-TIME SETUP · 4 STEPS</div>
-        <div style="line-height:1.65">
-          <b>1.</b> Tap <b>CREATE MY SHORTCUT LINK</b>.<br>
-          <b>2.</b> Tap <b>COPY LINK + OPEN SHORTCUTS</b>.<br>
-          <b>3.</b> In Shortcuts choose <b>Automation → + → App → ErgData → Is Opened → Run Immediately</b>.<br>
-          <b>4.</b> Add <b>Get Contents of URL</b>, paste the copied link, and tap <b>Done</b>.
+      <h2>PM5 connection</h2>
+      <div class="settingsStatus"><b id="pm5ConnectionStatus">USB → Raspberry Pi</b><span id="pm5ConnectionDetail">Checking direct connection</span></div>
+      <p class="small">Your USB cable is the preferred PM5 path. The iPhone automation remains available only as a fallback if direct detection is unavailable.</p>
+      <details class="settingsDisclosure" id="shortcutFallbackDetails">
+        <summary>iPhone Shortcut fallback</summary>
+        <div class="settingsDisclosureBody">
+          <label class="small" style="display:flex;align-items:center;gap:10px"><input id="ergDataFirstEnabled" type="checkbox" checked style="width:auto"> Enable ErgData-open fallback</label>
+          <div class="callout" style="margin-top:12px;border-color:#5b4920">
+            <div style="font-weight:900;margin-bottom:8px">ONE-TIME FALLBACK SETUP</div>
+            <div class="small" style="line-height:1.65">Create the link, copy it into an ErgData “Is Opened” automation, add <b>Get Contents of URL</b>, and choose <b>Run Immediately</b>.</div>
+          </div>
+          <div style="display:grid;gap:8px;margin-top:10px">
+            <button id="createSimpleErgLinkBtn" class="primary" type="button" onclick="return nzShortcutCreate(event)">1 · CREATE FALLBACK LINK</button>
+            <button id="copyOpenShortcutsBtn" type="button" onclick="return nzShortcutCopyOpen(event)" disabled>2 · COPY LINK + OPEN SHORTCUTS</button>
+            <button id="testSimpleErgBtn" disabled>TEST FALLBACK</button>
+          </div>
+          <div id="simpleErgStatus" class="callout" style="margin-top:10px">Fallback not configured.</div>
+          <button id="resetSimpleErgBtn" type="button" onclick="return nzShortcutReset(event)" class="secondary" style="margin-top:8px" disabled>Reset fallback link</button>
         </div>
-        <div class="small" style="margin-top:9px"><b>Do not change Method. Do not add Headers. Do not paste your private sync key into Shortcuts.</b></div>
+      </details>
+    </section>
+    <section class="card" id="wallControlsCard">
+      <h2>Garage Wall</h2>
+      <div class="wallHealthCard">
+        <h3 id="wallHealthStatus">Checking Wall…</h3>
+        <div id="wallHealthDetail" class="small">Controls stay tucked away unless you need to intervene.</div>
       </div>
-
-      <div style="display:grid;gap:8px;margin-top:10px">
-        <button id="createSimpleErgLinkBtn" class="primary" type="button" onclick="return nzShortcutCreate(event)">1 · CREATE MY SHORTCUT LINK</button>
-        <button id="copyOpenShortcutsBtn" type="button" onclick="return nzShortcutCopyOpen(event)" disabled>2 · COPY LINK + OPEN SHORTCUTS</button>
-        <button id="testSimpleErgBtn" disabled>TEST · START NONZERO + WALL</button>
-      </div>
-      <div id="simpleErgStatus" class="callout" style="margin-top:10px">Not configured yet. Link creation now happens entirely on this phone.</div>
-      <button id="resetSimpleErgBtn" type="button" onclick="return nzShortcutReset(event)" class="secondary" style="margin-top:8px" disabled>Reset automation link</button>
-      <p class="small">Important: iOS does not expose “PM5 connected inside ErgData” as a Shortcuts trigger. Opening or switching to ErgData is therefore the reliable automatic trigger. Do not create an ErgData-closes automation; switching to Music, Mail, Teams, or Roku Remote must not stop your session.</p>
-
-      <h2>Roku Wall</h2><p class="small">Wall management belongs here—not on the Today screen. Pairing, schedule, and display behavior stay available without competing with workout controls.</p><h3 style="margin-bottom:6px">Schedule</h3>
-      <p>Set the daily Wall phases. A started or paused workout always overrides this schedule and keeps the TV in Performance mode.</p>
-      <div class="wallScheduleGrid">
-        <div class="settingblock"><label class="small" for="wallAmbientTime">Ambient starts</label><input id="wallAmbientTime" type="time" value="06:00"></div>
-        <div class="settingblock"><label class="small" for="wallNightTime">Night starts</label><input id="wallNightTime" type="time" value="20:30"></div>
-        <div class="settingblock"><label class="small" for="wallDeepTime">Deep Hibernate</label><input id="wallDeepTime" type="time" value="01:00"></div>
-      </div>
-      <label class="small" style="display:flex;align-items:center;gap:10px;margin-top:12px"><input id="wallScheduleEnabled" type="checkbox" checked style="width:auto"> Enable automatic Wall schedule</label>
+      <details class="settingsDisclosure" id="manualWallDetails">
+        <summary>Manual Wall controls</summary>
+        <div class="settingsDisclosureBody">
+          <p class="small">Automatic scheduling remains the default. Use these only to override the Wall temporarily.</p>
+          <div class="wallCommandGrid">
+            <button data-wall-command="ambient">Ambient</button>
+            <button data-wall-command="performance">Performance</button>
+            <button data-wall-command="night">Night</button>
+            <button data-wall-command="deep">Deep Hibernate</button>
+            <button data-wall-command="quote-next">Next quote</button>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button id="refreshWallHealthBtn">Refresh status</button>
+            <button id="copyDiagnosticsBtn">Copy diagnostics</button>
+          </div>
+        </div>
+      </details>
+      <details class="settingsDisclosure">
+        <summary>Automatic Wall schedule</summary>
+        <div class="settingsDisclosureBody">
+          <p class="small">A started or paused workout overrides the schedule and holds Performance mode.</p>
+          <div class="wallScheduleGrid">
+            <div class="settingblock"><label class="small" for="wallAmbientTime">Ambient starts</label><input id="wallAmbientTime" type="time" value="06:00"></div>
+            <div class="settingblock"><label class="small" for="wallNightTime">Night starts</label><input id="wallNightTime" type="time" value="20:30"></div>
+            <div class="settingblock"><label class="small" for="wallDeepTime">Deep Hibernate</label><input id="wallDeepTime" type="time" value="01:00"></div>
+          </div>
+          <label class="small" style="display:flex;align-items:center;gap:10px;margin-top:12px"><input id="wallScheduleEnabled" type="checkbox" checked style="width:auto"> Enable automatic Wall schedule</label>
+        </div>
+      </details>
     </section>
     <section class="card">
-      <h2>Cloud sync</h2>
-      <p>Optional lightweight sync keeps this phone and the garage Wall Mode on one state. Local storage remains the offline fallback.</p>
-      <div class="settingblock">
-        <label class="small" for="cloudEndpoint">Cloudflare Worker URL</label>
-        <input id="cloudEndpoint" type="url" placeholder="https://nonzero-sync.your-subdomain.workers.dev">
-      </div>
-      <div class="settingblock">
-        <label class="small" for="syncKey">Private sync key</label>
-        <input id="syncKey" type="password" placeholder="Generate or paste your shared key">
-      </div>
-      <div class="row">
-        <button id="generateSyncKeyBtn">Generate key</button>
-        <button id="syncNowBtn">Sync now</button>
-      </div>
       <div class="syncstatus"><span id="syncDot" class="syncdot"></span><span id="syncStatus">Local only</span></div>
-      <p class="small">Cloud Sync is the secure connection behind NONZERO. The Roku no longer needs this private key entered on the TV.</p>
+      <details class="settingsDisclosure" id="cloudSetupDetails">
+        <summary>Cloud connection</summary>
+        <div class="settingsDisclosureBody">
+          <p class="small">This secure connection keeps the phone, Pi, and Wall on one state. Local storage remains the offline fallback.</p>
+          <div class="settingblock"><label class="small" for="cloudEndpoint">Cloudflare Worker URL</label><input id="cloudEndpoint" type="url" placeholder="https://nonzero-sync.your-subdomain.workers.dev"></div>
+          <div class="settingblock"><label class="small" for="syncKey">Private sync key</label><input id="syncKey" type="password" placeholder="Generate or paste your shared key"></div>
+          <div class="row"><button id="generateSyncKeyBtn">Generate key</button><button id="syncNowBtn">Sync now</button></div>
+        </div>
+      </details>
     </section>
     <section class="card" id="rokuPairingCard">
-      <h2>Roku Wall pairing</h2>
-      <p>Pair the garage Wall with a one-time six-digit code. No Worker URL or private sync key needs to be typed on the TV.</p>
-      <button id="generatePairCodeBtn" class="primary">Generate 6-digit pairing code</button>
-      <div id="pairCodeBox" class="hidden" style="margin-top:12px;text-align:center;border:1px solid var(--line);border-radius:14px;padding:16px;background:#080c11">
-        <div class="small">ONE-TIME CODE</div>
-        <div id="pairCodeValue" style="font-size:42px;font-weight:900;letter-spacing:.18em;color:var(--gold);margin:6px 0">------</div>
-        <div id="pairCodeStatus" class="small">Enter this code on the Roku Wall. It expires in 10 minutes.</div>
-      </div>
+      <details class="settingsDisclosure">
+        <summary>Pair or re-pair Wall</summary>
+        <div class="settingsDisclosureBody">
+          <p class="small">Generate a one-time code only when setting up or repairing the Wall connection.</p>
+          <button id="generatePairCodeBtn" class="primary">Generate 6-digit pairing code</button>
+          <div id="pairCodeBox" class="hidden" style="margin-top:12px;text-align:center;border:1px solid var(--border);border-radius:14px;padding:16px;background:#080c11">
+            <div class="small">ONE-TIME CODE</div><div id="pairCodeValue" style="font-size:42px;font-weight:900;letter-spacing:.18em;color:#d4af37;margin:6px 0">------</div><div id="pairCodeStatus" class="small">Enter this code on the Wall. It expires in 10 minutes.</div>
+          </div>
+        </div>
+      </details>
     </section>
     <section class="card">
-      <h2>Data backup</h2>
-      <p>Progress is saved locally first and, when configured, mirrored to your private cloud state. Export remains available as an independent backup.</p>
-      <div class="row">
-        <button id="exportBtn">Export progress</button>
-        <button id="importBtn">Import progress</button>
-      </div>
-      <input id="importFile" type="file" accept="application/json" class="hidden">
-      <button id="resetBtn" class="secondary" style="margin-top:8px">Reset all progress</button>
+      <details class="settingsDisclosure">
+        <summary>Backup and recovery</summary>
+        <div class="settingsDisclosureBody">
+          <p class="small">Export an independent backup, restore one, or reset the app.</p>
+          <div class="row"><button id="exportBtn">Export progress</button><button id="importBtn">Import progress</button></div>
+          <input id="importFile" type="file" accept="application/json" class="hidden">
+          <button id="resetBtn" class="secondary" style="margin-top:8px">Reset all progress</button>
+        </div>
+      </details>
     </section>
   </main>
 
+  <div id="finishReview" class="editSheet hidden" role="dialog" aria-modal="true" aria-labelledby="finishReviewTitle">
+    <div class="editSheetPanel">
+      <div class="small">FINISH WORKOUT</div><h2 id="finishReviewTitle" style="margin-top:4px">Review before saving</h2>
+      <div class="finishReviewMeta"><div class="callout"><span class="small">CAPTURED TIME</span><b id="finishCapturedTime">00:00</b></div><div class="callout"><span class="small">SOURCE</span><b id="finishSource">APP TIMER</b></div></div>
+      <p id="finishCompletionSummary" class="small"></p>
+      <div class="finishFields">
+        <label>Hours<input id="finishDurationHours" type="number" inputmode="numeric" min="0" max="99" step="1"></label>
+        <label>Minutes<input id="finishDurationMinutes" type="number" inputmode="numeric" min="0" max="59" step="1"></label>
+        <label>Pain after<input id="finishPainAfter" type="number" inputmode="decimal" min="0" max="10" step="1"></label>
+        <label>RPE<input id="finishRpe" type="number" inputmode="decimal" min="1" max="10" step="1" placeholder="optional"></label>
+        <label class="wideField">Notes<textarea id="finishNotes" placeholder="Optional session note"></textarea></label>
+      </div>
+      <div id="finishReviewError" class="dangertext small hidden">Enter at least one minute.</div>
+      <div class="editSheetActions"><button id="cancelFinishReviewBtn">Keep workout open</button><button id="confirmFinishBtn" class="saveTime">Save workout</button></div>
+    </div>
+  </div>
+
+  <div id="sessionTimeEditor" class="editSheet hidden" role="dialog" aria-modal="true" aria-labelledby="sessionTimeEditorTitle">
+    <div class="editSheetPanel">
+      <div class="small">EDIT SAVED WORKOUT</div>
+      <h2 id="sessionTimeEditorTitle" style="margin-top:4px">Edit session</h2>
+      <p id="sessionTimeEditorMeta" class="small"></p>
+      <div class="sessionEditFields">
+        <label>Hours<input id="editDurationHours" type="number" inputmode="numeric" min="0" max="99" step="1" value="0"></label>
+        <label>Minutes<input id="editDurationMinutes" type="number" inputmode="numeric" min="0" max="59" step="1" value="0"></label>
+        <label>Workout type<select id="editSessionType"><option value="strength">Strength</option><option value="bike">BikeErg</option><option value="recovery">Recovery</option><option value="erg">Other Erg</option></select></label>
+        <label>Pain<input id="editSessionPain" type="number" inputmode="decimal" min="0" max="10" step="1"></label>
+        <label>Distance (m)<input id="editSessionDistance" type="number" inputmode="decimal" min="0" step="1"></label>
+        <label>Calories<input id="editSessionCalories" type="number" inputmode="decimal" min="0" step="1"></label>
+        <label>RPE<input id="editSessionRpe" type="number" inputmode="decimal" min="1" max="10" step="1"></label>
+        <label>Pain after<input id="editSessionPainAfter" type="number" inputmode="decimal" min="0" max="10" step="1"></label>
+        <label class="wideField">Notes<textarea id="editSessionNotes" placeholder="Optional session note"></textarea></label>
+      </div>
+      <div id="sessionTimeEditorError" class="dangertext small hidden">Enter at least one minute.</div>
+      <div class="editSheetActions"><button id="cancelSessionTimeBtn">Cancel</button><button id="saveSessionTimeBtn" class="saveTime">Save changes</button></div>
+      <button id="deleteSessionBtn" class="dangerAction" style="width:100%;margin-top:9px">Delete this session</button>
+    </div>
+  </div>
+  <div id="undoToast" class="undoToast hidden"><span id="undoToastText">Session updated.</span><button id="undoSessionChangeBtn">UNDO</button></div>
+
   <nav class="tabbar">
     <button data-tab="Today" class="active">Today</button>
-    <button data-tab="Week">Week</button>
-    <button data-tab="Progress">Progress</button>
+    <button data-tab="Plan">Plan</button>
+    <button data-tab="History">History</button>
     <button data-tab="Settings">Settings</button>
   </nav>
 </div>
@@ -531,7 +622,7 @@ const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
   startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
-if(!state._meta) state._meta={updatedAt:Date.now(),schema:11,revision:0};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:12,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -555,7 +646,7 @@ let localDirty=false;
 let cloudMutationSeq=0;
 
 function save({sync=true}={}){
- state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:11,revision:cloudRevision};
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:12,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  localDirty=true;
  cloudMutationSeq++;
@@ -591,7 +682,7 @@ function applyCanonicalState(payload,{render=true}={}){
  if(!remoteState)return false;
  state=remoteState;
  cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
- state._meta={...(state._meta||{}),schema:11,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
+ state._meta={...(state._meta||{}),schema:12,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
  if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
  if(!state.ergDataFirst)state.ergDataFirst={enabled:true};
  if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -649,7 +740,10 @@ async function pushCloudState({retry=true}={}){
      const jointNewer=Number(localJoint?.updatedAt||0)>Number(remoteJoint?.updatedAt||0);
      const localEvents=snapshot.eventLog||[],remoteEvents=state.eventLog||[];
      state.eventLog=[...new Map([...remoteEvents,...localEvents].map(e=>[e.id,e])).values()].sort((a,b)=>a.at-b.at).slice(-160);
-     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer){
+     let sessionsNewer=false;const mergedSessions=new Map((state.sessions||[]).map(s=>[s.date,s]));
+     for(const localSession of (snapshot.sessions||[])){const remoteSession=mergedSessions.get(localSession.date),localStamp=Math.max(Number(localSession.durationCorrectedAt||0),Number(localSession.updatedAt||0)),remoteStamp=Math.max(Number(remoteSession?.durationCorrectedAt||0),Number(remoteSession?.updatedAt||0));if(!remoteSession||localStamp>remoteStamp){mergedSessions.set(localSession.date,localSession);sessionsNewer=true}}
+     if(sessionsNewer)state.sessions=[...mergedSessions.values()];
+     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer||sessionsNewer){
        if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr))state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),partnerSets:ls>rs?(localAW.partnerSets||[]):(state.activeWorkout?.partnerSets||[]),partnerChecks:ls>rs?(localAW.partnerChecks||[]):(state.activeWorkout?.partnerChecks||[]),jointEnabled:ls>rs?localAW.jointEnabled:state.activeWorkout?.jointEnabled,partnerProgramSnapshot:ls>rs?(localAW.partnerProgramSnapshot||null):state.activeWorkout?.partnerProgramSnapshot,setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
        if(jointNewer)state.jointToday=localJoint;
        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
@@ -754,6 +848,47 @@ function renderPreop(){
 
 function fmtDate(s){return new Date(s+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
 function todaySessionRecord(){return state.sessions.find(x=>x.date===localDateStr())}
+
+let editingSessionDate='',lastSessionMutation=null,undoTimer=0;
+function openSessionTimeEditor(date){
+ const rec=state.sessions.find(x=>x.date===date);if(!rec)return;
+ editingSessionDate=date;
+ const total=Math.max(0,Math.round(Number(rec.duration)||0));
+ document.getElementById('sessionTimeEditorMeta').textContent=`${fmtDate(date)} · ${rec.name}`;
+ document.getElementById('editDurationHours').value=Math.floor(total/60);
+ document.getElementById('editDurationMinutes').value=total%60;
+ document.getElementById('editSessionType').value=['strength','bike','recovery','erg'].includes(rec.type)?rec.type:'erg';
+ document.getElementById('editSessionPain').value=rec.pain??'';
+ document.getElementById('editSessionDistance').value=rec.postMetrics?.distance??rec.ergMetrics?.distance??'';
+ document.getElementById('editSessionCalories').value=rec.postMetrics?.calories??rec.ergMetrics?.calories??'';
+ document.getElementById('editSessionRpe').value=rec.postMetrics?.rpe??'';
+ document.getElementById('editSessionPainAfter').value=rec.postMetrics?.painAfter??'';
+ document.getElementById('editSessionNotes').value=rec.postMetrics?.notes??rec.notes??'';
+ document.getElementById('sessionTimeEditorError').classList.add('hidden');
+ document.getElementById('sessionTimeEditor').classList.remove('hidden');
+ setTimeout(()=>document.getElementById('editDurationMinutes').focus(),60);
+}
+function closeSessionTimeEditor(){editingSessionDate='';document.getElementById('sessionTimeEditor').classList.add('hidden')}
+function numericField(id){const value=document.getElementById(id).value;return value===''?null:Number(value)}
+function showUndo(message,mutation){lastSessionMutation=mutation;clearTimeout(undoTimer);document.getElementById('undoToastText').textContent=message;document.getElementById('undoToast').classList.remove('hidden');undoTimer=setTimeout(()=>{document.getElementById('undoToast').classList.add('hidden');lastSessionMutation=null},10000)}
+function renderAfterSessionChange(){renderToday();renderWeek();renderProgress();renderMetrics();renderTimer()}
+function saveSessionTimeCorrection(){
+ const hours=Math.max(0,Math.floor(Number(document.getElementById('editDurationHours').value)||0));
+ const minutes=Math.max(0,Math.floor(Number(document.getElementById('editDurationMinutes').value)||0));
+ const total=hours*60+minutes,err=document.getElementById('sessionTimeEditorError');
+ if(total<1||minutes>59){err.textContent=minutes>59?'Minutes must be between 0 and 59.':'Enter at least one minute.';err.classList.remove('hidden');return}
+ const index=state.sessions.findIndex(x=>x.date===editingSessionDate);if(index<0)return closeSessionTimeEditor();
+ const rec=state.sessions[index],before=JSON.parse(JSON.stringify(rec)),beforeActive=state.activeWorkout?.date===editingSessionDate?JSON.parse(JSON.stringify(state.activeWorkout)):null,now=Date.now();
+ rec.duration=total;rec.timerMs=total*60000;rec.type=document.getElementById('editSessionType').value;rec.pain=numericField('editSessionPain');rec.postMetrics={...(rec.postMetrics||{}),duration:total,distance:numericField('editSessionDistance'),calories:numericField('editSessionCalories'),rpe:numericField('editSessionRpe'),painAfter:numericField('editSessionPainAfter'),notes:document.getElementById('editSessionNotes').value.trim()||null};rec.durationCorrectedAt=now;rec.sessionEditedAt=now;rec.updatedAt=now;
+ if(state.activeWorkout?.date===editingSessionDate){
+   state.activeWorkout={...state.activeWorkout,...rec,timer:{elapsedMs:total*60000,running:false,startedAt:null},updatedAt:now};
+   if(state.activeWorkout.status==='complete')state.activeWorkout.timer={elapsedMs:total*60000,running:false,startedAt:null};
+ }
+ recordEvent('session_edited',{date:editingSessionDate,fromMinutes:before.duration,toMinutes:total,type:rec.type});
+ const date=editingSessionDate;save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session updated.',{kind:'edit',date,before,beforeActive});
+}
+function deleteEditedSession(){const index=state.sessions.findIndex(x=>x.date===editingSessionDate);if(index<0)return;if(!confirm('Delete this saved session? You will have 10 seconds to undo.'))return;const before=JSON.parse(JSON.stringify(state.sessions[index])),beforeActive=state.activeWorkout?.date===editingSessionDate?JSON.parse(JSON.stringify(state.activeWorkout)):null,date=editingSessionDate;state.sessions.splice(index,1);if(beforeActive?.status==='complete')state.activeWorkout=null;recordEvent('session_deleted',{date});save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session deleted.',{kind:'delete',date,before,beforeActive})}
+function undoSessionMutation(){const mutation=lastSessionMutation;if(!mutation)return;const index=state.sessions.findIndex(x=>x.date===mutation.date);if(index>=0)state.sessions[index]=mutation.before;else state.sessions.push(mutation.before);if(mutation.beforeActive)state.activeWorkout=mutation.beforeActive;recordEvent('session_change_undone',{date:mutation.date,kind:mutation.kind});lastSessionMutation=null;clearTimeout(undoTimer);document.getElementById('undoToast').classList.add('hidden');save();renderAfterSessionChange()}
 
 
 function recordEvent(type,detail={}){
@@ -1062,15 +1197,27 @@ function renderSundayReport(){
  const el=document.getElementById('sundayReport');if(!el)return;const r=weeklyReportData();
  el.innerHTML=`<div class="reportGrid"><div class="reportMetric"><b>${r.starts}/7</b><span>starts</span></div><div class="reportMetric"><b>${fmtMinutes(r.mins)}</b><span>minutes</span></div><div class="reportMetric"><b>${r.consistency}%</b><span>consistency</span></div></div><p>${r.rec}</p>`;
 }
+let systemHealth={cloud:false,worker:false,wall:false,pm5:false,pm5Known:false,wallHealth:null,lastCheckedAt:0};
+function appInstalled(){return navigator.standalone===true||window.matchMedia?.('(display-mode: standalone)').matches===true}
+function renderSystemStatus(){
+ const installed=appInstalled(),steps=[{done:installed,title:'Phone app installed',detail:installed?'Running as an installed app':'Add NONZERO to the Home Screen'},{done:systemHealth.worker,title:'Cloud connected',detail:systemHealth.worker?'Worker responding':'Open Cloud connection and verify credentials'},{done:systemHealth.wall,title:'Pi and Wall online',detail:systemHealth.wall?'Fresh Wall heartbeat received':'Check the Pi, Wall browser, and pairing'},{done:systemHealth.pm5,title:'PM5 USB detected',detail:systemHealth.pm5?'Cable and PM5 bridge connected':systemHealth.pm5Known?'Wake the PM5 or check the USB cable':'Waiting for upgraded Pi health'}];
+ const incomplete=steps.filter(x=>!x.done),button=document.getElementById('systemStatusButton'),text=document.getElementById('systemStatusText');if(button&&text){button.className='systemStatusBar '+(incomplete.length?'warn':'ok');text.textContent=incomplete.length?`${incomplete.length} SETUP ITEM${incomplete.length===1?'':'S'} NEED ATTENTION`:'SYSTEM READY · PM5 + WALL'}
+ const list=document.getElementById('setupChecklist');if(list)list.innerHTML=steps.map((x,i)=>`<div class="setupStep ${x.done?'done':'warn'}"><i>${x.done?'✓':i+1}</i><div><b>${x.title}</b><span>${x.detail}</span></div></div>`).join('');
+ const summary=document.getElementById('setupSummary');if(summary)summary.textContent=incomplete.length?`${incomplete.length} item${incomplete.length===1?'':'s'} still need attention.`:'Phone, cloud, Pi, PM5, and Wall are ready.';const details=document.getElementById('setupChecklistDetails');if(details&&!incomplete.length)details.removeAttribute('open');else if(details&&incomplete.length)details.setAttribute('open','');
+ const pm5Status=document.getElementById('pm5ConnectionStatus'),pm5Detail=document.getElementById('pm5ConnectionDetail');if(pm5Status)pm5Status.textContent=systemHealth.pm5?'PM5 USB · CONNECTED':'USB → Raspberry Pi';if(pm5Detail)pm5Detail.textContent=systemHealth.pm5?'Primary zero-touch connection is healthy':systemHealth.pm5Known?'PM5 is not currently detected':'Waiting for Pi health data';
+}
+async function checkWorkerHealth(){systemHealth.cloud=cloudReady();if(!cloudReady()){systemHealth.worker=false;renderSystemStatus();return false}try{const r=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/health',{cache:'no-store'});systemHealth.worker=r.ok;renderSystemStatus();return r.ok}catch{systemHealth.worker=false;renderSystemStatus();return false}}
 async function fetchWallHealth(){
- const s=document.getElementById('wallHealthStatus'),d=document.getElementById('wallHealthDetail');if(!s||!cloudReady())return;
+ const s=document.getElementById('wallHealthStatus'),d=document.getElementById('wallHealthDetail');if(!s)return;
+ if(!cloudReady()){systemHealth={...systemHealth,cloud:false,worker:false,wall:false,pm5:false,pm5Known:false};s.textContent='CONNECTION SETUP NEEDED';s.className='warn';d.textContent='Open Cloud connection below to connect the phone, Pi, and Wall.';document.getElementById('cloudSetupDetails')?.setAttribute('open','');renderSystemStatus();return}
  try{
   const res=await fetch(cloudConfig.endpoint+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'});const x=await res.json();
   if(!res.ok||!x?.health)throw new Error(x?.error||'No heartbeat');
   const age=Math.max(0,Date.now()-Number(x.health.at||0)),fresh=age<90000;
+  const pm5=x.health.pm5||null,pm5Connected=Boolean(pm5?.connected&&pm5?.fresh!==false);systemHealth={...systemHealth,cloud:true,worker:true,wall:fresh,pm5:pm5Connected,pm5Known:Boolean(pm5),wallHealth:x.health,lastCheckedAt:Date.now()};
   s.textContent=fresh?`HEALTHY · ${String(x.health.mode||'').toUpperCase()}`:`STALE · ${Math.round(age/60000)} MIN AGO`;s.className=fresh?'ok':'warn';
-  d.textContent=`Uptime ${Math.round(Number(x.health.uptimeSeconds||0)/60)} min · ${x.health.activeSessionId?'workout '+x.health.activeSessionId:'no active workout'} · Wall ${x.health.version||''}`;
- }catch(e){s.textContent='NO RECENT WALL HEARTBEAT';s.className='err';d.textContent=String(e.message||e)}
+  d.textContent=`Uptime ${Math.round(Number(x.health.uptimeSeconds||0)/60)} min · ${pm5?pm5Connected?'PM5 USB connected':pm5.error?'PM5 error':'PM5 waiting':'PM5 status unavailable'} · Wall ${x.health.version||''}`;renderSystemStatus();
+ }catch(e){systemHealth={...systemHealth,cloud:true,worker:true,wall:false,pm5:false,pm5Known:false};s.textContent='NO RECENT WALL HEARTBEAT';s.className='err';d.textContent=String(e.message||e);document.getElementById('manualWallDetails')?.setAttribute('open','');renderSystemStatus()}
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
@@ -1090,6 +1237,7 @@ function renderToday(){
  const p=todayProgram(), rec=todaySessionRecord();
  document.getElementById('todayHeading').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
  document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${fmtDuration(rec.duration)}` : `${p.name}. Your only obligation is to start.`;
+ const editToday=document.getElementById('todayEditTimeBtn');if(editToday)editToday.classList.toggle('hidden',!rec);
  document.getElementById('sessionName').textContent=p.name;
  document.getElementById('sessionWhy').textContent=p.why;
  const badge=document.getElementById('programBadge'),isOverride=state.customToday?.date===localDateStr();
@@ -1261,12 +1409,21 @@ function renderErgOrchestration(){
  const prev=document.getElementById('ergStartUrlPreview');if(prev)prev.textContent=ergIntentUrl()||'Configure Cloud Sync to generate the endpoint.';
  const en=document.getElementById('ergDataFirstEnabled');if(en)en.checked=state.ergDataFirst?.enabled!==false;
 }
+function renderContextControls(){
+ const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null,status=String(a?.status||'ready').toLowerCase(),normalized=['active','running'].includes(status)?'active':status==='paused'?'paused':status==='complete'?'complete':'ready',type=String(a?.type||todayProgram().type||''),erg=/bike|erg|row|ski/i.test(type);
+ const controls=document.querySelector('.cockpitControls'),secondary=document.getElementById('workoutSecondaryControls'),start=document.getElementById('timerStartBtn'),lap=document.getElementById('lapBtn'),reset=document.getElementById('restartWorkoutBtn');
+ if(controls){controls.dataset.state=normalized;controls.style.gridTemplateColumns=normalized==='ready'||normalized==='complete'?'1fr':normalized==='paused'?'1fr 1fr 1.25fr':erg?'1fr 1fr 1.25fr':'1fr 1.25fr'}
+ if(start)start.textContent=normalized==='paused'?'▶ RESUME':'▶ START';if(lap)lap.classList.toggle('controlHidden',!erg||normalized!=='active');if(reset)reset.classList.toggle('controlHidden',normalized!=='paused');
+ if(secondary)secondary.classList.toggle('controlHidden',!['active','paused'].includes(normalized));document.getElementById('restBtn')?.classList.toggle('controlHidden',erg);
+ document.querySelectorAll('.lapStrip,.lapInputs,#lapList').forEach(el=>el.classList.toggle('controlHidden',!erg||!['active','paused'].includes(normalized)));
+}
 function renderTimer(){
  syncUiClock(true);
  renderTimerFace();
  renderLapPanel();
  const st=document.getElementById('sessionState');const status=state.activeWorkout?.date===localDateStr()?(state.activeWorkout.status||'ready'):'ready';
  if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · PERFORMANCE MODE':status==='paused'?'PAUSED · PERFORMANCE HELD':status==='complete'?'COMPLETE':'READY';}
+ renderContextControls();
 }
 function ensureActiveWorkout(status='ready'){
  const p=todayProgram(),items=currentItems(),existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{},now=Date.now();
@@ -1352,17 +1509,36 @@ function updatePainAdvice(){
  document.getElementById('painAdvice').textContent=txt;
 }
 
+async function openFinishReview(){
+ const a=ensureActiveWorkout(state.activeWorkout?.status||'active');if(a.timer?.running)await pauseTimer();
+ const items=currentItems();normalizeSetState(a,items);const completed=a.checks.filter(Boolean).length;
+ const defaultMinutes=mode==='minimum'||mode==='flare'?10:(todayProgram().type==='bike'?(weekdayIndex()===6?40:30):30);
+ const captured=Math.max(1,Math.round(Number(a.ergMetrics?.durationMinutes)||(timerElapsed()/60000)||defaultMinutes));
+ const source=a.concept2?.id?'CONCEPT2':/pm5|usb/i.test(String(a.source||''))?'PM5 USB':'APP TIMER';
+ document.getElementById('finishCapturedTime').textContent=fmtDuration(captured);document.getElementById('finishSource').textContent=source;
+ document.getElementById('finishCompletionSummary').textContent=`${completed} of ${items.length} movements complete${a.jointEnabled?' · joint session with Sam':''}.`;
+ document.getElementById('finishDurationHours').value=Math.floor(captured/60);document.getElementById('finishDurationMinutes').value=captured%60;
+ document.getElementById('finishPainAfter').value=a.postMetrics?.painAfter??a.pain??document.getElementById('pain').value;document.getElementById('finishRpe').value=a.postMetrics?.rpe??'';document.getElementById('finishNotes').value=a.postMetrics?.notes??'';
+ document.getElementById('finishReviewError').classList.add('hidden');document.getElementById('finishReview').classList.remove('hidden');
+}
+function closeFinishReview(){document.getElementById('finishReview').classList.add('hidden')}
+function confirmFinishReview(){
+ const hours=Math.max(0,Math.floor(Number(document.getElementById('finishDurationHours').value)||0)),minutes=Math.max(0,Math.floor(Number(document.getElementById('finishDurationMinutes').value)||0)),total=hours*60+minutes,err=document.getElementById('finishReviewError');
+ if(total<1||minutes>59){err.textContent=minutes>59?'Minutes must be between 0 and 59.':'Enter at least one minute.';err.classList.remove('hidden');return}
+ document.getElementById('metricDuration').value=total;document.getElementById('metricPainAfter').value=document.getElementById('finishPainAfter').value;document.getElementById('metricRpe').value=document.getElementById('finishRpe').value;document.getElementById('metricNotes').value=document.getElementById('finishNotes').value;
+ closeFinishReview();completeWorkout();
+}
 function completeWorkout(){
  const date=localDateStr(),p=todayProgram(),a=ensureActiveWorkout('active'),items=currentItems();normalizeSetState(a,items);
  const checks=a.checks.slice(),defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
  const pain=Number(document.getElementById('pain')?.value||a.pain||6),energy=Number(document.getElementById('energy')?.value||a.energy||3);
- const post=collectPostMetrics(),timerMs=timerElapsed(),existing=state.sessions.findIndex(x=>x.date===date),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0);
- const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration:post.duration??(timerMs?Math.round(timerMs/6000)/10:defaultMinutes),checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:Date.now()};
+ const post=collectPostMetrics(),rawTimerMs=timerElapsed(),duration=post.duration??(rawTimerMs?Math.round(rawTimerMs/6000)/10:defaultMinutes),timerMs=post.duration!=null?Number(post.duration)*60000:rawTimerMs,existing=state.sessions.findIndex(x=>x.date===date),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0),now=Date.now();
+ const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration,checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:now,completionSource:a.concept2?.id?'concept2':/pm5|usb/i.test(String(a.source||''))?'pm5-usb':'app-timer',updatedAt:now};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
  state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},status:'complete',statusUpdatedAt:Date.now(),updatedAt:Date.now()};
  recordEvent('workout_complete',{timerMs,setCount,checks:checks.filter(Boolean).length,total:checks.length});save();
  const msg=motivation(rec);document.getElementById('completeMessage').innerHTML=`<p class="success">✓ ${msg}</p>`;
- renderMetrics();renderWeek();renderProgress();renderWorkout();renderTimer();
+ renderMetrics();renderWeek();renderProgress();renderToday();renderTimer();
 }
 
 function motivation(rec){
@@ -1418,12 +1594,14 @@ function renderWeek(){
  document.getElementById('weeklySummary').innerHTML=`<p><b>${starts}/7 starts</b> · ${fmtMinutes(mins)} total min · average reported pain ${avgPain}/10.</p><p>${text}</p>`;
 }
 
+let historyRange='all';
 function renderProgress(){
- const s=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date));
+ const all=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date)),s=historyRange==='week'?[...sessionsThisWeek()].sort((a,b)=>b.date.localeCompare(a.date)):all;
+ document.querySelectorAll('[data-history-range]').forEach(b=>b.classList.toggle('active',b.dataset.historyRange===historyRange));document.getElementById('historyStartsLabel').textContent=historyRange==='week'?'Week starts':'Total starts';document.getElementById('sessionListTitle').textContent=historyRange==='week'?'This week’s sessions':'Recent sessions';document.getElementById('historyWeekSummary').classList.toggle('hidden',historyRange!=='week');
  document.getElementById('totalStarts').textContent=s.length;
  document.getElementById('totalStrength').textContent=s.filter(x=>x.type==='strength').length;
  document.getElementById('totalBike').textContent=fmtMinutes(s.filter(x=>x.type==='bike').reduce((a,b)=>a+Number(b.duration||0),0));
- const recent=s.slice(0,14), old=s.slice(14,28);
+ const recent=all.slice(0,14), old=all.slice(14,28);
  let trend='Keep logging sessions; your first useful trend summary appears as history builds.';
  if(recent.length>=5){
    const rp=recent.reduce((a,b)=>a+(b.pain||0),0)/recent.length;
@@ -1436,13 +1614,13 @@ function renderProgress(){
    } else trend=`You have ${recent.length} logged sessions. Keep stacking starts; the app will compare pain trends once there is more history.`;
  }
  document.getElementById('trendSummary').textContent=trend;
- document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>`<div class="dayrow"><span>${fmtDate(x.date)}</span><span>${x.name}<br><span class="small">${x.mode.toUpperCase()} · pain ${x.pain}/10</span></span><span>${fmtDuration(x.duration)}</span></div>`).join('')||'<p>No sessions saved yet.</p>';
+ document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>{const source=x.completionSource==='pm5-usb'?'PM5 USB':x.completionSource==='concept2'||x.concept2?.id?'Concept2':'App timer';return `<div class="dayrow sessionRow"><span>${fmtDate(x.date)}</span><span>${x.name}<br><span class="small">${String(x.mode||'full').toUpperCase()} · pain ${x.pain??'—'}/10 · ${source}</span></span><span class="sessionTimeCell"><b>${fmtDuration(x.duration)}</b><button class="editTimeBtn" data-edit-session-time="${x.date}">EDIT</button></span></div>`}).join('')||'<p>No sessions saved yet.</p>';
 }
 
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;renderWorkout();saveActiveWorkout()}));
 document.getElementById('pain').addEventListener('input',()=>{updatePainAdvice();saveActiveWorkout()});
 document.getElementById('energy').addEventListener('input',()=>{updatePainAdvice();saveActiveWorkout()});
-document.getElementById('completeBtn').addEventListener('click',completeWorkout);
+document.getElementById('completeBtn').addEventListener('click',openFinishReview);
 document.getElementById('timerStartBtn').addEventListener('click',startTimer);
 document.getElementById('timerPauseBtn').addEventListener('click',pauseTimer);
 document.getElementById('lapBtn').addEventListener('click',logLap);
@@ -1459,17 +1637,31 @@ document.getElementById('restorePlanBtn')?.addEventListener('click',restorePresc
 document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJointWorkout);
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
+document.getElementById('systemStatusButton')?.addEventListener('click',()=>{document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('setupChecklistDetails')?.setAttribute('open','');setTimeout(()=>document.getElementById('guidedSetupCard')?.scrollIntoView({behavior:'smooth',block:'start'}),50)});
+document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{await sendWallCommand(btn.dataset.wallCommand);btn.textContent='SENT ✓';setTimeout(()=>{const labels={ambient:'Ambient',performance:'Performance',night:'Night',deep:'Deep Hibernate','quote-next':'Next quote'};btn.textContent=labels[btn.dataset.wallCommand]||'Sent'},900)}));
+document.getElementById('todayEditTimeBtn')?.addEventListener('click',()=>openSessionTimeEditor(localDateStr()));
+document.getElementById('recentSessions')?.addEventListener('click',e=>{const btn=e.target.closest('[data-edit-session-time]');if(btn)openSessionTimeEditor(btn.dataset.editSessionTime)});
+document.getElementById('cancelSessionTimeBtn')?.addEventListener('click',closeSessionTimeEditor);
+document.getElementById('saveSessionTimeBtn')?.addEventListener('click',saveSessionTimeCorrection);
+document.getElementById('deleteSessionBtn')?.addEventListener('click',deleteEditedSession);
+document.getElementById('undoSessionChangeBtn')?.addEventListener('click',undoSessionMutation);
+document.getElementById('sessionTimeEditor')?.addEventListener('click',e=>{if(e.target.id==='sessionTimeEditor')closeSessionTimeEditor()});
+document.getElementById('cancelFinishReviewBtn')?.addEventListener('click',closeFinishReview);
+document.getElementById('confirmFinishBtn')?.addEventListener('click',confirmFinishReview);
+document.getElementById('finishReview')?.addEventListener('click',e=>{if(e.target.id==='finishReview')closeFinishReview()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
+document.querySelectorAll('[data-history-range]').forEach(b=>b.addEventListener('click',()=>{historyRange=b.dataset.historyRange;renderProgress()}));
 
 document.getElementById('reviewMetricsBtn').addEventListener('click',()=>{document.getElementById('postMetrics').classList.toggle('hidden');prefillMetrics()});
 document.getElementById('importC2Btn').addEventListener('click',()=>importLatestConcept2());
 document.getElementById('importC2QuickBtn').addEventListener('click',()=>importLatestConcept2());
-document.getElementById('completeBtnTop').addEventListener('click',completeWorkout);
+document.getElementById('completeBtnTop').addEventListener('click',openFinishReview);
 
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
  document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
- ['Today','Week','Progress','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
- if(b.dataset.tab==='Week')renderWeek();
- if(b.dataset.tab==='Progress')renderProgress();
+ ['Today','Plan','History','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
+ if(b.dataset.tab==='Plan')renderWeek();
+ if(b.dataset.tab==='History')renderProgress();
 }));
 
 const restSel=document.getElementById('restSeconds');if(restSel){restSel.value=String(state.trainingPrefs?.restSeconds||90);restSel.addEventListener('change',e=>{state.trainingPrefs.restSeconds=Number(e.target.value);save();const rb=document.getElementById('restBtn');if(rb)rb.textContent='REST '+e.target.value})}
@@ -1527,14 +1719,15 @@ document.getElementById('generatePairCodeBtn').addEventListener('click',generate
 
 document.getElementById('cloudEndpoint').value=cloudConfig.endpoint||'';
 document.getElementById('syncKey').value=cloudConfig.syncKey||'';
-document.getElementById('cloudEndpoint').addEventListener('change',()=>{saveCloudConfig();pullCloudState()});
-document.getElementById('syncKey').addEventListener('change',()=>{saveCloudConfig();pullCloudState()});
+document.getElementById('cloudEndpoint').addEventListener('change',()=>{saveCloudConfig();checkWorkerHealth();pullCloudState()});
+document.getElementById('syncKey').addEventListener('change',()=>{saveCloudConfig();checkWorkerHealth();pullCloudState()});
 document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
  const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
 });
 document.getElementById('syncNowBtn').addEventListener('click',async()=>{saveCloudConfig();await pullCloudState({force:false});await pushCloudState()});
 document.getElementById('wallLaunchBtn')?.addEventListener('click',()=>{location.href='./wall/'});
 setSyncStatus(cloudReady()?'Cloud configured':'Local only',cloudReady()?'ok':'');
+renderSystemStatus();checkWorkerHealth();
 
 document.getElementById('exportBtn').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
@@ -1582,7 +1775,7 @@ window.addEventListener('pagehide',()=>{
   if(cloudReady())drainCloudPush();
 });
 
-// NONZERO v3.18: one-link BikeErg Shortcuts setup.
+// NONZERO v3.20: optional one-link BikeErg Shortcuts fallback.
 async function sha256HexLocal(value){
  const data=new TextEncoder().encode(String(value));
  const digest=await crypto.subtle.digest('SHA-256',data);
