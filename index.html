@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.23 · Intelligent Training</title>
+<title>NONZERO v3.20 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -44,7 +44,6 @@ textarea{min-height:72px;resize:vertical}
 .progressbar>div{height:100%;background:var(--green);width:0}
 .dayrow{display:grid;grid-template-columns:48px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #253042;align-items:center}
 .dayrow:first-child{border-top:0}
-.dayrow.planDay{cursor:pointer;border-radius:13px;padding:11px 9px;margin:2px -9px;transition:.16s background,.16s border-color}.dayrow.planDay:hover,.dayrow.planDay:focus-within{background:#162131}.dayrow.planDay button{padding:7px 9px;min-height:36px;font-size:11px;color:#b9e7ff;border-color:#28506a}.dayrow.planDay .customMark{color:#d4af37;font-size:10px;font-weight:900;letter-spacing:.08em}
 .statusdot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#475569;margin-right:6px}
 .statusdot.done{background:var(--green)} .statusdot.miss{background:var(--red)}
 .callout{background:#0b1220;border:1px solid #334155;border-radius:14px;padding:12px}
@@ -105,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.23 task-oriented navigation + explicit workout state + settings refresh */
+/* v3.20 contextual cockpit + finish review + unified history + guided setup */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -118,16 +117,15 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .secondaryControls button{font-size:11px;min-height:42px;padding:6px 4px}
 .todayCockpit>.secondaryControls{grid-template-columns:repeat(3,1fr)}
 .todayCockpit #quoteBtn,.todayCockpit #wallModeBtn{display:none}
-.exerciseV315{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;padding:14px 4px;border-bottom:1px solid #1c2734}
+.exerciseV315{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;padding:10px 2px;border-bottom:1px solid #1c2734}
 .exerciseV315.current{background:#111b27;border-radius:12px;padding:10px}
 .exerciseV315 input[type=checkbox]{margin-top:4px}
-.exerciseV315 b{display:block;line-height:1.35;margin:0 0 5px;word-spacing:.04em}.exerciseV315 small{display:block;line-height:1.5;color:#cbd5e1;white-space:normal;overflow-wrap:anywhere}.workoutSnapshot h2{line-height:1.25;margin:7px 0 6px}.workoutSnapshot #sessionWhy{margin:0 0 14px;line-height:1.5}.workoutSnapshot .modegrid{margin:12px 0}.workoutSnapshot .progressbar{margin-top:14px}
 .setRow{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
 .setBtn{width:34px;height:34px;border-radius:50%;padding:0;border:1px solid #435166;background:#121b25;color:#c8d1da;font-size:12px;font-weight:900}
 .setBtn.done{background:#2d6643;border-color:#4ba96a;color:#fff}
 .setBtn.current{border-color:#d4af37;box-shadow:0 0 0 2px #d4af3722}
 .exerciseMeta{font-size:11px;color:var(--muted);margin-top:5px}
-.nonzeroAction{background:#d4af37!important;color:#071017!important}
+.makeNonzero{background:#d4af37!important;color:#071017!important}
 .reportCard h3,.wallHealthCard h3{margin:2px 0 6px}
 .reportGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
 .reportMetric{background:#101923;border-radius:10px;padding:8px;text-align:center}
@@ -150,14 +148,10 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .editSheetPanel{width:min(100%,560px);background:#101923;border:1px solid #3a4a60;border-radius:22px;padding:18px;box-shadow:0 24px 80px #000}
 .editTimeGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.editTimeGrid label{font-size:12px;color:var(--muted)}.editTimeGrid input{margin-top:5px;font-size:22px;text-align:center;font-variant-numeric:tabular-nums}
 .editSheetActions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editSheetActions button{min-height:48px}.editSheetActions .saveTime{background:var(--green);color:#052e16;border:0}
-.programSheetPanel{width:min(100%,700px);max-height:92vh;overflow:auto;background:#101923;border:1px solid #3a4a60;border-radius:22px;padding:18px;box-shadow:0 24px 80px #000}.programSheetHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.programSheetHead button{flex:0 0 auto;padding:8px 11px}.recommendGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}.recommendCard{min-height:96px;text-align:left;padding:11px;border-color:#3b4a5d}.recommendCard b{display:block;margin-bottom:5px}.recommendCard small{display:block;color:var(--muted);line-height:1.3}.recommendCard.active{outline:2px solid #d4af37;background:#241f12}.programExercise{border:1px solid #2a3748;border-radius:15px;background:#0b1119;padding:11px;margin:9px 0}.programExerciseTop{display:grid;grid-template-columns:1fr auto;gap:8px}.programExerciseTop button{padding:8px 10px;color:#fca5a5}.prescriptionGrid{display:grid;grid-template-columns:.65fr .8fr 1fr;gap:7px;margin-top:8px}.prescriptionGrid label,.programExercise>label{font-size:10px;color:var(--muted);letter-spacing:.05em}.prescriptionGrid input,.programExercise input{margin-top:4px;padding:9px}.programEditorActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:-18px;background:linear-gradient(180deg,transparent 0,#101923 22%);padding:24px 0 2px}.programEditorActions .saveProgram{background:var(--green);color:#052e16;border:0}.hipGuardrail{border-left:4px solid #d4af37;background:#151710;padding:10px 12px;border-radius:11px;font-size:12px;line-height:1.4;color:#dce3ea}.variationTabs{display:flex;gap:7px;overflow:auto;padding-bottom:4px;margin:10px 0}.variationTabs button{white-space:nowrap;padding:9px 11px;font-size:11px}.addExerciseBtn{width:100%;border-style:dashed;margin-top:8px}@media(max-width:600px){.recommendGrid{grid-template-columns:1fr}.prescriptionGrid{grid-template-columns:repeat(3,1fr)}.programSheetPanel{padding:14px}.programEditorActions{bottom:-14px}}
 .sectionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.sectionHead h2,.sectionHead p{margin-top:0}.segmentControl{display:flex;gap:4px;background:#09111b;border:1px solid var(--border);border-radius:12px;padding:3px}.segmentControl button{padding:7px 9px;min-height:34px;font-size:11px;border:0}.segmentControl button.active{outline:0;background:#1a3345;color:#b9e7ff}
 .historyWeekSummary{display:grid;gap:9px;margin-top:10px}.historyWeekSummary .reportCard{margin:0}
 .systemStatusBar{display:flex;align-items:center;gap:8px;width:100%;margin-top:9px;padding:8px 10px;text-align:left;border-radius:12px;background:#0a1119}.systemStatusBar .systemDot{width:9px;height:9px;border-radius:50%;background:#64748b;flex:none}.systemStatusBar.ok .systemDot{background:var(--green)}.systemStatusBar.warn .systemDot{background:var(--yellow)}.systemStatusBar.err .systemDot{background:var(--red)}.systemStatusBar b{font-size:11px}.systemStatusBar span:last-child{margin-left:auto;font-size:10px;color:var(--muted)}
 .setupChecklist{display:grid;gap:7px;margin-top:8px}.setupStep{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:center;border:1px solid #263344;border-radius:12px;padding:9px;background:#0a1119}.setupStep i{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#263344;color:#cbd5e1;font-style:normal;font-size:11px;font-weight:900}.setupStep.done i{background:#184c2a;color:#86efac}.setupStep.warn i{background:#554017;color:#fcd34d}.setupStep b{display:block;font-size:12px}.setupStep span{font-size:10px;color:var(--muted)}
-.workoutStateBanner{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;border:1px solid #334155;border-radius:15px;padding:11px 12px;margin-bottom:12px;background:#0b121b}.workoutStateIcon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:950;background:#253244}.workoutStateCopy b{display:block;font-size:13px;letter-spacing:.04em}.workoutStateCopy span{display:block;font-size:11px;color:var(--muted);line-height:1.35;margin-top:2px}.workoutStateBanner button{padding:8px 10px;font-size:10px;min-height:36px}.workoutStateBanner.not-started{border-color:#35506a}.workoutStateBanner.in-progress{border-color:#1d779b;background:#0b1822}.workoutStateBanner.in-progress .workoutStateIcon{background:#12445b;color:#7dd3fc}.workoutStateBanner.finalize{border-color:#8a6c26;background:#1b170c}.workoutStateBanner.finalize .workoutStateIcon{background:#654d16;color:#fde68a}.workoutStateBanner.saved{border-color:#277342;background:#0d1c14}.workoutStateBanner.saved .workoutStateIcon{background:#18582f;color:#86efac}
-.settingsHero{background:linear-gradient(180deg,#111b27,#0b1119);border-color:#38506b}.settingsRefreshRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.settingsRefreshBtn{min-width:142px;background:#17334a;border-color:#2e668c;color:#b9e7ff}.settingsRefreshBtn.refreshing{opacity:.72}.settingsLastChecked{font-size:10px;color:var(--muted);margin-top:4px}.settingsNav{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.settingsNav button{padding:9px 5px;font-size:10px;min-height:42px}.settingsSectionLabel{font-size:10px;font-weight:900;letter-spacing:.14em;color:#7f91a5;margin-bottom:5px}.settingsCardTitle{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.settingsCardTitle h2{margin-bottom:2px}.settingsCardTitle p{margin:0}.card[id^="settings-"]{scroll-margin-top:14px}
-.tabIntro{margin-bottom:12px}.tabIntro h2{margin-bottom:3px}.tabIntro p{margin:0}.planLegend{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 4px;font-size:10px;color:var(--muted)}.historyMetrics{margin-top:12px}.cleanCard{padding:18px}.tabbar button{font-weight:850}.tabbar button.active{color:#b9e7ff}
 .controlHidden{display:none!important}.cockpitControls[data-state="ready"] #timerPauseBtn,.cockpitControls[data-state="ready"] #lapBtn,.cockpitControls[data-state="ready"] #restartWorkoutBtn,.cockpitControls[data-state="ready"] #completeBtn{display:none}.cockpitControls[data-state="active"] #timerStartBtn,.cockpitControls[data-state="active"] #restartWorkoutBtn{display:none}.cockpitControls[data-state="paused"] #timerPauseBtn,.cockpitControls[data-state="paused"] #lapBtn{display:none}.cockpitControls[data-state="complete"] button{display:none}.cockpitControls[data-state="ready"]{grid-template-columns:1fr}.cockpitControls[data-state="active"]{grid-template-columns:1fr 1fr 1.25fr}.cockpitControls[data-state="paused"]{grid-template-columns:1fr 1fr 1.25fr}
 .finishReviewMeta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.finishReviewMeta .callout{padding:10px}.finishReviewMeta b{display:block;font-size:16px}.finishFields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.finishFields label,.sessionEditFields label{font-size:11px;color:var(--muted)}.finishFields input,.finishFields select,.finishFields textarea,.sessionEditFields input,.sessionEditFields select,.sessionEditFields textarea{margin-top:4px}.wideField{grid-column:1/-1}
 .sessionEditFields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.dangerAction{color:#fca5a5;border-color:#713535}.undoToast{position:fixed;z-index:1100;left:14px;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:560px;margin:auto;background:#172232;border:1px solid #42536a;border-radius:15px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 14px 44px #000}.undoToast span{flex:1;font-size:12px}.undoToast button{padding:7px 10px;color:#b9e7ff}
@@ -167,13 +161,12 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
  .reportGrid{grid-template-columns:repeat(3,1fr)}
  .dayrow.sessionRow{grid-template-columns:52px 1fr}.sessionRow .sessionTimeCell{grid-column:2;justify-content:space-between}
  .sectionHead{display:block}.segmentControl{margin:8px 0;width:max-content}.finishFields,.sessionEditFields{grid-template-columns:1fr 1fr}
- .workoutStateBanner{grid-template-columns:auto 1fr}.workoutStateBanner button{grid-column:1/-1;width:100%}.settingsRefreshRow{grid-template-columns:1fr}.settingsRefreshBtn{width:100%}.settingsNav{grid-template-columns:repeat(2,1fr)}
 }
 
 </style>
 
 <script>
-/* NONZERO v3.20 — fail-safe BikeErg Shortcut fallback controller.
+/* NONZERO Phone — fail-safe BikeErg Shortcut fallback controller.
    Intentionally independent from the main application runtime. */
 (function(){
   const CFG='nonzeroCloudV1', LINK='nz_simple_bikeerg_url';
@@ -273,7 +266,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.23</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.21 CLEAN CORE</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -293,11 +286,6 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 
   <main id="tabToday">
     <section class="todayCockpit">
-      <div id="workoutStateBanner" class="workoutStateBanner not-started">
-        <div id="workoutStateIcon" class="workoutStateIcon">○</div>
-        <div class="workoutStateCopy"><b id="workoutStateTitle">NOT STARTED</b><span id="workoutStateDetail">Today’s workout is ready when you are.</span></div>
-        <button id="workoutStateAction">START</button>
-      </div>
       <div class="timerpanel cockpitTimer">
         <div class="timerCaption">MASTER WORKOUT · ELAPSED</div>
         <div id="timerReadout" class="timerreadout">00:00</div>
@@ -357,7 +345,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
     <section class="workoutSnapshot">
       <div class="small" style="font-weight:900;letter-spacing:.13em;color:#d4af37">TODAY'S WORK</div>
       <div class="secondaryControls" style="grid-template-columns:1fr 1fr;margin:8px 0 8px">
-        <button id="nonzeroBtn" class="nonzeroAction">NONZERO</button>
+        <button id="makeNonzeroBtn" class="makeNonzero">MAKE IT NONZERO</button>
         <button id="adaptiveBtn">ADAPT · 30 MIN</button>
       </div>
       <div class="workoutPicker">
@@ -400,36 +388,17 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
   </main>
 
   <main id="tabPlan" class="hidden">
-    <section class="card cleanCard">
-      <div class="tabIntro"><h2>Your seven-day plan</h2><p class="small">Tap a day to inspect or customize exercises, sets, reps and weight.</p></div>
-      <div class="planLegend"><span>● Completed</span><span>○ Upcoming</span><span style="color:#d4af37">CUSTOMIZED</span></div>
+    <section class="card">
+      <h2>Seven-day plan</h2>
+      <p class="small">Your prescribed rhythm, with completed days marked automatically.</p>
       <div id="weekList"></div>
     </section>
   </main>
 
-  <div id="programDayEditor" class="editSheet hidden" role="dialog" aria-modal="true" aria-labelledby="programEditorTitle">
-    <div class="programSheetPanel">
-      <div class="programSheetHead">
-        <div><div class="small" id="programEditorDate">PROGRAMMED DAY</div><h2 id="programEditorTitle">Workout details</h2><p class="small" id="programEditorWhy"></p></div>
-        <button id="closeProgramEditorBtn" aria-label="Close workout editor">✕</button>
-      </div>
-      <div class="hipGuardrail" id="programGuardrail">Hip guardrails remain active.</div>
-      <div id="variationTabs" class="variationTabs"></div>
-      <div id="recommendGrid" class="recommendGrid"></div>
-      <div class="small" style="font-weight:900;letter-spacing:.12em;margin-top:14px">EXERCISE PRESCRIPTION</div>
-      <div id="programExerciseEditor"></div>
-      <button id="addProgramExerciseBtn" class="addExerciseBtn">＋ ADD EXERCISE</button>
-      <div class="programEditorActions">
-        <button id="restoreProgramDayBtn">RESTORE PRESCRIBED</button>
-        <button id="saveProgramDayBtn" class="saveProgram">SAVE THIS DAY</button>
-      </div>
-    </div>
-  </div>
-
   <main id="tabHistory" class="hidden">
-    <section class="card cleanCard">
+    <section class="card">
       <div class="sectionHead"><div><h2>History</h2><p class="small">Review trends and correct any saved session.</p></div><div class="segmentControl"><button data-history-range="week">Week</button><button data-history-range="all" class="active">All time</button></div></div>
-      <div class="grid3 historyMetrics">
+      <div class="grid3">
         <div class="metric"><span id="historyStartsLabel">Total starts</span><b id="totalStarts">0</b></div>
         <div class="metric"><span>Strength</span><b id="totalStrength">0</b><small>sessions</small></div>
         <div class="metric"><span>Bike</span><b id="totalBike">0</b><small>minutes</small></div>
@@ -440,23 +409,22 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <div id="weeklySummary" class="callout"></div>
       </div>
     </section>
-    <section class="card cleanCard">
-      <div class="tabIntro"><h2 id="sessionListTitle">Recent sessions</h2><p class="small">Tap Edit to correct time, metrics or notes.</p></div>
+    <section class="card">
+      <h2 id="sessionListTitle">Recent sessions</h2>
       <div id="recentSessions"></div>
     </section>
   </main>
 
   <main id="tabSettings" class="hidden">
-    <section class="card settingsHero" id="guidedSetupCard">
-      <div class="settingsRefreshRow"><div><div class="settingsSectionLabel">SYSTEM</div><h2>Connection readiness</h2><p class="small" id="setupSummary">Checking your NONZERO system.</p><div id="settingsLastChecked" class="settingsLastChecked">Not checked yet</div></div><button id="refreshSystemBtn" class="settingsRefreshBtn">↻ REFRESH ALL</button></div>
-      <div class="settingsNav" aria-label="Settings shortcuts"><button data-settings-jump="settings-program">Program</button><button data-settings-jump="settings-wall">Wall + PM5</button><button data-settings-jump="settings-cloud">Connection</button><button data-settings-jump="settings-data">Data</button></div>
+    <section class="card" id="guidedSetupCard">
+      <div class="sectionHead"><div><h2>System readiness</h2><p class="small" id="setupSummary">Checking your NONZERO system.</p></div></div>
       <details class="settingsDisclosure" id="setupChecklistDetails">
-        <summary>View readiness checklist</summary>
+        <summary>Connection checklist</summary>
         <div class="settingsDisclosureBody"><div id="setupChecklist" class="setupChecklist"></div></div>
       </details>
     </section>
-    <section class="card" id="settings-program">
-      <div class="settingsCardTitle"><div><div class="settingsSectionLabel">TRAINING</div><h2>Program preferences</h2><p class="small">Schedule and reminder defaults.</p></div></div>
+    <section class="card">
+      <h2>Program settings</h2>
       <label class="small">Program start date</label>
       <input id="startDate" type="date">
       <p class="small">The schedule automatically repeats weekly from this start date.</p>
@@ -464,10 +432,9 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       <input id="reminderTime" type="time" value="06:00">
       <p class="small">This app cannot push reminders by itself when used as a simple web app. Use the iPhone setup instructions below to create a Home Screen icon and optional daily reminder.</p>
     </section>
-    <section class="card" id="settings-surgery">
-      <div class="settingsSectionLabel">HIP PLAN</div>
+    <section class="card">
       <h2>Hip surgery countdown</h2>
-      <p>Leave this blank while the date is TBD. Once scheduled, NONZERO will automatically add a live pre-op countdown and phase messaging to the phone and Garage Wall.</p>
+      <p>Leave this blank while the date is TBD. Once scheduled, NONZERO will automatically add a live pre-op countdown and phase messaging to the phone and Roku Wall.</p>
       <div class="surgeryGrid">
         <div class="settingblock"><label class="small" for="surgeryDate">Surgery date</label><input id="surgeryDate" type="date"></div>
         <button id="clearSurgeryDateBtn">Clear date</button>
@@ -475,8 +442,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       <div id="surgeryPlanPreview" class="callout" style="margin-top:10px">TBD · current hip-smart program remains active.</div>
       <p class="small">The countdown adapts motivation and phase graphics. It does not override instructions from your surgeon or physical therapist.</p>
     </section>
-    <section class="card" id="settings-pm5">
-      <div class="settingsSectionLabel">EQUIPMENT</div>
+    <section class="card">
       <h2>PM5 connection</h2>
       <div class="settingsStatus"><b id="pm5ConnectionStatus">USB → Raspberry Pi</b><span id="pm5ConnectionDetail">Checking direct connection</span></div>
       <p class="small">Your USB cable is the preferred PM5 path. The iPhone automation remains available only as a fallback if direct detection is unavailable.</p>
@@ -498,8 +464,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         </div>
       </details>
     </section>
-    <section class="card" id="settings-wall">
-      <div class="settingsSectionLabel">DISPLAY</div>
+    <section class="card" id="wallControlsCard">
       <h2>Garage Wall</h2>
       <div class="wallHealthCard">
         <h3 id="wallHealthStatus">Checking Wall…</h3>
@@ -517,7 +482,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
             <button data-wall-command="quote-next">Next quote</button>
           </div>
           <div class="row" style="margin-top:8px">
-            <button id="refreshWallHealthBtn">Refresh Wall only</button>
+            <button id="refreshWallHealthBtn">Refresh status</button>
             <button id="copyDiagnosticsBtn">Copy diagnostics</button>
           </div>
         </div>
@@ -535,19 +500,15 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         </div>
       </details>
     </section>
-    <section class="card" id="settings-cloud">
-      <div class="settingsSectionLabel">SYNC</div>
-      <h2 style="margin-bottom:2px">Phone, Pi and cloud</h2>
+    <section class="card">
       <div class="syncstatus"><span id="syncDot" class="syncdot"></span><span id="syncStatus">Local only</span></div>
       <details class="settingsDisclosure" id="cloudSetupDetails">
         <summary>Cloud connection</summary>
         <div class="settingsDisclosureBody">
           <p class="small">This secure connection keeps the phone, Pi, and Wall on one state. Local storage remains the offline fallback.</p>
           <div class="settingblock"><label class="small" for="cloudEndpoint">Cloudflare Worker URL</label><input id="cloudEndpoint" type="url" placeholder="https://nonzero-sync.your-subdomain.workers.dev"></div>
-          <div class="settingblock"><label class="small" for="syncKey">Private sync key</label><input id="syncKey" type="password" placeholder="Generate or paste your shared key" autocomplete="off"></div>
-          <div class="row"><button id="showSyncKeyBtn" type="button">Show key</button><button id="copySyncKeyBtn" type="button">Copy key</button><button id="shareCloudSetupBtn" type="button">Share setup</button></div>
-          <div id="syncKeyActionStatus" class="small" style="margin-top:8px">These controls reveal or share the existing key without changing it.</div>
-          <div class="row" style="margin-top:10px"><button id="generateSyncKeyBtn">Generate new key</button><button id="syncNowBtn">Sync now</button></div>
+          <div class="settingblock"><label class="small" for="syncKey">Private sync key</label><input id="syncKey" type="password" placeholder="Generate or paste your shared key"></div>
+          <div class="row"><button id="generateSyncKeyBtn">Generate key</button><button id="syncNowBtn">Sync now</button></div>
         </div>
       </details>
     </section>
@@ -563,8 +524,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         </div>
       </details>
     </section>
-    <section class="card" id="settings-data">
-      <div class="settingsSectionLabel">DATA</div>
+    <section class="card">
       <details class="settingsDisclosure">
         <summary>Backup and recovery</summary>
         <div class="settingsDisclosureBody">
@@ -653,8 +613,6 @@ const PROGRAM = {
 const FLARE = [
  ['BikeErg','5–10 min very easy ONLY if riding feels comfortable'],
  ['Upper body','Easy push-ups, band rows or floor press if desired'],
- ['Supine abdominal brace','2 × 5 slow breaths · gentle 360° brace; no straining'],
- ['Glute squeeze','2 × 10 · lying or standing; pain-free'],
  ['Avoid today','Loaded lower-body work, long walks, deep flexion, anything increasing your limp'],
  ['Win condition','10 calm minutes and stop']
 ];
@@ -664,7 +622,7 @@ const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
   startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
-if(!state._meta) state._meta={updatedAt:Date.now(),schema:15,revision:0};
+if(!state._meta) state._meta={updatedAt:Date.now(),schema:12,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
@@ -672,7 +630,6 @@ if(!state.trainingPrefs) state.trainingPrefs={restSeconds:90,garageArrival:true}
 if(!Array.isArray(state.eventLog)) state.eventLog=[];
 if(!state.wallPresence) state.wallPresence={};
 if(!state.prs) state.prs={};
-if(!state.programOverrides||typeof state.programOverrides!=='object')state.programOverrides={};
 if(!state.jointToday||state.jointToday.date!==localDateStr())state.jointToday={date:localDateStr(),enabled:false};
 
 let cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'null')||{endpoint:'',syncKey:''};
@@ -689,7 +646,7 @@ let localDirty=false;
 let cloudMutationSeq=0;
 
 function save({sync=true}={}){
- state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:15,revision:cloudRevision};
+ state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:12,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  localDirty=true;
  cloudMutationSeq++;
@@ -856,15 +813,7 @@ function makeSyncKey(){
  return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
 }
 function localDateStr(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
-function weekdayIndex(date=new Date()){return date.getDay()}
-function dateFromLocalStr(value){return new Date(String(value)+'T12:00:00')}
-function programForDate(dateString){
- const override=state.programOverrides?.[dateString];if(override)return integrateCoreAndGlutes(override,dateString);
- const d=dateFromLocalStr(dateString),base=PROGRAM[weekdayIndex(d)],days=surgeryDaysRemaining(),phase=preopPhase(days);
- if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
- const phased=days==null?base:{...base,why:base.why+' · '+phase.name+': '+phase.directive};
- return integrateCoreAndGlutes(base.type==='strength'?buildProgressivePrescription(phased,weekdayIndex(d)):phased,dateString);
-}
+function weekdayIndex(){return new Date().getDay()}
 function surgeryDaysRemaining(){
  const ds=state.surgeryPlan?.date;if(!ds)return null;
  const target=new Date(ds+'T12:00:00'),today=new Date(localDateStr()+'T12:00:00');
@@ -881,12 +830,11 @@ function preopPhase(days=surgeryDaysRemaining()){
  return {name:'BUILD BASE',directive:'Stack strength, aerobic capacity, and consistency while protecting the hip.'};
 }
 function todayProgram(){
- if(state.customToday?.date===localDateStr())return integrateCoreAndGlutes(state.customToday,localDateStr());
- const edited=state.programOverrides?.[localDateStr()];if(edited)return integrateCoreAndGlutes(edited,localDateStr());
+ if(state.customToday?.date===localDateStr())return state.customToday;
  const base=PROGRAM[weekdayIndex()],days=surgeryDaysRemaining(),phase=preopPhase(days);
  if(days!=null&&days<0)return {name:'Post-op · Clinical Plan',why:phase.directive,type:'recovery',full:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']],minimum:[['Recovery plan','Use only activities cleared by your surgical / rehabilitation team']]};
  const phased=days==null?base:{...base,why:base.why+' · '+phase.name+': '+phase.directive};
- return integrateCoreAndGlutes(base.type==='strength'?buildProgressivePrescription(phased,weekdayIndex()):phased,localDateStr());
+ return base.type==='strength'?buildProgressivePrescription(phased,weekdayIndex()):phased;
 }
 function renderPreop(){
  const days=surgeryDaysRemaining(),phase=preopPhase(days),big=document.getElementById('preopBig'),meta=document.getElementById('preopMeta'),preview=document.getElementById('surgeryPlanPreview'),dateInput=document.getElementById('surgeryDate');
@@ -998,22 +946,16 @@ async function startRest(seconds=Number(state.trainingPrefs?.restSeconds||90),re
  a.restUpdatedAt=now;a.updatedAt=now;recordEvent('rest_start',{seconds,reason});
  save({sync:false});renderWorkout();renderTimer();if(cloudReady())await pushCloudState();
 }
-async function clearRest(reason='done'){
- const a=state.activeWorkout;if(!a)return;
- if(a.restTimer?.running)recordEvent('rest_end',{reason});
- a.restTimer={running:false,seconds:0,startedAt:null,endsAt:null,reason};a.restUpdatedAt=Date.now();a.updatedAt=Date.now();
- save({sync:false});renderWorkout();if(cloudReady())await pushCloudState();
-}
 function renderNowNext(){
  const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null,items=currentItems();
  const cur=document.getElementById('currentExercise'),curD=document.getElementById('currentExerciseDetail'),nxt=document.getElementById('nextExercise'),nxtD=document.getElementById('nextExerciseDetail'),stage=document.getElementById('workoutStage');
  if(!cur)return;
- if(!a){cur.textContent=items[0]?.[0]||'Ready';curD.textContent=prettyPrescription(items[0]?.[1]||'');nxt.textContent=items[1]?.[0]||'—';nxtD.textContent=prettyPrescription(items[1]?.[1]||'');stage.textContent='READY';return}
+ if(!a){cur.textContent=items[0]?.[0]||'Ready';curD.textContent=items[0]?.[1]||'';nxt.textContent=items[1]?.[0]||'—';nxtD.textContent=items[1]?.[1]||'';stage.textContent='READY';return}
  normalizeSetState(a,items);const idx=firstIncompleteIndex(a,items),s=stageFor(a,items);
  stage.textContent=s;
  if(idx<0){cur.textContent='FINISH STRONG';curD.textContent='All programmed work is complete.';nxt.textContent='SAVE THE WIN';nxtD.textContent='Finish & Save';return}
- cur.textContent=items[idx][0];curD.textContent=prettyPrescription(items[idx][1]);
- const ni=nextIncompleteIndex(a,idx,items);nxt.textContent=ni>=0?items[ni][0]:'FINISH & SAVE';nxtD.textContent=ni>=0?prettyPrescription(items[ni][1]):'Bank the day.';
+ cur.textContent=items[idx][0];curD.textContent=items[idx][1];
+ const ni=nextIncompleteIndex(a,idx,items);nxt.textContent=ni>=0?items[ni][0]:'FINISH & SAVE';nxtD.textContent=ni>=0?items[ni][1]:'Bank the day.';
 }
 function renderRestFace(){
  const card=document.getElementById('restCard'),clock=document.getElementById('restClock'),next=document.getElementById('restNext'),a=state.activeWorkout;
@@ -1043,8 +985,8 @@ async function sendWallCommand(action){
  state.wallCommand={action,at:Date.now(),sessionId:a?.sessionId||null,nonce:'wc-'+Date.now().toString(36)};
  recordEvent('wall_command',{action});save({sync:false});if(cloudReady())await pushCloudState();
 }
-function startNonzero(){
- mode='minimum';recordEvent('nonzero',{from:state.activeWorkout?.mode||'full'});renderWorkout();saveActiveWorkout();startTimer();
+function makeItNonzero(){
+ mode='minimum';recordEvent('make_it_nonzero',{from:state.activeWorkout?.mode||'full'});renderWorkout();saveActiveWorkout();startTimer();
 }
 function completionRateForExercise(name){
  const rows=state.sessions.filter(s=>Array.isArray(s.exerciseNames)&&Array.isArray(s.checks));
@@ -1085,42 +1027,6 @@ const FINISHERS=[
  {id:'carry-bike',name:'Carry + BikeErg circuit',levels:['4 rounds · 30 sec carry + 60 sec bike','5 rounds · 30 sec carry + 60 sec bike','5 rounds · 40 sec carry + 60 sec bike','6 rounds · 40 sec carry + 50 sec bike']},
  {id:'upper-density',name:'Upper-body density finish',levels:['8 min alternating 6 push-ups + 8 band rows','10 min alternating 6 + 8','10 min alternating 8 + 10','12 min alternating 8 + 10']}
 ];
-const BIKE_VARIATIONS={
- endurance:{label:'AEROBIC BASE',summary:'Smooth sustained work for repeatable low-impact volume.',name:'BikeErg · Aerobic Base',why:'Build aerobic capacity without impact or deep loaded hip flexion.',full:[['Easy spin','5 min · RPE 2–3'],['Steady aerobic ride','25 min · RPE 4–5 · conversational cadence'],['Cadence finish','4 × 20 sec quick legs / 40 sec easy · stay seated'],['Easy spin','4 min']],minimum:[['BikeErg','12 min continuous · RPE 3–4']]},
- intervals:{label:'INTERVALS',summary:'Controlled threshold repeats with full seated recovery.',name:'BikeErg · Seated Intervals',why:'Raise aerobic power with controlled work bouts and no impact.',full:[['Progressive warm-up','6 min · include 3 × 10 sec cadence pickups'],['Work intervals','6 × 2 min @ RPE 7 / 2 min easy'],['Aerobic settle','5 min · RPE 4'],['Easy spin','4 min']],minimum:[['Warm-up','3 min easy'],['Intervals','6 × 45 sec strong / 75 sec easy · seated'],['Cooldown','2 min']]},
- hills:{label:'HILLS',summary:'Resistance-based climbing simulation—seated, stable and joint-aware.',name:'BikeErg · Seated Hills',why:'Build leg endurance and posterior-chain support without standing climbs.',full:[['Easy spin','6 min'],['Rolling hills','4 rounds · 3 min heavier damper/RPE 6 + 2 min light/RPE 3'],['Summit pushes','4 × 20 sec RPE 7 / 70 sec easy · seated'],['Easy spin','4 min']],minimum:[['Warm-up','3 min'],['Seated hills','5 × 1 min RPE 6 / 1 min easy'],['Cooldown','2 min']]},
- cyclocross:{label:'CYCLOCROSS',summary:'Frequent cadence and resistance changes without dismounts or impact.',name:'BikeErg · Cyclocross Simulation',why:'Train repeatable surges, cadence control and recovery while remaining seated.',full:[['Course preview','6 min easy with 3 cadence changes'],['Cross circuit','5 rounds · 2 min tempo RPE 5 + 30 sec surge RPE 7 + 90 sec easy'],['Technical cadence','6 × 15 sec fast legs / 45 sec easy · light resistance'],['Easy spin','4 min']],minimum:[['Warm-up','3 min'],['Cross circuit','6 × 30 sec surge / 90 sec easy · seated'],['Cooldown','2 min']]},
- recovery:{label:'RECOVERY SPIN',summary:'Circulation and range without chasing output.',name:'BikeErg · Recovery Spin',why:'Keep movement comfortable on a higher-pain or low-energy day.',full:[['Easy spin','15–20 min · RPE 2–3 · comfortable cadence'],['Mobility reset','2 min relaxed breathing; stop if gait or hip pain worsens']],minimum:[['BikeErg','8–10 min very easy · stop if symptoms increase']]}
-};
-const CORE_GLUTE_ROTATION=[
- {name:'ABMAT + BRIDGE',moves:[['AbMat curl-up','3 × 10–15 · ribs down; stop before hip pinching'],['Glute bridge','3 × 10 · 2-sec squeeze; comfortable range'],['Side plank from knees','2 × 20–30 sec/side · straight shoulder-to-knee line']]},
- {name:'ANTI-ROTATION',moves:[['Dead bug heel tap','3 × 6–8/side · small range; low back gently braced'],['Standing mini-band hip abduction','3 × 10/side · hold support; no trunk lean'],['Pallof press','3 × 10/side · 2-sec hold; resist rotation']]},
- {name:'POSTERIOR CORE',moves:[['Bird dog','3 × 6/side · 3-sec reach; keep pelvis level'],['Glute bridge isometric','3 × 25–35 sec · strong glute squeeze'],['AbMat reach crunch','3 × 12 · shoulder blades rise; avoid full hip-flexor sit-up']]},
- {name:'LATERAL CORE',moves:[['Side plank from knees','3 × 20–30 sec/side'],['Standing band glute kickback','3 × 10/side · small range; no back arch'],['AbMat curl-up with exhale','3 × 8–12 · 3-sec exhale each rep']]},
- {name:'CARRY + BRACE',moves:[['Suitcase carry','3 × 30 sec/side @ comfortable load · stay tall'],['Mini-band glute bridge','3 × 10–12 · knees gently press out'],['Supine abdominal brace','3 × 5 breaths · 360° brace without breath-holding']]},
- {name:'CONTROLLED FLEXION',moves:[['AbMat partial sit-up','3 × 8–12 · comfortable range only; no momentum'],['Glute bridge','3 × 12 · 2-sec squeeze'],['Dead bug arm reach','3 × 8/side · legs supported if needed']]},
- {name:'STABILITY RESET',moves:[['Seated Pallof press','3 × 10/side · tall posture'],['Standing glute squeeze + band abduction','3 × 10/side · short controlled range'],['Modified plank on bench','3 × 20–30 sec · brace and breathe']]}
-];
-const HIGH_PAIN_CORE={name:'GENTLE CORE + GLUTE',moves:[['Supine abdominal brace','2 × 5 slow breaths · no straining'],['Glute squeeze','2 × 10 · lying or standing; pain-free'],['Seated Pallof hold','2 × 15–20 sec/side · light band']]};
-function corePainForDate(dateString){return dateString===localDateStr()?Number(document.getElementById('pain')?.value??6):6}
-function integrateCoreAndGlutes(program,dateString=localDateStr()){
- if(!program||program.coreIntegrated||program.name?.startsWith('Post-op'))return program;
- const seed=[...String(dateString)].reduce((n,c)=>n+c.charCodeAt(0),0),block=corePainForDate(dateString)>=8?HIGH_PAIN_CORE:CORE_GLUTE_ROTATION[seed%CORE_GLUTE_ROTATION.length];
- const full=[...(program.full||[]),...block.moves];
- const minimum=[...(program.minimum||program.full||[]),...block.moves.slice(0,2).map(x=>[x[0],String(x[1]).replace(/^3 ×/,'2 ×')])];
- return {...program,why:`${program.why||''} · Every-session core and glute training: ${block.name}.`,full,minimum,coreIntegrated:true,coreBlockName:block.name,coreMovementNames:block.moves.map(x=>x[0])};
-}
-function strengthVariationPrograms(dateString){
- const pr=progressionProfile(),level=pr.deload?Math.max(0,pr.level-1):Math.min(3,pr.level),pain=dateString===localDateStr()?Number(document.getElementById('pain')?.value??6):6,protect=pain>=7;
- const at=(slot,index=0)=>{const p=STRENGTH_MOVEMENTS[slot],m=p[index%p.length];return [m.name,m.levels[protect?0:level]]};
- const common={type:'strength',source:'smart-variation',progression:{...pr,level,hipAware:true}};
- return [
-  {...common,variationId:'support',name:'Strength · Hip Support + Total Body',why:'Strengthen glutes, hip stabilizers, trunk, push and pull patterns with controlled range.',summary:'Most balanced · supporting structures + main muscle groups',full:[['BikeErg ramp','5 min easy'],at('legDrive',2),['Standing mini-band hip abduction','3 × 10/side · small comfortable range'],at('push',2),at('pull',0),at('carryCore',2),['Cooldown','3 min easy']],minimum:[['BikeErg','2 min easy'],at('legDrive',2),at('push',2),at('pull',0)]},
-  {...common,variationId:'posterior',name:'Strength · Posterior Chain + Core',why:'Prioritize glutes, hamstrings, back and bracing while avoiding deep hip flexion.',summary:'Glutes + hamstrings + back · shallow, supported ranges',full:[['BikeErg ramp','5 min easy'],at('hinge',protect?3:1),['Glute bridge','3 × 10 · only if comfortable'],at('pull',2),at('push',0),at('carryCore',1),['Cooldown','3 min easy']],minimum:[['BikeErg','2 min easy'],at('hinge',protect?3:1),at('pull',2),at('carryCore',1)]},
-  {...common,variationId:'upper-stability',name:'Strength · Upper + Hip Stability',why:'Build the major upper-body groups while training pelvic and lateral-hip control.',summary:'Upper-body emphasis · lateral hip + anti-rotation support',full:[['BikeErg ramp','5 min easy'],at('push',0),at('pull',1),['Standing band hip abduction','3 × 10/side · hold support'],['High sit-to-stand','3 × 8 · pain-free height only'],at('carryCore',0),['Pallof press','3 × 10/side']],minimum:[['BikeErg','2 min easy'],at('push',0),at('pull',1),['Standing band hip abduction','2 × 8/side']]}
- ];
-}
-function bikeVariationPrograms(){return Object.entries(BIKE_VARIATIONS).map(([variationId,x])=>({...x,variationId,type:'bike',source:'smart-variation'}))}
 const SAM_MOVEMENTS={
  warmup:[
   {id:'sam-goalie-prep',name:'Goalie movement prep',equipment:'open',levels:['2 rounds · 20 sec split-step + 4 lateral shuffles/side','3 rounds · 20 sec split-step + 4 shuffles/side','3 rounds · add 3 controlled drop-steps/side','2 crisp rounds · deload pace']},
@@ -1207,7 +1113,6 @@ function syncJointToActive(){
  a.jointEnabled=jointEnabled();a.partnerProgramSnapshot=currentSamProgram();
  if(a.jointEnabled)normalizePartnerSetState(a);a.updatedAt=Date.now();a.setUpdatedAt=Date.now();
 }
-function refreshJointProgram(){if(jointEnabled())state.jointToday.samProgram=buildSamProgram(todayProgram());syncJointToActive()}
 function toggleJointWorkout(){
  const was=jointEnabled();state.jointToday={date:localDateStr(),enabled:!was,samProgram:state.jointToday?.samProgram||null,updatedAt:Date.now()};
  if(!was&&(!state.jointToday.samProgram||state.jointToday.samProgram.primaryFingerprint!==programFingerprint(todayProgram())))state.jointToday.samProgram=buildSamProgram(todayProgram());
@@ -1242,7 +1147,7 @@ function resetWorkoutForProgram(program,eventType){
 function buildRandomWorkout(){
  const pain=Number(document.getElementById('pain')?.value??6),energy=Number(document.getElementById('energy')?.value??3),days=surgeryDaysRemaining();
  if(days!=null&&days<0){alert('Random training stays locked after surgery until your clinician-cleared plan is active.');return}
- if(pain>=8){resetWorkoutForProgram({name:'Random · Protect the Comeback',why:'High-pain override: maintain the habit without feeding the flare.',type:'recovery',source:'random',progression:{deload:true},movementIds:['easy-bike','bandrow','ab-brace','glute-squeeze','breathing'],full:FLARE,minimum:FLARE.slice(0,4),coreIntegrated:true,coreBlockName:'GENTLE CORE + GLUTE'},'random_workout');return}
+ if(pain>=8){resetWorkoutForProgram({name:'Random · Protect the Comeback',why:'High-pain override: maintain the habit without feeding the flare.',type:'recovery',source:'random',progression:{deload:true},movementIds:['easy-bike','bandrow','breathing'],full:FLARE,minimum:FLARE.slice(0,2)},'random_workout');return}
  const pr=progressionProfile(),recent=recentMovementIds(),slots=['hinge','push','pull','carryCore'];
  if(pain<=6&&energy>=3)slots.splice(1,0,'legDrive');
  const moves=slots.map((slot,i)=>chooseMovement(slot,recent,i));
@@ -1269,16 +1174,10 @@ function bestKnownWatts(){
  let best=0;for(const s of state.sessions){best=Math.max(best,Number(s?.postMetrics?.avgWatts||s?.avgWatts||0));for(const l of (s.laps||[]))best=Math.max(best,Number(l?.watts||0))}
  return best;
 }
-function updatePrCue(a){
- const watts=Number(a?.laps?.at?.(-1)?.watts||a?.laps?.[a.laps.length-1]?.watts||0),best=bestKnownWatts();
- if(!watts||!best)return;
- if(watts>best)a.prCue=`NEW BEST · ${Math.round(watts)} W`;
- else if(best-watts<=5)a.prCue=`${Math.round(best-watts)} W TO BEST`;
-}
 function weeklyReportData(){
  const w=sessionsThisWeek(),starts=w.length,mins=Math.round(w.reduce((a,b)=>a+Number(b.duration||0),0)),strength=w.filter(x=>x.type==='strength').length,bike=w.filter(x=>x.type==='bike').reduce((a,b)=>a+Number(b.duration||0),0);
  const consistency=Math.round((starts/7)*100);
- let rec=starts>=5?'Protect recovery and repeat this cadence.':starts>=3?'Convert one missed day into a Minimum day next week.':'Lower the activation barrier: choose NONZERO earlier.';
+ let rec=starts>=5?'Protect recovery and repeat this cadence.':starts>=3?'Convert one missed day into a Minimum day next week.':'Reduce the activation barrier: use Make It Nonzero earlier.';
  return {starts,mins,strength,bike:Math.round(bike),consistency,rec};
 }
 function renderSundayReport(){
@@ -1291,15 +1190,8 @@ function renderSystemStatus(){
  const installed=appInstalled(),steps=[{done:installed,title:'Phone app installed',detail:installed?'Running as an installed app':'Add NONZERO to the Home Screen'},{done:systemHealth.worker,title:'Cloud connected',detail:systemHealth.worker?'Worker responding':'Open Cloud connection and verify credentials'},{done:systemHealth.wall,title:'Pi and Wall online',detail:systemHealth.wall?'Fresh Wall heartbeat received':'Check the Pi, Wall browser, and pairing'},{done:systemHealth.pm5,title:'PM5 USB detected',detail:systemHealth.pm5?'Cable and PM5 bridge connected':systemHealth.pm5Known?'Wake the PM5 or check the USB cable':'Waiting for upgraded Pi health'}];
  const incomplete=steps.filter(x=>!x.done),button=document.getElementById('systemStatusButton'),text=document.getElementById('systemStatusText');if(button&&text){button.className='systemStatusBar '+(incomplete.length?'warn':'ok');text.textContent=incomplete.length?`${incomplete.length} SETUP ITEM${incomplete.length===1?'':'S'} NEED ATTENTION`:'SYSTEM READY · PM5 + WALL'}
  const list=document.getElementById('setupChecklist');if(list)list.innerHTML=steps.map((x,i)=>`<div class="setupStep ${x.done?'done':'warn'}"><i>${x.done?'✓':i+1}</i><div><b>${x.title}</b><span>${x.detail}</span></div></div>`).join('');
- const summary=document.getElementById('setupSummary');if(summary)summary.textContent=incomplete.length?`${incomplete.length} item${incomplete.length===1?'':'s'} need attention.`:'Phone, cloud, Pi, PM5 and Wall are ready.';const details=document.getElementById('setupChecklistDetails');if(details&&!incomplete.length)details.removeAttribute('open');
- const checked=document.getElementById('settingsLastChecked');if(checked)checked.textContent=systemHealth.lastCheckedAt?`Last checked ${new Date(systemHealth.lastCheckedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`:'Not checked yet';
+ const summary=document.getElementById('setupSummary');if(summary)summary.textContent=incomplete.length?`${incomplete.length} item${incomplete.length===1?'':'s'} still need attention.`:'Phone, cloud, Pi, PM5, and Wall are ready.';const details=document.getElementById('setupChecklistDetails');if(details&&!incomplete.length)details.removeAttribute('open');else if(details&&incomplete.length)details.setAttribute('open','');
  const pm5Status=document.getElementById('pm5ConnectionStatus'),pm5Detail=document.getElementById('pm5ConnectionDetail');if(pm5Status)pm5Status.textContent=systemHealth.pm5?'PM5 USB · CONNECTED':'USB → Raspberry Pi';if(pm5Detail)pm5Detail.textContent=systemHealth.pm5?'Primary zero-touch connection is healthy':systemHealth.pm5Known?'PM5 is not currently detected':'Waiting for Pi health data';
-}
-let systemRefreshInFlight=false;
-async function refreshSystemReadiness(){
- if(systemRefreshInFlight)return;systemRefreshInFlight=true;const btn=document.getElementById('refreshSystemBtn');if(btn){btn.disabled=true;btn.classList.add('refreshing');btn.textContent='CHECKING…'}
- try{saveCloudConfig();await checkWorkerHealth();await fetchWallHealth();if(cloudReady())await pullCloudState({force:false});}
- finally{systemHealth.lastCheckedAt=Date.now();systemRefreshInFlight=false;if(btn){btn.disabled=false;btn.classList.remove('refreshing');btn.textContent='↻ REFRESH ALL'}renderSystemStatus()}
 }
 async function checkWorkerHealth(){systemHealth.cloud=cloudReady();if(!cloudReady()){systemHealth.worker=false;renderSystemStatus();return false}try{const r=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/health',{cache:'no-store'});systemHealth.worker=r.ok;renderSystemStatus();return r.ok}catch{systemHealth.worker=false;renderSystemStatus();return false}}
 async function fetchWallHealth(){
@@ -1308,7 +1200,7 @@ async function fetchWallHealth(){
  try{
   const res=await fetch(cloudConfig.endpoint+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'});const x=await res.json();
   if(!res.ok||!x?.health)throw new Error(x?.error||'No heartbeat');
-  const age=Math.max(0,Date.now()-Number(x.health.at||0)),fresh=age<90000;
+  const age=Math.max(0,Date.now()-Number(x.health.at||0)),fresh=age<900000;
   const pm5=x.health.pm5||null,pm5Connected=Boolean(pm5?.connected&&pm5?.fresh!==false);systemHealth={...systemHealth,cloud:true,worker:true,wall:fresh,pm5:pm5Connected,pm5Known:Boolean(pm5),wallHealth:x.health,lastCheckedAt:Date.now()};
   s.textContent=fresh?`HEALTHY · ${String(x.health.mode||'').toUpperCase()}`:`STALE · ${Math.round(age/60000)} MIN AGO`;s.className=fresh?'ok':'warn';
   d.textContent=`Uptime ${Math.round(Number(x.health.uptimeSeconds||0)/60)} min · ${pm5?pm5Connected?'PM5 USB connected':pm5.error?'PM5 error':'PM5 waiting':'PM5 status unavailable'} · Wall ${x.health.version||''}`;renderSystemStatus();
@@ -1327,17 +1219,6 @@ function garageArrival(){
  state.wallPresence={arrivedAt:now,message:new Date().getHours()<12?'GOOD MORNING · TODAY IS A TRAINING DAY':'WELCOME BACK · PUT A NUMBER ON THE BOARD'};
  recordEvent('garage_arrival',{});save();
 }
-function prettyPrescription(value){return String(value??'').replace(/\s*[×x]\s*/g,' × ').replace(/\s*·\s*/g,' · ').replace(/(\d)(?=[A-Za-z])/g,'$1 ').replace(/([A-Za-z])(?=\d)/g,'$1 ').replace(/\s{2,}/g,' ').trim()}
-function todayWorkoutUiState(){
- const rec=todaySessionRecord(),a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;if(rec)return {key:'saved',icon:'✓',title:'WORKOUT SAVED',detail:`${String(rec.mode||'full').toUpperCase()} · ${fmtDuration(rec.duration)} · safely stored in History`,action:'EDIT SAVED'};
- if(!a)return {key:'not-started',icon:'○',title:'NOT STARTED',detail:'Today’s workout is programmed and ready.',action:'START WORKOUT'};
- normalizeSetState(a,currentItems());const elapsed=Math.max(0,Number(a.timer?.elapsedMs||0)+(a.timer?.running&&a.timer?.startedAt?Date.now()-Number(a.timer.startedAt):0)),done=(a.checks||[]).filter(Boolean).length,total=(a.checks||[]).length,allDone=total>0&&done===total,status=String(a.status||'ready').toLowerCase(),hasProgress=elapsed>0||done>0||['active','running','paused'].includes(status);
- if(allDone||status==='paused'||(hasProgress&&!a.timer?.running))return {key:'finalize',icon:'!',title:'READY TO FINALIZE',detail:`${done}/${total} movements · review time and save this workout`,action:'REVIEW & SAVE'};
- if(hasProgress)return {key:'in-progress',icon:'▶',title:'WORKOUT IN PROGRESS',detail:`${done}/${total} movements · ${fmtTimer(elapsed)} elapsed`,action:'CONTINUE'};
- return {key:'not-started',icon:'○',title:'NOT STARTED',detail:'Today’s workout is programmed and ready.',action:'START WORKOUT'};
-}
-function renderTodayWorkoutState(){const x=todayWorkoutUiState(),box=document.getElementById('workoutStateBanner');if(!box)return;box.className=`workoutStateBanner ${x.key}`;document.getElementById('workoutStateIcon').textContent=x.icon;document.getElementById('workoutStateTitle').textContent=x.title;document.getElementById('workoutStateDetail').textContent=x.detail;document.getElementById('workoutStateAction').textContent=x.action;box.dataset.state=x.key}
-function handleWorkoutStateAction(){const key=document.getElementById('workoutStateBanner')?.dataset.state;if(key==='saved')return openSessionTimeEditor(localDateStr());if(key==='finalize')return openFinishReview();if(key==='in-progress'){document.querySelector('.todayCockpit')?.scrollIntoView({behavior:'smooth',block:'start'});return}startTimer()}
 function renderToday(){
  renderPreop();
  const p=todayProgram(), rec=todaySessionRecord();
@@ -1356,7 +1237,6 @@ function renderToday(){
  renderWorkout();
  updatePainAdvice();
  renderMetrics();
- renderTodayWorkoutState();
 }
 
 function renderWorkout(){
@@ -1371,7 +1251,7 @@ function renderWorkout(){
    const sourceSets=partner?active?.partnerSets:active?.sets,sourceChecks=partner?active?.partnerChecks:checks,n=parseSetCount(x[1]),sets=sourceSets?.[i]||Array(n).fill(Boolean(sourceChecks?.[i])),prefix=partner?'partner-':'';
    return `<div class="exerciseV315 ${!partner&&i===focus?'current':''}">
      <input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i]?'checked':''} aria-label="Complete ${partner?'Sam ':''}${x[0]}">
-     <div><b>${esc(x[0])}</b><small>${esc(prettyPrescription(x[1]))}</small>
+     <div><b>${x[0]}</b><small>${x[1]}</small>
        <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''}" data-${prefix}set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
      </div></div>`;
@@ -1380,7 +1260,7 @@ function renderWorkout(){
    const n=parseSetCount(x[1]),sets=active?.sets?.[i]||Array(n).fill(Boolean(checks[i]));
    return `<div class="exerciseV315 ${i===focus?'current':''}">
      <input type="checkbox" data-check="${i}" ${checks[i]?'checked':''} aria-label="Complete ${x[0]}">
-     <div><b>${esc(x[0])}</b><small>${esc(prettyPrescription(x[1]))}</small>
+     <div><b>${x[0]}</b><small>${x[1]}</small>
        <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''} ${i===focus&&!done?'current':''}" data-set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
      </div></div>`}).join('');
@@ -1469,12 +1349,6 @@ function fmtMinutes(minutes){
  const value=Number(minutes);
  return Number.isFinite(value)&&value>0?Math.round(value).toLocaleString():'0';
 }
-function currentLapElapsed(){
- const a=state.activeWorkout;
- if(!a||a.date!==localDateStr())return 0;
- const total=timerElapsed(),start=Math.max(0,Number(a.lapStartElapsedMs||0));
- return Math.max(0,total-start);
-}
 function renderLapPanel(){
  const a=state.activeWorkout||{},laps=Array.isArray(a.laps)?a.laps:[];
  const read=document.getElementById('lapReadout'),count=document.getElementById('lapCount'),list=document.getElementById('lapList');
@@ -1501,11 +1375,6 @@ async function logLap(){
  if(cloudReady())await pushCloudState();
 }
 function ergIntentUrl(){return cloudReady()?cloudConfig.endpoint.replace(/\/$/,'')+'/intent/bikeerg/start':''}
-async function callErgIntent(action='start'){
- if(!cloudReady())throw new Error('Configure Cloud Sync first');
- const intentPath=action==='start'?'/intent/bikeerg/start':'/intent/erg/'+action; const res=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+intentPath,{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:JSON.stringify({source:'nonzero-phone',ergType:'bike',requestedAt:Date.now()})});
- const body=await res.json();if(!res.ok)throw new Error(body.error||('HTTP '+res.status));return body;
-}
 function renderErgOrchestration(){
  const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
  const live=a&&['active','paused','running'].includes(a.status||'');
@@ -1531,7 +1400,6 @@ function renderTimer(){
  const st=document.getElementById('sessionState');const status=state.activeWorkout?.date===localDateStr()?(state.activeWorkout.status||'ready'):'ready';
  if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · PERFORMANCE MODE':status==='paused'?'PAUSED · PERFORMANCE HELD':status==='complete'?'COMPLETE':'READY';}
  renderContextControls();
- renderTodayWorkoutState();
 }
 function ensureActiveWorkout(status='ready'){
  const p=todayProgram(),items=currentItems(),existing=state.activeWorkout?.date===localDateStr()?state.activeWorkout:{},now=Date.now();
@@ -1683,57 +1551,16 @@ function renderMetrics(){
  document.getElementById('weekBike').textContent=fmtMinutes(bike);
 }
 
-let editingProgramDate='',editingProgram=null,editingVariationType='';
-function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function splitPrescription(detail=''){
- const raw=String(detail).trim(),m=raw.match(/^(\d+)\s*[×x]\s*([^@·;]+?)(?:\s*@\s*([^·;]+))?(?:\s*[·;]\s*(.*))?$/i);
- if(!m)return {sets:'',reps:'',weight:'',notes:raw};
- return {sets:m[1]||'',reps:(m[2]||'').trim(),weight:(m[3]||'').trim(),notes:(m[4]||'').trim()};
-}
-function joinPrescription(row){
- const lead=row.sets&&row.reps?`${row.sets} × ${row.reps}`:row.reps||'';const load=row.weight?`@ ${row.weight}`:'';return [lead,load,row.notes].filter(Boolean).join(' · ')||'As programmed';
-}
-function programRows(program){return (program?.full||[]).map(x=>{const p=splitPrescription(x[1]);return {name:x[0],...p}})}
-function renderProgramExercises(){
- const box=document.getElementById('programExerciseEditor');if(!box||!editingProgram)return;const rows=editingProgram.editorRows||programRows(editingProgram);editingProgram.editorRows=rows;
- box.innerHTML=rows.map((r,i)=>`<div class="programExercise" data-program-row="${i}"><div class="programExerciseTop"><label>EXERCISE<input data-pfield="name" value="${esc(r.name)}" aria-label="Exercise name"></label><button data-remove-program-row="${i}" aria-label="Remove ${esc(r.name)}">REMOVE</button></div><div class="prescriptionGrid"><label>SETS<input data-pfield="sets" type="text" inputmode="numeric" value="${esc(r.sets)}" placeholder="3"></label><label>REPS / TIME<input data-pfield="reps" type="text" value="${esc(r.reps)}" placeholder="8 or 30 sec"></label><label>WEIGHT<input data-pfield="weight" type="text" value="${esc(r.weight)}" placeholder="35 lb / band"></label></div><label style="display:block;margin-top:8px">COACHING NOTES<input data-pfield="notes" value="${esc(r.notes)}" placeholder="Range, tempo, pain guardrail"></label></div>`).join('');
- box.querySelectorAll('[data-pfield]').forEach(input=>input.addEventListener('input',e=>{const row=Number(e.target.closest('[data-program-row]').dataset.programRow);editingProgram.editorRows[row][e.target.dataset.pfield]=e.target.value}));
- box.querySelectorAll('[data-remove-program-row]').forEach(btn=>btn.addEventListener('click',()=>{editingProgram.editorRows.splice(Number(btn.dataset.removeProgramRow),1);renderProgramExercises()}));
-}
-function editorCandidates(type){return type==='strength'?strengthVariationPrograms(editingProgramDate):bikeVariationPrograms()}
-function renderProgramRecommendations(){
- const tabs=document.getElementById('variationTabs'),grid=document.getElementById('recommendGrid');
- tabs.innerHTML=`<button data-variation-type="strength" class="${editingVariationType==='strength'?'active':''}">STRENGTH OPTIONS</button><button data-variation-type="bike" class="${editingVariationType==='bike'?'active':''}">BIKEERG OPTIONS</button>`;
- tabs.querySelectorAll('[data-variation-type]').forEach(b=>b.addEventListener('click',()=>{editingVariationType=b.dataset.variationType;renderProgramRecommendations()}));
- grid.innerHTML=editorCandidates(editingVariationType).map((p,i)=>`<button class="recommendCard" data-recommend-index="${i}"><b>${esc(p.name)}</b><small>${esc(p.summary||p.why)}</small></button>`).join('');
- grid.querySelectorAll('[data-recommend-index]').forEach(btn=>btn.addEventListener('click',()=>{const p=editorCandidates(editingVariationType)[Number(btn.dataset.recommendIndex)];editingProgram=JSON.parse(JSON.stringify(integrateCoreAndGlutes(p,editingProgramDate)));editingProgram.editorRows=programRows(editingProgram);document.getElementById('programEditorTitle').textContent=editingProgram.name;document.getElementById('programEditorWhy').textContent=editingProgram.why;grid.querySelectorAll('.recommendCard').forEach(x=>x.classList.toggle('active',x===btn));renderProgramExercises()}));
-}
-function openProgramDayEditor(dateString){
- editingProgramDate=dateString;editingProgram=JSON.parse(JSON.stringify(programForDate(dateString)));editingProgram.editorRows=programRows(editingProgram);editingVariationType=editingProgram.type==='strength'?'strength':'bike';
- document.getElementById('programEditorDate').textContent=dateFromLocalStr(dateString).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();document.getElementById('programEditorTitle').textContent=editingProgram.name;document.getElementById('programEditorWhy').textContent=editingProgram.why;
- const pain=dateString===localDateStr()?Number(document.getElementById('pain')?.value??6):null;document.getElementById('programGuardrail').textContent=pain>=8?'High-pain guardrail: favor Recovery Spin or upper-body work; no loaded lower-body exercise.':pain>=7?'Elevated-pain guardrail: use supported patterns, short pain-free range and seated BikeErg work.':'Hip-smart guardrail: no deep flexion, impact, standing climbs or painful range; stop if pain or limp increases.';
- document.getElementById('restoreProgramDayBtn').disabled=!state.programOverrides?.[dateString];renderProgramRecommendations();renderProgramExercises();document.getElementById('programDayEditor').classList.remove('hidden');
-}
-function closeProgramDayEditor(){editingProgramDate='';editingProgram=null;document.getElementById('programDayEditor').classList.add('hidden')}
-function addProgramExercise(){if(!editingProgram)return;editingProgram.editorRows.push({name:'New exercise',sets:'3',reps:'8',weight:'',notes:'Comfortable, controlled range'});renderProgramExercises();setTimeout(()=>document.querySelector('#programExerciseEditor .programExercise:last-child input')?.focus(),30)}
-function saveProgramDay(){
- if(!editingProgramDate||!editingProgram)return;const rows=(editingProgram.editorRows||[]).filter(r=>String(r.name).trim()).map(r=>[String(r.name).trim(),joinPrescription(r)]);if(!rows.length)return alert('Add at least one exercise.');
- const saved={...editingProgram,date:editingProgramDate,full:rows,editorRows:undefined,source:editingProgram.source||'manual-plan-edit',editedAt:Date.now()};delete saved.editorRows;state.programOverrides[editingProgramDate]=saved;
- if(editingProgramDate===localDateStr()){state.customToday=null;state.activeWorkout=null;if(jointEnabled())state.jointToday.samProgram=buildSamProgram(saved)}recordEvent('program_day_saved',{date:editingProgramDate,name:saved.name,type:saved.type,exerciseCount:rows.length});save();closeProgramDayEditor();renderWeek();renderToday();renderTimer();
-}
-function restoreProgramDay(){if(!editingProgramDate)return;if(state.programOverrides?.[editingProgramDate]){delete state.programOverrides[editingProgramDate];if(editingProgramDate===localDateStr()){state.activeWorkout=null;if(jointEnabled())state.jointToday.samProgram=buildSamProgram(todayProgram())}recordEvent('program_day_restored',{date:editingProgramDate});save()}const d=editingProgramDate;closeProgramDayEditor();renderWeek();renderToday();if(d===localDateStr())renderTimer()}
-
 function renderWeek(){
  const [mon]=weekBounds(), byDate=Object.fromEntries(state.sessions.map(s=>[s.date,s]));
  const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
  let html='';
  for(let i=0;i<7;i++){
    const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=byDate[ds];
-   const program=programForDate(ds),custom=Boolean(state.programOverrides?.[ds]);
-   html+=`<div class="dayrow planDay" data-plan-date="${ds}"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${esc(program.name)}${custom?'<br><span class="customMark">CUSTOMIZED</span>':''}</span><button data-view-plan="${ds}">${r?r.mode.toUpperCase():'VIEW / EDIT'}</button></div>`;
+   const program=PROGRAM[(i+1)%7];
+   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${program.name}</span><span class="small">${r?r.mode.toUpperCase():'—'}</span></div>`;
  }
  document.getElementById('weekList').innerHTML=html;
- document.querySelectorAll('[data-plan-date]').forEach(row=>row.addEventListener('click',e=>{if(!e.target.closest('[data-plan-date]'))return;openProgramDayEditor(row.dataset.planDate)}));
  const w=sessionsThisWeek(), starts=w.length, mins=w.reduce((a,b)=>a+Number(b.duration||0),0);
  const avgPain=w.length?(w.reduce((a,b)=>a+(b.pain||0),0)/w.length).toFixed(1):'—';
  let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
@@ -1779,19 +1606,11 @@ document.getElementById('nextMoveBtn')?.addEventListener('click',()=>shiftMoveme
 document.getElementById('restBtn')?.addEventListener('click',()=>startRest());
 document.getElementById('quoteBtn')?.addEventListener('click',()=>sendWallCommand('quote-next'));
 document.getElementById('wallModeBtn')?.addEventListener('click',()=>sendWallCommand(state.activeWorkout?.status==='active'?'performance':'ambient'));
-document.getElementById('nonzeroBtn')?.addEventListener('click',startNonzero);
-document.getElementById('workoutStateAction')?.addEventListener('click',handleWorkoutStateAction);
-document.getElementById('refreshSystemBtn')?.addEventListener('click',refreshSystemReadiness);
-document.querySelectorAll('[data-settings-jump]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.settingsJump)?.scrollIntoView({behavior:'smooth',block:'start'})));
+document.getElementById('makeNonzeroBtn')?.addEventListener('click',makeItNonzero);
 document.getElementById('adaptiveBtn')?.addEventListener('click',()=>buildAdaptiveWorkout(30));
 document.getElementById('randomWorkoutBtn')?.addEventListener('click',buildRandomWorkout);
 document.getElementById('restorePlanBtn')?.addEventListener('click',restorePrescribedWorkout);
 document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJointWorkout);
-document.getElementById('closeProgramEditorBtn')?.addEventListener('click',closeProgramDayEditor);
-document.getElementById('addProgramExerciseBtn')?.addEventListener('click',addProgramExercise);
-document.getElementById('saveProgramDayBtn')?.addEventListener('click',saveProgramDay);
-document.getElementById('restoreProgramDayBtn')?.addEventListener('click',restoreProgramDay);
-document.getElementById('programDayEditor')?.addEventListener('click',e=>{if(e.target.id==='programDayEditor')closeProgramDayEditor()});
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
 document.getElementById('systemStatusButton')?.addEventListener('click',()=>{document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('setupChecklistDetails')?.setAttribute('open','');setTimeout(()=>document.getElementById('guidedSetupCard')?.scrollIntoView({behavior:'smooth',block:'start'}),50)});
@@ -1806,7 +1625,7 @@ document.getElementById('sessionTimeEditor')?.addEventListener('click',e=>{if(e.
 document.getElementById('cancelFinishReviewBtn')?.addEventListener('click',closeFinishReview);
 document.getElementById('confirmFinishBtn')?.addEventListener('click',confirmFinishReview);
 document.getElementById('finishReview')?.addEventListener('click',e=>{if(e.target.id==='finishReview')closeFinishReview()});
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('programDayEditor')?.classList.contains('hidden'))closeProgramDayEditor();if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
 document.querySelectorAll('[data-history-range]').forEach(b=>b.addEventListener('click',()=>{historyRange=b.dataset.historyRange;renderProgress()}));
 
 document.getElementById('reviewMetricsBtn').addEventListener('click',()=>{document.getElementById('postMetrics').classList.toggle('hidden');prefillMetrics()});
@@ -1819,7 +1638,6 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()
  ['Today','Plan','History','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
  if(b.dataset.tab==='Plan')renderWeek();
  if(b.dataset.tab==='History')renderProgress();
- if(b.dataset.tab==='Settings'&&Date.now()-Number(systemHealth.lastCheckedAt||0)>30000)refreshSystemReadiness();
 }));
 
 const restSel=document.getElementById('restSeconds');if(restSel){restSel.value=String(state.trainingPrefs?.restSeconds||90);restSel.addEventListener('change',e=>{state.trainingPrefs.restSeconds=Number(e.target.value);save();const rb=document.getElementById('restBtn');if(rb)rb.textContent='REST '+e.target.value})}
@@ -1879,34 +1697,6 @@ document.getElementById('cloudEndpoint').value=cloudConfig.endpoint||'';
 document.getElementById('syncKey').value=cloudConfig.syncKey||'';
 document.getElementById('cloudEndpoint').addEventListener('change',()=>{saveCloudConfig();checkWorkerHealth();pullCloudState()});
 document.getElementById('syncKey').addEventListener('change',()=>{saveCloudConfig();checkWorkerHealth();pullCloudState()});
-function syncKeyStatus(message,isError=false){
- const el=document.getElementById('syncKeyActionStatus');if(!el)return;el.textContent=message;el.style.color=isError?'#ff8d8d':'';
-}
-async function copyExistingSyncKey(){
- const input=document.getElementById('syncKey'),key=String(input?.value||cloudConfig.syncKey||'').trim();
- if(!key){syncKeyStatus('No saved sync key was found.',true);return}
- try{
-  if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(key);
-  else{const was=input.type;input.type='text';input.focus();input.select();if(!document.execCommand('copy'))throw new Error('Copy unavailable');input.setSelectionRange(0,0);input.type=was}
-  syncKeyStatus('Existing sync key copied. Nothing was changed.');
- }catch{syncKeyStatus('Could not copy automatically. Tap Show key, then press and hold the key.',true)}
-}
-document.getElementById('showSyncKeyBtn')?.addEventListener('click',()=>{
- const input=document.getElementById('syncKey'),btn=document.getElementById('showSyncKeyBtn');if(!input)return;
- const reveal=input.type==='password';input.type=reveal?'text':'password';btn.textContent=reveal?'Hide key':'Show key';syncKeyStatus(reveal?'Existing key revealed. It has not been changed.':'Key hidden again.');
-});
-document.getElementById('copySyncKeyBtn')?.addEventListener('click',copyExistingSyncKey);
-document.getElementById('shareCloudSetupBtn')?.addEventListener('click',async()=>{
- const endpoint=String(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint||'').trim();
- const key=String(document.getElementById('syncKey')?.value||cloudConfig.syncKey||'').trim();
- if(!endpoint||!key){syncKeyStatus('The Worker URL or saved sync key is missing.',true);return}
- const shareText=`NONZERO AutoPilot setup\n\nWorker URL:\n${endpoint}\n\nPrivate sync key:\n${key}\n\nKeep this message private.`;
- try{
-  if(navigator.share)await navigator.share({title:'NONZERO AutoPilot setup',text:shareText});
-  else location.href=`mailto:?subject=${encodeURIComponent('NONZERO AutoPilot setup')}&body=${encodeURIComponent(shareText)}`;
-  syncKeyStatus('Share sheet opened. Choose Mail to send it to yourself.');
- }catch(err){if(err?.name!=='AbortError')syncKeyStatus('Sharing was unavailable. Use Copy key instead.',true)}
-});
 document.getElementById('generateSyncKeyBtn').addEventListener('click',()=>{
  const key=makeSyncKey();document.getElementById('syncKey').value=key;saveCloudConfig();setSyncStatus('Key generated · add Worker URL','ok');
 });
@@ -1961,39 +1751,8 @@ window.addEventListener('pagehide',()=>{
   if(cloudReady())drainCloudPush();
 });
 
-// NONZERO v3.20: optional one-link BikeErg Shortcuts fallback.
-async function sha256HexLocal(value){
- const data=new TextEncoder().encode(String(value));
- const digest=await crypto.subtle.digest('SHA-256',data);
- return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
-}
+// NONZERO phone: BikeErg Shortcut fallback test hook.
 
-let simpleBikeErgUrl=localStorage.getItem('nz_simple_bikeerg_url')||'';
-
-function renderSimpleBikeErgSetup(){
- const status=document.getElementById('simpleErgStatus');
- const copy=document.getElementById('copyOpenShortcutsBtn');
- const test=document.getElementById('testSimpleErgBtn');
- const reset=document.getElementById('resetSimpleErgBtn');
- const create=document.getElementById('createSimpleErgLinkBtn');
- if(!status)return;
- const ready=!!simpleBikeErgUrl;
- if(copy)copy.disabled=!ready;if(test)test.disabled=!ready;if(reset)reset.disabled=!ready;
- if(create)create.textContent=ready?'RECREATE MY SHORTCUT LINK':'1 · CREATE MY SHORTCUT LINK';
- status.innerHTML=ready?'<b>✓ Secure NONZERO link ready.</b><br>Next tap “COPY LINK + OPEN SHORTCUTS.”':'Not configured yet.';
-}
-
-async function createSimpleBikeErgLink(){
- const status=document.getElementById('simpleErgStatus');
- const btn=document.getElementById('createSimpleErgLinkBtn');
- saveCloudConfig();
- const endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint);
- const syncKey=(document.getElementById('syncKey')?.value||cloudConfig.syncKey||'').trim();
-
- if(!/^https:\/\//i.test(endpoint)){
-   if(status)status.innerHTML='<b>SETUP BLOCKED:</b> Cloudflare Worker URL is missing.';
-   return;
- }
  if(syncKey.length<16){
    if(status)status.innerHTML='<b>SETUP BLOCKED:</b> Cloud Sync key is missing.';
    return;
@@ -2020,19 +1779,8 @@ async function createSimpleBikeErgLink(){
  }
 }
 
-async function copyAndOpenShortcuts(){
- if(!simpleBikeErgUrl)return;
- try{await navigator.clipboard.writeText(simpleBikeErgUrl)}
- catch{
-   const ta=document.createElement('textarea');ta.value=simpleBikeErgUrl;document.body.appendChild(ta);
-   ta.select();document.execCommand('copy');ta.remove();
- }
- const s=document.getElementById('simpleErgStatus');
- if(s)s.innerHTML='<b>✓ Link copied.</b><br>Shortcuts is opening. Create: Automation → App → ErgData → Is Opened → Run Immediately → Get Contents of URL → Paste → Done.';
- setTimeout(()=>{window.location.href='shortcuts://'},250);
-}
-
 async function testSimpleBikeErg(){
+ const simpleBikeErgUrl=localStorage.getItem('nz_simple_bikeerg_url')||'';
  if(!simpleBikeErgUrl)return;
  const s=document.getElementById('simpleErgStatus');
  if(s)s.textContent='Starting BikeErg test…';
@@ -2045,16 +1793,7 @@ async function testSimpleBikeErg(){
  }catch(e){if(s)s.textContent='Test failed: '+e.message}
 }
 
-async function resetSimpleBikeErg(){
- if(!confirm('Clear the saved BikeErg Shortcut link from this phone?'))return;
- simpleBikeErgUrl='';
- localStorage.removeItem('nz_simple_bikeerg_url');
- renderSimpleBikeErgSetup();
-}
-
 document.getElementById('testSimpleErgBtn')?.addEventListener('click',testSimpleBikeErg);
-renderSimpleBikeErgSetup();
-
 </script>
 </body>
 </html>
