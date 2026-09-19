@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.22 · Intelligent Training</title>
+<title>NONZERO v3.22.1 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -89,7 +89,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .workoutSnapshot #sessionWhy{margin:2px 0 10px;font-size:12px;line-height:1.35;color:var(--muted)}
 .workoutSnapshot .modegrid{margin-bottom:9px}
 .workoutPicker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px}.workoutPicker button{min-height:48px;font-weight:900}.workoutPicker .randomize{background:linear-gradient(135deg,#d4af37,#a97818);color:#071017;border-color:#e4c85f}.workoutPicker .restorePlan{background:#111a25}.programBadge{display:inline-flex;align-items:center;gap:6px;border:1px solid #5b4920;border-radius:999px;padding:5px 9px;margin:2px 0 7px;color:#e2c760;font-size:10px;font-weight:900;letter-spacing:.11em}.programBadge.hidden{display:none!important}
-.jointToggle{width:100%;min-height:54px;margin:0 0 10px;border-color:#2f6d91;background:linear-gradient(135deg,#132636,#0e1a26);font-weight:950;letter-spacing:.06em}.jointToggle.active{border-color:#64c7ff;background:linear-gradient(135deg,#123d57,#142d43);box-shadow:0 0 0 1px #64c7ff44 inset}.jointToggle small{display:block;margin-top:3px;color:#9eafbf;font-size:10px;letter-spacing:.02em}.jointToggle.active small{color:#b9e7ff}.jointSummary{display:none;margin:0 0 10px;padding:10px 12px;border:1px solid #234c66;border-radius:13px;background:#0b1822;color:#b9d9e8;font-size:11px;line-height:1.35}.jointSummary.live{display:block}.jointHeader{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0 5px}.jointHeader b{font-size:10px;letter-spacing:.13em;color:#9eafbf}.jointHeader b:last-child{color:#78d2ff}.jointRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid #213043;padding:10px 0}.jointLane{min-width:0;border-radius:12px;padding:9px;background:#0c131c}.jointLane.sam{background:#0b1822;border:1px solid #173b52}.jointLane .exerciseV315{padding:0}.jointLane .exerciseV315 b{font-size:13px}.jointLane .exerciseV315 small{font-size:11px}.jointLane .setBtn{min-width:30px;height:30px;padding:0}.samOnlyLabel{font-size:9px;font-weight:900;letter-spacing:.12em;color:#64c7ff;margin-bottom:5px}@media(max-width:430px){.jointRow{grid-template-columns:1fr}.jointHeader{display:none}.jointLane.sam:before{content:'SAM';display:block;font-size:9px;font-weight:900;letter-spacing:.12em;color:#64c7ff;margin-bottom:5px}}
+.jointToggle{width:100%;min-height:54px;margin:0 0 10px;border-color:#2f6d91;background:linear-gradient(135deg,#132636,#0e1a26);font-weight:950;letter-spacing:.06em}.jointToggle.active{border-color:#64c7ff;background:linear-gradient(135deg,#123d57,#142d43);box-shadow:0 0 0 1px #64c7ff44 inset}.jointToggle small{display:block;margin-top:3px;color:#9eafbf;font-size:10px;letter-spacing:.02em}.jointToggle.active small{color:#b9e7ff}.jointSummary{display:none;margin:0 0 10px;padding:10px 12px;border:1px solid #234c66;border-radius:13px;background:#0b1822;color:#b9d9e8;font-size:11px;line-height:1.35}.jointSummary.live{display:block}.jointHeader{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:9px 0 5px}.jointHeader b{font-size:10px;letter-spacing:.13em;color:#9eafbf}.jointHeader b:last-child{color:#78d2ff}.jointRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid #213043;padding:10px 0}.jointLane{min-width:0;border-radius:12px;padding:9px;background:#0c131c}.jointLane.sam{background:#0b1822;border:1px solid #173b52}.jointLane .exerciseV315{padding:8px 4px;grid-template-columns:44px minmax(0,1fr)}.jointLane .exerciseV315 b{font-size:17px}.jointLane .exerciseV315 small{font-size:14px}.jointLane .exerciseCheckHit{width:42px;height:42px}.jointLane .exerciseV315 input[type=checkbox]{width:32px;height:32px}.jointLane .setBtn{min-width:38px;width:38px;height:38px;padding:0}.samOnlyLabel{font-size:9px;font-weight:900;letter-spacing:.12em;color:#64c7ff;margin-bottom:5px}@media(max-width:430px){.jointRow{grid-template-columns:1fr}.jointHeader{display:none}.jointLane.sam:before{content:'SAM';display:block;font-size:9px;font-weight:900;letter-spacing:.12em;color:#64c7ff;margin-bottom:5px}}
 .workoutSnapshot .exercise{padding:11px 4px}
 .workoutSnapshot .exercise b{font-size:15px}
 .workoutSnapshot .exercise small{line-height:1.35}
@@ -104,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.22 contextual cockpit + finish review + unified history + guided setup */
+/* v3.22.1 contextual cockpit + bike-friendly workout controls */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -117,14 +117,18 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .secondaryControls button{font-size:11px;min-height:42px;padding:6px 4px}
 .todayCockpit>.secondaryControls{grid-template-columns:repeat(3,1fr)}
 .todayCockpit #quoteBtn,.todayCockpit #wallModeBtn{display:none}
-.exerciseV315{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;padding:10px 2px;border-bottom:1px solid #1c2734}
-.exerciseV315.current{background:#111b27;border-radius:12px;padding:10px}
-.exerciseV315 input[type=checkbox]{margin-top:4px}
-.setRow{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
-.setBtn{width:34px;height:34px;border-radius:50%;padding:0;border:1px solid #435166;background:#121b25;color:#c8d1da;font-size:12px;font-weight:900}
+.exerciseV315{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:start;padding:14px 8px;border-bottom:1px solid #1c2734;min-height:78px}
+.exerciseV315.current{background:#111b27;border-radius:14px;padding:14px 8px}
+.exerciseCheckHit{width:46px;height:46px;display:flex;align-items:center;justify-content:center;margin:-2px 0 0 -3px;border-radius:12px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.exerciseCheckHit:active{background:#1a2938}
+.exerciseV315 input[type=checkbox]{width:34px;height:34px;margin:0;accent-color:var(--green);cursor:pointer}
+.exerciseV315 b{display:block;font-size:18px;line-height:1.24;letter-spacing:-.01em}
+.exerciseV315 small{display:block;font-size:15px;line-height:1.38;margin-top:5px;color:#cbd5e1}
+.setRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.setBtn{width:40px;height:40px;border-radius:50%;padding:0;border:1px solid #435166;background:#121b25;color:#c8d1da;font-size:14px;font-weight:900;touch-action:manipulation}
 .setBtn.done{background:#2d6643;border-color:#4ba96a;color:#fff}
 .setBtn.current{border-color:#d4af37;box-shadow:0 0 0 2px #d4af3722}
-.exerciseMeta{font-size:11px;color:var(--muted);margin-top:5px}
+.exerciseMeta{font-size:13px;line-height:1.3;color:var(--muted);margin-top:7px}
 .makeNonzero{background:#d4af37!important;color:#071017!important}
 .reportCard h3,.wallHealthCard h3{margin:2px 0 6px}
 .reportGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
@@ -1155,7 +1159,7 @@ function renderWorkout(){
    if(!x)return '<div class="exerciseV315"><div><b>Recovery / transition</b><small>Reset equipment and coach the next station.</small></div></div>';
    const sourceSets=partner?active?.partnerSets:active?.sets,sourceChecks=partner?active?.partnerChecks:checks,n=parseSetCount(x[1]),sets=sourceSets?.[i]||Array(n).fill(Boolean(sourceChecks?.[i])),prefix=partner?'partner-':'';
    return `<div class="exerciseV315 ${!partner&&i===focus?'current':''}">
-     <input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i]?'checked':''} aria-label="Complete ${partner?'Sam ':''}${x[0]}">
+     <label class="exerciseCheckHit" aria-label="Complete ${partner?'Sam ':''}${x[0]}"><input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i]?'checked':''} aria-label="Complete ${partner?'Sam ':''}${x[0]}"></label>
      <div><b>${x[0]}</b><small>${x[1]}</small>
        <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''}" data-${prefix}set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
@@ -1164,7 +1168,7 @@ function renderWorkout(){
  document.getElementById('workout').innerHTML=joint?`<div class="jointHeader"><b>CHRIS · PRIMARY PLAN</b><b>SAM · GOALKEEPER PLAN</b></div>`+items.map((x,i)=>`<div class="jointRow"><div class="jointLane">${lane(x,i)}</div><div class="jointLane sam">${lane(samItems[i],i,true)}</div></div>`).join(''):items.map((x,i)=>{
    const n=parseSetCount(x[1]),sets=active?.sets?.[i]||Array(n).fill(Boolean(checks[i]));
    return `<div class="exerciseV315 ${i===focus?'current':''}">
-     <input type="checkbox" data-check="${i}" ${checks[i]?'checked':''} aria-label="Complete ${x[0]}">
+     <label class="exerciseCheckHit" aria-label="Complete ${x[0]}"><input type="checkbox" data-check="${i}" ${checks[i]?'checked':''} aria-label="Complete ${x[0]}"></label>
      <div><b>${x[0]}</b><small>${x[1]}</small>
        <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''} ${i===focus&&!done?'current':''}" data-set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
