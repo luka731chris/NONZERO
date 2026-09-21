@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.22.1 · Intelligent Training</title>
+<title>NONZERO v3.24 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -104,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.22.1 contextual cockpit + bike-friendly workout controls */
+/* v3.24 anchor-built strength workouts + Pittsburgh HD theme selector + contextual cockpit + bike-friendly workout controls */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -146,6 +146,10 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .settingsDisclosureBody{padding:0 2px 12px}
 .settingsStatus{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #263344;background:#0a1119;border-radius:13px;padding:11px 12px;margin:8px 0}
 .settingsStatus b{font-size:13px}.settingsStatus span{font-size:11px;color:var(--muted);text-align:right}
+.themeSelector{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px;padding:5px;border:1px solid #2b3948;border-radius:15px;background:#080d13}
+.themeSelector button{min-height:48px;padding:9px 5px;border:1px solid transparent;border-radius:11px;background:transparent;color:#9eabb8;font-size:12px;font-weight:900;line-height:1.15}
+.themeSelector button.active{border-color:#d4af37;background:linear-gradient(180deg,#5b4516,#30250f);color:#fff3bf;box-shadow:0 0 18px rgba(212,175,55,.17)}
+.themeSelector button:active{transform:scale(.98)}
 .wallCommandGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:9px}.wallCommandGrid button{min-height:46px}
 .sessionTimeCell{display:flex;align-items:center;gap:7px;justify-content:flex-end}.editTimeBtn{padding:7px 9px;min-height:36px;font-size:11px;color:#b9e7ff;border-color:#28506a}
 .editSheet{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.68);display:flex;align-items:flex-end;justify-content:center;padding:14px}
@@ -158,7 +162,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 .setupChecklist{display:grid;gap:7px;margin-top:8px}.setupStep{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:center;border:1px solid #263344;border-radius:12px;padding:9px;background:#0a1119}.setupStep i{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#263344;color:#cbd5e1;font-style:normal;font-size:11px;font-weight:900}.setupStep.done i{background:#184c2a;color:#86efac}.setupStep.warn i{background:#554017;color:#fcd34d}.setupStep b{display:block;font-size:12px}.setupStep span{font-size:10px;color:var(--muted)}
 .controlHidden{display:none!important}.cockpitControls[data-state="ready"] #timerPauseBtn,.cockpitControls[data-state="ready"] #lapBtn,.cockpitControls[data-state="ready"] #restartWorkoutBtn,.cockpitControls[data-state="ready"] #completeBtn{display:none}.cockpitControls[data-state="active"] #timerStartBtn,.cockpitControls[data-state="active"] #restartWorkoutBtn{display:none}.cockpitControls[data-state="paused"] #timerPauseBtn,.cockpitControls[data-state="paused"] #lapBtn{display:none}.cockpitControls[data-state="complete"] button{display:none}.cockpitControls[data-state="ready"]{grid-template-columns:1fr}.cockpitControls[data-state="active"]{grid-template-columns:1fr 1fr 1.25fr}.cockpitControls[data-state="paused"]{grid-template-columns:1fr 1fr 1.25fr}
 .finishReviewMeta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.finishReviewMeta .callout{padding:10px}.finishReviewMeta b{display:block;font-size:16px}.finishFields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.finishFields label,.sessionEditFields label{font-size:11px;color:var(--muted)}.finishFields input,.finishFields select,.finishFields textarea,.sessionEditFields input,.sessionEditFields select,.sessionEditFields textarea{margin-top:4px}.wideField{grid-column:1/-1}
-.sessionEditFields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.dangerAction{color:#fca5a5;border-color:#713535}.undoToast{position:fixed;z-index:1100;left:14px;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:560px;margin:auto;background:#172232;border:1px solid #42536a;border-radius:15px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 14px 44px #000}.undoToast span{flex:1;font-size:12px}.undoToast button{padding:7px 10px;color:#b9e7ff}
+.sessionEditFields{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.dangerAction{color:#fca5a5;border-color:#713535}.anchorBuilderBtn{width:100%;margin:8px 0 2px;min-height:50px;border-color:#6a5620;background:linear-gradient(180deg,#2b2411,#17130a);color:#f5db82;font-weight:950;letter-spacing:.04em}.anchorBuilderFields{display:grid;gap:11px;margin:12px 0}.anchorBuilderFields textarea{min-height:86px;font-size:16px;line-height:1.45}.durationChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.durationChoices button{min-height:46px}.durationChoices button.active{border-color:#d4af37;background:#443710;color:#fff3bf}.anchorPreview{margin:10px 0;padding:11px;border:1px solid #304054;border-radius:14px;background:#0a1119}.anchorPreview b{display:block;margin-bottom:5px}.undoToast{position:fixed;z-index:1100;left:14px;right:14px;bottom:calc(82px + env(safe-area-inset-bottom));max-width:560px;margin:auto;background:#172232;border:1px solid #42536a;border-radius:15px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 14px 44px #000}.undoToast span{flex:1;font-size:12px}.undoToast button{padding:7px 10px;color:#b9e7ff}
 @media(max-width:520px){
  .cockpitNow{grid-template-columns:1fr}
  .secondaryControls{grid-template-columns:repeat(3,1fr)}
@@ -175,7 +179,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.22</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.24</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -261,6 +265,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <button id="randomWorkoutBtn" class="randomize">SURPRISE ME</button>
         <button id="restorePlanBtn" class="restorePlan">RESTORE PLAN</button>
       </div>
+      <button id="anchorBuilderBtn" class="anchorBuilderBtn">BUILD AROUND LIFTS<small>Pick the exercises. NONZERO programs the rest.</small></button>
       <button id="jointWorkoutBtn" class="jointToggle">JOINT WITH SAM · OFF<small>Build a synchronized goalie-performance lane for this session</small></button>
       <div id="jointSummary" class="jointSummary"></div>
       <div id="programBadge" class="programBadge hidden"></div>
@@ -379,6 +384,15 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
         <h3 id="wallHealthStatus">Checking Wall…</h3>
         <div id="wallHealthDetail" class="small">Controls stay tucked away unless you need to intervene.</div>
       </div>
+      <div class="settingblock" style="margin-top:14px">
+        <label class="small">Wall visual theme</label>
+        <div class="themeSelector" id="wallThemeSelector" role="group" aria-label="Wall visual theme">
+          <button type="button" data-wall-theme="basic">BASIC</button>
+          <button type="button" data-wall-theme="pittsburgh">PITTSBURGH HD</button>
+          <button type="button" data-wall-theme="auto">AUTO</button>
+        </div>
+        <p class="small" id="wallThemeHelp" style="margin:9px 2px 0">Basic preserves the current interface. Pittsburgh HD uses the verified Mount Washington panorama. Auto uses Pittsburgh HD in Ambient and Basic during Performance, Night, and Deep Hibernate.</p>
+      </div>
       <details class="settingsDisclosure" id="manualWallDetails">
         <summary>Manual Wall controls</summary>
         <div class="settingsDisclosureBody">
@@ -445,6 +459,28 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
       </details>
     </section>
   </main>
+
+  <div id="anchorBuilder" class="editSheet hidden" role="dialog" aria-modal="true" aria-labelledby="anchorBuilderTitle">
+    <div class="editSheetPanel">
+      <div class="small">ON-DEMAND STRENGTH</div>
+      <h2 id="anchorBuilderTitle" style="margin-top:4px">Build around your lifts</h2>
+      <p class="small">Enter 1–4 exercises. Optional load examples: <b>back squat @ 135</b>, <b>bench 155 lb</b>, <b>pull ups</b>.</p>
+      <div class="anchorBuilderFields">
+        <label class="small">Exercises<textarea id="anchorExerciseInput" placeholder="back squat @ 135, pull ups"></textarea></label>
+        <div>
+          <div class="small" style="margin-bottom:6px">TARGET DURATION</div>
+          <div class="durationChoices" id="anchorDurationChoices">
+            <button type="button" data-anchor-minutes="25">25 MIN</button>
+            <button type="button" data-anchor-minutes="35" class="active">35 MIN</button>
+            <button type="button" data-anchor-minutes="45">45 MIN</button>
+          </div>
+        </div>
+      </div>
+      <div id="anchorBuilderPreview" class="anchorPreview"><b>35-minute strength session</b><span class="small">Your lifts become anchors; complementary work fills the remaining training slots.</span></div>
+      <div id="anchorBuilderError" class="dangertext small hidden">Enter at least one exercise.</div>
+      <div class="editSheetActions"><button id="cancelAnchorBuilderBtn">Cancel</button><button id="generateAnchorWorkoutBtn" class="saveTime">Generate workout</button></div>
+    </div>
+  </div>
 
   <div id="finishReview" class="editSheet hidden" role="dialog" aria-modal="true" aria-labelledby="finishReviewTitle">
     <div class="editSheetPanel">
@@ -529,10 +565,11 @@ const FLARE = [
 const STORAGE_KEY='hipPrehabV2';
 const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
-  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
+  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, wallTheme:{mode:'basic',updatedAt:0}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
 };
 if(!state._meta) state._meta={updatedAt:Date.now(),schema:12,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
+if(!state.wallTheme) state.wallTheme={mode:'basic',updatedAt:0};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
 if(!state.trainingPrefs) state.trainingPrefs={restSeconds:90,garageArrival:true};
@@ -593,6 +630,7 @@ function applyCanonicalState(payload,{render=true}={}){
  cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
  state._meta={...(state._meta||{}),schema:12,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
  if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
+ if(!state.wallTheme)state.wallTheme={mode:'basic',updatedAt:0};
  if(!state.ergDataFirst)state.ergDataFirst={enabled:true};
  if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
  if(!state.trainingPrefs)state.trainingPrefs={restSeconds:90,garageArrival:true};
@@ -607,6 +645,7 @@ function applyCanonicalState(payload,{render=true}={}){
    if(document.getElementById('startDate'))document.getElementById('startDate').value=state.startDate;
    if(document.getElementById('reminderTime'))document.getElementById('reminderTime').value=state.reminderTime||'06:00';
    if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();
+   if(document.getElementById('wallThemeSelector'))renderWallThemeSettings();
    renderPreop();
  }
  return true;
@@ -640,21 +679,23 @@ async function pushCloudState({retry=true}={}){
    return true;
  }catch(err){
    if(err.status===409 && err.data?.current){
-     const localAW=snapshot.activeWorkout,localJoint=snapshot.jointToday,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout,remoteJoint=remotePayload?.state?.jointToday;
+     const localAW=snapshot.activeWorkout,localJoint=snapshot.jointToday,localTheme=snapshot.wallTheme,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout,remoteJoint=remotePayload?.state?.jointToday,remoteTheme=remotePayload?.state?.wallTheme;
      applyCanonicalState(remotePayload,{render:false});
      const lp=Number(localAW?.progressUpdatedAt||0),rp=Number(remoteAW?.progressUpdatedAt||0);
      const ll=Number(localAW?.lapUpdatedAt||0),rl=Number(remoteAW?.lapUpdatedAt||0);
      const ls=Number(localAW?.setUpdatedAt||0),rs=Number(remoteAW?.setUpdatedAt||0);
      const lr=Number(localAW?.restUpdatedAt||0),rr=Number(remoteAW?.restUpdatedAt||0);
      const jointNewer=Number(localJoint?.updatedAt||0)>Number(remoteJoint?.updatedAt||0);
+     const themeNewer=Number(localTheme?.updatedAt||0)>Number(remoteTheme?.updatedAt||0);
      const localEvents=snapshot.eventLog||[],remoteEvents=state.eventLog||[];
      state.eventLog=[...new Map([...remoteEvents,...localEvents].map(e=>[e.id,e])).values()].sort((a,b)=>a.at-b.at).slice(-160);
      let sessionsNewer=false;const mergedSessions=new Map((state.sessions||[]).map(s=>[s.date,s]));
      for(const localSession of (snapshot.sessions||[])){const remoteSession=mergedSessions.get(localSession.date),localStamp=Math.max(Number(localSession.durationCorrectedAt||0),Number(localSession.updatedAt||0)),remoteStamp=Math.max(Number(remoteSession?.durationCorrectedAt||0),Number(remoteSession?.updatedAt||0));if(!remoteSession||localStamp>remoteStamp){mergedSessions.set(localSession.date,localSession);sessionsNewer=true}}
      if(sessionsNewer)state.sessions=[...mergedSessions.values()];
-     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer||sessionsNewer){
+     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer||themeNewer||sessionsNewer){
        if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr))state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),partnerSets:ls>rs?(localAW.partnerSets||[]):(state.activeWorkout?.partnerSets||[]),partnerChecks:ls>rs?(localAW.partnerChecks||[]):(state.activeWorkout?.partnerChecks||[]),jointEnabled:ls>rs?localAW.jointEnabled:state.activeWorkout?.jointEnabled,partnerProgramSnapshot:ls>rs?(localAW.partnerProgramSnapshot||null):state.activeWorkout?.partnerProgramSnapshot,setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
        if(jointNewer)state.jointToday=localJoint;
+       if(themeNewer)state.wallTheme=localTheme;
        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
        localDirty=true;
        cloudMutationSeq++;
@@ -910,6 +951,7 @@ const STRENGTH_MOVEMENTS={
   {id:'band-pullthrough',name:'Band pull-through',equipment:'bands',levels:['3 × 12 · controlled','3 × 15','4 × 12 · 2-sec squeeze','4 × 15 · 60 sec rest']}
  ],
  legDrive:[
+  {id:'back-squat',name:'Barbell back squat to pain-free target',equipment:'barbell',levels:['3 × 5 @ RPE 6 · conservative load · controlled depth','3 × 6 at same load','4 × 5 · add 5 lb only if reps stay crisp','4 × 5 @ RPE 7 max · add 5 lb only after a clean prior exposure']},
   {id:'sit-stand',name:'High box sit-to-stand',equipment:'box',levels:['3 × 8 · pain-free height','3 × 10','4 × 8 · controlled lower','4 × 10 · lower box only if gait stays normal']},
   {id:'box-squat',name:'High box squat to target',equipment:'rack',levels:['3 × 6 bodyweight · vertical shin','3 × 8 bodyweight','4 × 6 holding 12 lb goblet','4 × 8 @ 12 lb · pain-free depth only']},
   {id:'bridge',name:'Glute bridge',equipment:'floor',levels:['3 × 10 · 2-sec squeeze','3 × 12','4 × 10 · mini-band','4 × 12 · 60 sec rest']}
@@ -1027,7 +1069,7 @@ function toggleJointWorkout(){
  if(!was&&(!state.jointToday.samProgram||state.jointToday.samProgram.primaryFingerprint!==programFingerprint(todayProgram())))state.jointToday.samProgram=buildSamProgram(todayProgram());
  syncJointToActive();recordEvent('joint_workout_toggle',{enabled:!was,partner:'Sam'});save();renderToday();renderTimer();
 }
-function strengthSessions(){return state.sessions.filter(s=>s?.completed&&s.type==='strength').sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
+function strengthSessions(){return state.sessions.filter(s=>s?.completed&&s.type==='strength'&&s.programCredit!==false).sort((a,b)=>String(a.date).localeCompare(String(b.date)))}
 function progressionProfile(){
  const ss=strengthSessions(),count=ss.length,cycle=Math.floor(count/4)+1,week=count%4;
  const recent=ss.slice(-2),completion=recent.length?recent.reduce((n,s)=>n+(Array.isArray(s.checks)&&s.checks.length?s.checks.filter(Boolean).length/s.checks.length:1),0)/recent.length:1;
@@ -1047,6 +1089,72 @@ function buildProgressivePrescription(base,day){
  const finisher=FINISHERS[([...cycleKey].reduce((a,c)=>a+c.charCodeAt(0),0))%FINISHERS.length],label=pr.deload?'DELOAD / REBUILD':`BUILD ${pr.cycle} · WEEK ${pr.week+1}`;
  return {...base,name:`${base.name} · ${label}`,why:`${base.why} Progressive compound-functional training: earn reps, then load, then density.`,source:'prescribed-progressive',movementIds:moves.map(x=>x.id).concat(finisher.id),progression:{...pr,level,label},full:[['BikeErg ramp','5 min · easy to moderate'],...moves.map(m=>[m.name,m.levels[level]]),[finisher.name,finisher.levels[level]],['Cooldown','3 min easy']],minimum:[['BikeErg','2 min easy'],...moves.slice(0,3).map(m=>[m.name,m.levels[Math.max(0,level-1)]]),['Finish','Stop at 12 minutes with clean reps']]};
 }
+const ANCHOR_ALIASES=[
+ {keys:['back squat','barbell squat','squat'],slot:'legDrive',id:'back-squat'},
+ {keys:['pull ups','pull-ups','pullup','pull up'],slot:'pull',id:'pullup'},
+ {keys:['bench press','barbell bench','bench'],slot:'push',id:'bench'},
+ {keys:['deadlift','rack pull'],slot:'hinge',id:'rack-pull'},
+ {keys:['rdl','romanian deadlift'],slot:'hinge',id:'kb-rdl'},
+ {keys:['row','one arm row','1-arm row'],slot:'pull',id:'row'},
+ {keys:['overhead press','shoulder press','strict press','ohp'],slot:'push',id:'onearmpres'},
+ {keys:['push ups','push-ups','pushup','push up'],slot:'push',id:'pushup'},
+ {keys:['farmer carry','farmers carry'],slot:'carryCore',id:'farmer'},
+ {keys:['suitcase carry'],slot:'carryCore',id:'suitcase'}
+];
+let anchorTargetMinutes=35;
+function allStrengthMovements(){return Object.entries(STRENGTH_MOVEMENTS).flatMap(([slot,rows])=>rows.map(m=>({...m,slot})))}
+function findStrengthMovementById(id){return allStrengthMovements().find(m=>m.id===id)||null}
+function parseAnchorRequests(raw){
+ return String(raw||'').split(/[,\n;]+/).map(x=>x.trim()).filter(Boolean).slice(0,4).map((text,index)=>{
+  const lower=text.toLowerCase(),loadMatch=lower.match(/(?:@\s*)?(\d+(?:\.\d+)?)\s*(?:lb|lbs|pounds?)?\s*$/i),load=loadMatch?Number(loadMatch[1]):null;
+  const name=(loadMatch?text.slice(0,loadMatch.index):text).replace(/@\s*$/,'').trim();
+  const alias=ANCHOR_ALIASES.find(a=>a.keys.some(k=>name.toLowerCase().includes(k)));
+  if(alias){const movement=findStrengthMovementById(alias.id);return {raw:text,name,movementId:alias.id,slot:alias.slot,load,equipment:movement?.equipment||null,recognized:true,index}}
+  return {raw:text,name:name||text,movementId:'custom-'+stableHash(name||text),slot:null,load,equipment:null,recognized:false,index};
+ });
+}
+function priorAnchorExposure(req){
+ const rows=strengthSessions().filter(s=>Array.isArray(s?.programSnapshot?.anchorRequests));
+ for(let i=rows.length-1;i>=0;i--){const hit=rows[i].programSnapshot.anchorRequests.find(x=>x.movementId===req.movementId||String(x.name).toLowerCase()===String(req.name).toLowerCase());if(hit)return {request:hit,session:rows[i]}}
+ return null;
+}
+function inferredAnchorLoad(req){
+ if(Number.isFinite(req.load)&&req.load>0)return {load:req.load,source:'entered'};
+ const prior=priorAnchorExposure(req);if(!prior||!Number(prior.request.load))return {load:null,source:'rpe'};
+ const priorLoad=Number(prior.request.load),rpe=Number(prior.session?.postMetrics?.rpe||0),painBefore=Number(prior.session?.pain||0),painAfter=Number(prior.session?.postMetrics?.painAfter??painBefore),clean=(prior.session?.checks||[]).filter(Boolean).length/Math.max(1,(prior.session?.checks||[]).length)>=.75;
+ if(!clean||rpe>=9||painAfter-painBefore>1)return {load:Math.max(5,Math.round((priorLoad*.9)/5)*5),source:'backoff'};
+ if(rpe>0&&rpe<=7&&painAfter-painBefore<=1)return {load:priorLoad+5,source:'advance'};
+ return {load:priorLoad,source:'hold'};
+}
+function anchorPrescription(req,level){
+ const m=req.recognized?findStrengthMovementById(req.movementId):null,loadInfo=inferredAnchorLoad(req);
+ if(!m)return [req.name,loadInfo.load?`3 × 6 @ ${loadInfo.load} lb · RPE 6–7 · clean reps only`:'3 × 6 @ RPE 6–7 · use a conservative working load',req.movementId];
+ let detail=m.levels[Math.max(0,Math.min(m.levels.length-1,level))];
+ if(loadInfo.load){detail=detail.replace(/@\s*RPE\s*\d(?:\s*max)?/i,`@ ${loadInfo.load} lb · RPE 6–7`).replace(/at same load/i,`@ ${loadInfo.load} lb`).replace(/Add 5 lb[^·]*/i,`@ ${loadInfo.load} lb `);if(!/\blb\b/i.test(detail))detail+=` · ${loadInfo.load} lb`}
+ return [m.name,detail,m.id];
+}
+function complementarySlots(anchorReqs){
+ const used=new Set(anchorReqs.map(r=>r.slot).filter(Boolean)),order=['hinge','legDrive','push','pull','carryCore'];
+ return order.filter(slot=>!used.has(slot));
+}
+function buildAnchoredStrengthWorkout(raw,minutes=35){
+ const requests=parseAnchorRequests(raw);if(!requests.length)return null;
+ const pr=progressionProfile(),level=pr.deload?Math.max(0,pr.level-1):pr.level,recent=recentMovementIds(),anchors=requests.map(r=>anchorPrescription(r,level));
+ const targetMain=Math.max(requests.length,Math.min(6,Math.round((minutes-8)/6))),need=Math.max(0,targetMain-anchors.length),extras=[];
+ for(const slot of complementarySlots(requests)){if(extras.length>=need)break;const m=chooseMovement(slot,recent,extras.length);extras.push([m.name,m.levels[level],m.id])}
+ const finisherMinutes=Math.max(0,minutes-(5+(anchors.length+extras.length)*6+3));
+ const finisher=finisherMinutes>=6?FINISHERS[(stableHash(requests.map(x=>x.movementId).join('|')+'-'+pr.cycle)%FINISHERS.length)]:null;
+ const full=[['BikeErg ramp','5 min · easy to moderate'],...anchors.map(x=>[x[0],x[1]]),...extras.map(x=>[x[0],x[1]])];if(finisher)full.push([finisher.name,`${finisher.levels[level]} · cap at ~${finisherMinutes} min`]);full.push(['Cooldown','3 min easy + relaxed breathing']);
+ const coreCount=anchors.length+extras.length,creditCandidate=coreCount>=3&&minutes>=25;
+ const label=pr.deload?'DELOAD / REBUILD':`BUILD ${pr.cycle} · WEEK ${pr.week+1}`;
+ const normalized=requests.map(r=>({...r,...inferredAnchorLoad(r)}));
+ return {name:`Built Around Lifts · ${minutes} min · ${label}`,why:`Your selected lifts anchor this session. NONZERO filled the remaining time with complementary work at the current ${label.toLowerCase()} progression.`,type:'strength',source:'anchor-built',anchorRequests:normalized,targetMinutes:minutes,programCreditCandidate:creditCandidate,movementIds:[...anchors,...extras].map(x=>x[2]).concat(finisher?[finisher.id]:[]),progression:{...pr,level,label},full,minimum:[['BikeErg','2 min easy'],...anchors.slice(0,2).map(x=>[x[0],x[1]]),...extras.slice(0,1).map(x=>[x[0],x[1]]),['Finish','Stop at 12–15 minutes with clean reps']]};
+}
+function openAnchorBuilder(){anchorTargetMinutes=35;document.getElementById('anchorExerciseInput').value='';document.querySelectorAll('[data-anchor-minutes]').forEach(b=>b.classList.toggle('active',b.dataset.anchorMinutes==='35'));document.getElementById('anchorBuilderPreview').innerHTML='<b>35-minute strength session</b><span class="small">Your lifts become anchors; complementary work fills the remaining training slots.</span>';document.getElementById('anchorBuilderError').classList.add('hidden');document.getElementById('anchorBuilder').classList.remove('hidden');setTimeout(()=>document.getElementById('anchorExerciseInput').focus(),60)}
+function closeAnchorBuilder(){document.getElementById('anchorBuilder').classList.add('hidden')}
+function updateAnchorBuilderPreview(){const req=parseAnchorRequests(document.getElementById('anchorExerciseInput').value),names=req.map(x=>x.name).filter(Boolean);document.getElementById('anchorBuilderPreview').innerHTML=`<b>${anchorTargetMinutes}-minute strength session</b><span class="small">${names.length?'Anchors: '+names.join(' · '):'Your lifts become anchors; complementary work fills the remaining training slots.'}</span>`}
+function generateAnchorWorkout(){const raw=document.getElementById('anchorExerciseInput').value,program=buildAnchoredStrengthWorkout(raw,anchorTargetMinutes),err=document.getElementById('anchorBuilderError');if(!program){err.classList.remove('hidden');return}err.classList.add('hidden');if(resetWorkoutForProgram(program,'anchor_built_workout'))closeAnchorBuilder()}
+
 function resetWorkoutForProgram(program,eventType){
  const old=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
  if(old&&['active','running','paused'].includes(String(old.status||'').toLowerCase())&&!confirm('Replace the workout already in progress? Its timer and checkoffs will reset.'))return false;
@@ -1137,7 +1245,7 @@ function renderToday(){
  document.getElementById('sessionName').textContent=p.name;
  document.getElementById('sessionWhy').textContent=p.why;
  const badge=document.getElementById('programBadge'),isOverride=state.customToday?.date===localDateStr();
- if(badge){const progressive=p.source==='prescribed-progressive';badge.classList.toggle('hidden',!isOverride&&!progressive);badge.textContent=isOverride?(p.source==='random'?'⚡ RANDOM OVERRIDE · PRESCRIBED PLAN PRESERVED':'↻ ADAPTIVE OVERRIDE · PRESCRIBED PLAN PRESERVED'):progressive?'▲ PROGRESSIVE PRESCRIPTION · REPS → LOAD → DENSITY':''}
+ if(badge){const progressive=p.source==='prescribed-progressive';badge.classList.toggle('hidden',!isOverride&&!progressive);badge.textContent=isOverride?(p.source==='random'?'⚡ RANDOM OVERRIDE · PRESCRIBED PLAN PRESERVED':p.source==='anchor-built'?'◆ BUILT AROUND YOUR LIFTS · PROGRAM-AWARE':'↻ ADAPTIVE OVERRIDE · PRESCRIBED PLAN PRESERVED'):progressive?'▲ PROGRESSIVE PRESCRIPTION · REPS → LOAD → DENSITY':''}
  const restore=document.getElementById('restorePlanBtn');if(restore)restore.disabled=!isOverride;
  const joint=document.getElementById('jointWorkoutBtn'),summary=document.getElementById('jointSummary'),sam=currentSamProgram();
  if(joint){joint.classList.toggle('active',jointEnabled());joint.innerHTML=jointEnabled()?'JOINT WITH SAM · ON<small>Tap to return this session to your solo workout</small>':'JOINT WITH SAM · OFF<small>Build a synchronized goalie-performance lane for this session</small>'}
@@ -1418,7 +1526,8 @@ function completeWorkout(){
  const checks=a.checks.slice(),defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
  const pain=Number(document.getElementById('pain')?.value||a.pain||6),energy=Number(document.getElementById('energy')?.value||a.energy||3);
  const post=collectPostMetrics(),rawTimerMs=timerElapsed(),duration=post.duration??(rawTimerMs?Math.round(rawTimerMs/6000)/10:defaultMinutes),timerMs=post.duration!=null?Number(post.duration)*60000:rawTimerMs,existing=state.sessions.findIndex(x=>x.date===date),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0),now=Date.now();
- const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration,checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:now,completionSource:a.concept2?.id?'concept2':/pm5|usb/i.test(String(a.source||''))?'pm5-usb':'app-timer',updatedAt:now};
+ const completionRatio=checks.length?checks.filter(Boolean).length/checks.length:1,painAfter=Number(post?.painAfter??pain),rpe=Number(post?.rpe||0),programCredit=p.source==='anchor-built'?(p.programCreditCandidate===true&&completionRatio>=.67&&(rpe===0||rpe<=8.5)&&painAfter-pain<=1):undefined;
+ const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration,checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',programCredit,jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:now,completionSource:a.concept2?.id?'concept2':/pm5|usb/i.test(String(a.source||''))?'pm5-usb':'app-timer',updatedAt:now};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
  state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},status:'complete',statusUpdatedAt:Date.now(),updatedAt:Date.now()};
  recordEvent('workout_complete',{timerMs,setCount,checks:checks.filter(Boolean).length,total:checks.length});save();
@@ -1518,6 +1627,12 @@ document.getElementById('wallModeBtn')?.addEventListener('click',()=>sendWallCom
 document.getElementById('makeNonzeroBtn')?.addEventListener('click',makeItNonzero);
 document.getElementById('adaptiveBtn')?.addEventListener('click',()=>buildAdaptiveWorkout(30));
 document.getElementById('randomWorkoutBtn')?.addEventListener('click',buildRandomWorkout);
+document.getElementById('anchorBuilderBtn')?.addEventListener('click',openAnchorBuilder);
+document.getElementById('cancelAnchorBuilderBtn')?.addEventListener('click',closeAnchorBuilder);
+document.getElementById('generateAnchorWorkoutBtn')?.addEventListener('click',generateAnchorWorkout);
+document.getElementById('anchorExerciseInput')?.addEventListener('input',updateAnchorBuilderPreview);
+document.querySelectorAll('[data-anchor-minutes]').forEach(btn=>btn.addEventListener('click',()=>{anchorTargetMinutes=Number(btn.dataset.anchorMinutes)||35;document.querySelectorAll('[data-anchor-minutes]').forEach(x=>x.classList.toggle('active',x===btn));updateAnchorBuilderPreview()}));
+document.getElementById('anchorBuilder')?.addEventListener('click',e=>{if(e.target.id==='anchorBuilder')closeAnchorBuilder()});
 document.getElementById('restorePlanBtn')?.addEventListener('click',restorePrescribedWorkout);
 document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJointWorkout);
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
@@ -1534,7 +1649,7 @@ document.getElementById('sessionTimeEditor')?.addEventListener('click',e=>{if(e.
 document.getElementById('cancelFinishReviewBtn')?.addEventListener('click',closeFinishReview);
 document.getElementById('confirmFinishBtn')?.addEventListener('click',confirmFinishReview);
 document.getElementById('finishReview')?.addEventListener('click',e=>{if(e.target.id==='finishReview')closeFinishReview()});
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!document.getElementById('anchorBuilder')?.classList.contains('hidden'))closeAnchorBuilder();if(!document.getElementById('sessionTimeEditor')?.classList.contains('hidden'))closeSessionTimeEditor();if(!document.getElementById('finishReview')?.classList.contains('hidden'))closeFinishReview()});
 document.querySelectorAll('[data-history-range]').forEach(b=>b.addEventListener('click',()=>{historyRange=b.dataset.historyRange;renderProgress()}));
 
 document.getElementById('reviewMetricsBtn').addEventListener('click',()=>{document.getElementById('postMetrics').classList.toggle('hidden');prefillMetrics()});
@@ -1564,8 +1679,18 @@ function renderWallScheduleSettings(){
  const s=state.wallSchedule||{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
  document.getElementById('wallAmbientTime').value=s.ambient||'06:00';document.getElementById('wallNightTime').value=s.night||'20:30';document.getElementById('wallDeepTime').value=s.deep||'01:00';document.getElementById('wallScheduleEnabled').checked=s.enabled!==false;
 }
+function renderWallThemeSettings(){
+ const mode=['basic','pittsburgh','auto'].includes(state.wallTheme?.mode)?state.wallTheme.mode:'basic';
+ document.querySelectorAll('[data-wall-theme]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wallTheme===mode));
+}
+function saveWallTheme(mode){
+ if(!['basic','pittsburgh','auto'].includes(mode))return;
+ state.wallTheme={mode,updatedAt:Date.now()};
+ renderWallThemeSettings();save();
+}
 function saveWallSchedule(){state.wallSchedule={enabled:document.getElementById('wallScheduleEnabled').checked,ambient:document.getElementById('wallAmbientTime').value||'06:00',night:document.getElementById('wallNightTime').value||'20:30',deep:document.getElementById('wallDeepTime').value||'01:00'};save();}
 renderWallScheduleSettings();['wallAmbientTime','wallNightTime','wallDeepTime','wallScheduleEnabled'].forEach(id=>document.getElementById(id).addEventListener('change',saveWallSchedule));
+renderWallThemeSettings();document.querySelectorAll('[data-wall-theme]').forEach(btn=>btn.addEventListener('click',()=>saveWallTheme(btn.dataset.wallTheme)));
 function saveSurgeryPlan(value){
  const date=value!==undefined?value:(document.getElementById('todaySurgeryDate')?.value||document.getElementById('surgeryDate')?.value||'');
  state.surgeryPlan={...(state.surgeryPlan||{}),date,label:'RIGHT HIP'};
