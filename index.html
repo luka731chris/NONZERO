@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.24 · Intelligent Training</title>
+<title>NONZERO v3.25 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -104,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.24 anchor-built strength workouts + Pittsburgh HD theme selector + contextual cockpit + bike-friendly workout controls */
+/* v3.25 anchor-built strength workouts + Pittsburgh HD theme selector + contextual cockpit + bike-friendly workout controls */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -171,6 +171,95 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
  .sectionHead{display:block}.segmentControl{margin:8px 0;width:max-content}.finishFields,.sessionEditFields{grid-template-columns:1fr 1fr}
 }
 
+
+/* v3.26 TRAINING FOCUS — active workout UI optimized for PM5 landscape + strength portrait */
+body.trainingFocus{overflow:hidden;background:#060a0f}
+body.trainingFocus .wrap{width:100%;max-width:none;margin:0;padding:env(safe-area-inset-top) max(10px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(10px,env(safe-area-inset-left));height:100dvh;overflow:hidden}
+body.trainingFocus .hero,
+body.trainingFocus #nz325Command,
+body.trainingFocus #installBanner,
+body.trainingFocus .tabbar,
+body.trainingFocus .todayUtilityHidden{display:none!important}
+body.trainingFocus #tabToday{display:grid;grid-template-rows:minmax(0,auto) minmax(0,1fr);gap:8px;height:100%;min-height:0;overflow:hidden}
+body.trainingFocus .todayCockpit{border:0;border-radius:0;background:transparent;padding:4px 6px 0;min-height:0}
+body.trainingFocus .timerpanel.cockpitTimer{padding:0 0 5px}
+body.trainingFocus .timerCaption{font-size:10px;margin-bottom:2px;letter-spacing:.14em}
+body.trainingFocus .timerpanel.cockpitTimer .timerreadout{font-size:clamp(58px,18vw,94px);line-height:.92}
+body.trainingFocus #sessionState{font-size:10px;margin-top:2px}
+body.trainingFocus .secondaryControls,
+body.trainingFocus .restCard,
+body.trainingFocus .lapStrip,
+body.trainingFocus .lapInputs,
+body.trainingFocus #lapList,
+body.trainingFocus #completeMessage{display:none!important}
+body.trainingFocus .cockpitControls{margin:6px 0 0;grid-template-columns:1fr 1fr!important;gap:8px}
+body.trainingFocus .cockpitControls button{min-height:46px;font-size:13px;padding:7px 10px}
+body.trainingFocus .cockpitControls #lapBtn,
+body.trainingFocus .cockpitControls #restartWorkoutBtn{display:none!important}
+body.trainingFocus .cockpitControls[data-state="active"] #timerPauseBtn,
+body.trainingFocus .cockpitControls[data-state="active"] #completeBtn,
+body.trainingFocus .cockpitControls[data-state="paused"] #timerStartBtn,
+body.trainingFocus .cockpitControls[data-state="paused"] #completeBtn{display:block!important}
+body.trainingFocus .cockpitControls[data-state="ready"]{grid-template-columns:1fr!important}
+body.trainingFocus .cockpitControls[data-state="ready"] #timerStartBtn{display:block!important}
+body.trainingFocus .cockpitNow{grid-template-columns:1fr 1fr;gap:8px;margin:7px 0 0}
+body.trainingFocus .nowCard,body.trainingFocus .nextCard{padding:9px 11px;border-radius:13px;min-height:0}
+body.trainingFocus .nowCard .small,body.trainingFocus .nextCard .small{font-size:9px;letter-spacing:.11em}
+body.trainingFocus .nowCard b,body.trainingFocus .nextCard b{font-size:clamp(17px,4.7vw,25px);line-height:1.08;margin-top:3px}
+body.trainingFocus .nowCard small,body.trainingFocus .nextCard small{font-size:clamp(12px,3.2vw,16px);line-height:1.22;margin-top:3px;color:#dbe4ed}
+body.trainingFocus .statePill{font-size:9px;padding:3px 7px}
+body.trainingFocus .workoutSnapshot{display:flex;flex-direction:column;min-height:0;overflow:hidden;border-radius:15px;padding:9px 10px;background:#091018}
+body.trainingFocus .workoutSnapshot>div.small:first-child{font-size:10px;margin-bottom:2px}
+body.trainingFocus .workoutSnapshot>.secondaryControls,
+body.trainingFocus .workoutPicker,
+body.trainingFocus #anchorBuilderBtn,
+body.trainingFocus #jointWorkoutBtn,
+body.trainingFocus #jointSummary,
+body.trainingFocus #programBadge,
+body.trainingFocus #sessionWhy,
+body.trainingFocus .modegrid,
+body.trainingFocus .progressbar,
+body.trainingFocus #progressText{display:none!important}
+body.trainingFocus #sessionName{font-size:15px;line-height:1.15;margin:0 0 5px;color:#aebdca;font-weight:800}
+body.trainingFocus #workout{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;border-top:1px solid #1d2935}
+body.trainingFocus #workout::-webkit-scrollbar{display:none}
+body.trainingFocus .exerciseV315{grid-template-columns:35px minmax(0,1fr);gap:8px;min-height:0;padding:7px 4px;border-bottom:1px solid #18222d}
+body.trainingFocus .exerciseV315.current{padding:8px 5px;background:#122131;border-left:3px solid #d4af37;border-radius:9px}
+body.trainingFocus .exerciseCheckHit{width:34px;height:34px;margin:0}
+body.trainingFocus .exerciseV315 input[type=checkbox]{width:27px;height:27px}
+body.trainingFocus .exerciseV315 b{font-size:14px;line-height:1.16}
+body.trainingFocus .exerciseV315 small{display:none}
+body.trainingFocus .setRow,body.trainingFocus .exerciseMeta{display:none!important}
+body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4px 0}.trainingFocus .jointLane{padding:3px;background:transparent!important;border:0!important}
+
+/* Portrait strength use: timer + current/next stay fixed, session outline consumes remaining viewport. */
+@media (orientation:portrait){
+ body.trainingFocus #tabToday{grid-template-rows:auto minmax(0,1fr)}
+ body.trainingFocus .timerpanel.cockpitTimer .timerreadout{font-size:clamp(64px,20vw,96px)}
+ body.trainingFocus .todayCockpit{padding-top:2px}
+ body.trainingFocus .workoutSnapshot{margin-bottom:0}
+}
+
+/* PM5-holder landscape: left = timer/current/next, right = whole workout. No page scrolling. */
+@media (orientation:landscape) and (max-height:650px){
+ body.trainingFocus .wrap{padding-top:max(4px,env(safe-area-inset-top));padding-bottom:max(4px,env(safe-area-inset-bottom))}
+ body.trainingFocus #tabToday{grid-template-columns:minmax(300px,.82fr) minmax(360px,1.18fr);grid-template-rows:minmax(0,1fr);gap:10px}
+ body.trainingFocus .todayCockpit{display:flex;flex-direction:column;justify-content:center;padding:4px 6px;overflow:hidden}
+ body.trainingFocus .timerpanel.cockpitTimer .timerreadout{font-size:clamp(58px,12vh,88px)}
+ body.trainingFocus .cockpitNow{grid-template-columns:1fr;gap:6px;margin-top:6px}
+ body.trainingFocus .nowCard,body.trainingFocus .nextCard{padding:7px 10px}
+ body.trainingFocus .nowCard b,body.trainingFocus .nextCard b{font-size:clamp(16px,3.1vw,23px)}
+ body.trainingFocus .nowCard small,body.trainingFocus .nextCard small{font-size:clamp(11px,2vw,14px)}
+ body.trainingFocus .cockpitControls{margin-top:6px}
+ body.trainingFocus .cockpitControls button{min-height:40px}
+ body.trainingFocus .workoutSnapshot{height:100%;padding:7px 9px}
+ body.trainingFocus #sessionName{font-size:14px;margin-bottom:3px}
+ body.trainingFocus .exerciseV315{padding:5px 4px;grid-template-columns:31px 1fr}
+ body.trainingFocus .exerciseCheckHit{width:30px;height:30px}
+ body.trainingFocus .exerciseV315 input[type=checkbox]{width:24px;height:24px}
+ body.trainingFocus .exerciseV315 b{font-size:13px}
+}
+
 </style>
 
 
@@ -179,7 +268,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.24</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.26</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -679,7 +768,7 @@ async function pushCloudState({retry=true}={}){
    return true;
  }catch(err){
    if(err.status===409 && err.data?.current){
-     const localAW=snapshot.activeWorkout,localJoint=snapshot.jointToday,localTheme=snapshot.wallTheme,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout,remoteJoint=remotePayload?.state?.jointToday,remoteTheme=remotePayload?.state?.wallTheme;
+     const localAW=snapshot.activeWorkout,localJoint=snapshot.jointToday,localTheme=snapshot.wallTheme,localCommand=snapshot.wallCommand,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout,remoteJoint=remotePayload?.state?.jointToday,remoteTheme=remotePayload?.state?.wallTheme,remoteCommand=remotePayload?.state?.wallCommand;
      applyCanonicalState(remotePayload,{render:false});
      const lp=Number(localAW?.progressUpdatedAt||0),rp=Number(remoteAW?.progressUpdatedAt||0);
      const ll=Number(localAW?.lapUpdatedAt||0),rl=Number(remoteAW?.lapUpdatedAt||0);
@@ -687,15 +776,17 @@ async function pushCloudState({retry=true}={}){
      const lr=Number(localAW?.restUpdatedAt||0),rr=Number(remoteAW?.restUpdatedAt||0);
      const jointNewer=Number(localJoint?.updatedAt||0)>Number(remoteJoint?.updatedAt||0);
      const themeNewer=Number(localTheme?.updatedAt||0)>Number(remoteTheme?.updatedAt||0);
+     const commandNewer=Boolean(localCommand?.nonce)&&Number(localCommand?.at||0)>=Number(remoteCommand?.at||0)&&String(localCommand?.nonce)!==String(remoteCommand?.nonce||'');
      const localEvents=snapshot.eventLog||[],remoteEvents=state.eventLog||[];
      state.eventLog=[...new Map([...remoteEvents,...localEvents].map(e=>[e.id,e])).values()].sort((a,b)=>a.at-b.at).slice(-160);
      let sessionsNewer=false;const mergedSessions=new Map((state.sessions||[]).map(s=>[s.date,s]));
      for(const localSession of (snapshot.sessions||[])){const remoteSession=mergedSessions.get(localSession.date),localStamp=Math.max(Number(localSession.durationCorrectedAt||0),Number(localSession.updatedAt||0)),remoteStamp=Math.max(Number(remoteSession?.durationCorrectedAt||0),Number(remoteSession?.updatedAt||0));if(!remoteSession||localStamp>remoteStamp){mergedSessions.set(localSession.date,localSession);sessionsNewer=true}}
      if(sessionsNewer)state.sessions=[...mergedSessions.values()];
-     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer||themeNewer||sessionsNewer){
+     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer||themeNewer||commandNewer||sessionsNewer){
        if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr))state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),partnerSets:ls>rs?(localAW.partnerSets||[]):(state.activeWorkout?.partnerSets||[]),partnerChecks:ls>rs?(localAW.partnerChecks||[]):(state.activeWorkout?.partnerChecks||[]),jointEnabled:ls>rs?localAW.jointEnabled:state.activeWorkout?.jointEnabled,partnerProgramSnapshot:ls>rs?(localAW.partnerProgramSnapshot||null):state.activeWorkout?.partnerProgramSnapshot,setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
        if(jointNewer)state.jointToday=localJoint;
        if(themeNewer)state.wallTheme=localTheme;
+       if(commandNewer)state.wallCommand=localCommand;
        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
        localDirty=true;
        cloudMutationSeq++;
@@ -932,8 +1023,19 @@ async function shiftMovement(dir){
 }
 async function sendWallCommand(action){
  const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null;
- state.wallCommand={action,at:Date.now(),sessionId:a?.sessionId||null,nonce:'wc-'+Date.now().toString(36)};
- recordEvent('wall_command',{action});save({sync:false});if(cloudReady())await pushCloudState();
+ const command={action,at:Date.now(),sessionId:a?.sessionId||null,nonce:'wc-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)};
+ state.wallCommand=command;
+ recordEvent('wall_command',{action,nonce:command.nonce});
+ save({sync:false});
+ if(!cloudReady()){setSyncStatus('Wall command saved locally · cloud unavailable','err');return false}
+ const ok=await pushCloudState();
+ if(ok){setSyncStatus('Wall command sent','ok');setTimeout(()=>refreshSystemHealth?.(),350);return true}
+ // One explicit retry after canonical reconciliation. Re-assert the command so a 409 can never discard it.
+ state.wallCommand=command;save({sync:false});
+ const retry=await pushCloudState({retry:false});
+ setSyncStatus(retry?'Wall command sent':'Wall command failed · retry',''+(retry?'ok':'err'));
+ if(retry)setTimeout(()=>refreshSystemHealth?.(),350);
+ return !!retry;
 }
 function makeItNonzero(){
  mode='minimum';recordEvent('make_it_nonzero',{from:state.activeWorkout?.mode||'full'});renderWorkout();saveActiveWorkout();startTimer();
@@ -1286,6 +1388,7 @@ function renderWorkout(){
  document.querySelectorAll('[data-partner-check]').forEach(c=>c.addEventListener('change',handlePartnerCheckChange));
  document.querySelectorAll('[data-partner-set]').forEach(b=>b.addEventListener('click',()=>{const [i,j]=b.dataset.partnerSet.split(':').map(Number);togglePartnerSet(i,j)}));
  updateWorkoutProgress();renderNowNext();renderRestFace();
+ if(document.body.classList.contains('trainingFocus')) requestAnimationFrame(()=>document.querySelector('#workout .exerciseV315.current')?.scrollIntoView({block:'nearest'}));
 }
 
 async function handleExerciseCheckChange(e){
@@ -1404,6 +1507,7 @@ function renderErgOrchestration(){
 }
 function renderContextControls(){
  const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null,status=String(a?.status||'ready').toLowerCase(),normalized=['active','running'].includes(status)?'active':status==='paused'?'paused':status==='complete'?'complete':'ready',type=String(a?.type||todayProgram().type||''),erg=/bike|erg|row|ski/i.test(type);
+ document.body.classList.toggle('trainingFocus',['active','paused'].includes(normalized));
  const controls=document.querySelector('.cockpitControls'),secondary=document.getElementById('workoutSecondaryControls'),start=document.getElementById('timerStartBtn'),lap=document.getElementById('lapBtn'),reset=document.getElementById('restartWorkoutBtn');
  if(controls){controls.dataset.state=normalized;controls.style.gridTemplateColumns=normalized==='ready'||normalized==='complete'?'1fr':normalized==='paused'?'1fr 1fr 1.25fr':erg?'1fr 1fr 1.25fr':'1fr 1.25fr'}
  if(start)start.textContent=normalized==='paused'?'▶ RESUME':'▶ START';if(lap)lap.classList.toggle('controlHidden',!erg||normalized!=='active');if(reset)reset.classList.toggle('controlHidden',normalized!=='paused');
@@ -1638,7 +1742,7 @@ document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJoint
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
 document.getElementById('systemStatusButton')?.addEventListener('click',()=>{document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('setupChecklistDetails')?.setAttribute('open','');setTimeout(()=>document.getElementById('guidedSetupCard')?.scrollIntoView({behavior:'smooth',block:'start'}),50)});
-document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{await sendWallCommand(btn.dataset.wallCommand);btn.textContent='SENT ✓';setTimeout(()=>{const labels={ambient:'Ambient',performance:'Performance',night:'Night',deep:'Deep Hibernate','quote-next':'Next quote'};btn.textContent=labels[btn.dataset.wallCommand]||'Sent'},900)}));
+document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{const original=btn.textContent;btn.disabled=true;btn.textContent='SENDING…';const ok=await sendWallCommand(btn.dataset.wallCommand);btn.textContent=ok?'SENT ✓':'FAILED · RETRY';setTimeout(()=>{const labels={ambient:'Ambient',performance:'Performance',night:'Night',deep:'Deep Hibernate','quote-next':'Next quote'};btn.textContent=labels[btn.dataset.wallCommand]||original;btn.disabled=false},1200)}));
 document.getElementById('todayEditTimeBtn')?.addEventListener('click',()=>openSessionTimeEditor(localDateStr()));
 document.getElementById('recentSessions')?.addEventListener('click',e=>{const btn=e.target.closest('[data-edit-session-time]');if(btn)openSessionTimeEditor(btn.dataset.editSessionTime)});
 document.getElementById('cancelSessionTimeBtn')?.addEventListener('click',closeSessionTimeEditor);
@@ -1878,5 +1982,15 @@ document.getElementById('resetSimpleErgBtn')?.addEventListener('click',resetSimp
 renderSimpleBikeErgSetup();
 
 </script>
+
+<style id="nz325CommandStyle">
+#nz325Command{margin:12px 0 16px;border:1px solid #d8dde3;border-radius:16px;background:linear-gradient(180deg,#fff,#f7f9fb);box-shadow:0 10px 32px rgba(20,31,45,.08);overflow:hidden}.nz325-head{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;border-bottom:1px solid #e6e9ed}.nz325-head b{font-size:12px;letter-spacing:.1em}.nz325-phase{font-size:11px;font-weight:800;color:#66717f}.nz325-grid{display:grid;grid-template-columns:1fr 1fr 1fr}.nz325-cell{padding:10px 11px;border-right:1px solid #e6e9ed;min-width:0}.nz325-cell:last-child{border-right:0}.nz325-cell small{font-size:9px;letter-spacing:.12em;font-weight:900;color:#7b8794}.nz325-cell strong{display:block;font-size:13px;line-height:1.18;margin-top:4px}.nz325-cell span{display:block;font-size:10px;color:#7c8794;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nz325-bottom{display:grid;grid-template-columns:95px 1fr;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid #e6e9ed}.nz325-score{font-size:28px;font-weight:950}.nz325-insight{font-size:11px;line-height:1.3;color:#4c5763}.nz325-insight b{color:#111820}
+@media(max-width:520px){.nz325-grid{grid-template-columns:1fr}.nz325-cell{border-right:0;border-bottom:1px solid #e6e9ed}.nz325-cell:last-child{border-bottom:0}}
+</style>
+
+<script id="nz325CommandCenter">
+(()=>{'use strict';if(window.__nz325)return;window.__nz325=true;const $=id=>document.getElementById(id);function phase(){const m=new Date().getHours()*60+new Date().getMinutes();return m<360?'Night':m<570?'Morning launch':m<930?'Workday':m<1110?'Arrival + family':m<1290?'Evening reset':'Night'}function score(){try{const s=window.state||state||{},ss=(s.sessions||[]).filter(x=>x.completed),today=new Date(),cut=new Date(today);cut.setDate(cut.getDate()-28);const recent=ss.filter(x=>new Date(x.date+'T12:00:00')>=cut);let streak=0,set=new Set(ss.map(x=>x.date)),d=new Date();for(let i=0;i<365;i++){const k=d.toISOString().slice(0,10);if(!set.has(k)){if(i===0){d.setDate(d.getDate()-1);continue}break}streak++;d.setDate(d.getDate()-1)}return Math.min(100,Math.round(45+Math.min(30,streak*3)+Math.min(25,recent.length*2)))}catch{return 45}}function insight(){try{const s=window.state||state||{},ss=(s.sessions||[]).filter(x=>x.completed).slice(-12),last=ss.at(-1),prev=ss.at(-2);if(last&&prev&&Number(prev.duration)>0){const d=Math.round((Number(last.duration||0)-Number(prev.duration||0))/Number(prev.duration)*100);return d===0?'Last two sessions were matched for duration.':`Last session volume was <b>${d>0?'+':''}${d}%</b> vs the prior session.`}return'Complete another session and NonZero will keep sharpening the progression story.'}catch{return'Keep stacking clean starts.'}}function agenda(){try{const raw=localStorage.getItem('autopilot.commandCenter.snapshot');return raw?JSON.parse(raw):null}catch{return null}}function lab(x,f){if(!x)return f;return `${x.start||x.time||''} ${x.person||x.child||x.owner||''} ${x.title||x.name||'Commitment'}`.trim()}function ensure(){if($('nz325Command'))return;const host=document.createElement('section');host.id='nz325Command';host.innerHTML='<div class="nz325-head"><b>COMMAND CENTER</b><span class="nz325-phase" id="nz325Phase"></span></div><div class="nz325-grid"><div class="nz325-cell"><small>NOW</small><strong id="nz325Now">—</strong><span id="nz325NowSub"></span></div><div class="nz325-cell"><small>NEXT</small><strong id="nz325Next">—</strong><span id="nz325NextSub"></span></div><div class="nz325-cell"><small>LATER</small><strong id="nz325Later">—</strong><span id="nz325LaterSub"></span></div></div><div class="nz325-bottom"><div><small>NONZERO SCORE</small><div class="nz325-score" id="nz325Score">—</div></div><div class="nz325-insight" id="nz325Insight"></div></div>';const anchor=document.querySelector('main')||document.querySelector('.screen:not(.hidden)')||document.body.firstElementChild;anchor?.prepend(host)}function render(){ensure();const a=agenda();$('nz325Phase').textContent=phase();$('nz325Now').textContent=lab(a?.now,'Training plan ready');$('nz325Next').textContent=lab(a?.next,'No immediate conflict');$('nz325Later').textContent=lab(a?.later,'Evening clear');$('nz325NowSub').textContent=a?.phase||'NONZERO';$('nz325NextSub').textContent=a?.next?.location||'';$('nz325LaterSub').textContent=a?.later?.location||'';$('nz325Score').textContent=score();$('nz325Insight').innerHTML=insight()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{render();setInterval(render,30000)});else{render();setInterval(render,30000)}})();
+</script>
+
 </body>
 </html>
