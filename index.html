@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.25 · Intelligent Training</title>
+<title>NONZERO v3.28 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -227,7 +227,7 @@ body.trainingFocus .exerciseV315{grid-template-columns:35px minmax(0,1fr);gap:8p
 body.trainingFocus .exerciseV315.current{padding:8px 5px;background:#122131;border-left:3px solid #d4af37;border-radius:9px}
 body.trainingFocus .exerciseCheckHit{width:34px;height:34px;margin:0}
 body.trainingFocus .exerciseV315 input[type=checkbox]{width:27px;height:27px}
-body.trainingFocus .exerciseV315 b{font-size:14px;line-height:1.16}
+body.trainingFocus .exerciseV315 b{font-size:15px;line-height:1.16}
 body.trainingFocus .exerciseV315 small{display:none}
 body.trainingFocus .setRow,body.trainingFocus .exerciseMeta{display:none!important}
 body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4px 0}.trainingFocus .jointLane{padding:3px;background:transparent!important;border:0!important}
@@ -268,7 +268,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.26</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.28</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -493,6 +493,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
             <button data-wall-command="deep">Deep Hibernate</button>
             <button data-wall-command="quote-next">Next quote</button>
           </div>
+          <div id="wallCommandReceipt" class="small" style="margin-top:8px;min-height:16px;color:#9fb0c2">Ready for a manual override.</div>
           <div class="row" style="margin-top:8px">
             <button id="refreshWallHealthBtn">Refresh status</button>
             <button id="copyDiagnosticsBtn">Copy diagnostics</button>
@@ -1036,6 +1037,15 @@ async function sendWallCommand(action){
  setSyncStatus(retry?'Wall command sent':'Wall command failed · retry',''+(retry?'ok':'err'));
  if(retry)setTimeout(()=>refreshSystemHealth?.(),350);
  return !!retry;
+}
+async function confirmWallCommand(action){
+ if(!cloudReady()||action==='quote-next')return action==='quote-next';
+ const receipt=document.getElementById('wallCommandReceipt');
+ for(let i=0;i<5;i++){
+  await new Promise(r=>setTimeout(r,i?1400:900));
+  try{const res=await fetch(cloudConfig.endpoint+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'}),x=await res.json();const mode=String(x?.health?.mode||'').toLowerCase();if(res.ok&&mode===action){if(receipt){receipt.textContent=`Wall confirmed · ${action.toUpperCase()}`;receipt.style.color='#86efac'}return true}}catch{}
+ }
+ if(receipt){receipt.textContent=`Command queued · Wall confirmation pending`;receipt.style.color='#fcd34d'}return false
 }
 function makeItNonzero(){
  mode='minimum';recordEvent('make_it_nonzero',{from:state.activeWorkout?.mode||'full'});renderWorkout();saveActiveWorkout();startTimer();
@@ -1742,7 +1752,7 @@ document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJoint
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
 document.getElementById('systemStatusButton')?.addEventListener('click',()=>{document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('setupChecklistDetails')?.setAttribute('open','');setTimeout(()=>document.getElementById('guidedSetupCard')?.scrollIntoView({behavior:'smooth',block:'start'}),50)});
-document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{const original=btn.textContent;btn.disabled=true;btn.textContent='SENDING…';const ok=await sendWallCommand(btn.dataset.wallCommand);btn.textContent=ok?'SENT ✓':'FAILED · RETRY';setTimeout(()=>{const labels={ambient:'Ambient',performance:'Performance',night:'Night',deep:'Deep Hibernate','quote-next':'Next quote'};btn.textContent=labels[btn.dataset.wallCommand]||original;btn.disabled=false},1200)}));
+document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{const original=btn.textContent,action=btn.dataset.wallCommand,receipt=document.getElementById('wallCommandReceipt'),labels={ambient:'Ambient',performance:'Performance',night:'Night',deep:'Deep Hibernate','quote-next':'Next quote'};btn.disabled=true;btn.textContent='SENDING…';if(receipt){receipt.textContent='Sending override to the Wall…';receipt.style.color='#9fb0c2'}const ok=await sendWallCommand(action);if(!ok){btn.textContent='FAILED · RETRY';setTimeout(()=>{btn.textContent=labels[action]||original;btn.disabled=false},1800);return}btn.textContent='QUEUED ✓';setTimeout(()=>{btn.textContent=labels[action]||original;btn.disabled=false},1200);confirmWallCommand(action).catch(()=>{})}));
 document.getElementById('todayEditTimeBtn')?.addEventListener('click',()=>openSessionTimeEditor(localDateStr()));
 document.getElementById('recentSessions')?.addEventListener('click',e=>{const btn=e.target.closest('[data-edit-session-time]');if(btn)openSessionTimeEditor(btn.dataset.editSessionTime)});
 document.getElementById('cancelSessionTimeBtn')?.addEventListener('click',closeSessionTimeEditor);
