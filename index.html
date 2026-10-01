@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.31 · Intelligent Training</title>
+<title>NONZERO v3.34 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -264,14 +264,16 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 
 
 
-</head>
+<style id="suiteStyle">.suite-card{background:var(--card,#fff);color:var(--text,#211f1b);border:1px solid var(--border,#d8d0c5);border-radius:14px;padding:14px 16px;margin:12px 0;min-width:0}.suite-card h2{font-size:18px;margin:0}.suite-heading{display:flex;justify-content:space-between;gap:12px;align-items:center}.suite-muted{color:var(--muted,#645d53);font-size:14px;line-height:1.45}.suite-card p{line-height:1.4;overflow-wrap:anywhere}.suite-card button,.suite-change button{min-height:44px;padding:8px 12px;border-radius:9px;cursor:pointer;font-size:14px}.suite-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.suite-card label,.suite-change label{display:block;font-size:14px;margin:10px 0}.suite-card input:not([type=checkbox]),.suite-change input:not([type=checkbox]),.suite-change select{display:block;box-sizing:border-box;width:100%;min-height:44px;font-size:16px;margin-top:4px;padding:8px;border:1px solid var(--border,#aaa);border-radius:8px}.suite-card details{margin-top:12px}.suite-card summary{cursor:pointer;min-height:34px;font-size:15px;font-weight:700}.suite-code{font-size:14px;word-break:break-all;user-select:all}.suite-change{padding:12px;border:1px solid var(--border,#ddd);border-radius:10px;margin:10px 0;font-size:15px}.suite-change p{margin:6px 0}.suite-ride{display:grid;grid-template-columns:90px 1fr 110px;gap:8px}.suite-today-detail{padding:12px 16px;border-top:1px solid var(--border,#ddd);font-size:15px}.suite-today-detail strong{display:block;font-size:18px;margin-bottom:5px}.suite-modal{position:fixed;inset:0;background:#0009;z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}.suite-modal[hidden]{display:none}.suite-modal-panel{width:min(680px,100%);max-height:90vh;overflow:auto;background:var(--card,#fff);color:var(--text,#222);border-radius:16px;padding:20px}.suite-event{padding:12px 0;border-bottom:1px solid var(--border,#ddd)}.suite-event strong{font-size:17px}.suite-event p{margin:5px 0;font-size:15px}.suite-dinner{border-left:3px solid #dba64b;padding-left:10px}.suite-save{font-size:14px}.suite-card .suite-decision-status{font-size:14px;color:var(--green,#356c4a)}@media(max-width:480px){.suite-heading{align-items:flex-start;flex-direction:column}.suite-ride{grid-template-columns:1fr 1fr}.suite-ride label:first-child{grid-column:1/-1}}body.trainingFocus #suiteChanges,body.trainingFocus #suiteFamilyModal{display:none} 
+</style></head>
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.31</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.34</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
+    <div class="small" id="healthWeekMinutes" style="margin:8px 0"></div>
     <div class="grid3">
       <div class="metric"><span>Streak</span><b id="streak">0</b><small>days</small></div>
       <div class="metric"><span>This week</span><b id="weekStarts">0/7</b><small>starts</small></div>
@@ -419,6 +421,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
   </main>
 
   <main id="tabSettings" class="hidden">
+<details class="card" id="optionalHealth"><summary>Optional · Apple Health imports</summary><section class="card" id="appleHealthCard"><h2>Apple Health</h2><p id="appleHealthStatus" class="small">Connect Health Auto Export to import walks and other workouts. No Mac is needed.</p><button id="setupHealthExportBtn" type="button" style="width:100%;min-height:48px">Set up Health Auto Export</button><div class="row" style="margin-top:8px"><button id="checkHealthExportBtn" type="button">Check connection</button><button id="toggleHealthExportBtn" type="button">Pause imports</button></div><details><summary>Manual setup details</summary><p class="small">Export Workouts as JSON v2. Previous 7 Days · every 30 minutes · routes and detailed metrics off. Header name: X-NONZERO-Key.</p><div class="row"><button id="copyHealthURLBtn" type="button">Copy import URL</button><button id="copyHealthKeyBtn" type="button">Copy private key</button></div><p class="small">Premium export is required. Install <a href="https://apps.apple.com/us/app/health-auto-export-json-csv/id1115567069" target="_blank" rel="noopener">Health Auto Export</a> first, then tap setup once. A second tap creates another automation.</p></details><p class="small">Updates run when iOS allows, while the phone is unlocked. Uploaded changes can take up to 15 minutes to appear. Missing exports never delete your saved workouts.</p><div id="healthImportReview"></div></section></details>
     <section class="card" id="guidedSetupCard">
       <div class="sectionHead"><div><h2>System readiness</h2><p class="small" id="setupSummary">Checking your NONZERO system.</p></div></div>
       <details class="settingsDisclosure" id="setupChecklistDetails">
@@ -598,7 +601,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
       <div class="sessionEditFields">
         <label>Hours<input id="editDurationHours" type="number" inputmode="numeric" min="0" max="99" step="1" value="0"></label>
         <label>Minutes<input id="editDurationMinutes" type="number" inputmode="numeric" min="0" max="59" step="1" value="0"></label>
-        <label>Workout type<select id="editSessionType"><option value="strength">Strength</option><option value="bike">BikeErg</option><option value="recovery">Recovery</option><option value="erg">Other Erg</option><option value="walk">Walk</option><option value="run">Run</option><option value="other">Other</option></select></label>
+        <label>Workout type<select id="editSessionType"><option value="strength">Strength</option><option value="bike">BikeErg</option><option value="recovery">Recovery</option><option value="erg">Other Erg</option><option value="walk">Walk</option><option value="run">Run</option><option value="row">Rowing</option><option value="other">Other</option></select></label>
         <label>Pain<input id="editSessionPain" type="number" inputmode="decimal" min="0" max="10" step="1"></label>
         <label>Distance (m)<input id="editSessionDistance" type="number" inputmode="decimal" min="0" step="1"></label>
         <label>Calories<input id="editSessionCalories" type="number" inputmode="decimal" min="0" step="1"></label>
@@ -621,6 +624,38 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
   </nav>
 </div>
 
+<script id="suiteCore">/* AutoPilot + NonZero shared rules. Embedded into standalone clients at release time. */
+(function(root){'use strict';
+const VERSION='2026.10.1',TIME_ZONE='America/New_York';
+function dateKey(now=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:TIME_ZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`}
+function dateAdd(key,n){if(!/^\d{4}-\d{2}-\d{2}$/.test(key||''))return '';const d=new Date(key+'T12:00:00Z');if(!Number.isFinite(d.getTime()))return '';d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
+function minute(now=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:TIME_ZONE,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(now).map(x=>[x.type,x.value]));return +p.hour*60+ +p.minute}
+function clockMinutes(value){if(typeof value==='number')return Number.isFinite(value)?value:null;const m=String(value||'').trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i);if(!m||+m[2]>59||(!m[3]&&+m[1]>23)||(m[3]&&(+m[1]<1||+m[1]>12)))return null;return (m[3]?(+m[1]%12+(m[3].toUpperCase()==='PM'?12:0)):+m[1])*60+ +m[2]}
+function clock(m){if(m==null)return '';m=((Math.round(m)%1440)+1440)%1440;return `${Math.floor(m/60)%12||12}:${String(m%60).padStart(2,'0')} ${m>=720?'PM':'AM'}`}
+function external(s){return ['manual','apple-health'].includes(s?.completionSource)||['manual','apple-health'].includes(s?.programSource)}
+function currentRecord(sessions,today=dateKey()){return (sessions||[]).filter(s=>s?.date===today&&!external(s)).sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0))[0]||null}
+function metrics(sessions,now=new Date()){const today=dateKey(now),dow=new Date(today+'T12:00:00Z').getUTCDay(),start=dateAdd(today,-dow),keys=Array.from({length:7},(_,i)=>dateAdd(start,i)),started=new Set(),completed=new Set(),allCompleted=new Set(),mins=Array(7).fill(0);let weekMinutes=0;const current=new Set(),prior=new Set();for(const s of sessions||[]){const k=s?.date;if(!/^\d{4}-\d{2}-\d{2}$/.test(k||'')||k>today)continue;if(s.completed===true)allCompleted.add(k);if(k>=start){started.add(k);if(s.completed===true)completed.add(k);const dur=Math.max(0,Number(s.duration)||0);weekMinutes+=dur;mins[keys.indexOf(k)]+=dur}if(k>=dateAdd(today,-27))current.add(k);else if(k>=dateAdd(today,-55))prior.add(k)}let cursor=allCompleted.has(today)?today:dateAdd(today,-1),streak=0;while(allCompleted.has(cursor)&&streak<3660){streak++;cursor=dateAdd(cursor,-1)}const weekCount=started.size,opportunity=dow+1,adherence=Math.round(weekCount*100/opportunity);return {today,start,end:keys[6],keys,started,completed,mins,weekCount,weekMinutes,streak,opportunity,adherence,missed:keys.slice(0,dow).filter(k=>!started.has(k)).length,momentumDays:current.size,priorMomentumDays:prior.size,momentumDelta:current.size-prior.size,score:Math.round(Math.min(100,45+Math.min(25,streak*3)+Math.min(20,adherence*.2)+Math.min(10,current.size/28*10)))}}
+function activeDay(agenda,now=new Date()){const key=dateKey(now);return (agenda?.days||[]).find(d=>d.date===key)||(agenda?.date===key?agenda:null)}
+function timeline(agenda,now=new Date(),includeHidden=true){const today=dateKey(now),n=minute(now),day=activeDay(agenda,now);const rows=[];for(const d of agenda?.days?.length?agenda.days:(agenda?.date?[agenda]:[])){if(d.date<today)continue;for(const item of d.items||[]){if(!item||(!includeHidden&&item.showOnWall===false))continue;const m=clockMinutes(item.start24||item.time);if(m==null)continue;let end=clockMinutes(item.end24);if(end!=null&&end<m)end+=1440;rows.push({...item,_m:m,_end:end??m+5,_date:d.date,_tomorrow:d.date===dateAdd(today,1),_future:d.date!==today})}}
+rows.sort((a,b)=>a._date.localeCompare(b._date)||a._m-b._m);const out=rows.filter(x=>x._date===today),current=[...out].reverse().find(x=>x._m<=n&&x._end>=n)||null,future=rows.filter(x=>x._date>today||x._m>n);return {day,out,current,now:current,next:future[0]||null,later:future[1]||null,count:out.length,n}}
+function eventLabel(x,empty=''){return x?`${x._future?(x._tomorrow?'Tomorrow':x._date)+' · ':''}${x.time||clock(x._m)} · ${x.title||'Commitment'}`:empty}
+function opportunity(agenda,now=new Date()){const day=activeDay(agenda,now),n=minute(now);if(!day)return {known:false,minutes:null,label:'Choose the session that fits today'};const blocked=(day.busyIntervals||[]).map(x=>({start:clockMinutes(x.start),end:clockMinutes(x.end)})).filter(x=>x.start!=null&&x.end!=null&&x.end>x.start);for(const x of timeline(agenda,now).out)blocked.push({start:Math.max(0,x._m-15),end:x._end+10});blocked.sort((a,b)=>a.start-b.start);let cursor=Math.max(n,360);for(const b of blocked){if(b.end<=cursor)continue;if(b.start-cursor>=10)break;cursor=Math.max(cursor,b.end)}const next=blocked.find(x=>x.start>=cursor),minutes=Math.max(0,Math.floor(Math.min(next?.start??1320,1320)-cursor));return {known:true,start:cursor,minutes,mode:minutes<30?'minimum':'full',label:minutes>=10?`${Math.min(minutes,45)} minutes ${cursor>n?'from '+clock(cursor):'available now'}`:'No clear 10-minute window left today',suggestion:minutes<10?'Log activity you already did':minutes<30?'Minimum session fits this window':'Full or minimum session'}}
+function key(s){return s?.id||s?.sessionId||s?.date}
+const clone=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x)),equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+// Rebase edits made locally since the last acknowledged snapshot onto a fresh cloud state.
+function rebase(base,local,remote){
+const out=clone(remote||{});
+for(const k of Object.keys(local||{})){if(['_meta','sessions','autopilotAgenda','suitePreferences','healthImport','activeWorkout'].includes(k))continue;if(!equal(local[k],base?.[k]))out[k]=clone(local[k])}
+if(!equal(local?.activeWorkout,base?.activeWorkout)){const l=local?.activeWorkout,b=base?.activeWorkout,r=remote?.activeWorkout;if(l&&b&&r&&l.sessionId===b.sessionId&&l.sessionId===r.sessionId){out.activeWorkout=clone(r);for(const k of Object.keys(l))if(!equal(l[k],b[k]))out.activeWorkout[k]=clone(l[k])}else out.activeWorkout=clone(l)}
+const b=new Map((base?.sessions||[]).map(x=>[key(x),x])),l=new Map((local?.sessions||[]).map(x=>[key(x),x])),r=new Map((remote?.sessions||[]).map(x=>[key(x),x]));
+for(const [id,x] of b)if(!l.has(id))r.delete(id);for(const [id,x] of l)if(!equal(x,b.get(id)))r.set(id,clone(x));out.sessions=[...r.values()];
+const bh=base?.healthImport||{},lh=local?.healthImport||{},rh=remote?.healthImport||{};
+if(!equal(bh,lh)){const decisions={...(rh.decisions||{})};for(const id of Object.keys(bh.decisions||{}))if(!(id in (lh.decisions||{}))&&equal(decisions[id],bh.decisions[id]))delete decisions[id];for(const [id,d] of Object.entries(lh.decisions||{}))if(!equal(d,bh.decisions?.[id])&&Number(d.at||0)>=Number(decisions[id]?.at||0))decisions[id]=d;const review={...(rh.review||{})};for(const [id,v] of Object.entries(lh.review||{}))if(!equal(v,bh.review?.[id]))review[id]=v;for(const id of Object.keys(decisions))delete review[id];out.healthImport={...clone(rh),decisions,review};out.sessions=out.sessions.filter(x=>!x.healthKit||!['user-deleted','health-deleted'].includes(decisions[x.healthKit.uuid]?.action))}
+return out;
+}
+root.NonZeroSuite={VERSION,TIME_ZONE,dateKey,dateAdd,minute,clockMinutes,clock,external,currentRecord,metrics,activeDay,timeline,eventLabel,opportunity,rebase};
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
 <script>
 const PROGRAM = {
   0:{name:'Recovery',why:'Keep the habit while giving the hip a low-stress day.',type:'recovery',
@@ -653,6 +688,60 @@ const FLARE = [
  ['Win condition','10 calm minutes and stop']
 ];
 
+/* Shared by the browser and the native JavaScriptCore importer. No network or DOM dependencies. */
+(function(root){
+'use strict';
+function key(row){return row.id||row.date;}
+function matches(row,workout){
+ if(!row.completed||row.healthKit||row.date!==workout.date)return false;
+ const a=row.type,b=workout.type;
+ if(!(a===b||(a==='erg'&&(b==='row'||b==='bike'))))return false;
+ const tolerance=Math.max(3,workout.duration*.15);
+ if(Math.abs(Number(row.duration||0)-workout.duration)>tolerance)return false;
+ if(row.startedAt&&Math.abs(Number(row.startedAt)-workout.startedAt)>15*60000)return false;
+ return true;
+}
+function validate(w){return w&&typeof w.uuid==='string'&&/^[a-f0-9-]{36}$/i.test(w.uuid)&&typeof w.name==='string'&&typeof w.sourceBundle==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(w.date)&&Number.isFinite(w.duration)&&w.duration>0&&Number.isFinite(w.startedAt)&&Number.isFinite(w.endedAt)&&w.endedAt>=w.startedAt&&typeof w.type==='string';}
+function record(w,now){return {id:'health-'+w.uuid,date:w.date,name:w.name,type:w.type,duration:w.duration,timerMs:w.duration*60000,mode:'external',completed:true,programCredit:false,programSource:'apple-health',completionSource:'apple-health',startedAt:w.startedAt,endedAt:w.endedAt,createdAt:now,updatedAt:now,healthKit:{uuid:w.uuid,sourceBundle:w.sourceBundle,sourceName:w.sourceName||'Apple Health',importedAt:now},postMetrics:{duration:w.duration,distance:w.distance??null,calories:w.calories??null}};}
+function merge(input,batch){
+ const state=JSON.parse(JSON.stringify(input));if(!Array.isArray(state.sessions))throw Error('Existing NonZero sessions are missing. Sync the app first.');
+ state.healthImport=state.healthImport||{};const hi=state.healthImport;hi.review=hi.review||{};hi.decisions=hi.decisions||{};
+ const now=Number(batch.now)||Date.now(),stats={added:0,updated:0,deleted:0,review:0,ignored:0};
+ for(const uuid of batch.deleted||[]){
+  delete hi.review[uuid];hi.decisions[uuid]={action:'health-deleted',at:now};
+  state.sessions=state.sessions.filter(row=>{if(row.healthKit?.uuid!==uuid)return true;if(row.completionSource==='apple-health'&&!row.sessionEditedAt){stats.deleted++;return false;}delete row.healthKit;row.healthSourceDeletedAt=now;row.updatedAt=now;return true;});
+ }
+ for(const raw of batch.workouts||[]){
+  if(!validate(raw))throw Error('Invalid Health workout payload');const w={...raw,uuid:raw.uuid.toLowerCase()};
+  // Ignore an eventual NonZero Health export; never create a read/write loop.
+  if(w.sourceBundle==='com.lukalab.nonzerohealth'){stats.ignored++;continue;}
+  if(hi.decisions[w.uuid]){stats.ignored++;continue;}
+  const existing=state.sessions.find(row=>row.healthKit?.uuid===w.uuid||row.id==='health-'+w.uuid);
+  if(existing){if(existing.completionSource==='apple-health'&&!existing.sessionEditedAt){const fresh=record(w,now);fresh.createdAt=existing.createdAt;fresh.healthKit.importedAt=existing.healthKit?.importedAt||now;if(existing.duration!==fresh.duration||existing.startedAt!==fresh.startedAt||existing.postMetrics?.distance!==fresh.postMetrics.distance||existing.postMetrics?.calories!==fresh.postMetrics.calories){Object.assign(existing,fresh);stats.updated++;}}continue;}
+  if(hi.review[w.uuid])continue;
+  const candidates=state.sessions.filter(row=>matches(row,w));
+  // Same-time copies from two Health sources are also held for review.
+  candidates.push(...state.sessions.filter(row=>row.healthKit&&row.type===w.type&&Math.abs(Number(row.startedAt)-w.startedAt)<2*60000&&Math.abs(Number(row.duration)-w.duration)<2));
+  if(candidates.length){hi.review[w.uuid]={workout:w,candidateKeys:candidates.map(key),receivedAt:now};stats.review++;}
+  else{state.sessions.push(record(w,now));stats.added++;}
+ }
+ hi.lastCheckedAt=now;hi.lastBatch=stats;
+ return {state,stats};
+}
+function resolve(input,uuid,action,candidateKey,now=Date.now()){
+ const state=JSON.parse(JSON.stringify(input)),hi=state.healthImport,pending=hi?.review?.[uuid];if(!pending)throw Error('Review item no longer exists');
+ const w=pending.workout;
+ if(action==='link'){const row=state.sessions.find(x=>key(x)===candidateKey);if(!row||!pending.candidateKeys.includes(candidateKey)||row.healthKit)throw Error('Choose an unlinked existing session');row.healthKit={uuid,sourceBundle:w.sourceBundle,sourceName:w.sourceName,importedAt:now};row.updatedAt=now;}
+ else if(action==='add'){if(!state.sessions.some(x=>x.healthKit?.uuid===uuid))state.sessions.push(record(w,now));}
+ else if(action==='skip'){hi.decisions[uuid]={action:'skip',at:now};}
+ else throw Error('Unknown review action');
+ delete hi.review[uuid];return state;
+}
+function suppress(input,row,now=Date.now()){if(row.healthKit?.uuid){input.healthImport=input.healthImport||{};input.healthImport.decisions=input.healthImport.decisions||{};input.healthImport.decisions[row.healthKit.uuid]={action:'user-deleted',at:now};}}
+root.NonZeroHealthImport={merge,resolve,suppress,key};
+if(typeof module!=='undefined')module.exports=root.NonZeroHealthImport;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
 const STORAGE_KEY='hipPrehabV2';
 const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
@@ -679,13 +768,16 @@ let canonicalSyncInterval=null;
 let cloudPushInFlight=false;
 let cloudPushPending=false;
 let cloudPullInFlight=false;
-let localDirty=false;
+let cloudBaseState=JSON.parse(localStorage.getItem('nonzero.suite.base')||'null')||JSON.parse(JSON.stringify(state));
+let localDirty=localStorage.getItem('nonzero.suite.pending')==='1';
+let cloudRetryDelay=1000;
 let cloudMutationSeq=0;
 
 function save({sync=true}={}){
  state._meta={...(state._meta||{}),updatedAt:Date.now(),schema:12,revision:cloudRevision};
  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
  localDirty=true;
+ localStorage.setItem('nonzero.suite.pending','1');
  cloudMutationSeq++;
  if(sync) queueCloudPush();
 }
@@ -718,6 +810,8 @@ function applyCanonicalState(payload,{render=true}={}){
  const remoteState=payload?.state;
  if(!remoteState)return false;
  state=remoteState;
+ cloudBaseState=JSON.parse(JSON.stringify(remoteState));
+ localStorage.setItem('nonzero.suite.base',JSON.stringify(cloudBaseState));
  cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
  state._meta={...(state._meta||{}),schema:12,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
  if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
@@ -737,7 +831,7 @@ function applyCanonicalState(payload,{render=true}={}){
    if(document.getElementById('reminderTime'))document.getElementById('reminderTime').value=state.reminderTime||'06:00';
    if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();
    if(document.getElementById('wallThemeSelector'))renderWallThemeSettings();
-   renderPreop();
+   renderPreop();renderHealthReview();
  }
  return true;
 }
@@ -763,54 +857,29 @@ async function pushCloudState({retry=true}={}){
  try{
    setSyncStatus('Syncing…','busy');
    const payload=await cloudRequest('PUT',{state:snapshot,baseRevision:cloudRevision});
+   const latest=JSON.parse(JSON.stringify(state));
    applyCanonicalState(payload,{render:false});
-   if(cloudMutationSeq===snapshotSeq)localDirty=false;
-   else cloudPushPending=true;
+   cloudRetryDelay=1000;
+   if(cloudMutationSeq===snapshotSeq){localDirty=false;localStorage.removeItem('nonzero.suite.pending')}
+   else{state=NonZeroSuite.rebase(snapshot,latest,state);state._meta={...state._meta,revision:cloudRevision};localStorage.setItem(STORAGE_KEY,JSON.stringify(state));localDirty=true;cloudPushPending=true;}
    setSyncStatus(localDirty?'Syncing changes…':'Synced',localDirty?'busy':'ok');
    return true;
  }catch(err){
    if(err.status===409 && err.data?.current){
-     const localAW=snapshot.activeWorkout,localJoint=snapshot.jointToday,localTheme=snapshot.wallTheme,localCommand=snapshot.wallCommand,remotePayload=err.data.current,remoteAW=remotePayload?.state?.activeWorkout,remoteJoint=remotePayload?.state?.jointToday,remoteTheme=remotePayload?.state?.wallTheme,remoteCommand=remotePayload?.state?.wallCommand;
-     applyCanonicalState(remotePayload,{render:false});
-     const lp=Number(localAW?.progressUpdatedAt||0),rp=Number(remoteAW?.progressUpdatedAt||0);
-     const ll=Number(localAW?.lapUpdatedAt||0),rl=Number(remoteAW?.lapUpdatedAt||0);
-     const ls=Number(localAW?.setUpdatedAt||0),rs=Number(remoteAW?.setUpdatedAt||0);
-     const lr=Number(localAW?.restUpdatedAt||0),rr=Number(remoteAW?.restUpdatedAt||0);
-     const jointNewer=Number(localJoint?.updatedAt||0)>Number(remoteJoint?.updatedAt||0);
-     const themeNewer=Number(localTheme?.updatedAt||0)>Number(remoteTheme?.updatedAt||0);
-     const commandNewer=Boolean(localCommand?.nonce)&&Number(localCommand?.at||0)>=Number(remoteCommand?.at||0)&&String(localCommand?.nonce)!==String(remoteCommand?.nonce||'');
-     const localEvents=snapshot.eventLog||[],remoteEvents=state.eventLog||[];
-     state.eventLog=[...new Map([...remoteEvents,...localEvents].map(e=>[e.id,e])).values()].sort((a,b)=>a.at-b.at).slice(-160);
-     let sessionsNewer=false;const mergedSessions=new Map((state.sessions||[]).map(s=>[sessionKey(s),s]));
-     for(const localSession of (snapshot.sessions||[])){const remoteSession=mergedSessions.get(sessionKey(localSession)),localStamp=Math.max(Number(localSession.durationCorrectedAt||0),Number(localSession.updatedAt||0)),remoteStamp=Math.max(Number(remoteSession?.durationCorrectedAt||0),Number(remoteSession?.updatedAt||0));if(!remoteSession||localStamp>remoteStamp){mergedSessions.set(sessionKey(localSession),localSession);sessionsNewer=true}}
-     if(sessionsNewer)state.sessions=[...mergedSessions.values()];
-     if((localAW && (lp>rp || ll>rl || ls>rs || lr>rr))||jointNewer||themeNewer||commandNewer||sessionsNewer){
-       if(localAW && (lp>rp || ll>rl || ls>rs || lr>rr))state.activeWorkout={...(state.activeWorkout||{}),mode:lp>rp?localAW.mode:state.activeWorkout?.mode,checks:lp>rp?(localAW.checks||[]):(state.activeWorkout?.checks||[]),pain:lp>rp?localAW.pain:state.activeWorkout?.pain,energy:lp>rp?localAW.energy:state.activeWorkout?.energy,progressUpdatedAt:Math.max(lp,rp),laps:ll>rl?(localAW.laps||[]):(state.activeWorkout?.laps||[]),lapStartElapsedMs:ll>rl?Number(localAW.lapStartElapsedMs||0):Number(state.activeWorkout?.lapStartElapsedMs||0),lapUpdatedAt:Math.max(ll,rl),sets:ls>rs?(localAW.sets||[]):(state.activeWorkout?.sets||[]),partnerSets:ls>rs?(localAW.partnerSets||[]):(state.activeWorkout?.partnerSets||[]),partnerChecks:ls>rs?(localAW.partnerChecks||[]):(state.activeWorkout?.partnerChecks||[]),jointEnabled:ls>rs?localAW.jointEnabled:state.activeWorkout?.jointEnabled,partnerProgramSnapshot:ls>rs?(localAW.partnerProgramSnapshot||null):state.activeWorkout?.partnerProgramSnapshot,setUpdatedAt:Math.max(ls,rs),restTimer:lr>rr?(localAW.restTimer||{}):(state.activeWorkout?.restTimer||{}),restUpdatedAt:Math.max(lr,rr),manualFocusIndex:ls>rs?localAW.manualFocusIndex:state.activeWorkout?.manualFocusIndex,updatedAt:Math.max(Number(state.activeWorkout?.updatedAt||0),Number(localAW.updatedAt||0))};
-       if(jointNewer)state.jointToday=localJoint;
-       if(themeNewer)state.wallTheme=localTheme;
-       if(commandNewer)state.wallCommand=localCommand;
-       localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-       localDirty=true;
-       cloudMutationSeq++;
-       cloudPushPending=true;
-       if(retry){
-         cloudPushInFlight=false;
-         return pushCloudState({retry:false});
-       }
-     }else if(cloudMutationSeq===snapshotSeq){
-       localDirty=false;
-     }
-     setSyncStatus(localDirty?'Reconciled · syncing local changes':'Synced · cloud reconciled',localDirty?'busy':'ok');
-     renderToday();renderWeek();renderProgress();renderTimer();
-     return !localDirty;
+     const latest=JSON.parse(JSON.stringify(state)),rebased=NonZeroSuite.rebase(cloudBaseState,latest,err.data.current.state);
+     applyCanonicalState(err.data.current,{render:false});state=rebased;state._meta={...(state._meta||{}),revision:cloudRevision};
+     localStorage.setItem(STORAGE_KEY,JSON.stringify(state));localStorage.setItem('nonzero.suite.pending','1');localDirty=true;cloudPushPending=true;
+     if(retry){cloudPushInFlight=false;return pushCloudState({retry:false})}
+     setSyncStatus('Changes saved · retrying sync','busy');return false;
    }
    console.warn(err);
    cloudPushPending=localDirty;
-   setSyncStatus('Offline · saved locally','err');
+   cloudRetryDelay=Math.min(30000,cloudRetryDelay*2);
+   setSyncStatus('Saved on phone · sync pending','err');
    return false;
  }finally{
    cloudPushInFlight=false;
-   if(cloudPushPending && cloudReady())setTimeout(()=>drainCloudPush(),120);
+   if(cloudPushPending && cloudReady())setTimeout(()=>drainCloudPush(),cloudRetryDelay);
  }
 }
 async function pullCloudState({force=false}={}){
@@ -821,6 +890,7 @@ async function pullCloudState({force=false}={}){
    if(localDirty || cloudPushInFlight || cloudPushPending)return false;
  }
  cloudPullInFlight=true;
+ const pullSeq=cloudMutationSeq,pullBase=JSON.parse(JSON.stringify(cloudBaseState));
  try{
    setSyncStatus('Checking cloud…','busy');
    const remote=await cloudRequest('GET');
@@ -828,7 +898,7 @@ async function pullCloudState({force=false}={}){
    const remoteRev=Number(remote?.revision??remote.state?._meta?.revision??0);
    const remoteTime=Number(remote?.updatedAt||remote.state?._meta?.updatedAt||0);
    const localTime=Number(state?._meta?.updatedAt||0);
-   if(force || remoteRev>cloudRevision || remoteTime>localTime)applyCanonicalState(remote,{render:true});
+   if(force || remoteRev>cloudRevision || remoteTime>localTime){const latest=JSON.parse(JSON.stringify(state));applyCanonicalState(remote,{render:true});if(cloudMutationSeq!==pullSeq){state=NonZeroSuite.rebase(pullBase,latest,state);localDirty=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));queueCloudPush();renderToday();renderWeek();renderProgress();}}
    cloudRevision=Math.max(cloudRevision,remoteRev);
    setSyncStatus('Synced','ok');
    return true;
@@ -855,8 +925,8 @@ function makeSyncKey(){
  const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
  return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
 }
-function localDateStr(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
-function weekdayIndex(){return new Date().getDay()}
+function localDateStr(d=new Date()){return NonZeroSuite.dateKey(d)}
+function weekdayIndex(){return new Date(NonZeroSuite.dateKey()+'T12:00:00Z').getUTCDay()}
 function surgeryDaysRemaining(){
  const ds=state.surgeryPlan?.date;if(!ds)return null;
  const target=new Date(ds+'T12:00:00'),today=new Date(localDateStr()+'T12:00:00');
@@ -892,14 +962,14 @@ function renderPreop(){
 function fmtDate(s){return new Date(s+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
 function sessionKey(s){return s.id||s.date}
 function escapeActivity(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function openManualActivity(){document.getElementById('manualDate').value=localDateStr();document.getElementById('manualDate').max=localDateStr();document.getElementById('manualType').value='walk';for(const id of ['manualMinutes','manualName','manualNotes'])document.getElementById(id).value='';document.getElementById('manualError').classList.add('hidden');document.getElementById('manualActivity').classList.remove('hidden')}
+function openManualActivity(){document.getElementById('manualDate').value=localDateStr();document.getElementById('manualDate').max=localDateStr();document.getElementById('manualType').value='walk';for(const id of ['manualMinutes','manualName','manualNotes'])document.getElementById(id).value='';const last=[...state.sessions].reverse().find(x=>x.completionSource==='manual'&&x.type==='walk');if(last)document.getElementById('manualMinutes').value=last.duration;document.getElementById('manualError').classList.add('hidden');document.getElementById('manualActivity').classList.remove('hidden')}
 function closeManualActivity(){document.getElementById('manualActivity').classList.add('hidden')}
 function saveManualActivity(event){event.preventDefault();const date=document.getElementById('manualDate').value,duration=Number(document.getElementById('manualMinutes').value),type=document.getElementById('manualType').value;
 if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date>localDateStr()||!Number.isFinite(duration)||duration<1||duration>1440){const e=document.getElementById('manualError');e.textContent='Choose today or an earlier date and enter 1–1440 minutes.';e.classList.remove('hidden');return}
 const now=Date.now(),id='manual-'+crypto.randomUUID(),name=document.getElementById('manualName').value.trim()||document.getElementById('manualType').selectedOptions[0].textContent;
-state.sessions.push({id,date,name,type,duration,timerMs:duration*60000,mode:'manual',completed:true,programCredit:false,programSource:'manual',completionSource:'manual',updatedAt:now,createdAt:now,postMetrics:{duration,notes:document.getElementById('manualNotes').value.trim()||null}});recordEvent('manual_activity_added',{id,date,type,duration});save();closeManualActivity();renderAfterSessionChange();}
+state.sessions.push({id,date,name,type,duration,timerMs:duration*60000,mode:'manual',completed:true,programCredit:false,programSource:'manual',completionSource:'manual',updatedAt:now,createdAt:now,postMetrics:{duration,notes:document.getElementById('manualNotes').value.trim()||null}});recordEvent('manual_activity_added',{id,date,type,duration});save();window.dispatchEvent(new Event('suite-state-changed'));closeManualActivity();renderAfterSessionChange();}
 
-function todaySessionRecord(){return state.sessions.find(x=>x.date===localDateStr()&&x.completionSource!=='manual')}
+function todaySessionRecord(){return NonZeroSuite.currentRecord(state.sessions)}
 
 let editingSessionDate='',lastSessionMutation=null,undoTimer=0;
 function openSessionTimeEditor(date){
@@ -909,7 +979,7 @@ function openSessionTimeEditor(date){
  document.getElementById('sessionTimeEditorMeta').textContent=`${fmtDate(rec.date)} · ${rec.name}`;
  document.getElementById('editDurationHours').value=Math.floor(total/60);
  document.getElementById('editDurationMinutes').value=total%60;
- document.getElementById('editSessionType').value=['strength','bike','recovery','erg','walk','run','other'].includes(rec.type)?rec.type:'erg';
+ document.getElementById('editSessionType').value=['strength','bike','recovery','erg','walk','run','row','other'].includes(rec.type)?rec.type:'erg';
  document.getElementById('editSessionPain').value=rec.pain??'';
  document.getElementById('editSessionDistance').value=rec.postMetrics?.distance??rec.ergMetrics?.distance??'';
  document.getElementById('editSessionCalories').value=rec.postMetrics?.calories??rec.ergMetrics?.calories??'';
@@ -923,24 +993,24 @@ function openSessionTimeEditor(date){
 function closeSessionTimeEditor(){editingSessionDate='';document.getElementById('sessionTimeEditor').classList.add('hidden')}
 function numericField(id){const value=document.getElementById(id).value;return value===''?null:Number(value)}
 function showUndo(message,mutation){lastSessionMutation=mutation;clearTimeout(undoTimer);document.getElementById('undoToastText').textContent=message;document.getElementById('undoToast').classList.remove('hidden');undoTimer=setTimeout(()=>{document.getElementById('undoToast').classList.add('hidden');lastSessionMutation=null},10000)}
-function renderAfterSessionChange(){renderToday();renderWeek();renderProgress();renderMetrics();renderTimer()}
+function renderAfterSessionChange(){renderToday();renderWeek();renderProgress();renderMetrics();renderTimer();renderHealthReview()}
 function saveSessionTimeCorrection(){
  const hours=Math.max(0,Math.floor(Number(document.getElementById('editDurationHours').value)||0));
  const minutes=Math.max(0,Math.floor(Number(document.getElementById('editDurationMinutes').value)||0));
  const total=hours*60+minutes,err=document.getElementById('sessionTimeEditorError');
  if(total<1||minutes>59){err.textContent=minutes>59?'Minutes must be between 0 and 59.':'Enter at least one minute.';err.classList.remove('hidden');return}
  const index=state.sessions.findIndex(x=>sessionKey(x)===editingSessionDate);if(index<0)return closeSessionTimeEditor();
- const rec=state.sessions[index],before=JSON.parse(JSON.stringify(rec)),beforeActive=rec.completionSource!=='manual'&&state.activeWorkout?.date===rec.date?JSON.parse(JSON.stringify(state.activeWorkout)):null,now=Date.now();
+ const rec=state.sessions[index],before=JSON.parse(JSON.stringify(rec)),beforeActive=!['manual','apple-health'].includes(rec.completionSource)&&state.activeWorkout?.date===rec.date?JSON.parse(JSON.stringify(state.activeWorkout)):null,now=Date.now();
  rec.duration=total;rec.timerMs=total*60000;rec.type=document.getElementById('editSessionType').value;rec.pain=numericField('editSessionPain');rec.postMetrics={...(rec.postMetrics||{}),duration:total,distance:numericField('editSessionDistance'),calories:numericField('editSessionCalories'),rpe:numericField('editSessionRpe'),painAfter:numericField('editSessionPainAfter'),notes:document.getElementById('editSessionNotes').value.trim()||null};rec.durationCorrectedAt=now;rec.sessionEditedAt=now;rec.updatedAt=now;
- if(rec.completionSource!=='manual'&&state.activeWorkout?.date===rec.date){
+ if(!['manual','apple-health'].includes(rec.completionSource)&&state.activeWorkout?.date===rec.date){
    state.activeWorkout={...state.activeWorkout,...rec,timer:{elapsedMs:total*60000,running:false,startedAt:null},updatedAt:now};
    if(state.activeWorkout.status==='complete')state.activeWorkout.timer={elapsedMs:total*60000,running:false,startedAt:null};
  }
  recordEvent('session_edited',{date:editingSessionDate,fromMinutes:before.duration,toMinutes:total,type:rec.type});
  const date=editingSessionDate;save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session updated.',{kind:'edit',date,before,beforeActive});
 }
-function deleteEditedSession(){const index=state.sessions.findIndex(x=>sessionKey(x)===editingSessionDate);if(index<0)return;if(!confirm('Delete this saved session? You will have 10 seconds to undo.'))return;const before=JSON.parse(JSON.stringify(state.sessions[index])),beforeActive=state.sessions[index].completionSource!=='manual'&&state.activeWorkout?.date===state.sessions[index].date?JSON.parse(JSON.stringify(state.activeWorkout)):null,date=editingSessionDate;state.sessions.splice(index,1);if(beforeActive?.status==='complete')state.activeWorkout=null;recordEvent('session_deleted',{date});save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session deleted.',{kind:'delete',date,before,beforeActive})}
-function undoSessionMutation(){const mutation=lastSessionMutation;if(!mutation)return;const index=state.sessions.findIndex(x=>sessionKey(x)===mutation.date);if(index>=0)state.sessions[index]=mutation.before;else state.sessions.push(mutation.before);if(mutation.beforeActive)state.activeWorkout=mutation.beforeActive;recordEvent('session_change_undone',{date:mutation.date,kind:mutation.kind});lastSessionMutation=null;clearTimeout(undoTimer);document.getElementById('undoToast').classList.add('hidden');save();renderAfterSessionChange()}
+function deleteEditedSession(){const index=state.sessions.findIndex(x=>sessionKey(x)===editingSessionDate);if(index<0)return;if(!confirm('Delete this saved session? You will have 10 seconds to undo.'))return;const before=JSON.parse(JSON.stringify(state.sessions[index])),beforeActive=!['manual','apple-health'].includes(state.sessions[index].completionSource)&&state.activeWorkout?.date===state.sessions[index].date?JSON.parse(JSON.stringify(state.activeWorkout)):null,date=editingSessionDate;state.sessions.splice(index,1);if(beforeActive?.status==='complete')state.activeWorkout=null;NonZeroHealthImport.suppress(state,before);recordEvent('session_deleted',{date});save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session deleted.',{kind:'delete',date,before,beforeActive})}
+function undoSessionMutation(){const mutation=lastSessionMutation;if(!mutation)return;const index=state.sessions.findIndex(x=>sessionKey(x)===mutation.date);if(index>=0)state.sessions[index]=mutation.before;else state.sessions.push(mutation.before);if(mutation.before.healthKit?.uuid)delete state.healthImport?.decisions?.[mutation.before.healthKit.uuid];if(mutation.beforeActive)state.activeWorkout=mutation.beforeActive;recordEvent('session_change_undone',{date:mutation.date,kind:mutation.kind});lastSessionMutation=null;clearTimeout(undoTimer);document.getElementById('undoToast').classList.add('hidden');save();renderAfterSessionChange()}
 
 
 function recordEvent(type,detail={}){
@@ -1361,6 +1431,7 @@ function garageArrival(){
 function renderToday(){
  renderPreop();
  const p=todayProgram(), rec=todaySessionRecord();
+ if(state.todayPrescription?.date!==localDateStr()||JSON.stringify(state.todayPrescription?.program)!==JSON.stringify(p)){state.todayPrescription={date:localDateStr(),program:JSON.parse(JSON.stringify(p)),updatedAt:Date.now()};save()}
  document.getElementById('todayHeading').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
  document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${fmtDuration(rec.duration)}` : `${p.name}. Your only obligation is to start.`;
  const editToday=document.getElementById('todayEditTimeBtn');if(editToday)editToday.classList.toggle('hidden',!rec);
@@ -1649,7 +1720,7 @@ function completeWorkout(){
  const date=localDateStr(),p=todayProgram(),a=ensureActiveWorkout('active'),items=currentItems();normalizeSetState(a,items);
  const checks=a.checks.slice(),defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
  const pain=Number(document.getElementById('pain')?.value||a.pain||6),energy=Number(document.getElementById('energy')?.value||a.energy||3);
- const post=collectPostMetrics(),rawTimerMs=timerElapsed(),duration=post.duration??(rawTimerMs?Math.round(rawTimerMs/6000)/10:defaultMinutes),timerMs=post.duration!=null?Number(post.duration)*60000:rawTimerMs,existing=state.sessions.findIndex(x=>x.date===date&&x.completionSource!=='manual'),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0),now=Date.now();
+ const post=collectPostMetrics(),rawTimerMs=timerElapsed(),duration=post.duration??(rawTimerMs?Math.round(rawTimerMs/6000)/10:defaultMinutes),timerMs=post.duration!=null?Number(post.duration)*60000:rawTimerMs,existing=state.sessions.findIndex(x=>x.date===date&&!['manual','apple-health'].includes(x.completionSource)),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0),now=Date.now();
  const completionRatio=checks.length?checks.filter(Boolean).length/checks.length:1,painAfter=Number(post?.painAfter??pain),rpe=Number(post?.rpe||0),programCredit=p.source==='anchor-built'?(p.programCreditCandidate===true&&completionRatio>=.67&&(rpe===0||rpe<=8.5)&&painAfter-pain<=1):undefined;
  const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration,checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',programCredit,jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:now,completionSource:a.concept2?.id?'concept2':/pm5|usb/i.test(String(a.source||''))?'pm5-usb':'app-timer',updatedAt:now};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
@@ -1668,43 +1739,30 @@ function motivation(rec){
  return `Non-zero day complete. Stack another one tomorrow.`;
 }
 
-function weekBounds(){
- const now=new Date(); const day=now.getDay(); const diff=(day+6)%7;
- const mon=new Date(now); mon.setDate(now.getDate()-diff); mon.setHours(0,0,0,0);
- const sun=new Date(mon); sun.setDate(mon.getDate()+6);
- return [mon,sun];
-}
-function sessionsThisWeek(){
- const [a,b]=weekBounds();
- return state.sessions.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=a&&d<=new Date(b.getTime()+86400000-1)})
-}
-function calcStreak(){
- const set=new Set(state.sessions.filter(s=>s.completed).map(s=>s.date));
- let d=new Date(), streak=0;
- if(!set.has(localDateStr(d))){d.setDate(d.getDate()-1)}
- while(set.has(localDateStr(d))){streak++;d.setDate(d.getDate()-1)}
- return streak;
-}
+function weekBounds(){const m=NonZeroSuite.metrics(state.sessions);return [new Date(m.start+'T12:00:00-04:00'),new Date(m.end+'T12:00:00-04:00')]}
+function sessionsThisWeek(){const m=NonZeroSuite.metrics(state.sessions);return state.sessions.filter(s=>s.date>=m.start&&s.date<=m.today)}
+function calcStreak(){return NonZeroSuite.metrics(state.sessions).streak}
 function renderMetrics(){
  const w=sessionsThisWeek();
  const bike=w.filter(s=>s.type==='bike').reduce((a,b)=>a+Number(b.duration||0),0);
  document.getElementById('streak').textContent=calcStreak();
+ document.getElementById('healthWeekMinutes').textContent=`${fmtMinutes(w.reduce((n,x)=>n+Number(x.duration||0),0))} total activity minutes this week`;
  document.getElementById('weekStarts').textContent=`${new Set(w.map(s=>s.date)).size}/7`;
  document.getElementById('weekBike').textContent=fmtMinutes(bike);
 }
 
 function renderWeek(){
- const [mon]=weekBounds(), byDate=Object.fromEntries([...state.sessions].sort((a,b)=>(a.completionSource==='manual'?0:1)-(b.completionSource==='manual'?0:1)).map(s=>[s.date,s]));
- const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+ const [mon]=weekBounds();
+ const names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
  let html='';
  for(let i=0;i<7;i++){
-   const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=byDate[ds];
-   const program=PROGRAM[(i+1)%7];
-   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r?'done':''}"></span>${program.name}</span><span class="small">${r?r.mode.toUpperCase():'—'}</span></div>`;
+   const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=NonZeroSuite.currentRecord(state.sessions,ds),other=state.sessions.filter(x=>x.date===ds&&NonZeroSuite.external(x));
+   const program=PROGRAM[i];
+   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r||other.length?'done':''}"></span>${r?program.name:other.length?'Activity logged · '+program.name+' available':program.name}</span><span class="small">${r?r.mode.toUpperCase():other.length?other.map(x=>escapeActivity(x.type==='walk'?'Walk':x.name)).join(' + '):'—'}</span></div>`;
  }
  document.getElementById('weekList').innerHTML=html;
  const w=sessionsThisWeek(), starts=new Set(w.map(s=>s.date)).size, mins=w.reduce((a,b)=>a+Number(b.duration||0),0);
- const avgPain=w.length?(w.reduce((a,b)=>a+(b.pain||0),0)/w.length).toFixed(1):'—';
+ const painRows=w.filter(x=>Number.isFinite(x.pain)),avgPain=painRows.length?(painRows.reduce((a,b)=>a+b.pain,0)/painRows.length).toFixed(1):'—';
  let text=starts>=6?'Excellent consistency. Keep protecting sleep and the hip; do not add intensity just because adherence is high.':
           starts>=4?'Solid week. Your next win is simply converting one missed day into a 10-minute Minimum day.':
           'The program is designed for imperfect weeks. Focus only on getting the next start.';
@@ -1715,8 +1773,8 @@ function renderWeek(){
 let historyRange='all';
 function renderProgress(){
  const all=[...state.sessions].sort((a,b)=>b.date.localeCompare(a.date)),s=historyRange==='week'?[...sessionsThisWeek()].sort((a,b)=>b.date.localeCompare(a.date)):all;
- document.querySelectorAll('[data-history-range]').forEach(b=>b.classList.toggle('active',b.dataset.historyRange===historyRange));document.getElementById('historyStartsLabel').textContent=historyRange==='week'?'Week starts':'Total starts';document.getElementById('sessionListTitle').textContent=historyRange==='week'?'This week’s sessions':'Recent sessions';document.getElementById('historyWeekSummary').classList.toggle('hidden',historyRange!=='week');
- document.getElementById('totalStarts').textContent=s.length;
+ document.querySelectorAll('[data-history-range]').forEach(b=>b.classList.toggle('active',b.dataset.historyRange===historyRange));document.getElementById('historyStartsLabel').textContent=historyRange==='week'?'Week activity days':'Total activity days';document.getElementById('sessionListTitle').textContent=historyRange==='week'?'This week’s sessions':'Recent sessions';document.getElementById('historyWeekSummary').classList.toggle('hidden',historyRange!=='week');
+ document.getElementById('totalStarts').textContent=new Set(s.map(x=>x.date)).size;
  document.getElementById('totalStrength').textContent=s.filter(x=>x.type==='strength').length;
  document.getElementById('totalBike').textContent=fmtMinutes(s.filter(x=>x.type==='bike').reduce((a,b)=>a+Number(b.duration||0),0));
  const reported=all.filter(x=>Number.isFinite(x.pain)),recent=reported.slice(0,14), old=reported.slice(14,28);
@@ -1732,7 +1790,7 @@ function renderProgress(){
    } else trend=`You have ${recent.length} logged sessions. Keep stacking starts; the app will compare pain trends once there is more history.`;
  }
  document.getElementById('trendSummary').textContent=trend;
- document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>{const source=x.completionSource==='manual'?'Manual':x.completionSource==='pm5-usb'?'PM5 USB':x.completionSource==='concept2'||x.concept2?.id?'Concept2':'App timer';return `<div class="dayrow sessionRow"><span>${fmtDate(x.date)}</span><span>${escapeActivity(x.name)}<br><span class="small">${String(x.mode||'full').toUpperCase()} · pain ${x.pain??'—'}/10 · ${source}</span></span><span class="sessionTimeCell"><b>${fmtDuration(x.duration)}</b><button class="editTimeBtn" data-edit-session-time="${escapeActivity(sessionKey(x))}">EDIT</button></span></div>`}).join('')||'<p>No sessions saved yet.</p>';
+ document.getElementById('recentSessions').innerHTML=s.slice(0,10).map(x=>{const source=x.completionSource==='apple-health'?'Apple Health':x.completionSource==='manual'?'Manual':x.completionSource==='pm5-usb'?'PM5 USB':x.completionSource==='concept2'||x.concept2?.id?'Concept2':'App timer';return `<div class="dayrow sessionRow"><span>${fmtDate(x.date)}</span><span>${escapeActivity(x.name)}<br><span class="small">${String(x.mode||'full').toUpperCase()} · pain ${x.pain??'—'}/10 · ${source}</span></span><span class="sessionTimeCell"><b>${fmtDuration(x.duration)}</b><button class="editTimeBtn" data-edit-session-time="${escapeActivity(sessionKey(x))}">EDIT</button></span></div>`}).join('')||'<p>No sessions saved yet.</p>';
 }
 
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;renderWorkout();saveActiveWorkout()}));
@@ -1785,7 +1843,7 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()
  document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
  ['Today','Plan','History','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
  if(b.dataset.tab==='Plan')renderWeek();
- if(b.dataset.tab==='History')renderProgress();
+ if(b.dataset.tab==='History')renderProgress();if(b.dataset.tab==='Settings')renderHealthReview();
 }));
 
 const restSel=document.getElementById('restSeconds');if(restSel){restSel.value=String(state.trainingPrefs?.restSeconds||90);restSel.addEventListener('change',e=>{state.trainingPrefs.restSeconds=Number(e.target.value);save();const rb=document.getElementById('restBtn');if(rb)rb.textContent='REST '+e.target.value})}
@@ -2001,6 +2059,44 @@ document.getElementById('testSimpleErgBtn')?.addEventListener('click',testSimple
 document.getElementById('resetSimpleErgBtn')?.addEventListener('click',resetSimpleBikeErg);
 renderSimpleBikeErgSetup();
 
+
+
+function healthExportURL(){if(!cloudReady())throw Error('Set your cloud URL and private key in Settings first.');return normalizeEndpoint(cloudConfig.endpoint)+'/health/import';}
+function healthExportSetupURL(){
+ const endpoint=healthExportURL();
+ if(String(cloudConfig.syncKey).includes(','))throw Error('For a key containing a comma, use Manual setup details instead.');
+ const params={url:endpoint,name:'NonZero Workouts',format:'json',datatype:'workouts',exportversion:'v2',period:'previous7days',syncinterval:'minutes',syncquantity:'30',includeroutes:'false',includeworkoutmetadata:'false',headers:'X-NONZERO-Key,'+cloudConfig.syncKey,requesttimeout:'60',batchrequests:'true',notifyonupdate:'false',notifywhenrun:'false',enabled:'true'};
+ return 'com.HealthExport://automation?'+Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+}
+async function checkHealthExport(){
+ const label=document.getElementById('appleHealthStatus');
+ try{
+  healthExportURL();await resumeCloudSync();
+  const response=await fetch(normalizeEndpoint(cloudConfig.endpoint)+'/health/import/status',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'}),data=await response.json();
+  if(!response.ok)throw Error(response.status===404?'Deploy the Health Auto Export Worker update first.':data.error||'Connection failed');
+  label.textContent=`${data.enabled?'Ready to receive workouts':'Imports paused'} · ${data.totalReceived} received · ${data.pendingReview} to review${data.lastReceivedAt?' · last upload '+new Date(data.lastReceivedAt).toLocaleString():'. Run the first manual export in Health Auto Export.'}`;
+  await pullCloudState({force:true});renderHealthReview();
+ }catch(error){label.textContent=error.message;}
+}
+async function toggleHealthExport(){
+ const label=document.getElementById('appleHealthStatus');
+ try{healthExportURL();const enabled=state.healthImport?.autoExport?.enabled===false;const response=await fetch(normalizeEndpoint(cloudConfig.endpoint)+'/health/import/control',{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:JSON.stringify({enabled})});const data=await response.json();if(!response.ok)throw Error(data.error||'Could not change import setting');await checkHealthExport();}catch(error){label.textContent=error.message;}
+}
+async function copyHealthSetting(kind){try{const value=kind==='url'?healthExportURL():(healthExportURL(),cloudConfig.syncKey);if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(value);document.getElementById('appleHealthStatus').textContent=kind==='url'?'Import URL copied.':'Private key copied. Paste it only into your Health Auto Export automation.';}else prompt(kind==='url'?'Copy this import URL':'Copy this private key',value);}catch(error){document.getElementById('appleHealthStatus').textContent=error.message;}}
+function renderHealthReview(){
+ const toggle=document.getElementById('toggleHealthExportBtn');if(toggle)toggle.textContent=state.healthImport?.autoExport?.enabled===false?'Resume imports':'Pause imports';
+ const host=document.getElementById('healthImportReview');if(!host)return;
+ const pending=Object.entries(state.healthImport?.review||{});
+ host.innerHTML=pending.length?'<h3>Possible duplicates</h3>'+pending.map(([uuid,p])=>{const w=p.workout;const candidates=p.candidateKeys.map(k=>state.sessions.find(s=>sessionKey(s)===k)).filter(Boolean);return `<div class="reportCard"><b>${escapeActivity(w.name)} · ${fmtDate(w.date)} · ${fmtDuration(w.duration)}</b><p class="small">${escapeActivity(w.sourceName||'Apple Health')} · May match an existing workout. This entry is not counted yet.</p>${candidates.map(c=>`<p class="small">${escapeActivity(c.name)} · ${fmtDuration(c.duration)}</p>${!c.healthKit?`<button data-health-review="link" data-health-uuid="${escapeActivity(uuid)}" data-health-key="${escapeActivity(sessionKey(c))}">Same workout · link</button>`:''}`).join('')}<div class="row"><button data-health-review="add" data-health-uuid="${escapeActivity(uuid)}">Separate workout · add</button><button data-health-review="skip" data-health-uuid="${escapeActivity(uuid)}">Skip this copy</button></div></div>`}).join(''):'';
+}
+
+document.getElementById('setupHealthExportBtn').addEventListener('click',()=>{try{const url=healthExportSetupURL();document.getElementById('appleHealthStatus').textContent='Opening Health Auto Export. Verify the automation, grant workout access, then run a manual export.';window.location.href=url;}catch(error){document.getElementById('appleHealthStatus').textContent=error.message;}});
+document.getElementById('checkHealthExportBtn').addEventListener('click',checkHealthExport);
+document.getElementById('toggleHealthExportBtn').addEventListener('click',toggleHealthExport);
+document.getElementById('copyHealthURLBtn').addEventListener('click',()=>copyHealthSetting('url'));
+document.getElementById('copyHealthKeyBtn').addEventListener('click',()=>copyHealthSetting('key'));
+document.getElementById('healthImportReview').addEventListener('click',event=>{const b=event.target.closest('[data-health-review]');if(!b)return;try{state=NonZeroHealthImport.resolve(state,b.dataset.healthUuid,b.dataset.healthReview,b.dataset.healthKey);save();renderAfterSessionChange();}catch(e){document.getElementById('appleHealthStatus').textContent=e.message;renderHealthReview();}});
+renderHealthReview();
 </script>
 
 <style id="nz325CommandStyle">
@@ -2025,25 +2121,34 @@ renderSimpleBikeErgSetup();
 body.light #nz325Command,body[data-theme="light"] #nz325Command{--cc-bg:#fff;--cc-line:#d7dfe7;--cc-text:#17212e;--cc-muted:#526174;background:#fff}body.light #nz325Command .nz325-head b,body.light #nz325Command .nz325-cell small,body[data-theme="light"] #nz325Command .nz325-head b,body[data-theme="light"] #nz325Command .nz325-cell small{color:#087a3b}body.light #nz325Command .nz325-sync button,body[data-theme="light"] #nz325Command .nz325-sync button{background:#f3f6f9}
 </style>
 
-<script id="nz325CommandCenter">
-(()=>{'use strict';if(window.__nz325)return;window.__nz325=true;
-const $=id=>document.getElementById(id), cacheKey='nonzero.autopilotAgenda.cache';
-let cached=null,refreshing=false,lastFailure=false;
-try{cached=JSON.parse(localStorage.getItem(cacheKey)||'null')}catch{}
-const dayKey=d=>{const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)};
-function phase(){const m=new Date().getHours()*60+new Date().getMinutes();return m<360?'Night':m<570?'Morning launch':m<930?'Workday':m<1110?'Arrival + family':m<1290?'Evening reset':'Night'}
-function score(){try{const ss=(state?.sessions||[]).filter(x=>x.completed),cut=new Date();cut.setDate(cut.getDate()-28);const recent=ss.filter(x=>new Date(x.date+'T12:00:00')>=cut);let streak=0,set=new Set(ss.map(x=>x.date)),d=new Date();for(let i=0;i<365;i++){const k=dayKey(d);if(!set.has(k)){if(i===0){d.setDate(d.getDate()-1);continue}break}streak++;d.setDate(d.getDate()-1)}return Math.min(100,Math.round(45+Math.min(30,streak*3)+Math.min(25,recent.length*2)))}catch{return 45}}
-function insight(){try{const ss=(state?.sessions||[]).filter(x=>x.completed).slice(-12),last=ss.at(-1),prev=ss.at(-2);if(last&&prev&&Number(prev.duration)>0){const d=Math.round((Number(last.duration||0)-Number(prev.duration||0))/Number(prev.duration)*100);return d===0?'Last two sessions were matched for duration.':`Last session volume was <b>${d>0?'+':''}${d}%</b> vs the prior session.`}return'Complete another session and NonZero will keep sharpening the progression story.'}catch{return'Keep stacking clean starts.'}}
-function clockValue(v){const s=String(v||'').trim(),h=s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i);if(h)return ((+h[1])%12+(h[3].toLowerCase()==='pm'?12:0))*60+(+h[2]||0);const m=s.match(/^(\d{1,2}):(\d{2})/);return m?(+m[1])*60+(+m[2]):null}
-function activeDay(a){const today=dayKey(new Date());return (a?.days||[]).find(d=>d?.date===today)||(a?.date===today?a:null)}
-function slots(a){const d=activeDay(a);if(!d)return null;const n=new Date(),mins=n.getHours()*60+n.getMinutes();const items=(d.items||[]).filter(x=>x&&x.showOnWall!==false).map(x=>({...x,_m:clockValue(x.time)})).filter(x=>x._m!=null).sort((x,y)=>x._m-y._m);const upcoming=items.filter(x=>x._m>mins),now=[...items].reverse().find(x=>x._m<=mins&&mins-x._m<90);const tomorrow=new Date(n);tomorrow.setDate(tomorrow.getDate()+1);const nextDay=(a?.days||[]).find(x=>x?.date===dayKey(tomorrow));const future=(nextDay?.items||[]).filter(x=>x&&x.showOnWall!==false).map(x=>({...x,_m:clockValue(x.time),_tomorrow:true})).filter(x=>x._m!=null).sort((x,y)=>x._m-y._m);return {day:d,now,next:upcoming[0]||future[0],later:upcoming[1]||(!upcoming[0]?future[1]:future[0]),count:items.length}}
-function label(x,empty){return x?`${x._tomorrow?'Tomorrow · ':''}${x.time||''} · ${x.title||'Commitment'}`:empty}
-function ensure(){if($('nz325Command'))return;const host=document.createElement('section');host.id='nz325Command';host.innerHTML='<div class="nz325-head"><b>COMMAND CENTER</b><span class="nz325-phase" id="nz325Phase"></span></div><div class="nz325-grid"><div class="nz325-cell"><small>NOW</small><strong id="nz325Now">—</strong><span id="nz325NowSub"></span></div><div class="nz325-cell"><small>NEXT</small><strong id="nz325Next">—</strong><span id="nz325NextSub"></span></div><div class="nz325-cell"><small>LATER</small><strong id="nz325Later">—</strong><span id="nz325LaterSub"></span></div></div><div class="nz325-bottom"><div><small>NONZERO SCORE</small><div class="nz325-score" id="nz325Score">—</div></div><div class="nz325-insight" id="nz325Insight"></div></div><div class="nz325-sync"><span id="nz325Sync"></span><button type="button" id="nz325Refresh">Refresh</button></div>';const anchor=document.querySelector('#tabToday')||document.querySelector('main')||document.body;anchor.prepend(host);$('nz325Refresh').onclick=refresh}
-function render(){ensure();const live=state?.autopilotAgenda;if(live&&Array.isArray(live.days)&&(!cached||Number(live.updatedAt||0)>=Number(cached.updatedAt||0))){cached=live;try{localStorage.setItem(cacheKey,JSON.stringify(live))}catch{}}const t=slots(cached),age=cached?.updatedAt?Date.now()-Number(cached.updatedAt):Infinity,stamp=Number.isFinite(age)?new Date(Number(cached.updatedAt)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'unknown',configured=typeof cloudReady==='function'&&cloudReady();$('nz325Phase').textContent=phase();$('nz325Now').textContent=t?label(t.now,'Nothing active right now'):'Agenda unavailable';$('nz325Next').textContent=t?label(t.next,'No upcoming commitment'):'Connect AutoPilot';$('nz325Later').textContent=t?label(t.later,'No later commitment'):'—';$('nz325NowSub').textContent=t?.now?.meta||t?.now?.location||'';$('nz325NextSub').textContent=t?.next?.meta||t?.next?.location||'';$('nz325LaterSub').textContent=t?.later?.meta||t?.later?.location||'';$('nz325Score').textContent=score();$('nz325Insight').innerHTML=insight();$('nz325Sync').textContent=refreshing?'Updating agenda…':!configured?'Configure NONZERO cloud sync in Settings, then publish from AutoPilot.':!cached?'No AutoPilot agenda published yet. Publish the plan from AutoPilot.':!t?'The published agenda has no plan for today. Replan and publish in AutoPilot.':`${t.count} event${t.count===1?'':'s'} today · ${lastFailure?'Saved copy; refresh failed':(age>24*3600000?'Plan may be outdated · published '+stamp:'Published '+stamp)}`}
-async function refresh(){if(refreshing)return;refreshing=true;render();try{if(typeof pullCloudState==='function'&&cloudReady()){lastFailure=!(await pullCloudState({force:true}))}else lastFailure=true}catch{lastFailure=true}finally{refreshing=false;render()}}
-function init(){render();if(typeof cloudReady==='function'&&cloudReady())setTimeout(refresh,1000);setInterval(()=>{render();if(document.visibilityState==='visible'&&cloudReady())refresh()},120000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});window.addEventListener('storage',render)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-})();
+<script id="suiteClient">/* Shared connection and calendar-decision interface for both standalone phone and planner. */
+(function(root){'use strict';
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LOCAL='nonzero.suite.connection.v1';
+function read(){try{return JSON.parse(localStorage.getItem(LOCAL)||'{}')}catch{return {}}}
+function safeURL(x){if(!x)return '';const u=new URL(x);return u.protocol==='https:'?u.href:''}
+let adapter=null,prefsStamp=0,status=null,checking=false,changesBusy=false;
+async function api(path,options={}){const c=adapter.getConnection();if(!/^https:\/\//.test(c.endpoint||'')||String(c.syncKey||'').length<16)throw Error('Connect this device first.');const r=await fetch(c.endpoint.replace(/\/+$/,'')+path,{...options,headers:{'Content-Type':'application/json','X-NONZERO-Key':c.syncKey},cache:'no-store'});const b=await r.json();if(!r.ok)throw Error(b.error||'Connection failed');return b}
+async function background(path,options={}){const c=read();if(!c.backgroundEndpoint||!c.backgroundKey)throw Error('Connect AutoPilot background updates to review calendar changes here.');const r=await fetch(c.backgroundEndpoint+path,{...options,headers:{'Content-Type':'application/json','X-AutoPilot-Key':c.backgroundKey},cache:'no-store'});const b=await r.json();if(!r.ok)throw Error(b.error||'Calendar connection failed');return b}
+async function claim(value){let code=String(value||'').trim();if(code.includes('#suite-connect='))code=decodeURIComponent(code.split('#suite-connect=')[1].split('&')[0]);let data;try{data=JSON.parse(atob(code))}catch{throw Error('Paste the connection link or code from your connected device.')}if(!/^https:\/\//.test(data.endpoint||'')||!/^[a-f0-9]{48}$/.test(data.token||''))throw Error('Invalid connection code');const r=await fetch(data.endpoint+'/suite/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:data.token})});const b=await r.json();if(!r.ok)throw Error(b.error||'Could not connect');localStorage.setItem(LOCAL,JSON.stringify(b));adapter.applyConnection(b);await adapter.connected?.();await check();return b}
+async function savePreferences(patch){const latest=await api('/suite/preferences'),b=await api('/suite/preferences',{method:'PUT',body:JSON.stringify({preferences:patch,baseUpdatedAt:latest.updatedAt||0})});prefsStamp=b.updatedAt;adapter.preferencesChanged?.(b.value);return b}
+async function createLink(target){const c={...read(),...adapter.getConnection()},prefs=adapter.getPreferences();const b=await api('/suite/pair/create',{method:'POST',body:JSON.stringify({backgroundEndpoint:c.backgroundEndpoint||'',backgroundKey:c.backgroundKey||'',targetURL:target==='phone'?prefs.phoneURL:prefs.plannerURL})});const el=document.getElementById('suitePairOutput');el.hidden=false;el.textContent=b.link||b.code;try{await navigator.clipboard.writeText(b.link||b.code);document.getElementById('suiteConnectionMessage').textContent='Private connection link copied. Open or paste it on the other device within 15 minutes.'}catch{document.getElementById('suiteConnectionMessage').textContent='Copy this private code and paste it on the other device within 15 minutes.'}return b}
+async function check(){if(checking||!adapter)return;checking=true;const label=document.getElementById('suiteConnectionStatus');try{status=await api('/suite/status');const pref=await api('/suite/preferences');prefsStamp=pref.updatedAt||0;if(pref.value)adapter.preferencesChanged?.(pref.value);if(label)label.textContent=status.suiteVersion===NonZeroSuite.VERSION?'Connected · suite up to date':'Needs attention · update the suite together';const wall=status.wall,stamp=Number(wall?.lastStateAt||wall?.ts||0),version=wall?.version;const detail=document.getElementById('suiteConnectionDetail');if(detail)detail.textContent=[status.agendaUpdatedAt?'Agenda synced '+new Date(status.agendaUpdatedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'No shared agenda published yet',version?'Wall '+version+(version==='7.4.0'?'':' · update available'):'Wall has not reported yet',stamp?'Wall last reported '+new Date(stamp).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):''].filter(Boolean).join(' · ');adapter.statusChanged?.(status);if(read().backgroundEndpoint)await refreshChanges()}catch(e){if(label)label.textContent=navigator.onLine?'Needs attention · '+e.message:'Offline · saved information available'}finally{checking=false}}
+function mount(host,a){adapter=a;if(!host||document.getElementById('suiteConnections'))return;const h=document.createElement('section');h.id='suiteConnections';h.className='suite-card';h.innerHTML=`<div class="suite-heading"><h2>Suite connection</h2><button type="button" id="suiteCheck">Check connection</button></div><p id="suiteConnectionStatus" role="status">Local mode · logging still works</p><p id="suiteConnectionDetail" class="suite-muted"></p><details><summary>Connect another device</summary><label>Connection link or code<input id="suitePairCode" autocomplete="off" type="password" placeholder="Paste from your connected device"></label><button id="suiteClaim" type="button">Connect this device</button><div class="suite-actions"><button type="button" id="suitePairPhone">Connect phone</button><button type="button" id="suitePairPlanner">Connect planner</button></div><p class="suite-muted">Links expire in 15 minutes. Use a separate link for each device.</p><p id="suitePairOutput" hidden class="suite-code"></p></details><details><summary>App shortcuts</summary><label>Phone app address<input id="suitePhoneURL" type="url" placeholder="https://…"></label><label>AutoPilot address<input id="suitePlannerURL" type="url" placeholder="https://…"></label><button type="button" id="suiteSaveLinks">Save shortcuts</button></details><p id="suiteConnectionMessage" role="status"></p>`;host.prepend(h);const prefs=a.getPreferences();for(const [id,k] of [['suitePhoneURL','phoneURL'],['suitePlannerURL','plannerURL']])document.getElementById(id).value=prefs[k]||'';const action=(id,fn)=>document.getElementById(id).onclick=async()=>{const b=document.getElementById(id);b.disabled=true;try{await fn()}catch(e){document.getElementById('suiteConnectionMessage').textContent=e.message}finally{b.disabled=false}};action('suiteCheck',check);action('suiteClaim',()=>claim(document.getElementById('suitePairCode').value).then(()=>{document.getElementById('suitePairCode').value='';document.getElementById('suiteConnectionMessage').textContent='Connected. Your saved workouts and approved plan are ready.'}));action('suitePairPhone',()=>createLink('phone'));action('suitePairPlanner',()=>createLink('planner'));action('suiteSaveLinks',()=>savePreferences({phoneURL:safeURL(document.getElementById('suitePhoneURL').value),plannerURL:safeURL(document.getElementById('suitePlannerURL').value)}).then(()=>{document.getElementById('suiteConnectionMessage').textContent='App shortcuts saved.'}));const fragment=location.hash;if(fragment.startsWith('#suite-connect=')){history.replaceState(null,'',location.pathname+location.search);claim(fragment.slice(15)).catch(e=>document.getElementById('suiteConnectionMessage').textContent=e.message)}else if(a.getConnection().endpoint)check();window.addEventListener('online',check);window.addEventListener('focus',check);setInterval(()=>{if(document.visibilityState==='visible'&&a.getConnection().endpoint)check()},300000)}
+function renderChanges(host,changes,request=background,onResolved=()=>adapter?.connected?.()){if(!host)return;host.innerHTML=changes.length?changes.map(c=>{const p=c.proposal||{},legs=p.transport||[],hasRide=legs.length>0,routeWarning=p.locationChanged?'Location changed. Confirm travel time before saving.':'Departure suggestions retain the previous travel buffer; confirm they still fit.';return `<article class="suite-change" data-change="${esc(c.id)}"><strong>${esc(c.title)} · ${c.kind==='canceled'?'Canceled':c.kind==='added'?'Added':'Changed'}</strong><p>${esc(c.feed)} · ${esc(c.date)}${c.before?' · '+esc(c.before.start)+'–'+esc(c.before.end||''):''}${c.after?' → '+esc(c.after.start)+'–'+esc(c.after.end||''):''}</p>${c.after?.location?'<p>'+esc(c.after.location)+'</p>':''}${c.kind==='canceled'?'<p>This removes the event and its rides from the approved agenda.</p>':`<details><summary>${hasRide?'Review driver and departure':'Set ride details'}</summary><p class="suite-muted">${esc(routeWarning)}</p><div class="suite-ride-fields">${(hasRide?legs:[{kind:'Drop',driver:'',departure24:''}]).map((l,i)=>`<div class="suite-ride" data-leg="${i}"><label>Ride<select class="suite-leg-kind"><option${l.kind==='Drop'?' selected':''}>Drop</option><option${l.kind==='Pickup'?' selected':''}>Pickup</option></select></label><label>Driver<input class="suite-leg-driver" value="${esc(l.driver||'')}" placeholder="Chris, Kira, or another ride"></label><label>Depart<input class="suite-leg-depart" type="time" value="${esc(l.departure24||'')}"></label></div>`).join('')}</div>${!hasRide?'<label><input class="suite-no-ride" type="checkbox"> No ride needed</label>':''}<label>Arrangement notes<input class="suite-ride-notes" maxlength="400" value="${esc(p.notes||'')}" placeholder="e.g. Will rides with Ben"></label></details>`}<div class="suite-actions"><button type="button" data-decision="apply">${c.kind==='canceled'?'Remove event and rides':hasRide&&!p.needsDeparture&&!p.locationChanged?'Apply suggested changes':'Save reviewed changes'}</button>${c.kind!=='canceled'?'<button type="button" data-decision="keep">Keep my arrangement</button>':''}</div><p class="suite-decision-status" role="status"></p></article>`}).join(''):'<p class="suite-muted">No calendar decisions waiting.</p>';host.querySelectorAll('[data-decision]').forEach(b=>b.onclick=async()=>{const row=b.closest('[data-change]'),c=changes.find(x=>x.id===row.dataset.change),message=row.querySelector('.suite-decision-status'),decision=b.dataset.decision;const noRide=row.querySelector('.suite-no-ride')?.checked===true,transport=noRide?[]:[...row.querySelectorAll('.suite-ride')].map(r=>({kind:r.querySelector('select').value,driver:r.querySelector('.suite-leg-driver').value.trim(),departure24:r.querySelector('.suite-leg-depart').value}));if(decision==='apply'&&c.kind!=='canceled'&&transport.some(l=>!l.driver||!l.departure24)){row.querySelector('details').open=true;message.textContent='Choose each driver and departure, or select No ride needed.';return}if(decision==='apply'&&c.proposal?.locationChanged&&!row.querySelector('details').open){row.querySelector('details').open=true;message.textContent='Confirm the departure time for the new location, then save.';return}row.querySelectorAll('button').forEach(x=>x.disabled=true);try{await request('/changes/resolve',{method:'POST',body:JSON.stringify({id:c.id,decision,transport,noRide,notes:row.querySelector('.suite-ride-notes')?.value||''})});message.textContent='Saved and published.';await onResolved();const fresh=await request('/changes');renderChanges(host,fresh.changes||[],request,onResolved)}catch(e){message.textContent=e.message;row.querySelectorAll('button').forEach(x=>x.disabled=false)}})}
+async function refreshChanges(){if(changesBusy)return;const host=document.getElementById('suiteChangeList');if(!host)return;changesBusy=true;try{const b=await background('/changes');renderChanges(host,b.changes||[]);const count=document.getElementById('suiteChangeCount');if(count)count.textContent=b.changes?.length?`${b.changes.length} to review`:''}catch(e){host.textContent=e.message}finally{changesBusy=false}}
+root.SuiteConnect={mount,api,background,read,claim,check,savePreferences,renderChanges,refreshChanges,esc,getStatus:()=>status};
+})(globalThis);
+</script>
+<script id="suitePhone">
+(()=>{'use strict';const $=id=>document.getElementById(id),esc=SuiteConnect.esc;let cached=null;try{cached=JSON.parse(localStorage.getItem('nonzero.autopilot.agenda.v325')||'null')}catch{}
+function prefs(){return state.suitePreferences||{}}function agenda(){return state.autopilotAgenda||cached}
+function family(){let modal=$('suiteFamilyModal');if(!modal){modal=document.createElement('div');modal.id='suiteFamilyModal';modal.className='suite-modal';modal.hidden=true;modal.innerHTML='<section class="suite-modal-panel" role="dialog" aria-modal="true" aria-labelledby="suiteFamilyTitle"><div class="suite-heading"><h2 id="suiteFamilyTitle">Family plan</h2><button type="button" id="suiteFamilyClose">Close</button></div><div id="suiteFamilyDays"></div></section>';document.body.append(modal);$('suiteFamilyClose').onclick=()=>{modal.hidden=true;$('suiteViewFamily').focus()};modal.onclick=e=>{if(e.target===modal)$('suiteFamilyClose').click()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)$('suiteFamilyClose').click()})}const root=agenda();$('suiteFamilyDays').innerHTML=(root?.days||[]).filter(d=>d.date>=NonZeroSuite.dateKey()).map(d=>`<section><h3>${esc(fmtDate(d.date))}</h3>${(d.items||[]).map(i=>`<div class="suite-event"><strong>${esc(i.time)} · ${esc(i.title)}</strong><p>${esc(i.meta||i.location||'')}${i.showOnWall===false?' · Hidden on wall':''}</p></div>`).join('')||'<p>No commitments.</p>'}${d.dinner?`<div class="suite-event suite-dinner"><strong>Dinner · ${esc(d.dinner.name)}</strong><p>${esc(d.dinner.prep||'')} · ${esc(d.dinner.minutes)} min</p></div>`:''}</section>`).join('')||'<p>No approved plan available. Open AutoPilot and finalize a plan.</p>';const url=prefs().plannerURL;if(url)$('suiteFamilyDays').insertAdjacentHTML('beforeend',`<p><a href="${esc(url)}">Open AutoPilot to edit the plan</a></p>`);modal.hidden=false;$('suiteFamilyClose').focus()}
+async function start(short){const a=state.activeWorkout;if(a?.date===localDateStr()&&['active','paused'].includes(a.status)){document.getElementById('sessionName').scrollIntoView({behavior:'smooth'});return}const button=document.querySelector('[data-mode="'+(short?'minimum':'full')+'"]');button?.click();await startTimer();}
+function ensure(){if($('nz325Command'))return;const h=document.createElement('section');h.id='nz325Command';h.innerHTML='<div class="nz325-head"><b>TODAY</b><span class="nz325-phase" id="nz325Phase"></span></div><div class="nz325-grid"><div class="nz325-cell"><small>NOW</small><strong id="nz325Now"></strong><span id="nz325NowSub"></span></div><div class="nz325-cell"><small>NEXT</small><strong id="nz325Next"></strong><span id="nz325NextSub"></span></div><div class="nz325-cell"><small>LATER</small><strong id="nz325Later"></strong><span id="nz325LaterSub"></span></div></div><div class="suite-today-detail"><strong id="suiteWorkoutWindow"></strong><span id="suiteWorkoutSuggestion"></span><div class="suite-actions"><button id="suiteLogWalk" type="button">Log a walk</button><button id="suiteStartWorkout" type="button">Start workout</button><button id="suiteViewFamily" type="button">Family plan</button></div></div><div class="suite-today-detail suite-dinner"><strong id="suiteDinnerName"></strong><span id="suiteDinnerPrep"></span></div><div class="nz325-sync"><span id="nz325Sync" class="suite-save"></span><button type="button" id="nz325Refresh">Refresh</button></div>'; $('tabToday').prepend(h);$('suiteLogWalk').onclick=openManualActivity;$('suiteViewFamily').onclick=family;$('suiteStartWorkout').onclick=()=>start(NonZeroSuite.opportunity(agenda()).mode==='minimum');$('nz325Refresh').onclick=async()=>{await pullCloudState();render();await SuiteConnect.refreshChanges()};const changes=document.createElement('section');changes.id='suiteChanges';changes.className='suite-card';changes.innerHTML='<div class="suite-heading"><h2>Calendar decisions</h2><span id="suiteChangeCount"></span></div><div id="suiteChangeList"><p class="suite-muted">Connect background updates to review changes here.</p></div>';$('tabToday').append(changes)}
+function render(){ensure();const root=agenda();if(root){cached=root;localStorage.setItem('nonzero.autopilot.agenda.v325',JSON.stringify(root))}const t=NonZeroSuite.timeline(root),w=NonZeroSuite.opportunity(root),d=t.day?.dinner,m=NonZeroSuite.metrics(state.sessions);$('nz325Phase').textContent=m.weekCount+'/7 activity days · '+Math.round(m.weekMinutes)+' min';$('nz325Now').textContent=NonZeroSuite.eventLabel(t.current,'Nothing active right now');$('nz325Next').textContent=NonZeroSuite.eventLabel(t.next,t.day?'No upcoming commitment':'No plan for today');$('nz325Later').textContent=NonZeroSuite.eventLabel(t.later,'No later commitment');for(const [id,x] of [['nz325NowSub',t.current],['nz325NextSub',t.next],['nz325LaterSub',t.later]])$(id).textContent=x?.meta||x?.location||'';$('suiteWorkoutWindow').textContent=w.label;$('suiteWorkoutSuggestion').textContent=w.suggestion||todayProgram().name;$('suiteStartWorkout').textContent=state.activeWorkout?.timer?.running?'Resume workout':w.mode==='minimum'?'Start minimum session':'Start workout';$('suiteDinnerName').textContent=d?'Dinner · '+d.name:'Dinner not selected';$('suiteDinnerPrep').textContent=d?[d.prep,d.minutes+' min'].filter(Boolean).join(' · '):'Choose dinner in AutoPilot when you plan the week.';const st=SuiteConnect.getStatus(),wall=st?.wall,stamp=Number(wall?.lastStateAt||0),onWall=wall&&Date.now()-stamp<35*60000&&Number(wall.revision)>=Number(state._meta?.updatedAt||0);$('nz325Sync').textContent=localDirty?'Saved on phone · sync pending':!cloudReady()?'Saved on phone':onWall?'Synced · wall confirmed '+new Date(stamp).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Synced'+(wall?' · wall last reported '+new Date(Number(wall.ts||stamp)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):' · awaiting wall report')}
+function init(){ensure();SuiteConnect.mount($('tabSettings'),{getConnection:()=>cloudConfig,getPreferences:prefs,applyConnection:c=>{cloudConfig={endpoint:c.endpoint,syncKey:c.syncKey};localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cloudConfig));$('cloudEndpoint').value=c.endpoint;$('syncKey').value=c.syncKey},connected:async()=>{await resumeCloudSync();await pullCloudState();render()},preferencesChanged:value=>{state.suitePreferences=value;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));for(const [id,k] of [['suitePhoneURL','phoneURL'],['suitePlannerURL','plannerURL']])if($(id)&&document.activeElement!==$(id))$(id).value=value[k]||'';render()},statusChanged:render});render();setInterval(render,30000);window.addEventListener('suite-state-changed',render);window.addEventListener('storage',render);document.addEventListener('click',()=>setTimeout(render,50));document.addEventListener('change',()=>setTimeout(render,50));if(localDirty)queueCloudPush()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();if(location.hash==='#suite-action=walk'){history.replaceState(null,'',location.pathname+location.search);openManualActivity()}else if(location.hash==='#suite-action=workout'){history.replaceState(null,'',location.pathname+location.search);$('sessionName').scrollIntoView({behavior:'smooth'})}window.__suitePhone={render,family,start};})();
 </script>
 
 </body>
