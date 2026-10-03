@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.34 · Intelligent Training</title>
+<title>NONZERO v3.35 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -104,7 +104,7 @@ input[type=text],input[type=password],input[type=url]{width:100%;background:var(
 }
 
 
-/* v3.25 anchor-built strength workouts + Pittsburgh HD theme selector + contextual cockpit + bike-friendly workout controls */
+/* v3.25 anchor-built strength workouts + contextual cockpit + bike-friendly workout controls */
 .cockpitNow{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin:8px 0 10px}
 .nowCard,.nextCard,.restCard,.reportCard,.wallHealthCard{border:1px solid #263344;background:#0a1119;border-radius:15px;padding:11px}
 .nowCard b,.nextCard b{display:block;font-size:17px;line-height:1.2;margin-top:4px}
@@ -269,7 +269,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 <body>
 <div class="wrap">
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.34</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.35</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -475,15 +475,6 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
       <div class="wallHealthCard">
         <h3 id="wallHealthStatus">Checking Wall…</h3>
         <div id="wallHealthDetail" class="small">Controls stay tucked away unless you need to intervene.</div>
-      </div>
-      <div class="settingblock" style="margin-top:14px">
-        <label class="small">Wall visual theme</label>
-        <div class="themeSelector" id="wallThemeSelector" role="group" aria-label="Wall visual theme">
-          <button type="button" data-wall-theme="basic">BASIC</button>
-          <button type="button" data-wall-theme="pittsburgh">PITTSBURGH HD</button>
-          <button type="button" data-wall-theme="auto">AUTO</button>
-        </div>
-        <p class="small" id="wallThemeHelp" style="margin:9px 2px 0">Basic preserves the current interface. Pittsburgh HD uses the verified Mount Washington panorama. Auto uses Pittsburgh HD in Ambient and Basic during Performance, Night, and Deep Hibernate.</p>
       </div>
       <details class="settingsDisclosure" id="manualWallDetails">
         <summary>Manual Wall controls</summary>
@@ -830,7 +821,6 @@ function applyCanonicalState(payload,{render=true}={}){
    if(document.getElementById('startDate'))document.getElementById('startDate').value=state.startDate;
    if(document.getElementById('reminderTime'))document.getElementById('reminderTime').value=state.reminderTime||'06:00';
    if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();
-   if(document.getElementById('wallThemeSelector'))renderWallThemeSettings();
    renderPreop();renderHealthReview();
  }
  return true;
@@ -1861,18 +1851,8 @@ function renderWallScheduleSettings(){
  const s=state.wallSchedule||{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
  document.getElementById('wallAmbientTime').value=s.ambient||'06:00';document.getElementById('wallNightTime').value=s.night||'20:30';document.getElementById('wallDeepTime').value=s.deep||'01:00';document.getElementById('wallScheduleEnabled').checked=s.enabled!==false;
 }
-function renderWallThemeSettings(){
- const mode=['basic','pittsburgh','auto'].includes(state.wallTheme?.mode)?state.wallTheme.mode:'basic';
- document.querySelectorAll('[data-wall-theme]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wallTheme===mode));
-}
-function saveWallTheme(mode){
- if(!['basic','pittsburgh','auto'].includes(mode))return;
- state.wallTheme={mode,updatedAt:Date.now()};
- renderWallThemeSettings();save();
-}
 function saveWallSchedule(){state.wallSchedule={enabled:document.getElementById('wallScheduleEnabled').checked,ambient:document.getElementById('wallAmbientTime').value||'06:00',night:document.getElementById('wallNightTime').value||'20:30',deep:document.getElementById('wallDeepTime').value||'01:00'};save();}
 renderWallScheduleSettings();['wallAmbientTime','wallNightTime','wallDeepTime','wallScheduleEnabled'].forEach(id=>document.getElementById(id).addEventListener('change',saveWallSchedule));
-renderWallThemeSettings();document.querySelectorAll('[data-wall-theme]').forEach(btn=>btn.addEventListener('click',()=>saveWallTheme(btn.dataset.wallTheme)));
 function saveSurgeryPlan(value){
  const date=value!==undefined?value:(document.getElementById('todaySurgeryDate')?.value||document.getElementById('surgeryDate')?.value||'');
  state.surgeryPlan={...(state.surgeryPlan||{}),date,label:'RIGHT HIP'};
