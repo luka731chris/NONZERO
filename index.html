@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.35 · Intelligent Training</title>
+<title>NONZERO v3.37 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -268,8 +268,9 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 </style></head>
 <body>
 <div class="wrap">
+  <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.35</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.37</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -290,8 +291,9 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 
   <main id="tabToday">
     <section class="todayCockpit">
+      <div id="focusToolbar" class="focusToolbar" hidden><span>NONZERO</span><button id="focusRestBtn" type="button" hidden>Rest 90s</button><button id="focusViewBtn" type="button">Back to app</button></div>
       <div class="timerpanel cockpitTimer">
-        <div class="timerCaption">MASTER WORKOUT · ELAPSED</div>
+        <div class="timerCaption">WORKOUT · ELAPSED</div>
         <div id="timerReadout" class="timerreadout">00:00</div>
         <div id="sessionState" class="sessionstate cockpitState">READY</div>
       </div>
@@ -301,7 +303,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
         <button id="timerPauseBtn">Ⅱ PAUSE</button>
         <button id="lapBtn" class="primary">＋ LAP</button>
         <button id="restartWorkoutBtn" class="danger">↻ RESET</button>
-        <button id="completeBtn" class="finishControl">✓ FINISH & SAVE</button>
+        <button id="completeBtn" class="finishControl">✓ FINISH · REVIEW</button>
       </div>
       <div class="secondaryControls" id="workoutSecondaryControls">
         <button id="prevMoveBtn">← PREV</button>
@@ -682,7 +684,7 @@ const FLARE = [
 /* Shared by the browser and the native JavaScriptCore importer. No network or DOM dependencies. */
 (function(root){
 'use strict';
-function key(row){return row.id||row.date;}
+function key(row){return row.id||row.sessionId||row.date;}
 function matches(row,workout){
  if(!row.completed||row.healthKit||row.date!==workout.date)return false;
  const a=row.type,b=workout.type;
@@ -735,9 +737,15 @@ if(typeof module!=='undefined')module.exports=root.NonZeroHealthImport;
 
 const STORAGE_KEY='hipPrehabV2';
 const CLOUD_CONFIG_KEY='nonzeroCloudV1';
-let state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||{
-  startDate:new Date().toISOString().slice(0,10), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, wallTheme:{mode:'basic',updatedAt:0}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
-};
+let stateStorageRecovered=localStorage.getItem('nonzero.suite.recoveryPending')==='1';
+function markStateRecovery(){stateStorageRecovered=true;localStorage.setItem('nonzero.suite.recoveryPending','1')}
+// Preserve malformed storage for recovery instead of preventing the entire app from opening.
+function readStoredObject(key){const raw=localStorage.getItem(key);if(!raw)return null;try{const value=JSON.parse(raw);if(value&&typeof value==='object'&&!Array.isArray(value))return value;throw new Error('Invalid saved object')}catch{localStorage.setItem(key+'.recovery',raw);if(key===STORAGE_KEY)markStateRecovery();return null}}
+function normalizeSavedSessions(value){if(!Array.isArray(value.sessions)){if(value.sessions!=null)localStorage.setItem(STORAGE_KEY+'.sessions.recovery',JSON.stringify(value.sessions));markStateRecovery();value.sessions=[]}else{const valid=value.sessions.filter(s=>s&&typeof s==='object'&&/^\d{4}-\d{2}-\d{2}$/.test(s.date));if(valid.length!==value.sessions.length){localStorage.setItem(STORAGE_KEY+'.sessions.recovery',JSON.stringify(value.sessions));markStateRecovery();}value.sessions=valid}return value}
+let state=normalizeSavedSessions(readStoredObject(STORAGE_KEY)||{
+  startDate:localDateStr(), sessions:[], reminderTime:'06:00', wallSchedule:{enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'}, wallTheme:{mode:'basic',updatedAt:0}, ergDataFirst:{enabled:true}, surgeryPlan:{date:'',label:'RIGHT HIP'}
+});
+if(!/^\d{4}-\d{2}-\d{2}$/.test(state.startDate||''))state.startDate=localDateStr();
 if(!state._meta) state._meta={updatedAt:Date.now(),schema:12,revision:0};
 if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
 if(!state.wallTheme) state.wallTheme={mode:'basic',updatedAt:0};
@@ -749,8 +757,9 @@ if(!state.wallPresence) state.wallPresence={};
 if(!state.prs) state.prs={};
 if(!state.jointToday||state.jointToday.date!==localDateStr())state.jointToday={date:localDateStr(),enabled:false};
 
-let cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'null')||{endpoint:'',syncKey:''};
+let cloudConfig=readStoredObject(CLOUD_CONFIG_KEY)||{endpoint:'',syncKey:''};
 let mode='full';
+let focusDismissed=false;
 let deferredPrompt=null;
 let syncTimer=null;
 let workoutTimerInterval=null;
@@ -759,7 +768,9 @@ let canonicalSyncInterval=null;
 let cloudPushInFlight=false;
 let cloudPushPending=false;
 let cloudPullInFlight=false;
-let cloudBaseState=JSON.parse(localStorage.getItem('nonzero.suite.base')||'null')||JSON.parse(JSON.stringify(state));
+let cloudBaseState=readStoredObject('nonzero.suite.base')||JSON.parse(JSON.stringify(state));
+let recoveryBase=stateStorageRecovered?(readStoredObject('nonzero.suite.recoveryBase')||JSON.parse(JSON.stringify(state))):null;
+if(stateStorageRecovered)localStorage.setItem('nonzero.suite.recoveryBase',JSON.stringify(recoveryBase));
 let localDirty=localStorage.getItem('nonzero.suite.pending')==='1';
 let cloudRetryDelay=1000;
 let cloudMutationSeq=0;
@@ -780,30 +791,33 @@ function setSyncStatus(text,kind=''){
  if(dot) dot.className='syncdot '+kind;
 }
 function saveCloudConfig(){
- cloudConfig.endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint);
- cloudConfig.syncKey=(document.getElementById('syncKey')?.value||cloudConfig.syncKey).trim();
+ cloudConfig.endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value??cloudConfig.endpoint);
+ cloudConfig.syncKey=(document.getElementById('syncKey')?.value??cloudConfig.syncKey).trim();
  localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cloudConfig));
  setSyncStatus(cloudReady()?'Cloud configured':'Local only',cloudReady()?'ok':'');
 }
 async function cloudRequest(method,body){
  if(!cloudReady()) return null;
- const res=await fetch(cloudConfig.endpoint+'/state',{
+ const controller=new AbortController(),deadline=setTimeout(()=>controller.abort(),12000);
+ try{const res=await fetch(cloudConfig.endpoint+'/state',{
    method,headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},
-   body:body?JSON.stringify(body):undefined,cache:'no-store'
+   body:body?JSON.stringify(body):undefined,cache:'no-store',signal:controller.signal
  });
  let data=null;try{data=await res.json()}catch{}
  if(!res.ok){
    const err=new Error(data?.error||('Sync '+res.status));err.status=res.status;err.data=data;throw err;
  }
  return data;
+ }catch(err){if(err.name==='AbortError')throw new Error('Sync timed out; changes remain saved on phone');throw err}finally{clearTimeout(deadline)}
 }
 function applyCanonicalState(payload,{render=true}={}){
  const remoteState=payload?.state;
- if(!remoteState)return false;
+ if(!remoteState||typeof remoteState!=='object'||Array.isArray(remoteState)||(!Array.isArray(remoteState.sessions)||remoteState.sessions.some(s=>!s||typeof s!=='object'||!/^\d{4}-\d{2}-\d{2}$/.test(s.date))))throw new Error('Cloud returned invalid workout data; local data retained');
  state=remoteState;
  cloudBaseState=JSON.parse(JSON.stringify(remoteState));
  localStorage.setItem('nonzero.suite.base',JSON.stringify(cloudBaseState));
  cloudRevision=Number(payload?.revision??state?._meta?.revision??cloudRevision??0);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(state.startDate||''))state.startDate=localDateStr();
  state._meta={...(state._meta||{}),schema:12,revision:cloudRevision,updatedAt:Number(payload?.updatedAt||state?._meta?.updatedAt||Date.now())};
  if(!state.wallSchedule)state.wallSchedule={enabled:true,ambient:'06:00',night:'20:30',deep:'01:00'};
  if(!state.wallTheme)state.wallTheme={mode:'basic',updatedAt:0};
@@ -840,6 +854,7 @@ async function drainCloudPush(){
 }
 async function pushCloudState({retry=true}={}){
  if(!cloudReady())return false;
+ if(stateStorageRecovered){setSyncStatus('Local data recovered · checking cloud before upload','busy');return false;}
  if(cloudPushInFlight){cloudPushPending=true;return false}
  cloudPushInFlight=true;
  const snapshot=JSON.parse(JSON.stringify(state));
@@ -875,7 +890,7 @@ async function pushCloudState({retry=true}={}){
 async function pullCloudState({force=false}={}){
  if(!cloudReady())return false;
  if(cloudPullInFlight)return false;
- if(localDirty || cloudPushInFlight || cloudPushPending){
+ if(!stateStorageRecovered&&(localDirty || cloudPushInFlight || cloudPushPending)){
    await drainCloudPush();
    if(localDirty || cloudPushInFlight || cloudPushPending)return false;
  }
@@ -888,7 +903,8 @@ async function pullCloudState({force=false}={}){
    const remoteRev=Number(remote?.revision??remote.state?._meta?.revision??0);
    const remoteTime=Number(remote?.updatedAt||remote.state?._meta?.updatedAt||0);
    const localTime=Number(state?._meta?.updatedAt||0);
-   if(force || remoteRev>cloudRevision || remoteTime>localTime){const latest=JSON.parse(JSON.stringify(state));applyCanonicalState(remote,{render:true});if(cloudMutationSeq!==pullSeq){state=NonZeroSuite.rebase(pullBase,latest,state);localDirty=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));queueCloudPush();renderToday();renderWeek();renderProgress();}}
+   if(stateStorageRecovered){const latest=JSON.parse(JSON.stringify(state));applyCanonicalState(remote,{render:false});state=NonZeroSuite.rebase(recoveryBase,latest,state);stateStorageRecovered=false;localStorage.removeItem('nonzero.suite.recoveryPending');localStorage.removeItem('nonzero.suite.recoveryBase');localDirty=true;cloudPushPending=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));document.getElementById('storageRecoveryNotice')?.remove();renderAfterSessionChange();queueCloudPush();}
+   else if(force || remoteRev>cloudRevision || remoteTime>localTime){const latest=JSON.parse(JSON.stringify(state));applyCanonicalState(remote,{render:true});if(cloudMutationSeq!==pullSeq){state=NonZeroSuite.rebase(pullBase,latest,state);localDirty=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));queueCloudPush();renderToday();renderWeek();renderProgress();}}
    cloudRevision=Math.max(cloudRevision,remoteRev);
    setSyncStatus('Synced','ok');
    return true;
@@ -902,6 +918,7 @@ async function pullCloudState({force=false}={}){
 }
 async function resumeCloudSync(){
  if(!cloudReady())return;
+ if(stateStorageRecovered)return pullCloudState({force:true});
  if(localDirty || cloudPushPending)await drainCloudPush();
  if(!localDirty)await pullCloudState();
 }
@@ -950,7 +967,7 @@ function renderPreop(){
 }
 
 function fmtDate(s){return new Date(s+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
-function sessionKey(s){return s.id||s.date}
+function sessionKey(s){return s.id||s.sessionId||s.date}
 function escapeActivity(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function openManualActivity(){document.getElementById('manualDate').value=localDateStr();document.getElementById('manualDate').max=localDateStr();document.getElementById('manualType').value='walk';for(const id of ['manualMinutes','manualName','manualNotes'])document.getElementById(id).value='';const last=[...state.sessions].reverse().find(x=>x.completionSource==='manual'&&x.type==='walk');if(last)document.getElementById('manualMinutes').value=last.duration;document.getElementById('manualError').classList.add('hidden');document.getElementById('manualActivity').classList.remove('hidden')}
 function closeManualActivity(){document.getElementById('manualActivity').classList.add('hidden')}
@@ -990,16 +1007,16 @@ function saveSessionTimeCorrection(){
  const total=hours*60+minutes,err=document.getElementById('sessionTimeEditorError');
  if(total<1||minutes>59){err.textContent=minutes>59?'Minutes must be between 0 and 59.':'Enter at least one minute.';err.classList.remove('hidden');return}
  const index=state.sessions.findIndex(x=>sessionKey(x)===editingSessionDate);if(index<0)return closeSessionTimeEditor();
- const rec=state.sessions[index],before=JSON.parse(JSON.stringify(rec)),beforeActive=!['manual','apple-health'].includes(rec.completionSource)&&state.activeWorkout?.date===rec.date?JSON.parse(JSON.stringify(state.activeWorkout)):null,now=Date.now();
+ const rec=state.sessions[index],before=JSON.parse(JSON.stringify(rec)),beforeActive=!['manual','apple-health'].includes(rec.completionSource)&&state.activeWorkout&&sessionKey(state.activeWorkout)===sessionKey(rec)?JSON.parse(JSON.stringify(state.activeWorkout)):null,now=Date.now();
  rec.duration=total;rec.timerMs=total*60000;rec.type=document.getElementById('editSessionType').value;rec.pain=numericField('editSessionPain');rec.postMetrics={...(rec.postMetrics||{}),duration:total,distance:numericField('editSessionDistance'),calories:numericField('editSessionCalories'),rpe:numericField('editSessionRpe'),painAfter:numericField('editSessionPainAfter'),notes:document.getElementById('editSessionNotes').value.trim()||null};rec.durationCorrectedAt=now;rec.sessionEditedAt=now;rec.updatedAt=now;
- if(!['manual','apple-health'].includes(rec.completionSource)&&state.activeWorkout?.date===rec.date){
+ if(!['manual','apple-health'].includes(rec.completionSource)&&state.activeWorkout&&sessionKey(state.activeWorkout)===sessionKey(rec)){
    state.activeWorkout={...state.activeWorkout,...rec,timer:{elapsedMs:total*60000,running:false,startedAt:null},updatedAt:now};
    if(state.activeWorkout.status==='complete')state.activeWorkout.timer={elapsedMs:total*60000,running:false,startedAt:null};
  }
  recordEvent('session_edited',{date:editingSessionDate,fromMinutes:before.duration,toMinutes:total,type:rec.type});
  const date=editingSessionDate;save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session updated.',{kind:'edit',date,before,beforeActive});
 }
-function deleteEditedSession(){const index=state.sessions.findIndex(x=>sessionKey(x)===editingSessionDate);if(index<0)return;if(!confirm('Delete this saved session? You will have 10 seconds to undo.'))return;const before=JSON.parse(JSON.stringify(state.sessions[index])),beforeActive=!['manual','apple-health'].includes(state.sessions[index].completionSource)&&state.activeWorkout?.date===state.sessions[index].date?JSON.parse(JSON.stringify(state.activeWorkout)):null,date=editingSessionDate;state.sessions.splice(index,1);if(beforeActive?.status==='complete')state.activeWorkout=null;NonZeroHealthImport.suppress(state,before);recordEvent('session_deleted',{date});save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session deleted.',{kind:'delete',date,before,beforeActive})}
+function deleteEditedSession(){const index=state.sessions.findIndex(x=>sessionKey(x)===editingSessionDate);if(index<0)return;if(!confirm('Delete this saved session? You will have 10 seconds to undo.'))return;const before=JSON.parse(JSON.stringify(state.sessions[index])),beforeActive=!['manual','apple-health'].includes(state.sessions[index].completionSource)&&state.activeWorkout&&sessionKey(state.activeWorkout)===sessionKey(state.sessions[index])?JSON.parse(JSON.stringify(state.activeWorkout)):null,date=editingSessionDate;state.sessions.splice(index,1);if(beforeActive?.status==='complete')state.activeWorkout=null;NonZeroHealthImport.suppress(state,before);recordEvent('session_deleted',{date});save();closeSessionTimeEditor();renderAfterSessionChange();showUndo('Session deleted.',{kind:'delete',date,before,beforeActive})}
 function undoSessionMutation(){const mutation=lastSessionMutation;if(!mutation)return;const index=state.sessions.findIndex(x=>sessionKey(x)===mutation.date);if(index>=0)state.sessions[index]=mutation.before;else state.sessions.push(mutation.before);if(mutation.before.healthKit?.uuid)delete state.healthImport?.decisions?.[mutation.before.healthKit.uuid];if(mutation.beforeActive)state.activeWorkout=mutation.beforeActive;recordEvent('session_change_undone',{date:mutation.date,kind:mutation.kind});lastSessionMutation=null;clearTimeout(undoTimer);document.getElementById('undoToast').classList.add('hidden');save();renderAfterSessionChange()}
 
 
@@ -1073,8 +1090,8 @@ function renderRestFace(){
  const card=document.getElementById('restCard'),clock=document.getElementById('restClock'),next=document.getElementById('restNext'),a=state.activeWorkout;
  if(!card||!clock)return;
  const rem=restRemainingMs(a);
- if(rem<=0){card.classList.remove('live');if(a?.restTimer?.running){a.restTimer.running=false;a.restTimer.endsAt=null;a.restUpdatedAt=Date.now();save({sync:false});}return}
- card.classList.add('live');const sec=Math.ceil(rem/1000);clock.textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+ if(rem<=0){const b=document.getElementById('focusRestBtn');if(b)b.textContent=`Rest ${Number(state.trainingPrefs?.restSeconds||90)}s`;card.classList.remove('live');if(a?.restTimer?.running){a.restTimer.running=false;a.restTimer.endsAt=null;a.restUpdatedAt=Date.now();save({sync:false});renderNowNext();}return}
+ card.classList.add('live');const sec=Math.ceil(rem/1000);const b=document.getElementById('focusRestBtn');if(b){b.hidden=false;b.textContent=`Skip rest · ${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`}clock.textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
  const items=currentItems(),idx=firstIncompleteIndex(a,items);next.textContent=idx>=0?`NEXT · ${items[idx][0]}`:'FINISH STRONG';
 }
 async function toggleSet(exIndex,setIndex){
@@ -1423,7 +1440,7 @@ function renderToday(){
  const p=todayProgram(), rec=todaySessionRecord();
  if(state.todayPrescription?.date!==localDateStr()||JSON.stringify(state.todayPrescription?.program)!==JSON.stringify(p)){state.todayPrescription={date:localDateStr(),program:JSON.parse(JSON.stringify(p)),updatedAt:Date.now()};save()}
  document.getElementById('todayHeading').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
- document.getElementById('todaySub').textContent=rec ? `Completed: ${rec.mode.toUpperCase()} · ${fmtDuration(rec.duration)}` : `${p.name}. Your only obligation is to start.`;
+ document.getElementById('todaySub').textContent=rec ? `Completed: ${String(rec.mode||'full').toUpperCase()} · ${fmtDuration(rec.duration)}` : `${p.name}. Your only obligation is to start.`;
  const editToday=document.getElementById('todayEditTimeBtn');if(editToday)editToday.classList.toggle('hidden',!rec);
  document.getElementById('sessionName').textContent=p.name;
  document.getElementById('sessionWhy').textContent=p.why;
@@ -1451,7 +1468,7 @@ function renderWorkout(){
    const sourceSets=partner?active?.partnerSets:active?.sets,sourceChecks=partner?active?.partnerChecks:checks,n=parseSetCount(x[1]),sets=sourceSets?.[i]||Array(n).fill(Boolean(sourceChecks?.[i])),prefix=partner?'partner-':'';
    return `<div class="exerciseV315 ${!partner&&i===focus?'current':''}">
      <label class="exerciseCheckHit" aria-label="Complete ${partner?'Sam ':''}${x[0]}"><input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i]?'checked':''} aria-label="Complete ${partner?'Sam ':''}${x[0]}"></label>
-     <div><b>${x[0]}</b><small>${x[1]}</small>
+     <div><b>${escapeActivity(x[0])}</b><small>${escapeActivity(x[1])}</small>
        <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''}" data-${prefix}set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
      </div></div>`;
@@ -1460,8 +1477,8 @@ function renderWorkout(){
    const n=parseSetCount(x[1]),sets=active?.sets?.[i]||Array(n).fill(Boolean(checks[i]));
    return `<div class="exerciseV315 ${i===focus?'current':''}">
      <label class="exerciseCheckHit" aria-label="Complete ${x[0]}"><input type="checkbox" data-check="${i}" ${checks[i]?'checked':''} aria-label="Complete ${x[0]}"></label>
-     <div><b>${x[0]}</b><small>${x[1]}</small>
-       <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''} ${i===focus&&!done?'current':''}" data-set="${i}:${j}">${done?'✓':j+1}</button>`).join('')}</div>
+     <div><b>${escapeActivity(x[0])}</b><small>${escapeActivity(x[1])}</small>
+       <div class="setRow">${sets.map((done,j)=>`<button class="setBtn ${done?'done':''} ${i===focus&&!done?'current':''}" data-set="${i}:${j}" aria-label="Set ${j+1}, ${escapeActivity(x[0])}" aria-pressed="${done}">${done?'✓':j+1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
      </div></div>`}).join('');
  document.querySelectorAll('[data-check]').forEach(c=>c.addEventListener('change',handleExerciseCheckChange));
@@ -1588,7 +1605,11 @@ function renderErgOrchestration(){
 }
 function renderContextControls(){
  const a=state.activeWorkout?.date===localDateStr()?state.activeWorkout:null,status=String(a?.status||'ready').toLowerCase(),normalized=['active','running'].includes(status)?'active':status==='paused'?'paused':status==='complete'?'complete':'ready',type=String(a?.type||todayProgram().type||''),erg=/bike|erg|row|ski/i.test(type);
- document.body.classList.toggle('trainingFocus',['active','paused'].includes(normalized));
+ const inProgress=['active','paused'].includes(normalized);if(!inProgress)focusDismissed=false;
+ document.body.classList.toggle('trainingFocus',inProgress&&!focusDismissed);
+ document.body.classList.toggle('workoutInProgress',inProgress);document.body.classList.toggle('workoutStrength',type==='strength');
+ const toolbar=document.getElementById('focusToolbar'),viewButton=document.getElementById('focusViewBtn'),restButton=document.getElementById('focusRestBtn');
+ if(toolbar)toolbar.hidden=!inProgress;if(viewButton){viewButton.textContent=focusDismissed?'Workout view':'Back to app';viewButton.setAttribute('aria-pressed',String(!focusDismissed))}if(restButton)restButton.hidden=!inProgress||(erg&&restRemainingMs()<=0);
  const controls=document.querySelector('.cockpitControls'),secondary=document.getElementById('workoutSecondaryControls'),start=document.getElementById('timerStartBtn'),lap=document.getElementById('lapBtn'),reset=document.getElementById('restartWorkoutBtn');
  if(controls){controls.dataset.state=normalized;controls.style.gridTemplateColumns=normalized==='ready'||normalized==='complete'?'1fr':normalized==='paused'?'1fr 1fr 1.25fr':erg?'1fr 1fr 1.25fr':'1fr 1.25fr'}
  if(start)start.textContent=normalized==='paused'?'▶ RESUME':'▶ START';if(lap)lap.classList.toggle('controlHidden',!erg||normalized!=='active');if(reset)reset.classList.toggle('controlHidden',normalized!=='paused');
@@ -1600,7 +1621,7 @@ function renderTimer(){
  renderTimerFace();
  renderLapPanel();
  const st=document.getElementById('sessionState');const status=state.activeWorkout?.date===localDateStr()?(state.activeWorkout.status||'ready'):'ready';
- if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'LIVE · PERFORMANCE MODE':status==='paused'?'PAUSED · PERFORMANCE HELD':status==='complete'?'COMPLETE':'READY';}
+ if(st){st.className='sessionstate '+(status==='active'?'live':status==='paused'?'paused':'');st.textContent=status==='active'?'WORKOUT RUNNING':status==='paused'?'PAUSED · TIMER HELD':status==='complete'?'COMPLETE':'READY';}
  renderContextControls();
 }
 function ensureActiveWorkout(status='ready'){
@@ -1688,7 +1709,7 @@ function updatePainAdvice(){
 }
 
 async function openFinishReview(){
- const a=ensureActiveWorkout(state.activeWorkout?.status||'active');if(a.timer?.running)await pauseTimer();
+ const a=ensureActiveWorkout(state.activeWorkout?.status||'active');if(a.timer?.running)void pauseTimer();
  const items=currentItems();normalizeSetState(a,items);const completed=a.checks.filter(Boolean).length;
  const defaultMinutes=mode==='minimum'||mode==='flare'?10:(todayProgram().type==='bike'?(weekdayIndex()===6?40:30):30);
  const captured=Math.max(1,Math.round(Number(a.ergMetrics?.durationMinutes)||(timerElapsed()/60000)||defaultMinutes));
@@ -1710,9 +1731,9 @@ function completeWorkout(){
  const date=localDateStr(),p=todayProgram(),a=ensureActiveWorkout('active'),items=currentItems();normalizeSetState(a,items);
  const checks=a.checks.slice(),defaultMinutes=mode==='minimum'?10:mode==='flare'?10:(p.type==='bike'?(weekdayIndex()===6?40:30):30);
  const pain=Number(document.getElementById('pain')?.value||a.pain||6),energy=Number(document.getElementById('energy')?.value||a.energy||3);
- const post=collectPostMetrics(),rawTimerMs=timerElapsed(),duration=post.duration??(rawTimerMs?Math.round(rawTimerMs/6000)/10:defaultMinutes),timerMs=post.duration!=null?Number(post.duration)*60000:rawTimerMs,existing=state.sessions.findIndex(x=>x.date===date&&!['manual','apple-health'].includes(x.completionSource)),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0),now=Date.now();
+ const post=collectPostMetrics(),rawTimerMs=timerElapsed(),duration=post.duration??(rawTimerMs?Math.round(rawTimerMs/6000)/10:defaultMinutes),timerMs=post.duration!=null?Number(post.duration)*60000:rawTimerMs,existing=state.sessions.findIndex(x=>x.sessionId===a.sessionId),setCount=a.sets.reduce((n,s)=>n+s.filter(Boolean).length,0),now=Date.now();
  const completionRatio=checks.length?checks.filter(Boolean).length/checks.length:1,painAfter=Number(post?.painAfter??pain),rpe=Number(post?.rpe||0),programCredit=p.source==='anchor-built'?(p.programCreditCandidate===true&&completionRatio>=.67&&(rpe===0||rpe<=8.5)&&painAfter-pain<=1):undefined;
- const rec={date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration,checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',programCredit,jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:now,completionSource:a.concept2?.id?'concept2':/pm5|usb/i.test(String(a.source||''))?'pm5-usb':'app-timer',updatedAt:now};
+ const rec={id:a.sessionId,sessionId:a.sessionId,date,name:p.name,type:p.type,programSnapshot:p,mode,pain,energy,duration,checks,sets:a.sets,exerciseNames:items.map(x=>x[0]),movementIds:Array.isArray(p.movementIds)?p.movementIds:[],progression:p.progression||null,programSource:p.source||'prescribed',programCredit,jointWithSam:a.jointEnabled===true,partnerProgramSnapshot:a.partnerProgramSnapshot||null,partnerChecks:Array.isArray(a.partnerChecks)?a.partnerChecks:[],partnerSets:Array.isArray(a.partnerSets)?a.partnerSets:[],partnerExerciseNames:(a.partnerProgramSnapshot?.[mode]||a.partnerProgramSnapshot?.full||[]).map(x=>x[0]),partnerMovementIds:a.partnerProgramSnapshot?.movementIds||[],partnerProgression:a.partnerProgramSnapshot?.progression||null,completed:true,postMetrics:post,timerMs,laps:Array.isArray(a.laps)?a.laps:[],concept2:a.concept2||null,setCount,victoryStartedAt:now,completionSource:a.concept2?.id?'concept2':/pm5|usb/i.test(String(a.source||''))?'pm5-usb':'app-timer',updatedAt:now};
  if(existing>=0)state.sessions[existing]=rec;else state.sessions.push(rec);
  state.activeWorkout={...rec,timer:{elapsedMs:timerMs,running:false,startedAt:null},restTimer:{running:false,seconds:0,startedAt:null,endsAt:null},status:'complete',statusUpdatedAt:Date.now(),updatedAt:Date.now()};
  recordEvent('workout_complete',{timerMs,setCount,checks:checks.filter(Boolean).length,total:checks.length});save();
@@ -1748,7 +1769,7 @@ function renderWeek(){
  for(let i=0;i<7;i++){
    const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=localDateStr(d); const r=NonZeroSuite.currentRecord(state.sessions,ds),other=state.sessions.filter(x=>x.date===ds&&NonZeroSuite.external(x));
    const program=PROGRAM[i];
-   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r||other.length?'done':''}"></span>${r?program.name:other.length?'Activity logged · '+program.name+' available':program.name}</span><span class="small">${r?r.mode.toUpperCase():other.length?other.map(x=>escapeActivity(x.type==='walk'?'Walk':x.name)).join(' + '):'—'}</span></div>`;
+   html+=`<div class="dayrow"><b>${names[i]}</b><span><span class="statusdot ${r||other.length?'done':''}"></span>${r?program.name:other.length?'Activity logged · '+program.name+' available':program.name}</span><span class="small">${r?String(r.mode||'full').toUpperCase():other.length?other.map(x=>escapeActivity(x.type==='walk'?'Walk':x.name)).join(' + '):'—'}</span></div>`;
  }
  document.getElementById('weekList').innerHTML=html;
  const w=sessionsThisWeek(), starts=new Set(w.map(s=>s.date)).size, mins=w.reduce((a,b)=>a+Number(b.duration||0),0);
@@ -1830,6 +1851,7 @@ document.getElementById('importC2QuickBtn').addEventListener('click',()=>importL
 document.getElementById('completeBtnTop').addEventListener('click',openFinishReview);
 
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
+ document.body.dataset.page=b.dataset.tab;document.getElementById('sectionName').textContent={Plan:'Week',History:'History',Settings:'Settings',Today:''}[b.dataset.tab]||'';
  document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
  ['Today','Plan','History','Settings'].forEach(t=>document.getElementById('tab'+t).classList.toggle('hidden',t!==b.dataset.tab));
  if(b.dataset.tab==='Plan')renderWeek();
@@ -1968,8 +1990,8 @@ async function createSimpleBikeErgLink(){
  const status=document.getElementById('simpleErgStatus');
  const btn=document.getElementById('createSimpleErgLinkBtn');
  saveCloudConfig();
- const endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value||cloudConfig.endpoint);
- const syncKey=(document.getElementById('syncKey')?.value||cloudConfig.syncKey||'').trim();
+ const endpoint=normalizeEndpoint(document.getElementById('cloudEndpoint')?.value??cloudConfig.endpoint);
+ const syncKey=(document.getElementById('syncKey')?.value??cloudConfig.syncKey??'').trim();
 
  if(!/^https:\/\//i.test(endpoint)){
    if(status)status.innerHTML='<b>SETUP BLOCKED:</b> Cloudflare Worker URL is missing.';
@@ -2124,12 +2146,58 @@ root.SuiteConnect={mount,api,background,read,claim,check,savePreferences,renderC
 (()=>{'use strict';const $=id=>document.getElementById(id),esc=SuiteConnect.esc;let cached=null;try{cached=JSON.parse(localStorage.getItem('nonzero.autopilot.agenda.v325')||'null')}catch{}
 function prefs(){return state.suitePreferences||{}}function agenda(){return state.autopilotAgenda||cached}
 function family(){let modal=$('suiteFamilyModal');if(!modal){modal=document.createElement('div');modal.id='suiteFamilyModal';modal.className='suite-modal';modal.hidden=true;modal.innerHTML='<section class="suite-modal-panel" role="dialog" aria-modal="true" aria-labelledby="suiteFamilyTitle"><div class="suite-heading"><h2 id="suiteFamilyTitle">Family plan</h2><button type="button" id="suiteFamilyClose">Close</button></div><div id="suiteFamilyDays"></div></section>';document.body.append(modal);$('suiteFamilyClose').onclick=()=>{modal.hidden=true;$('suiteViewFamily').focus()};modal.onclick=e=>{if(e.target===modal)$('suiteFamilyClose').click()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)$('suiteFamilyClose').click()})}const root=agenda();$('suiteFamilyDays').innerHTML=(root?.days||[]).filter(d=>d.date>=NonZeroSuite.dateKey()).map(d=>`<section><h3>${esc(fmtDate(d.date))}</h3>${(d.items||[]).map(i=>`<div class="suite-event"><strong>${esc(i.time)} · ${esc(i.title)}</strong><p>${esc(i.meta||i.location||'')}${i.showOnWall===false?' · Hidden on wall':''}</p></div>`).join('')||'<p>No commitments.</p>'}${d.dinner?`<div class="suite-event suite-dinner"><strong>Dinner · ${esc(d.dinner.name)}</strong><p>${esc(d.dinner.prep||'')} · ${esc(d.dinner.minutes)} min</p></div>`:''}</section>`).join('')||'<p>No approved plan available. Open AutoPilot and finalize a plan.</p>';const url=prefs().plannerURL;if(url)$('suiteFamilyDays').insertAdjacentHTML('beforeend',`<p><a href="${esc(url)}">Open AutoPilot to edit the plan</a></p>`);modal.hidden=false;$('suiteFamilyClose').focus()}
-async function start(short){const a=state.activeWorkout;if(a?.date===localDateStr()&&['active','paused'].includes(a.status)){document.getElementById('sessionName').scrollIntoView({behavior:'smooth'});return}const button=document.querySelector('[data-mode="'+(short?'minimum':'full')+'"]');button?.click();await startTimer();}
+async function start(short){const a=state.activeWorkout;if(a?.date===localDateStr()&&['active','paused'].includes(a.status)){focusDismissed=false;if(a.status==='paused')await startTimer();else renderTimer();return}const button=document.querySelector('[data-mode="'+(short?'minimum':'full')+'"]');button?.click();await startTimer();}
 function ensure(){if($('nz325Command'))return;const h=document.createElement('section');h.id='nz325Command';h.innerHTML='<div class="nz325-head"><b>TODAY</b><span class="nz325-phase" id="nz325Phase"></span></div><div class="nz325-grid"><div class="nz325-cell"><small>NOW</small><strong id="nz325Now"></strong><span id="nz325NowSub"></span></div><div class="nz325-cell"><small>NEXT</small><strong id="nz325Next"></strong><span id="nz325NextSub"></span></div><div class="nz325-cell"><small>LATER</small><strong id="nz325Later"></strong><span id="nz325LaterSub"></span></div></div><div class="suite-today-detail"><strong id="suiteWorkoutWindow"></strong><span id="suiteWorkoutSuggestion"></span><div class="suite-actions"><button id="suiteLogWalk" type="button">Log a walk</button><button id="suiteStartWorkout" type="button">Start workout</button><button id="suiteViewFamily" type="button">Family plan</button></div></div><div class="suite-today-detail suite-dinner"><strong id="suiteDinnerName"></strong><span id="suiteDinnerPrep"></span></div><div class="nz325-sync"><span id="nz325Sync" class="suite-save"></span><button type="button" id="nz325Refresh">Refresh</button></div>'; $('tabToday').prepend(h);$('suiteLogWalk').onclick=openManualActivity;$('suiteViewFamily').onclick=family;$('suiteStartWorkout').onclick=()=>start(NonZeroSuite.opportunity(agenda()).mode==='minimum');$('nz325Refresh').onclick=async()=>{await pullCloudState();render();await SuiteConnect.refreshChanges()};const changes=document.createElement('section');changes.id='suiteChanges';changes.className='suite-card';changes.innerHTML='<div class="suite-heading"><h2>Calendar decisions</h2><span id="suiteChangeCount"></span></div><div id="suiteChangeList"><p class="suite-muted">Connect background updates to review changes here.</p></div>';$('tabToday').append(changes)}
-function render(){ensure();const root=agenda();if(root){cached=root;localStorage.setItem('nonzero.autopilot.agenda.v325',JSON.stringify(root))}const t=NonZeroSuite.timeline(root),w=NonZeroSuite.opportunity(root),d=t.day?.dinner,m=NonZeroSuite.metrics(state.sessions);$('nz325Phase').textContent=m.weekCount+'/7 activity days · '+Math.round(m.weekMinutes)+' min';$('nz325Now').textContent=NonZeroSuite.eventLabel(t.current,'Nothing active right now');$('nz325Next').textContent=NonZeroSuite.eventLabel(t.next,t.day?'No upcoming commitment':'No plan for today');$('nz325Later').textContent=NonZeroSuite.eventLabel(t.later,'No later commitment');for(const [id,x] of [['nz325NowSub',t.current],['nz325NextSub',t.next],['nz325LaterSub',t.later]])$(id).textContent=x?.meta||x?.location||'';$('suiteWorkoutWindow').textContent=w.label;$('suiteWorkoutSuggestion').textContent=w.suggestion||todayProgram().name;$('suiteStartWorkout').textContent=state.activeWorkout?.timer?.running?'Resume workout':w.mode==='minimum'?'Start minimum session':'Start workout';$('suiteDinnerName').textContent=d?'Dinner · '+d.name:'Dinner not selected';$('suiteDinnerPrep').textContent=d?[d.prep,d.minutes+' min'].filter(Boolean).join(' · '):'Choose dinner in AutoPilot when you plan the week.';const st=SuiteConnect.getStatus(),wall=st?.wall,stamp=Number(wall?.lastStateAt||0),onWall=wall&&Date.now()-stamp<35*60000&&Number(wall.revision)>=Number(state._meta?.updatedAt||0);$('nz325Sync').textContent=localDirty?'Saved on phone · sync pending':!cloudReady()?'Saved on phone':onWall?'Synced · wall confirmed '+new Date(stamp).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Synced'+(wall?' · wall last reported '+new Date(Number(wall.ts||stamp)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):' · awaiting wall report')}
+function render(){ensure();const root=agenda();if(root){cached=root;localStorage.setItem('nonzero.autopilot.agenda.v325',JSON.stringify(root))}const t=NonZeroSuite.timeline(root),w=NonZeroSuite.opportunity(root),d=t.day?.dinner,m=NonZeroSuite.metrics(state.sessions);$('nz325Phase').textContent=m.weekCount+'/7 activity days · '+Math.round(m.weekMinutes)+' min';$('nz325Now').textContent=NonZeroSuite.eventLabel(t.current,'Nothing active right now');$('nz325Next').textContent=NonZeroSuite.eventLabel(t.next,t.day?'No upcoming commitment':'No plan for today');$('nz325Later').textContent=NonZeroSuite.eventLabel(t.later,'No later commitment');for(const [id,x] of [['nz325NowSub',t.current],['nz325NextSub',t.next],['nz325LaterSub',t.later]])$(id).textContent=x?.meta||x?.location||'';$('suiteWorkoutWindow').textContent=w.label;$('suiteWorkoutSuggestion').textContent=w.suggestion||todayProgram().name;$('suiteStartWorkout').textContent=state.activeWorkout?.status==='paused'?'Resume workout':state.activeWorkout?.timer?.running?'Open workout':w.mode==='minimum'?'Start minimum session':'Start workout';$('suiteDinnerName').textContent=d?'Dinner · '+d.name:'Dinner not selected';$('suiteDinnerPrep').textContent=d?[d.prep,d.minutes+' min'].filter(Boolean).join(' · '):'Choose dinner in AutoPilot when you plan the week.';const st=SuiteConnect.getStatus(),wall=st?.wall,stamp=Number(wall?.lastStateAt||0),onWall=wall&&Date.now()-stamp<35*60000&&Number(wall.revision)>=Number(state._meta?.updatedAt||0);$('nz325Sync').textContent=!cloudReady()?'Saved on this phone':localDirty?'Saved on phone · sync pending':onWall?'Synced · wall confirmed '+new Date(stamp).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Synced'+(wall?' · wall last reported '+new Date(Number(wall.ts||stamp)).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):' · awaiting wall report')}
 function init(){ensure();SuiteConnect.mount($('tabSettings'),{getConnection:()=>cloudConfig,getPreferences:prefs,applyConnection:c=>{cloudConfig={endpoint:c.endpoint,syncKey:c.syncKey};localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cloudConfig));$('cloudEndpoint').value=c.endpoint;$('syncKey').value=c.syncKey},connected:async()=>{await resumeCloudSync();await pullCloudState();render()},preferencesChanged:value=>{state.suitePreferences=value;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));for(const [id,k] of [['suitePhoneURL','phoneURL'],['suitePlannerURL','plannerURL']])if($(id)&&document.activeElement!==$(id))$(id).value=value[k]||'';render()},statusChanged:render});render();setInterval(render,30000);window.addEventListener('suite-state-changed',render);window.addEventListener('storage',render);document.addEventListener('click',()=>setTimeout(render,50));document.addEventListener('change',()=>setTimeout(render,50));if(localDirty)queueCloudPush()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();if(location.hash==='#suite-action=walk'){history.replaceState(null,'',location.pathname+location.search);openManualActivity()}else if(location.hash==='#suite-action=workout'){history.replaceState(null,'',location.pathname+location.search);$('sessionName').scrollIntoView({behavior:'smooth'})}window.__suitePhone={render,family,start};})();
 </script>
 
+<script>
+if(stateStorageRecovered){const notice=document.createElement('div');notice.id='storageRecoveryNotice';notice.className='callout';notice.setAttribute('role','status');notice.textContent='Saved data needed recovery. The original is preserved on this device. New activity still saves locally; cloud records will be checked before any upload.';document.getElementById('tabToday').prepend(notice)}
+</script>
+<style id="nz337Usability">
+.sectionBrand{display:none;font-size:12px;letter-spacing:.12em;color:#86efac;font-weight:850;padding:5px 3px}.sectionBrand span{color:#94a3b8;margin-left:8px;font-weight:650;letter-spacing:.04em}
+body[data-page="Plan"] .hero,body[data-page="History"] .hero,body[data-page="Settings"] .hero{display:none}
+body[data-page="Plan"] .sectionBrand,body[data-page="History"] .sectionBrand,body[data-page="Settings"] .sectionBrand{display:block}
+body.trainingFocus .sectionBrand{display:none!important}
+.focusToolbar{display:flex;align-items:center;gap:8px;margin:0 0 6px}.focusToolbar[hidden]{display:none!important}.focusToolbar span{font-size:11px;letter-spacing:.1em;color:#94a3b8;font-weight:850;margin-right:auto}.focusToolbar button{min-height:44px;padding:7px 10px;font-size:12px;white-space:nowrap}.focusToolbar button[hidden]{display:none!important}
+button{min-height:44px}
+.setBtn{min-width:44px;min-height:44px}
+.exerciseCheckHit{min-width:44px;min-height:44px}
+.tabbar button{min-height:44px!important}
+.editSheetPanel{max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain}
+.editSheet{padding-bottom:max(14px,env(safe-area-inset-bottom))}
+:focus-visible{outline:2px solid #7dd3fc;outline-offset:3px}
+body.trainingFocus .exerciseCheckHit{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+body.trainingFocus .exerciseV315{grid-template-columns:44px minmax(0,1fr)!important;min-height:52px}
+body.trainingFocus.workoutStrength .exerciseV315.current .setRow{display:flex!important;flex-wrap:wrap;gap:6px;margin-top:6px}
+body.trainingFocus .setBtn{min-width:44px;min-height:44px;font-size:14px}
+body.trainingFocus .exerciseV315.current small{display:block!important;font-size:12px;line-height:1.3;color:#b9c7d6;margin-top:4px}
+body.trainingFocus .exerciseV315 b,body.trainingFocus #currentExercise,body.trainingFocus #currentExerciseDetail,body.trainingFocus #nextExercise,body.trainingFocus #nextExerciseDetail{overflow-wrap:anywhere}
+body.trainingFocus .todayCockpit{overflow:auto}
+@media(orientation:landscape) and (max-height:650px){
+ body.trainingFocus #tabToday{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)!important}
+ body.trainingFocus .cockpitControls button{min-height:44px!important}
+ body.trainingFocus .todayCockpit,body.trainingFocus .workoutSnapshot{min-width:0}
+ body.trainingFocus .focusToolbar{gap:5px}.trainingFocus .focusToolbar span{display:none}
+ body.trainingFocus .focusToolbar button{flex:1;padding:6px 7px}
+}
+@media(orientation:landscape) and (max-height:375px){
+ body.trainingFocus .todayCockpit{justify-content:flex-start!important;padding:0 3px}
+ body.trainingFocus #sessionState,body.trainingFocus .statePill{display:none!important}
+ body.trainingFocus .timerpanel.cockpitTimer .timerreadout{font-size:52px!important}
+ body.trainingFocus .timerCaption{font-size:9px;margin-bottom:0}
+ body.trainingFocus .cockpitControls{margin-top:2px;gap:5px}
+ body.trainingFocus .cockpitNow{gap:4px;margin-top:4px}
+ body.trainingFocus .nowCard,body.trainingFocus .nextCard{padding:5px 7px}
+ body.trainingFocus .nowCard b,body.trainingFocus .nextCard b{font-size:16px!important;margin-top:0}
+ body.trainingFocus .nowCard small,body.trainingFocus .nextCard small{font-size:12px!important;margin-top:1px}
+}
+</style>
+<script>
+document.getElementById('focusViewBtn').onclick=()=>{focusDismissed=!focusDismissed;renderTimer();if(focusDismissed)document.querySelector('.todayCockpit').scrollIntoView({block:'start'});};
+document.getElementById('focusRestBtn').onclick=()=>{if(restRemainingMs()>0){const a=state.activeWorkout;if(a?.restTimer){a.restTimer={...a.restTimer,running:false,endsAt:null};a.restUpdatedAt=Date.now();save();renderRestFace();renderNowNext();renderTimer();}}else void startRest();};
+</script>
 </body>
 </html>
