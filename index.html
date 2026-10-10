@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.37 · Intelligent Training</title>
+<title>NONZERO v3.38 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -270,7 +270,7 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.37</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.38</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -856,7 +856,7 @@ async function pushCloudState({retry=true}={}){
  if(!cloudReady())return false;
  if(stateStorageRecovered){setSyncStatus('Local data recovered · checking cloud before upload','busy');return false;}
  if(cloudPushInFlight){cloudPushPending=true;return false}
- cloudPushInFlight=true;
+ cloudPushInFlight=true;cloudPushPending=false;
  const snapshot=JSON.parse(JSON.stringify(state));
  const snapshotSeq=cloudMutationSeq;
  try{
@@ -1116,8 +1116,14 @@ async function sendWallCommand(action){
  recordEvent('wall_command',{action,nonce:command.nonce});
  save({sync:false});
  if(!cloudReady()){setSyncStatus('Wall command saved locally · cloud unavailable','err');return false}
+ // A settings command must wait for an existing state upload to finish.
+ // Otherwise two immediate retries both return false before any command upload.
+ const deadline=Date.now()+13000;
+ while(cloudPushInFlight&&Date.now()<deadline)await new Promise(r=>setTimeout(r,100));
+ if(cloudPushInFlight){setSyncStatus('Wall command waiting for cloud sync · retry','err');return false}
+ state.wallCommand=command;save({sync:false});
  const ok=await pushCloudState();
- if(ok){setSyncStatus('Wall command sent','ok');setTimeout(()=>refreshSystemHealth?.(),350);return true}
+ if(ok&&state.wallCommand?.nonce===command.nonce){setSyncStatus('Wall command sent','ok');setTimeout(()=>refreshSystemHealth?.(),350);return true}
  // One explicit retry after canonical reconciliation. Re-assert the command so a 409 can never discard it.
  state.wallCommand=command;save({sync:false});
  const retry=await pushCloudState({retry:false});
@@ -1127,12 +1133,19 @@ async function sendWallCommand(action){
 }
 async function confirmWallCommand(action){
  if(!cloudReady()||action==='quote-next')return action==='quote-next';
- const receipt=document.getElementById('wallCommandReceipt');
- for(let i=0;i<5;i++){
-  await new Promise(r=>setTimeout(r,i?1400:900));
-  try{const res=await fetch(cloudConfig.endpoint+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store'}),x=await res.json();const mode=String(x?.health?.mode||'').toLowerCase();if(res.ok&&mode===action){if(receipt){receipt.textContent=`Wall confirmed · ${action.toUpperCase()}`;receipt.style.color='#86efac'}return true}}catch{}
+ const receipt=document.getElementById('wallCommandReceipt'),command=state.wallCommand;
+ for(let i=0;i<8;i++){
+  await new Promise(r=>setTimeout(r,i?1500:600));
+  if(state.wallCommand?.nonce!==command?.nonce)return false;
+  const controller=new AbortController(),deadline=setTimeout(()=>controller.abort(),3500);
+  try{
+   const res=await fetch(cloudConfig.endpoint+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store',signal:controller.signal}),x=await res.json(),health=x?.health,mode=String(health?.mode||'').toLowerCase();
+   if(res.ok&&mode===action&&Number(health?.at||0)>=Number(command?.at||0)&&Number(health?.lastStateAt||0)>=Number(command?.at||0)){
+    if(receipt){receipt.textContent=`Wall confirmed · ${action.toUpperCase()}`;receipt.style.color='#86efac'}return true;
+   }
+  }catch{}finally{clearTimeout(deadline)}
  }
- if(receipt){receipt.textContent=`Command queued · Wall confirmation pending`;receipt.style.color='#fcd34d'}return false
+ if(receipt){receipt.textContent='Sent to cloud · Wall has not confirmed. Open Wall connection status below.';receipt.style.color='#fcd34d'}return false;
 }
 function makeItNonzero(){
  mode='minimum';recordEvent('make_it_nonzero',{from:state.activeWorkout?.mode||'full'});renderWorkout();saveActiveWorkout();startTimer();
@@ -1424,7 +1437,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.38",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -1831,7 +1844,16 @@ document.getElementById('jointWorkoutBtn')?.addEventListener('click',toggleJoint
 document.getElementById('refreshWallHealthBtn')?.addEventListener('click',fetchWallHealth);
 document.getElementById('copyDiagnosticsBtn')?.addEventListener('click',copyDiagnostics);
 document.getElementById('systemStatusButton')?.addEventListener('click',()=>{document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('setupChecklistDetails')?.setAttribute('open','');setTimeout(()=>document.getElementById('guidedSetupCard')?.scrollIntoView({behavior:'smooth',block:'start'}),50)});
-document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{const original=btn.textContent,action=btn.dataset.wallCommand,receipt=document.getElementById('wallCommandReceipt'),labels={ambient:'Ambient',performance:'Performance',night:'Night',deep:'Deep Hibernate','quote-next':'Next quote'};btn.disabled=true;btn.textContent='SENDING…';if(receipt){receipt.textContent='Sending override to the Wall…';receipt.style.color='#9fb0c2'}const ok=await sendWallCommand(action);if(!ok){btn.textContent='FAILED · RETRY';setTimeout(()=>{btn.textContent=labels[action]||original;btn.disabled=false},1800);return}btn.textContent='QUEUED ✓';setTimeout(()=>{btn.textContent=labels[action]||original;btn.disabled=false},1200);confirmWallCommand(action).catch(()=>{})}));
+document.querySelectorAll('[data-wall-command]').forEach(btn=>btn.addEventListener('click',async()=>{
+ const original=btn.textContent,action=btn.dataset.wallCommand,receipt=document.getElementById('wallCommandReceipt');
+ btn.disabled=true;btn.textContent='SENDING…';if(receipt){receipt.textContent='Sending command to the Wall…';receipt.style.color='#9fb0c2'}
+ try{
+  const ok=await sendWallCommand(action);
+  if(!ok){if(receipt){receipt.textContent='Command upload failed · check Cloud connection and retry';receipt.style.color='#fcd34d'}return}
+  btn.textContent='SENT · CHECKING…';await confirmWallCommand(action);
+ }catch(e){if(receipt){receipt.textContent='Command failed · '+String(e.message||e);receipt.style.color='#fcd34d'}}
+ finally{btn.textContent=original;btn.disabled=false}
+}));
 document.getElementById('todayEditTimeBtn')?.addEventListener('click',()=>openSessionTimeEditor(localDateStr()));
 document.getElementById('recentSessions')?.addEventListener('click',e=>{const btn=e.target.closest('[data-edit-session-time]');if(btn)openSessionTimeEditor(btn.dataset.editSessionTime)});
 document.getElementById('cancelSessionTimeBtn')?.addEventListener('click',closeSessionTimeEditor);
