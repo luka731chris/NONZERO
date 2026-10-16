@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.42 · Intelligent Training</title>
+<title>NONZERO v3.43 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -279,7 +279,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.42</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.43</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -1488,7 +1488,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.42",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.43",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -2382,6 +2382,167 @@ body.trainingFocus .focusToolbar button{min-height:36px}
 const btn=document.createElement('button');btn.id='workoutFullscreenBtn';btn.type='button';btn.textContent='Full screen';
 btn.onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else alert('For a clean view without browser tabs, open NONZERO from your Home Screen. In Safari, use Share → Add to Home Screen.');}catch{alert('Open NONZERO from your Home Screen for a view without browser tabs.');}};
 bar.append(btn);document.addEventListener('fullscreenchange',()=>btn.textContent=document.fullscreenElement?'Exit full screen':'Full screen');})();
+</script>
+<script>/* NONZERO Ride · original procedural scenery and cadence-responsive score. */
+(function(root){'use strict';
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),finite=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+const LEGACY_THEMES=[{name:'PACIFIC COAST',sky:['#071f3d','#296785','#f4b78f'],sea:'#347e96',land:'#183c39',road:'#283c47',accent:'#8ef0e7',landmarks:['LIGHTHOUSE POINT','THE COASTAL BRIDGE','SUNSET OVERLOOK','HARBOR LIGHTS']},{name:'ALPINE PASS',sky:['#102b52','#487c9a','#d4e6df'],sea:'#427b82',land:'#244242',road:'#303f48',accent:'#dbefd5',landmarks:['GLACIER LAKE','PINE RIDGE','THE HIGH PASS','SUMMIT VISTA']},{name:'MIDNIGHT CITY',sky:['#090b25','#231c4b','#654a68'],sea:'#1b2850',land:'#1b1d3a',road:'#1a2436',accent:'#6ee9ff',landmarks:['RIVER WALK','THE SKYLINE','NEON DISTRICT','NORTH BRIDGE']}];
+const THEMES=root.NonZeroScenery?.THEMES||LEGACY_THEMES;
+function musicTarget(rpm){const r=clamp(finite(rpm),0,180);return {bpm:clamp(r*1.55,84,156),energy:clamp((r-40)/65,0,1)}}
+function fresh(t,now=Date.now()){const at=finite(t?.updatedAt);return !!(t?.connected===true&&t?.fresh!==false&&!t?.recovering&&at>0&&now-at>=-1000&&now-at<2500)}
+function resolution(w,h,dpr=1,scale=1){const ratio=Math.min(2,finite(dpr,1)),cap=Math.min(1,Math.sqrt(8294400/Math.max(1,w*h*ratio*ratio)));return {width:Math.max(1,Math.round(w*ratio*cap*scale)),height:Math.max(1,Math.round(h*ratio*cap*scale))}}
+class RideState{
+ constructor(){this.bpm=100;this.energy=0;this.speed=0;this.distance=0;this.lastStamp='';this.lastDistance=null;this.session=null;this.validUntil=0;this.rpm=0;this.active=false;this.paused=false;this.now=0;this.lastTick=0}
+ ingest(t,o={},now=Date.now()){
+  if(o.session&&o.session!==this.session){this.session=o.session;this.distance=0;this.lastDistance=null;this.lastStamp=''}
+  this.active=!!o.active;this.paused=!!o.paused;
+  const valid=fresh(t,now)&&!this.paused,key=String(t?.readSequence)+'|'+String(t?.updatedAt);
+  this.validUntil=valid?finite(t.updatedAt)+2500:0;this.rpm=valid?clamp(finite(t.cadence??t.rpm),0,180):0;
+  if(valid&&key!==this.lastStamp){const d=finite(t.distanceMeters,-1);if(d>=0){if(this.lastDistance!==null&&d>=this.lastDistance)this.distance+=d-this.lastDistance;this.lastDistance=d}this.lastStamp=key}
+ }
+ step(dt,now=Date.now()){
+  dt=clamp(finite(dt),0,.1);const live=this.active&&!this.paused&&now<this.validUntil,rpm=live?this.rpm:0,target=musicTarget(rpm),ease=1-Math.exp(-dt/3);
+  this.bpm+=(target.bpm-this.bpm)*ease;this.energy+=((live&&rpm>=3?target.energy:0)-this.energy)*ease;
+  // Visual motion is an illustrative cadence-controlled ride, not measured speed.
+  const speed=live&&rpm>=3?clamp(rpm*.14,0,24):0;this.speed+=(speed-this.speed)*(1-Math.exp(-dt*3));this.now+=this.speed*dt;
+  return {live:live&&rpm>=3,bpm:this.bpm,energy:this.energy,speed:this.speed,distance:this.distance,position:this.now};
+ }
+}
+class Score{
+ constructor(win){this.win=win;this.ctx=null;this.master=null;this.next=0;this.step=0;this.bpm=100;this.energy=0;this.volume=.28;this.enabled=true;this.live=false;this.unlocking=false;this.state='ready';this.noise=null;this.started=false}
+ async unlock(){
+  if(this.unlocking)return;this.unlocking=true;
+  try{const Audio=this.win.AudioContext||this.win.webkitAudioContext;if(!Audio){this.state='unavailable';return}
+   if(!this.ctx){this.ctx=new Audio();this.master=this.ctx.createGain();this.master.gain.value=0;const limiter=this.ctx.createDynamicsCompressor();limiter.threshold.value=-14;limiter.ratio.value=8;this.master.connect(limiter);limiter.connect(this.ctx.destination);this.noise=this.ctx.createBuffer(1,this.ctx.sampleRate*.22,this.ctx.sampleRate);const data=this.noise.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,2)}
+   if(this.ctx.state!=='running'){let timeout;try{await Promise.race([this.ctx.resume(),new Promise((_,reject)=>{timeout=setTimeout(()=>reject(new Error('audio resume timeout')),2000)})])}finally{clearTimeout(timeout)}}this.state=this.ctx.state==='running'?'running':'blocked';this.next=Math.max(this.next,this.ctx.currentTime+.05);
+  }catch{this.state='blocked'}finally{this.unlocking=false}
+ }
+ tone(freq,at,duration,gain,type='sine'){
+  const c=this.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,at);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),at+.015);g.gain.exponentialRampToValueAtTime(.0001,at+duration);o.connect(g);g.connect(this.master);o.start(at);o.stop(at+duration+.03);o.onended=()=>{o.disconnect();g.disconnect()};return o
+ }
+ hat(at,gain){const n=this.ctx.createBufferSource(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain();n.buffer=this.noise;f.type='highpass';f.frequency.value=6500;g.gain.setValueAtTime(gain,at);n.connect(f);f.connect(g);g.connect(this.master);n.start(at);n.stop(at+.13);n.onended=()=>{n.disconnect();f.disconnect();g.disconnect()}}
+ schedule(state){
+  this.bpm=state.bpm;this.energy=state.energy;this.live=state.live;
+  if(!this.ctx||this.ctx.state!=='running')return;
+  const now=this.ctx.currentTime,audible=this.enabled&&state.live;
+  this.master.gain.setTargetAtTime(audible?this.volume:0,now,audible?.5:.3);
+  if(!audible){this.next=now+.05;return}
+  if(this.next<now)this.next=now+.04;let count=0;
+  while(this.next<now+.14&&count++<8){
+   const beat=this.step%16,bar=Math.floor(this.step/16),roots=[55,43.65,65.41,49],bass=roots[Math.floor(bar/2)%4],at=this.next;
+   if(beat%4===0){const kick=this.tone(125,at,.24,.62);kick.frequency.exponentialRampToValueAtTime(42,at+.18);this.tone(bass,at,.32,.22,'triangle')}
+   if(beat===4||beat===12)this.hat(at,.18);
+   if(beat%2===0&&this.energy>.18)this.hat(at,.06+this.energy*.045);
+   const notes=[0,7,12,14,19,14,12,7],note=notes[(Math.floor(beat/2)+bar)%notes.length];
+   if(beat%2===0)this.tone(bass*4*Math.pow(2,note/12),at,.35,.075+this.energy*.035,'sine');
+   if(beat===0){[0,7,12].forEach(n=>this.tone(bass*2*Math.pow(2,n/12),at,2.8,.045,'triangle'))}
+   if(this.energy>.65&&beat%2===1)this.tone(bass*8,at,.13,.035);
+   this.step++;this.next+=60/this.bpm/4;
+  }
+ }
+ mute(){if(this.master)this.master.gain.setTargetAtTime(0,this.ctx.currentTime,.08);this.live=false}
+}
+function mount(){
+ const canvas=document.getElementById('rideCanvas'),panel=document.getElementById('performance');if(!canvas||!panel)return null;
+ let ctx;try{ctx=canvas.getContext('2d',{alpha:false})}catch{}if(!ctx)return null;
+ const state=new RideState(),score=new Score(root),prefs=(()=>{try{return JSON.parse(localStorage.getItem('nz.ridePreferences')||'{}')}catch{return {}}})();
+ let controlNonce='';
+ let enabled=prefs.enabled!==false,theme=clamp(finite(prefs.theme),0,THEMES.length-1),muted=prefs.muted!==false,quality=1,last=0,lastDraw=0,paintCost=0,frames=0,active=false,eligible=false,forceRide=false;
+ const reduced=root.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches||false;
+ const el=id=>document.getElementById(id),text=(id,v)=>{const e=el(id);if(e)e.textContent=String(v)},save=()=>{try{localStorage.setItem('nz.ridePreferences',JSON.stringify({enabled,theme,muted,volume:score.volume}))}catch{}};
+ score.enabled=!muted;score.volume=clamp(finite(prefs.volume,.28),0,.7);
+ const scenery=root.NonZeroScenery?.create(canvas);
+ const background=document.createElement('canvas'),bg=background.getContext('2d',{alpha:false});if(!bg)return null;
+ function polygon(c,points,color){c.fillStyle=color;c.beginPath();points.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.closePath();c.fill()}
+ function buildBackground(){
+  if(scenery){scenery.build(theme);return;}
+  const {width:w,height:h}=canvas;background.width=w;background.height=h;const T=THEMES[theme],g=bg.createLinearGradient(0,0,0,h*.7);T.sky.forEach((c,i)=>g.addColorStop(i/2,c));bg.fillStyle=g;bg.fillRect(0,0,w,h);
+  const halo=bg.createRadialGradient(w*.73,h*.31,0,w*.73,h*.31,h*.38);halo.addColorStop(0,theme===2?'#8c76db30':'#ffe6bc66');halo.addColorStop(1,'#fff0');bg.fillStyle=halo;bg.fillRect(0,0,w,h);
+  bg.fillStyle=theme===2?'#d8dfff':'#ffe8ca';bg.beginPath();bg.arc(w*.73,h*.29,h*.035,0,Math.PI*2);bg.fill();
+  if(theme===2){for(let i=0;i<180;i++){bg.fillStyle=`rgba(219,229,255,${.15+(i%7)/12})`;bg.fillRect((Math.sin(i*92.1)*.5+.5)*w,(Math.sin(i*19.7)*.5+.5)*h*.4,Math.max(1,w/1900),Math.max(1,w/1900))}}
+  for(let layer=0;layer<4;layer++){const points=[[0,h*.61]];for(let x=0;x<=64;x++){const v=Math.sin(x*.43+layer)*.027+Math.sin(x*.18+layer*2)*.045;points.push([x/64*w,h*(.43+layer*.035+v)])}points.push([w,h*.69]);polygon(bg,points,['#254457','#254e60','#245666','#235263'][layer])}
+  const water=bg.createLinearGradient(0,h*.51,0,h);water.addColorStop(0,T.sea);water.addColorStop(1,theme===2?'#101d37':'#0c3549');bg.fillStyle=water;bg.fillRect(0,h*.57,w,h*.43);
+  for(let i=0;i<60;i++){const y=h*(.575+(i/60)**2*.42);bg.fillStyle=`rgba(189,232,238,${.02+(i%5)*.007})`;bg.fillRect(0,y,w,h*.001)}
+  if(theme===2){for(let i=0;i<35;i++){const x=i*w/35,bh=h*(.08+((Math.sin(i*67)+1)/2)*.18),bw=w*.025;bg.fillStyle=i%2?'#142239':'#1d2845';bg.fillRect(x,h*.57-bh,bw,bh);bg.fillStyle='#d5bbee66';for(let a=0;a<4;a++)for(let b=0;b<8;b++)if((a+b+i)%3)bg.fillRect(x+a*bw/5,h*.57-bh+b*bh/9,bw/15,bh/30)}}
+ }
+ function resize(){const r=resolution(root.innerWidth,root.innerHeight,root.devicePixelRatio||1,quality);if(canvas.width!==r.width||canvas.height!==r.height){canvas.width=r.width;canvas.height=r.height;buildBackground()}text('rideResolution',`${r.width} × ${r.height}`)}
+ function draw(position){
+  if(scenery){scenery.draw(theme,position,root.performance.now());return;}
+  const w=canvas.width,h=canvas.height,T=THEMES[theme];ctx.drawImage(background,0,0);const horizon=h*.48,camera=position*.001;
+  // A winding elevated road, sampled in perspective: smooth 3D motion without raster assets.
+  const rows=[];for(let i=0;i<=96;i++){const p=i/96,depth=p*p,y=horizon+(h-horizon)*depth,half=w*(.004+depth*.49),bend=(Math.sin(camera+p*1.6)*.09+Math.sin(camera*.57+p*3)*.055)*w*(1-p);rows.push({y,half,center:w*.51+bend,depth,p})}
+  polygon(ctx,[[0,h],...[...rows].reverse().map(r=>[r.center-r.half*1.62,r.y]),[0,horizon]],T.land);
+  for(let i=0;i<rows.length-1;i++){const a=rows[i],b=rows[i+1],stripe=Math.floor((position+i*i*.15)/12)%2;polygon(ctx,[[a.center-a.half,a.y],[a.center+a.half,a.y],[b.center+b.half,b.y],[b.center-b.half,b.y]],stripe?T.road:theme===2?'#1e293a':'#2c414c');
+   const edge=Math.max(w*.0007,a.half*.016);for(const sign of [-1,1])polygon(ctx,[[a.center+sign*a.half-edge,a.y],[a.center+sign*a.half+edge,a.y],[b.center+sign*b.half+edge,b.y],[b.center+sign*b.half-edge,b.y]],T.accent);
+   if(stripe)polygon(ctx,[[a.center-a.half*.008,a.y],[a.center+a.half*.008,a.y],[b.center+b.half*.009,b.y],[b.center-b.half*.009,b.y]],'#f1d8a4a8');
+  }
+  for(let i=0;i<22;i++){const cycle=((i/22+position/900)%1),p=cycle*cycle,r=rows[Math.min(95,Math.floor(cycle*96))],size=h*(.002+p*.11),x=r.center-r.half*1.3;
+   if(theme===1){ctx.fillStyle='#142f2c';polygon(ctx,[[x,r.y-size],[x-size*.32,r.y],[x+size*.32,r.y]],'#183d32');polygon(ctx,[[x,r.y-size*.72],[x-size*.4,r.y+size*.14],[x+size*.4,r.y+size*.14]],'#214b3e')}
+   else{ctx.strokeStyle=theme===2?'#5db5ca66':'#ccd9d066';ctx.lineWidth=Math.max(1,size*.035);ctx.beginPath();ctx.moveTo(r.center+r.half*1.05,r.y);ctx.lineTo(r.center+r.half*1.05,r.y-size);ctx.lineTo(r.center+r.half*.9,r.y-size);ctx.stroke();if(theme===2){ctx.fillStyle='#a1ecff';ctx.fillRect(r.center+r.half*.89,r.y-size,size*.13,size*.035)}}
+  }
+  // Landmark lighthouse gives the horizon a recognizable destination.
+  if(theme===0){const x=w*.8,y=h*.56,s=h*.1;ctx.fillStyle='#d4ddd6';ctx.fillRect(x,y-s,w*.009,s);polygon(ctx,[[x-w*.003,y-s],[x+w*.012,y-s],[x+w*.0045,y-s-h*.02]],'#273945');ctx.fillStyle='#ffe7b8';ctx.fillRect(x,y-s+h*.012,w*.009,h*.008)}
+  const shade=ctx.createLinearGradient(0,h*.65,0,h);shade.addColorStop(0,'#00101b00');shade.addColorStop(1,'#00101b80');ctx.fillStyle=shade;ctx.fillRect(0,h*.65,w,h*.35);
+ }
+ function musicStatus(){text('rideMusicState',muted?'LOCAL SCORE · OFF':score.state==='running'?score.live?'LOCAL ADAPTIVE SCORE':'LOCAL SCORE · RESTING':score.state==='unavailable'?'AUDIO UNAVAILABLE':'LOCAL SCORE · CLICK TO ENABLE');el('rideMusicButton')?.setAttribute('aria-pressed',String(!muted));text('rideMusicButton',muted?'ENABLE LOCAL SCORE':score.state==='running'?'MUTE LOCAL SCORE':'RETRY LOCAL SCORE')}
+ function setVisible(value){active=value;panel.classList.toggle('ride-enabled',value);el('rideViewButton')?.setAttribute('aria-pressed',String(value));text('rideViewButton',value?'LAB VIEW':'RIDE VIEW');if(!value)score.mute();else if(!muted&&score.state==='ready')score.unlock().then(musicStatus)}
+ function toggle(){enabled=!active;forceRide=enabled;save();state.active=enabled&&eligible;setVisible(state.active);return enabled}
+ const api={
+  update(t,o={}){if(o.session&&o.session!==state.session)forceRide=false;eligible=!!o.active;const show=enabled&&eligible&&(o.erg||!o.session||forceRide);state.ingest(t,{...o,active:show});setVisible(show);
+   text('rideWatts',fresh(t)?Math.round(finite(t.watts)):'—');text('rideCadence',fresh(t)?Math.round(finite(t.cadence??t.rpm)):'—');text('rideHeart',fresh(t)&&finite(t.heartRate)>0?Math.round(t.heartRate):'—');text('rideCoach',o.coach||'Find your rhythm. Follow the road.');
+  },
+  setMode(mode){eligible=mode==='performance';if(!eligible){forceRide=false;state.active=false;setVisible(false)}},
+  toggle,
+  applyControl(control){if(!control?.nonce||control.nonce===controlNonce)return false;controlNonce=control.nonce;
+   if(typeof control.scene==='string'){const index=THEMES.findIndex(t=>t.id===control.scene);if(index>=0){theme=index;buildBackground();text('rideWorld',THEMES[theme].name)}}
+   if(control.view==='ride'||control.view==='lab'){enabled=control.view==='ride';forceRide=enabled;state.active=enabled&&eligible;setVisible(state.active)}
+   if(typeof control.wallMusic==='boolean'){muted=!control.wallMusic;score.enabled=!muted;if(!muted)void score.unlock().then(musicStatus);else score.mute()}
+   if(Number.isFinite(control.volume))score.volume=clamp(control.volume,0,.7);save();musicStatus();return true;
+  },
+  snapshot:()=>({enabled,active,theme,scene:THEMES[theme].id||String(theme),controlNonce,muted,quality,bpm:state.bpm,distance:state.distance,audioState:score.state})
+ };
+ el('rideViewButton')?.addEventListener('click',toggle);
+ el('rideMusicButton')?.addEventListener('click',async()=>{if(score.state!=='running'&&!muted){await score.unlock()}else{muted=!muted;score.enabled=!muted;if(!muted)await score.unlock()}save();musicStatus()});
+ el('rideSceneButton')?.addEventListener('click',()=>{theme=(theme+1)%THEMES.length;save();buildBackground();text('rideWorld',THEMES[theme].name)});
+ el('rideVolume')?.addEventListener('input',e=>{score.volume=clamp(finite(e.target.value)/100,0,.7);save()});if(el('rideVolume'))el('rideVolume').value=score.volume*100;
+ function toggleClock(){panel.classList.toggle('ride-show-clock');const on=panel.classList.contains('ride-show-clock');el('rideClockButton')?.setAttribute('aria-pressed',String(on));text('rideClockButton',on?'HIDE CLOCK':'SHOW CLOCK')}
+ el('rideClockButton')?.addEventListener('click',toggleClock);
+ document.addEventListener('keydown',async e=>{if(!eligible||el('setupOverlay')?.classList.contains('open')||el('healthOverlay')?.classList.contains('open'))return;if(e.target?.tagName==='INPUT'||e.target?.tagName==='TEXTAREA'||e.target?.tagName==='SELECT')return;const k=e.key.toLowerCase();if(k==='r'){el('rideViewButton')?.click()}else if(k==='m'){el('rideMusicButton')?.click()}else if(k==='t'){toggleClock()}else if(k==='c'){el('rideSceneButton')?.click()}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){score.mute();state.validUntil=0}});root.addEventListener('resize',resize);root.addEventListener('pagehide',()=>score.mute());
+ el('rideViewButton').hidden=false;resize();text('rideWorld',THEMES[theme].name);musicStatus();
+ function frame(time){root.requestAnimationFrame(frame);if(!active||document.hidden){last=time;return}const dt=last?Math.min(.1,(time-last)/1000):0;last=time;const s=state.step(dt);if(time-lastDraw>=1000/(reduced?15:30)){const start=root.performance.now();draw(s.position);lastDraw=time;paintCost=paintCost*.95+(root.performance.now()-start)*.05;if(++frames>120&&paintCost>26&&quality>0.55){quality=Math.max(.55,quality*.85);resize();frames=0}}
+  const index=Math.floor(state.distance/1000)%4,target=1000-state.distance%1000;text('rideLandmark',THEMES[theme].landmarks[index]);text('rideLandmarkDetail',state.lastDistance===null?'PEDAL TO EXPLORE':`${Math.ceil(target/10)*10} M TO NEXT LANDMARK`);text('rideBpm',Math.round(s.bpm)+' BPM');score.schedule(s);musicStatus();
+ }
+ root.requestAnimationFrame(frame);return api;
+}
+root.NonZeroRideCore={RideState,Score,musicTarget,fresh,resolution,THEMES};
+if(typeof module!=='undefined'&&module.exports)module.exports=root.NonZeroRideCore;
+if(root.document)root.NonZeroRide=mount();
+})(typeof window!=='undefined'?window:globalThis);
+</script>
+<style id="rideRemoteStyle">
+#rideRemote[hidden]{display:none!important}#rideRemote{position:fixed;inset:0;z-index:12000;background:#000b;display:grid;place-items:center;padding:12px;box-sizing:border-box}#rideRemote .rideRemotePanel{width:min(660px,100%);max-height:90dvh;overflow:auto;box-sizing:border-box;background:#0c1723;border:1px solid #46545d;border-radius:20px;padding:18px;color:#edf5f7;box-shadow:0 18px 80px #000a}#rideRemote h2{margin:0;font-size:22px}#rideRemote p{color:#aebfc9;font-size:13px;line-height:1.45}#rideRemote header{display:flex;justify-content:space-between;align-items:center;gap:12px}#rideRemote button{min-height:44px;padding:9px 12px;border:1px solid #3e5562;border-radius:10px;background:#172b3a;color:#e7f3f7;font-size:14px;cursor:pointer}#rideRemote button[aria-pressed=true]{border-color:#e1c779;background:#3c3825;color:#ffebaf}#rideRemote .rrScenes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}#rideRemote .rrScenes button{text-align:left;display:flex;align-items:center;gap:9px}#rideRemote .rrScenes i{display:block;width:26px;height:26px;border-radius:7px;background:linear-gradient(140deg,var(--rrA),var(--rrB));flex-shrink:0}#rideRemote .rrRow{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}#rideRemote .rrRow button{flex:1}#rideRemote .rrVolume{display:flex;align-items:center;gap:12px;margin:12px 0;font-size:13px}#rideRemote input{flex:1;accent-color:#dfc780}#rideRemoteStatus{min-height:18px}#rideRemote .rrHint{font-size:11px}.ridePhoneOpen{min-height:36px}
+</style>
+<div id="rideRemote" hidden role="dialog" aria-modal="true" aria-labelledby="rideRemoteTitle"><section class="rideRemotePanel"><header><h2 id="rideRemoteTitle">Choose your ride</h2><button id="rideRemoteClose" type="button">Done</button></header><p>Pick a landscape for the wall. Workout timer and checklist keep running.</p><div class="rrScenes" id="rideRemoteScenes"></div><div class="rrRow"><button id="rrPrev">← Previous</button><button id="rrNext">Next →</button><button id="rrView">Show lab</button></div><div class="rrRow"><button id="rrPhoneSound" aria-pressed="false">▶ Play on phone</button><button id="rrWallSound" aria-pressed="false">▶ Play on wall</button></div><label class="rrVolume">Volume<input id="rrVolume" type="range" min="0" max="70" value="28" aria-label="Soundtrack volume"></label><p id="rrAudioStatus" role="status">Original adaptive instrumental · no music subscription needed.</p><p id="rideRemoteStatus" role="status"></p><p class="rrHint">Phone audio follows the latest wall cadence update (about 15 seconds); wall audio uses direct PM5 telemetry. If wall audio is blocked, tap Enable local score once on the wall. These are original illustrated landscapes, not filmed routes.</p></section></div>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id),scenes=[['pittsburgh','Pittsburgh','#547d99','#d3b54b'],['west-virginia','WV country roads','#8bb2bb','#66813d'],['mountain-bike','Mountain biking','#74918b','#31523e'],['beach','Beach','#6ebdcc','#dccba4'],['salt-flats','Salt flats','#9ccee0','#e0e7df'],['rockies','Rocky Mountains','#5f8fa9','#becbd0'],['france','French grand tour','#acc8c7','#9d9e48']];
+let desired={scene:'pittsburgh',view:'ride',wallMusic:false,volume:.28},playing=false,latestHealth=null,queue=Promise.resolve(),pending=0,healthBusy=false,healthAt=0,lastFocus=null,confirmed='';const score=new NonZeroRideCore.Score(window);
+const message=t=>$('rideRemoteStatus').textContent=t;
+function render(){document.querySelectorAll('#rideRemoteScenes [data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===desired.scene)));$('rrView').textContent=desired.view==='ride'?'Show lab':'Show ride';$('rrWallSound').textContent=desired.wallMusic?'Mute wall':'▶ Play on wall';$('rrWallSound').setAttribute('aria-pressed',String(desired.wallMusic));$('rrPhoneSound').textContent=playing?'Pause phone':'▶ Play on phone';$('rrPhoneSound').setAttribute('aria-pressed',String(playing));}
+function send(patch){desired={...desired,...patch};render();pending++;message('Sending to wall…');queue=queue.catch(()=>{}).then(async()=>{if(!cloudReady())throw Error('Connect cloud sync in Settings first.');const r=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/ride/control',{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:JSON.stringify(patch),signal:AbortSignal.timeout(7000)});const data=await r.json();if(!r.ok||!data.ok)throw Error(r.status===404?'Deploy Worker 5.7 to enable ride controls.':data.error||'Ride control failed');confirmed=data.control.nonce;message('Sent · waiting for wall confirmation');}).catch(e=>message(e.message)).finally(()=>pending--);return queue;}
+async function health(){if(healthBusy||!cloudReady())return;healthBusy=true;try{const r=await fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/wall/health',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},cache:'no-store',signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error('Wall status unavailable');const data=await r.json();latestHealth=data.health;healthAt=Date.now();if(confirmed&&latestHealth?.ride?.controlNonce===confirmed){message('Wall confirmed · '+(latestHealth.ride.active?'ride view':'lab view'));if(desired.wallMusic&&latestHealth.ride.audioState!=='running')message('Scene ready · wall audio needs Enable local score on the wall');}}catch(e){if(!$('rideRemote').hidden)message(e.message+' · retrying')}finally{healthBusy=false}}
+function open(){lastFocus=document.activeElement;$('rideRemote').hidden=false;$('rideRemoteClose').focus();render();void health();if(cloudReady()&&!pending)fetch(cloudConfig.endpoint.replace(/\/$/,'')+'/ride/control',{headers:{'X-NONZERO-Key':cloudConfig.syncKey},signal:AbortSignal.timeout(5000)}).then(r=>r.json()).then(d=>{if(d.control&&!pending){desired={...desired,...d.control};$('rrVolume').value=Math.round(desired.volume*100);render()}}).catch(()=>{});}
+function close(){$('rideRemote').hidden=true;lastFocus?.focus()}
+$('rideRemoteClose').onclick=close;$('rideRemote').onclick=e=>{if(e.target===$('rideRemote'))close()};document.addEventListener('keydown',e=>{if($('rideRemote').hidden)return;if(e.key==='Escape'){e.preventDefault();close()}if(e.key==='Tab'){const controls=[...$('rideRemote').querySelectorAll('button,input')].filter(n=>!n.disabled);if(e.shiftKey&&document.activeElement===controls[0]){e.preventDefault();controls.at(-1).focus()}else if(!e.shiftKey&&document.activeElement===controls.at(-1)){e.preventDefault();controls[0].focus()}}});
+for(const [id,name,a,b] of scenes){const button=document.createElement('button');button.type='button';button.dataset.scene=id;button.style.setProperty('--rrA',a);button.style.setProperty('--rrB',b);const chip=document.createElement('i');chip.setAttribute('aria-hidden','true');button.append(chip,document.createTextNode(name));button.onclick=()=>send({scene:id,view:'ride'});$('rideRemoteScenes').append(button)}
+function cycle(delta){const i=Math.max(0,scenes.findIndex(s=>s[0]===desired.scene));return send({scene:scenes[(i+delta+scenes.length)%scenes.length][0],view:'ride'})}
+$('rrPrev').onclick=()=>cycle(-1);$('rrNext').onclick=()=>cycle(1);$('rrView').onclick=()=>send({view:desired.view==='ride'?'lab':'ride'});$('rrWallSound').onclick=()=>send({wallMusic:!desired.wallMusic,volume:Number($('rrVolume').value)/100});
+$('rrPhoneSound').onclick=async()=>{if(playing){playing=false;score.mute();render();return}const button=$('rrPhoneSound');button.disabled=true;await score.unlock();button.disabled=false;playing=score.state==='running';score.enabled=playing;score.volume=Number($('rrVolume').value)/100;render();if(!playing)$('rrAudioStatus').textContent='Audio did not start. Tap again or check this phone’s audio output.';else void health()};
+$('rrVolume').oninput=()=>{score.volume=Number($('rrVolume').value)/100};$('rrVolume').onchange=()=>send({volume:Number($('rrVolume').value)/100});
+for(const host of [$('focusToolbar'),$('rideGoalCard')]){if(!host)continue;const button=document.createElement('button');button.type='button';button.className='ridePhoneOpen';button.textContent='Ride & music';button.onclick=open;host.append(button)}
+setInterval(()=>{if(playing||!$('rideRemote').hidden){if(Date.now()-healthAt>3000)void health()}if(!playing)return;const a=state.activeWorkout,workout=a&&a.date===localDateStr()&&['active','running'].includes(String(a.status||'').toLowerCase()),h=latestHealth,p=h?.pm5;const fresh=h&&Date.now()-Number(h.at)<25000&&p?.connected&&Date.now()-Number(p.updatedAt)<25000,cadence=fresh?Number(p.cadence)||0:65,target=NonZeroRideCore.musicTarget(cadence),live=!!workout&&!document.hidden&&(!fresh||cadence>=3);score.schedule({...target,live});$('rrAudioStatus').textContent=live?(fresh?'Playing on phone · '+Math.round(target.bpm)+' BPM · latest wall cadence':'Playing on phone · steady tempo · awaiting wall cadence'):'Phone soundtrack ready · resumes while your workout is running';},150);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)score.mute()});window.addEventListener('pagehide',()=>score.mute());render();window.NonZeroRideRemote={open,send,cycle,snapshot:()=>({...desired,playing})};
+})();
 </script>
 </body>
 </html>
