@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.41 · Intelligent Training</title>
+<title>NONZERO v3.42 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -279,7 +279,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.41</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.42</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -1488,7 +1488,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.41",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.42",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -1663,7 +1663,7 @@ function renderErgOrchestration(){
  const live=a&&['active','paused','running'].includes(a.status||'');
  const n=document.getElementById('ergNzStatus'),w=document.getElementById('ergWallStatus'),c=document.getElementById('ergC2Status');
  if(n){n.textContent=live?(a.status==='paused'?'PAUSED':'ACTIVE'):'READY';n.className=live?'ok':'wait'}
- if(w){w.textContent=live?'PERFORMANCE':'SCHEDULED';w.className=live?'ok':'wait'}
+ if(w){const h=systemHealth.wallHealth,fresh=h&&Date.now()-Number(h.at||0)<900000,performing=fresh&&h.mode==='performance';w.textContent=performing?'PERFORMANCE':live?'WAITING FOR WALL':fresh?String(h.mode||'READY').toUpperCase():'CHECK WALL';w.className=performing?'ok':'wait'}
  if(c){c.textContent=a?.concept2?.id?'SYNCED':'WAITING';c.className=a?.concept2?.id?'ok':'wait'}
  const prev=document.getElementById('ergStartUrlPreview');if(prev)prev.textContent=ergIntentUrl()||'Configure Cloud Sync to generate the endpoint.';
  const en=document.getElementById('ergDataFirstEnabled');if(en)en.checked=state.ergDataFirst?.enabled!==false;
@@ -2359,5 +2359,29 @@ card.querySelectorAll('[data-ride-intensity]').forEach(b=>b.onclick=()=>{draft={
 $('rideCalorieIntensity').onchange=()=>{draft=read();render()};
 $('rideGoalApply').onclick=async()=>{const button=$('rideGoalApply');button.disabled=true;try{const mode=draft.mode,minutes=Number($(mode==='calories'?'rideGoalMinutes':'rideIntensityMinutes').value),calories=Number($('rideGoalCalories').value);if(!Number.isFinite(minutes)||minutes<5||minutes>180||(mode==='calories'&&(!Number.isFinite(calories)||calories<10||calories>3000)))throw Error('Choose 5–180 minutes and a calorie goal between 10 and 3000.');const entered={};for(const[id,key,lo,hi]of[['rideGoalFTP','ftpWatts',20,1000],['rideGoalMaxHR','maxHr',80,240],['rideGoalRestHR','restingHr',25,120]])if($(id).value!==''){const n=Number($(id).value);if(!Number.isFinite(n)||n<lo||n>hi)throw Error('Check '+key);entered[key]=n}if(entered.maxHr&&entered.restingHr>=entered.maxHr)throw Error('Maximum HR must exceed resting HR.');draft=read();state.rideGoal=draft;state.rideTargetProfile={...entered,updatedAt:Date.now()};if(state.activeWorkout&&['ready','active','running','paused'].includes(state.activeWorkout.status)){state.activeWorkout.rideGoal={...draft};state.activeWorkout.updatedAt=Date.now()}save();render();$('rideGoalStatus').textContent='Saved on this phone · syncing to the Pi…';if(cloudReady()){const ok=await pushCloudState();$('rideGoalStatus').textContent=ok?'Goal synced. Your paired Pi will apply it on its next refresh.':'Saved locally · syncing will retry when connected.'}else $('rideGoalStatus').textContent='Saved on this phone. Connect Cloud Sync to send it to your Pi.'}catch(e){$('rideGoalStatus').textContent=e.message}finally{button.disabled=false}};
 $('rideGoalCalories').value=draft.calories;$('rideGoalMinutes').value=$('rideIntensityMinutes').value=draft.durationMinutes;render();window.addEventListener('suite-state-changed',()=>{if(!card.contains(document.activeElement)){draft=NonZeroGoals.normalize(state.rideGoal||draft);render()}});
-})();</script><style>#rideGoalCard [hidden]{display:none!important}#rideGoalCard details summary{cursor:pointer;color:#d4af37;padding:8px 0}#rideGoalChoices button{min-width:72px;flex:1}</style></body>
+})();</script><style>#rideGoalCard [hidden]{display:none!important}#rideGoalCard details summary{cursor:pointer;color:#d4af37;padding:8px 0}#rideGoalChoices button{min-width:72px;flex:1}</style><style id="workoutTwoPaneRepair">
+body.trainingFocus #tabToday > :not(.todayCockpit):not(.workoutSnapshot){display:none!important}
+body.trainingFocus .wrap{box-sizing:border-box;min-width:0;width:100%;height:100dvh}
+body.trainingFocus #tabToday{min-width:0;max-width:100%;box-sizing:border-box}
+body.trainingFocus .todayCockpit,body.trainingFocus .workoutSnapshot{box-sizing:border-box;min-height:0;min-width:0}
+body.trainingFocus .focusToolbar button{min-height:36px}
+@media(orientation:landscape){
+ body.trainingFocus #tabToday{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;gap:12px}
+ body.trainingFocus .todayCockpit{grid-column:1;grid-row:1;justify-content:flex-start!important;overflow:auto;padding:4px 8px}
+ body.trainingFocus .workoutSnapshot{grid-column:2;grid-row:1;height:100%;overflow:hidden;padding:12px}
+ body.trainingFocus .timerpanel.cockpitTimer .timerreadout{font-size:clamp(54px,19dvh,100px)!important;line-height:1.05}
+ body.trainingFocus .cockpitNow{grid-template-columns:1fr!important}
+ body.trainingFocus .nextCard{display:none}
+ body.trainingFocus #workout{flex:1;min-height:0;overflow-y:auto}
+ body.trainingFocus .exerciseV315{min-height:48px}
+ body.trainingFocus .focusToolbar{display:flex;flex-shrink:0}
+}
+</style>
+<script>
+(()=>{const bar=document.getElementById('focusToolbar');if(!bar)return;
+const btn=document.createElement('button');btn.id='workoutFullscreenBtn';btn.type='button';btn.textContent='Full screen';
+btn.onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else alert('For a clean view without browser tabs, open NONZERO from your Home Screen. In Safari, use Share → Add to Home Screen.');}catch{alert('Open NONZERO from your Home Screen for a view without browser tabs.');}};
+bar.append(btn);document.addEventListener('fullscreenchange',()=>btn.textContent=document.fullscreenElement?'Exit full screen':'Full screen');})();
+</script>
+</body>
 </html>
