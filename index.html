@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.43 · Intelligent Training</title>
+<title>NONZERO v3.46 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -260,6 +260,15 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
  body.trainingFocus .exerciseV315 b{font-size:13px}
 }
 
+
+[hidden]{display:none!important}
+
+.surgeryReadiness{order:-2;border:1px solid #7e673a;border-top:4px solid var(--gold);background:linear-gradient(120deg,#172535,#0a1017)}
+.readinessEyebrow{font-size:11px;letter-spacing:.14em;color:var(--gold);font-weight:800}
+.surgeryReadiness h2{font-size:30px;margin:8px 0}.readinessMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.readinessMetrics small{display:block;font-size:10px;color:var(--muted)}.readinessMetrics strong{display:block;font-size:19px;margin-top:6px}
+.surgeryReadiness details input{max-width:100%}@media(max-width:420px){.readinessMetrics{grid-template-columns:1fr 1fr}.readinessMetrics>div:first-child{grid-column:1/-1}}
+
 </style>
 
 
@@ -279,7 +288,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.43</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.46</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -291,14 +300,15 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
     </div>
   </section>
 
-  <section id="installBanner" class="card">
-    <h2>Install this app</h2>
-    <p>Tap the button below to install it like a normal app.</p>
-    <button id="installBtn" class="primary">Install on this device</button>
-  </section>
+
 
 
   <main id="tabToday">
+<section id="surgeryReadiness" class="card surgeryReadiness">
+<div class="readinessEyebrow">ARRIVE READY · RIGHT HIP</div><h2 id="readinessCountdown"></h2>
+<p id="readinessPriority"></p><div class="readinessMetrics"><div><small>PERSONAL WEIGHT GOAL</small><strong>Below 220 lb</strong></div><div><small>LATEST WEIGHT</small><strong id="readinessWeight">—</strong></div><div><small>7-DAY AVERAGE</small><strong id="readinessAverage">—</strong></div></div>
+<p id="readinessDataStatus" class="small"></p><p id="readinessTraining" class="small"></p>
+<details><summary>Add a weight reading</summary><p class="small">Manual entry until Withings is connected. Enter the date shown in Withings.</p><label for="readinessWeightInput">Weight (lb)</label><input id="readinessWeightInput" type="number" min="50" max="700" step="0.1"><label for="readinessWeightDate">Reading date</label><input id="readinessWeightDate" type="date"><button id="saveReadinessWeight" type="button">Save weight</button><p id="readinessWeightReceipt" role="status"></p></details></section>
     <section class="todayCockpit">
       <div id="focusToolbar" class="focusToolbar" hidden><span>NONZERO</span><button id="focusRestBtn" type="button" hidden>Rest 90s</button><button id="focusViewBtn" type="button">Main app</button></div>
       <div class="timerpanel cockpitTimer">
@@ -385,7 +395,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
     </section>
 
     <div class="todayUtilityHidden">
-      <div id="preopBanner"><div id="preopBig"></div><div id="preopMeta"></div><input id="todaySurgeryDate" type="date"><button id="todayClearSurgeryDate">Clear</button></div>
+      <div id="preopBanner" hidden><div id="preopBig"></div><div id="preopMeta"></div><input id="todaySurgeryDate" type="date"><button id="todayClearSurgeryDate">Clear</button></div>
       <section class="readinessCard"><input id="pain" type="number" value="6"><input id="energy" type="number" value="3"><div id="painAdvice"></div></section>
       <div id="ergFirstCard">
         <b id="ergNzStatus"></b><b id="ergWallStatus"></b><b id="ergC2Status"></b><b id="ergHealthStatus"></b>
@@ -448,10 +458,10 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
       <p class="small">The schedule automatically repeats weekly from this start date.</p>
       <label class="small">Morning reminder target</label>
       <input id="reminderTime" type="time" value="06:00">
-      <p class="small">This app cannot push reminders by itself when used as a simple web app. Use the iPhone setup instructions below to create a Home Screen icon and optional daily reminder.</p>
+      <p class="small">This app cannot push reminders by itself when used as a simple web app.</p>
     </section>
     <section class="card">
-      <h2>Hip surgery countdown</h2>
+      <h2>Surgery readiness settings</h2>
       <p>Leave this blank while the date is TBD. Once scheduled, NONZERO will automatically add a live pre-op countdown and phase messaging to the phone and Roku Wall.</p>
       <div class="surgeryGrid">
         <div class="settingblock"><label class="small" for="surgeryDate">Surgery date</label><input id="surgeryDate" type="date"></div>
@@ -751,6 +761,34 @@ root.NonZeroHealthImport={merge,resolve,suppress,key};
 if(typeof module!=='undefined')module.exports=root.NonZeroHealthImport;
 })(typeof globalThis!=='undefined'?globalThis:this);
 
+(function(root){
+'use strict';
+const DEFAULT_DATE='2026-11-20',TARGET=220;
+function dayNumber(key){if(!/^\d{4}-\d{2}-\d{2}$/.test(key||''))return NaN;const n=Date.parse(key+'T00:00:00Z');return Number.isFinite(n)&&new Date(n).toISOString().slice(0,10)===key?n/86400000:NaN}
+function initialize(state){
+ let seeded=false;
+ if(!state.readinessBaselineRecorded){
+  state.bodyMeasurements=Array.isArray(state.bodyMeasurements)?state.bodyMeasurements:[];
+  if(!state.bodyMeasurements.some(x=>x.id==='reported-withings-2026-10-17'||x.date==='2026-10-17'&&Number(x.weightLb)===227.1))
+   state.bodyMeasurements.push({id:'reported-withings-2026-10-17',date:'2026-10-17',weightLb:227.1,source:'withings-reported',at:1792195200000});
+  state.readinessBaselineRecorded=true;seeded=true;
+ }
+ if(state?.surgeryPlan?.readinessVersion===1)return seeded;state.surgeryPlan={...(state.surgeryPlan||{}),date:DEFAULT_DATE,label:'RIGHT HIP',targetWeightLb:TARGET,targetSource:'personal',readinessVersion:1};return true}
+function summary(state,today){
+ const p=state?.surgeryPlan?.readinessVersion===1?state.surgeryPlan:{date:DEFAULT_DATE,targetWeightLb:TARGET};
+ const days=dayNumber(p.date)-dayNumber(today),target=Number(p.targetWeightLb)||TARGET;
+ const rows=(state?.bodyMeasurements||[]).filter(x=>Number.isFinite(Number(x.weightLb))&&Number(x.weightLb)>0&&Number.isFinite(dayNumber(x.date))&&x.date<=today).sort((a,b)=>a.date.localeCompare(b.date)||Number(a.at||0)-Number(b.at||0));
+ // A daily trend gets one vote per day, independent of how often the scale is used.
+ const daily=new Map();rows.forEach(x=>daily.set(x.date,x));
+ const unique=[...daily.values()],latest=unique.at(-1)||null,recent=unique.filter(x=>dayNumber(today)-dayNumber(x.date)<7);
+ const avg=recent.length?recent.reduce((n,x)=>n+Number(x.weightLb),0)/recent.length:null;
+ const age=latest?dayNumber(today)-dayNumber(latest.date):null,stale=age!=null&&age>7;
+ return {date:p.date,days,target,latest,average:avg,trendDays:recent.length,age,stale,goalMet:!!latest&&!stale&&Number(latest.weightLb)<target};
+}
+root.NonZeroReadiness={initialize,summary,dayNumber};
+if(typeof module!=='undefined')module.exports=root.NonZeroReadiness;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
 const STORAGE_KEY='hipPrehabV2';
 const CLOUD_CONFIG_KEY='nonzeroCloudV1';
 let stateStorageRecovered=localStorage.getItem('nonzero.suite.recoveryPending')==='1';
@@ -767,6 +805,7 @@ if(!state.wallSchedule) state.wallSchedule={enabled:true,ambient:'06:00',night:'
 if(!state.wallTheme) state.wallTheme={mode:'basic',updatedAt:0};
 if(!state.ergDataFirst) state.ergDataFirst={enabled:true};
 if(!state.surgeryPlan) state.surgeryPlan={date:'',label:'RIGHT HIP'};
+NonZeroReadiness.initialize(state);
 if(!state.trainingPrefs) state.trainingPrefs={restSeconds:90,garageArrival:true};
 if(!Array.isArray(state.eventLog)) state.eventLog=[];
 if(!state.wallPresence) state.wallPresence={};
@@ -823,6 +862,8 @@ let cloudBaseState=readStoredObject('nonzero.suite.base')||JSON.parse(JSON.strin
 let recoveryBase=stateStorageRecovered?(readStoredObject('nonzero.suite.recoveryBase')||JSON.parse(JSON.stringify(state))):null;
 if(stateStorageRecovered)localStorage.setItem('nonzero.suite.recoveryBase',JSON.stringify(recoveryBase));
 let localDirty=localStorage.getItem('nonzero.suite.pending')==='1';
+localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+localDirty=true;localStorage.setItem('nonzero.suite.pending','1');
 let cloudRetryDelay=1000;
 let cloudMutationSeq=0;
 
@@ -874,6 +915,8 @@ function applyCanonicalState(payload,{render=true}={}){
  if(!state.wallTheme)state.wallTheme={mode:'basic',updatedAt:0};
  if(!state.ergDataFirst)state.ergDataFirst={enabled:true};
  if(!state.surgeryPlan)state.surgeryPlan={date:'',label:'RIGHT HIP'};
+ const readinessChanged=NonZeroReadiness.initialize(state);
+ if(readinessChanged)queueMicrotask(()=>save());
  if(!state.trainingPrefs)state.trainingPrefs={restSeconds:90,garageArrival:true};
  if(!Array.isArray(state.eventLog))state.eventLog=[];
  if(!state.wallPresence)state.wallPresence={};
@@ -985,6 +1028,25 @@ function makeSyncKey(){
 }
 function localDateStr(d=new Date()){return NonZeroSuite.dateKey(d)}
 function weekdayIndex(){return new Date(NonZeroSuite.dateKey()+'T12:00:00Z').getUTCDay()}
+
+function renderSurgeryReadiness(){
+ const x=NonZeroReadiness.summary(state,localDateStr()),el=id=>document.getElementById(id),text=(id,v)=>{if(el(id))el(id).textContent=v};
+ text('readinessCountdown',Number.isFinite(x.days)?x.days>0?x.days+' days to surgery':x.days===0?'Surgery day':Math.abs(x.days)+' days into recovery':'Set your surgery date');
+ text('readinessPriority',x.days<0?'Follow your clinician-cleared recovery plan.':(x.date?new Date(x.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'Date TBD')+' · Build consistency, protect your hip, arrive ready.');
+ text('readinessWeight',x.latest?Number(x.latest.weightLb).toFixed(1)+' lb':'No reading yet');
+ text('readinessAverage',x.average==null?'Need readings':x.average.toFixed(1)+' lb');
+ text('readinessDataStatus',x.latest?x.latest.date+' · '+(x.latest.source==='withings'?'Withings':x.latest.source==='withings-reported'?'Withings · user reported':'Manual entry')+(x.stale?' · Out of date: add a fresh reading':x.goalMet?' · Below your personal goal':' · Personal goal: below 220 lb')+' · '+x.trendDays+' day(s) in weekly average':'Withings not connected · Add a current reading to establish your baseline. This is your personal weight goal.');
+ const start=NonZeroSuite.dateAdd(localDateStr(),-6),done=(state.sessions||[]).filter(s=>s.completed===true&&s.date>=start&&s.date<=localDateStr());
+ text('readinessTraining',done.length+' completed sessions in the last 7 days · '+Math.round(done.reduce((n,s)=>n+Math.max(0,Number(s.duration)||0),0))+' training minutes · Keep your approved strength and mobility work consistent.');
+ if(el('readinessWeightDate')&&!el('readinessWeightDate').value)el('readinessWeightDate').value=localDateStr();
+}
+document.getElementById('saveReadinessWeight')?.addEventListener('click',()=>{
+ const input=document.getElementById('readinessWeightInput'),date=document.getElementById('readinessWeightDate').value,weight=Number(input.value),receipt=document.getElementById('readinessWeightReceipt');
+ if(!input.value||!Number.isFinite(weight)||weight<50||weight>700||!Number.isFinite(NonZeroReadiness.dayNumber(date))||date>localDateStr()){receipt.textContent='Enter a valid weight and a reading date that is not in the future.';return}
+ state.bodyMeasurements=state.bodyMeasurements||[];const id='manual-weight-'+date;
+ state.bodyMeasurements=state.bodyMeasurements.filter(x=>x.id!==id);state.bodyMeasurements.push({id,date,weightLb:weight,source:'manual',at:Date.now()});save();renderSurgeryReadiness();receipt.textContent='Weight saved.';input.value='';
+});
+
 function surgeryDaysRemaining(){
  const ds=state.surgeryPlan?.date;if(!ds)return null;
  const target=new Date(ds+'T12:00:00'),today=new Date(localDateStr()+'T12:00:00');
@@ -1008,6 +1070,7 @@ function todayProgram(){
  return base.type==='strength'?buildProgressivePrescription(phased,weekdayIndex()):phased;
 }
 function renderPreop(){
+ renderSurgeryReadiness();
  const days=surgeryDaysRemaining(),phase=preopPhase(days),big=document.getElementById('preopBig'),meta=document.getElementById('preopMeta'),preview=document.getElementById('surgeryPlanPreview'),dateInput=document.getElementById('surgeryDate');
  if(dateInput)dateInput.value=state.surgeryPlan?.date||'';const todayDateInput=document.getElementById('todaySurgeryDate');if(todayDateInput)todayDateInput.value=state.surgeryPlan?.date||'';
  if(days==null){if(big)big.textContent='SURGERY DATE TBD';if(meta)meta.textContent='Set the date in Settings when it is scheduled. NONZERO will turn it into a live countdown.';if(preview)preview.textContent='TBD · current hip-smart program remains active.';return}
@@ -1467,7 +1530,7 @@ function renderSundayReport(){
 let systemHealth={cloud:false,worker:false,wall:false,pm5:false,pm5Known:false,wallHealth:null,lastCheckedAt:0};
 function appInstalled(){return navigator.standalone===true||window.matchMedia?.('(display-mode: standalone)').matches===true}
 function renderSystemStatus(){
- const installed=appInstalled(),steps=[{done:installed,title:'Phone app installed',detail:installed?'Running as an installed app':'Add NONZERO to the Home Screen'},{done:systemHealth.worker,title:'Cloud connected',detail:systemHealth.worker?'Worker responding':'Open Cloud connection and verify credentials'},{done:systemHealth.wall,title:'Pi and Wall online',detail:systemHealth.wall?'Fresh Wall heartbeat received':'Check the Pi, Wall browser, and pairing'},{done:systemHealth.pm5,title:'PM5 USB detected',detail:systemHealth.pm5?'Cable and PM5 bridge connected':systemHealth.pm5Known?'Wake the PM5 or check the USB cable':'Waiting for upgraded Pi health'}];
+ const steps=[{done:systemHealth.worker,title:'Cloud connected',detail:systemHealth.worker?'Worker responding':'Open Cloud connection and verify credentials'},{done:systemHealth.wall,title:'Pi and Wall online',detail:systemHealth.wall?'Fresh Wall heartbeat received':'Check the Pi, Wall browser, and pairing'},{done:systemHealth.pm5,title:'PM5 USB detected',detail:systemHealth.pm5?'Cable and PM5 bridge connected':systemHealth.pm5Known?'Wake the PM5 or check the USB cable':'Waiting for upgraded Pi health'}];
  const incomplete=steps.filter(x=>!x.done),button=document.getElementById('systemStatusButton'),text=document.getElementById('systemStatusText');if(button&&text){button.className='systemStatusBar '+(incomplete.length?'warn':'ok');text.textContent=incomplete.length?`${incomplete.length} SETUP ITEM${incomplete.length===1?'':'S'} NEED ATTENTION`:'SYSTEM READY · PM5 + WALL'}
  const list=document.getElementById('setupChecklist');if(list)list.innerHTML=steps.map((x,i)=>`<div class="setupStep ${x.done?'done':'warn'}"><i>${x.done?'✓':i+1}</i><div><b>${x.title}</b><span>${x.detail}</span></div></div>`).join('');
  const summary=document.getElementById('setupSummary');if(summary)summary.textContent=incomplete.length?`${incomplete.length} item${incomplete.length===1?'':'s'} still need attention.`:'Phone, cloud, Pi, PM5, and Wall are ready.';const details=document.getElementById('setupChecklistDetails');if(details&&!incomplete.length)details.removeAttribute('open');else if(details&&incomplete.length)details.setAttribute('open','');
@@ -1488,7 +1551,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.43",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.46",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -2006,12 +2069,7 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
  if(confirm('Reset all saved progress? Cloud sync will mirror the reset after reload.')){localStorage.removeItem(STORAGE_KEY);location.reload()}
 });
 
-window.addEventListener('beforeinstallprompt',e=>{
- e.preventDefault(); deferredPrompt=e; document.getElementById('installBanner').style.display='block';
-});
-document.getElementById('installBtn').addEventListener('click',async()=>{
- if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}
-});
+window.addEventListener('beforeinstallprompt',e=>e.preventDefault());
 
 
 renderToday();renderWeek();renderProgress();renderTimer();startSmoothTimer();
