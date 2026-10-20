@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.49 · Intelligent Training</title>
+<title>NONZERO v3.51 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -290,7 +290,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.49</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.51</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -310,7 +310,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="readinessEyebrow">ARRIVE READY · RIGHT HIP</div><h2 id="readinessCountdown"></h2>
 <p id="readinessPriority"></p><div class="readinessMetrics"><div><small>PERSONAL WEIGHT GOAL</small><strong>Below 220 lb</strong></div><div><small>LATEST WEIGHT</small><strong id="readinessWeight">—</strong></div><div><small>7-DAY AVERAGE</small><strong id="readinessAverage">—</strong></div></div>
 <p id="readinessDataStatus" class="small"></p><p id="readinessTraining" class="small"></p>
-<details><summary>Add a weight reading</summary><p class="small">Manual entry until Withings is connected. Enter the date shown in Withings.</p><label for="readinessWeightInput">Weight (lb)</label><input id="readinessWeightInput" type="number" min="50" max="700" step="0.1"><label for="readinessWeightDate">Reading date</label><input id="readinessWeightDate" type="date"><button id="saveReadinessWeight" type="button">Save weight</button><p id="readinessWeightReceipt" role="status"></p></details></section>
+<button type="button" id="openWeightSettings">Apple Health weight sync</button><details><summary>Add a weight reading</summary><p class="small">Optional manual entry. Apple Health imports keep their original reading dates.</p><label for="readinessWeightInput">Weight (lb)</label><input id="readinessWeightInput" type="number" min="50" max="700" step="0.1"><label for="readinessWeightDate">Reading date</label><input id="readinessWeightDate" type="date"><button id="saveReadinessWeight" type="button">Save weight</button><p id="readinessWeightReceipt" role="status"></p></details></section>
     <section class="todayCockpit">
       <div id="focusToolbar" class="focusToolbar" hidden><span>NONZERO</span><button id="focusRestBtn" type="button" hidden>Rest 90s</button><button id="focusViewBtn" type="button">Main app</button></div>
       <div class="timerpanel cockpitTimer">
@@ -472,6 +472,34 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
       <div id="surgeryPlanPreview" class="callout" style="margin-top:10px">TBD · current hip-smart program remains active.</div>
       <p class="small">The countdown adapts motivation and phase graphics. It does not override instructions from your surgeon or physical therapist.</p>
     </section>
+    <section class="card" id="weightConnectionCard">
+      <h2>Apple Health weight sync</h2>
+      <p>Withings → Apple Health → NONZERO. New readings update your surgery progress on the phone and wall.</p>
+      <p id="weightConnectionStatus" class="small" role="status">No Apple Health weight received yet.</p>
+      <button id="refreshWeightConnection" type="button">Check for imported weight</button>
+      <details class="settingsDisclosure"><summary>Set up the free iPhone Shortcut</summary>
+        <p class="small">One-time setup in Apple Shortcuts. This website cannot read Apple Health directly. No Withings developer account is needed.</p>
+        <button id="createWeightConnection" type="button">Create weight-only connection</button>
+        <p id="weightSetupReceipt" role="status" class="small"></p>
+        <div id="weightSetupSecrets" hidden>
+          <p class="small">Keep this credential private. It can submit weights only. Creating another connection replaces the old credential.</p>
+          <label for="weightEndpoint">Shortcut URL</label><input id="weightEndpoint" readonly autocomplete="off"><button id="copyWeightEndpoint" type="button">Copy URL</button>
+          <label for="weightToken">X-NONZERO-Weight header</label><input id="weightToken" readonly type="password" autocomplete="off"><button id="copyWeightToken" type="button">Copy weight credential</button>
+        </div>
+        <ol style="padding-left:22px;line-height:1.65">
+          <li>In Shortcuts, create <b>NONZERO Weight Sync</b>. Add <b>Find Health Samples</b>: Type is <b>Weight</b>, sort by <b>Start Date · Latest First</b>, Limit <b>1</b>. Remove any default date filter. If a Source filter is offered, select Withings.</li>
+          <li>Add <b>If</b> Health Samples <b>has any value</b>; put the remaining actions inside it. If empty, stop without sending.</li>
+          <li>Add <b>Get Details of Health Samples → Value</b> from the found sample. Save it with <b>Set Variable → Weight</b>.</li>
+          <li>Add <b>Get Details of Health Samples → Start Date</b>. Explicitly select the original <b>Health Samples</b> variable as input. Add <b>Format Date → ISO 8601</b>. Save as <b>MeasuredAt</b>.</li>
+          <li>Add <b>Get Contents of URL</b>, using the copied URL. Set Method <b>POST</b>. Add header <b>X-NONZERO-Weight</b> with the copied credential. Set Request Body <b>JSON</b> with Text fields: <b>weight</b> = Weight variable; <b>unit</b> = <b>lb</b> if Health displays pounds, or <b>kg</b> for kilograms; <b>measuredAt</b> = MeasuredAt variable; <b>source</b> = <b>Withings</b> only if your selected sample is from Withings (otherwise <b>Apple Health</b>). Use variables, not typed example numbers.</li>
+          <li>Run once while the iPhone is unlocked. View the response with <b>Show Result</b> during setup; successful results include <b>ok: true</b>. Then tap <b>Check for imported weight</b> here. Remove Show Result before automating.</li>
+          <li>In Shortcuts → Automation → <b>App</b>, choose <b>Withings → Is Closed → Run Immediately</b>, then <b>Run Shortcut → NONZERO Weight Sync</b>. Closing Withings gives it time to refresh first. You can also use a daily unlocked-time trigger; a locked phone may prevent Health access.</li>
+        </ol>
+        <p class="small">This runs when the automation fires, rather than immediately on every scale reading. Withings must finish syncing into Health first. If the reading is unchanged, NONZERO skips it. Re-run the Shortcut after a missed sync. Historical dates are never replaced by today's date.</p>
+      </details>
+      <details><summary>Disconnect weight imports</summary><p class="small">Revokes the Shortcut credential. Existing weights remain.</p><button id="revokeWeightConnection" type="button">Revoke weight connection</button></details>
+    </section>
+
     <section class="card">
       <h2>PM5 connection</h2>
       <div class="settingsStatus"><b id="pm5ConnectionStatus">USB → Raspberry Pi</b><span id="pm5ConnectionDetail">Checking direct connection</span></div>
@@ -664,7 +692,7 @@ const clone=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x)),equal=(a,b)
 // Rebase edits made locally since the last acknowledged snapshot onto a fresh cloud state.
 function rebase(base,local,remote){
 const out=clone(remote||{});
-for(const k of Object.keys(local||{})){if(['_meta','sessions','autopilotAgenda','suitePreferences','healthImport','activeWorkout','pm5Analytics'].includes(k))continue;if(!equal(local[k],base?.[k]))out[k]=clone(local[k])}
+for(const k of Object.keys(local||{})){if(['_meta','sessions','autopilotAgenda','suitePreferences','healthImport','activeWorkout','pm5Analytics','bodyMeasurements','weightSync'].includes(k))continue;if(!equal(local[k],base?.[k]))out[k]=clone(local[k])}
 if(!equal(local?.activeWorkout,base?.activeWorkout)){const l=local?.activeWorkout,b=base?.activeWorkout,r=remote?.activeWorkout;if(l&&b&&r&&l.sessionId===b.sessionId&&l.sessionId===r.sessionId){out.activeWorkout=clone(r);for(const k of Object.keys(l))if(!equal(l[k],b[k]))out.activeWorkout[k]=clone(l[k])}else out.activeWorkout=clone(l)}
 const b=new Map((base?.sessions||[]).map(x=>[key(x),x])),l=new Map((local?.sessions||[]).map(x=>[key(x),x])),r=new Map((remote?.sessions||[]).map(x=>[key(x),x]));
 for(const [id,x] of b)if(!l.has(id))r.delete(id);for(const [id,x] of l)if(!equal(x,b.get(id)))r.set(id,clone(x));out.sessions=[...r.values()];
@@ -672,6 +700,10 @@ const bm=base?.pm5Analytics||{},lm=local?.pm5Analytics||{},rm=remote?.pm5Analyti
 if(!equal(bm,lm)){const rides=new Map((rm.rides||[]).map(x=>[x.id,x]));for(const x of lm.rides||[])if(!rides.has(x.id)||Number(x.updatedAt||0)>=Number(rides.get(x.id).updatedAt||0))rides.set(x.id,clone(x));const health=new Map((rm.health||[]).map(x=>[x.id,x]));for(const x of lm.health||[])health.set(x.id,clone(x));out.pm5Analytics={...clone(rm),...clone(lm),rides:[...rides.values()],health:[...health.values()],profile:!equal(lm.profile,bm.profile)?clone(lm.profile):clone(rm.profile||{}),updatedAt:Math.max(Number(lm.updatedAt||0),Number(rm.updatedAt||0))}}
 const bh=base?.healthImport||{},lh=local?.healthImport||{},rh=remote?.healthImport||{};
 if(!equal(bh,lh)){const decisions={...(rh.decisions||{})};for(const id of Object.keys(bh.decisions||{}))if(!(id in (lh.decisions||{}))&&equal(decisions[id],bh.decisions[id]))delete decisions[id];for(const [id,d] of Object.entries(lh.decisions||{}))if(!equal(d,bh.decisions?.[id])&&Number(d.at||0)>=Number(decisions[id]?.at||0))decisions[id]=d;const review={...(rh.review||{})};for(const [id,v] of Object.entries(lh.review||{}))if(!equal(v,bh.review?.[id]))review[id]=v;for(const id of Object.keys(decisions))delete review[id];out.healthImport={...clone(rh),decisions,review};out.sessions=out.sessions.filter(x=>!x.healthKit||!['user-deleted','health-deleted'].includes(decisions[x.healthKit.uuid]?.action))}
+const weights=new Map((remote?.bodyMeasurements||[]).map(x=>[x.id,x]));
+const baseWeights=new Map((base?.bodyMeasurements||[]).map(x=>[x.id,x]));
+for(const x of local?.bodyMeasurements||[])if(!equal(x,baseWeights.get(x.id)))weights.set(x.id,clone(x));
+out.bodyMeasurements=[...weights.values()];
 return out;
 }
 root.NonZeroSuite={VERSION,TIME_ZONE,dateKey,dateAdd,minute,clockMinutes,clock,external,currentRecord,metrics,activeDay,timeline,eventLabel,opportunity,rebase};
@@ -959,7 +991,7 @@ function applyCanonicalState(payload,{render=true}={}){
    if(document.getElementById('startDate'))document.getElementById('startDate').value=state.startDate;
    if(document.getElementById('reminderTime'))document.getElementById('reminderTime').value=state.reminderTime||'06:00';
    if(document.getElementById('wallAmbientTime'))renderWallScheduleSettings();
-   renderPreop();renderHealthReview();
+   renderPreop();renderHealthReview();renderSurgeryReadiness();
  }
  return true;
 }
@@ -1047,13 +1079,17 @@ async function resumeCloudSync(){
  if(!cloudReady())return;
  if(stateStorageRecovered)return pullCloudState({force:true});
  if(localDirty || cloudPushPending)await drainCloudPush();
- if(!localDirty)await pullCloudState();
+ if(!localDirty)return await pullCloudState();
+ return !localDirty;
 }
 function startCanonicalSyncLoop(){
  if(canonicalSyncInterval)clearInterval(canonicalSyncInterval);
- canonicalSyncInterval=setInterval(()=>{
-   if(document.visibilityState==='visible'&&cloudReady())resumeCloudSync();
- },2000);
+ // Keep automatic PM5 entry responsive, but back off failed passive reads.
+ let next=0,failures=0,busy=false;
+ canonicalSyncInterval=setInterval(async()=>{
+   if(document.visibilityState!=='visible'||!cloudReady()||busy||Date.now()<next)return;
+   busy=true;try{const ok=await resumeCloudSync();failures=ok===false?Math.min(6,failures+1):0;next=Date.now()+(failures?Math.min(120000,3000*2**(failures-1)):3000)}finally{busy=false}
+ },1000);
 }
 function makeSyncKey(){
  const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
@@ -1068,9 +1104,10 @@ function renderSurgeryReadiness(){
  text('readinessPriority',x.days<0?'Follow your clinician-cleared recovery plan.':(x.date?new Date(x.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'Date TBD')+' · Build consistency, protect your hip, arrive ready.');
  text('readinessWeight',x.latest?Number(x.latest.weightLb).toFixed(1)+' lb':'No reading yet');
  text('readinessAverage',x.average==null?'Need readings':x.average.toFixed(1)+' lb');
- text('readinessDataStatus',x.latest?x.latest.date+' · '+(x.latest.source==='withings'?'Withings':x.latest.source==='withings-reported'?'Withings · user reported':'Manual entry')+(x.stale?' · Out of date: add a fresh reading':x.goalMet?' · Below your personal goal':' · Personal goal: below 220 lb')+' · '+x.trendDays+' day(s) in weekly average':'Withings not connected · Add a current reading to establish your baseline. This is your personal weight goal.');
+ text('readinessDataStatus',x.latest?x.latest.date+' · '+(x.latest.source==='apple-health'?(x.latest.sourceName+' via Apple Health'):x.latest.source==='withings'?'Withings':x.latest.source==='withings-reported'?'Withings · user reported':'Manual entry')+(x.stale?' · Out of date: add a fresh reading':x.goalMet?' · Below your personal goal':' · Personal goal: below 220 lb')+' · '+x.trendDays+' day(s) in weekly average':'Withings not connected · Add a current reading to establish your baseline. This is your personal weight goal.');
  const start=NonZeroSuite.dateAdd(localDateStr(),-6),done=(state.sessions||[]).filter(s=>s.completed===true&&s.date>=start&&s.date<=localDateStr());
  text('readinessTraining',done.length+' completed sessions in the last 7 days · '+Math.round(done.reduce((n,s)=>n+Math.max(0,Number(s.duration)||0),0))+' training minutes · Keep your approved strength and mobility work consistent.');
+ renderWeightConnection();
  if(el('readinessWeightDate')&&!el('readinessWeightDate').value)el('readinessWeightDate').value=localDateStr();
 }
 document.getElementById('saveReadinessWeight')?.addEventListener('click',()=>{
@@ -1080,6 +1117,42 @@ document.getElementById('saveReadinessWeight')?.addEventListener('click',()=>{
  state.bodyMeasurements=state.bodyMeasurements.filter(x=>x.id!==id);state.bodyMeasurements.push({id,date,weightLb:weight,source:'manual',at:Date.now()});save();renderSurgeryReadiness();receipt.textContent='Weight saved.';input.value='';
 });
 
+function renderWeightConnection(){
+ const label=document.getElementById('weightConnectionStatus');if(!label)return;
+ const rows=(state.bodyMeasurements||[]).filter(x=>x.source==='apple-health').sort((a,b)=>Number(a.at)-Number(b.at)),latest=rows.at(-1);
+ label.textContent=latest?rows.length+' Apple Health reading(s) received · Latest '+Number(latest.weightLb).toFixed(1)+' lb on '+latest.date+' · Last new import '+new Date(state.weightSync?.lastImportedAt||latest.importedAt).toLocaleString():'No Apple Health weight received yet. Create the connection, then run the Shortcut.';
+}
+async function weightConnectionAction(action){
+ if(!cloudReady())throw Error('Set your cloud URL and private key in Settings, then sync first.');
+ const abort=new AbortController(),timeout=setTimeout(()=>abort.abort(),15000);
+ try{
+  const response=await fetch(normalizeEndpoint(cloudConfig.endpoint)+'/health/weight/'+action,{method:'POST',headers:{'X-NONZERO-Key':cloudConfig.syncKey},signal:abort.signal});
+  const data=await response.json();if(!response.ok)throw Error(response.status===404?'Install Worker 5.12 before connecting weights.':data.error||'Could not update the weight connection.');return data;
+ }finally{clearTimeout(timeout)}
+}
+for(const [id,action] of [['createWeightConnection','setup'],['revokeWeightConnection','revoke']])document.getElementById(id)?.addEventListener('click',async()=>{
+ const button=document.getElementById(id),receipt=document.getElementById('weightSetupReceipt');button.disabled=true;receipt.textContent='Updating weight connection…';
+ try{
+  const data=await weightConnectionAction(action);
+  document.getElementById('weightEndpoint').value=data.endpoint||'';document.getElementById('weightToken').value=data.token||'';document.getElementById('weightSetupSecrets').hidden=action!=='setup';
+  receipt.textContent=action==='setup'?'Connection created. Copy the URL and credential below into your Shortcut. No weights have been sent yet.':'Weight credential revoked. Existing weights are retained.';
+ }catch(e){receipt.textContent=e.name==='AbortError'?'Connection timed out. Check your network and try again.':e.message}
+ finally{button.disabled=false}
+});
+for(const [id,target] of [['copyWeightEndpoint','weightEndpoint'],['copyWeightToken','weightToken']])document.getElementById(id)?.addEventListener('click',async()=>{
+ const input=document.getElementById(target),receipt=document.getElementById('weightSetupReceipt');
+ try{if(!input.value)throw Error('Create the weight connection first.');await navigator.clipboard.writeText(input.value);receipt.textContent=target==='weightToken'?'Weight-only credential copied.':'Import URL copied.'}
+ catch{input.focus();input.select();receipt.textContent='Select and copy the field manually.'}
+});
+document.getElementById('refreshWeightConnection')?.addEventListener('click',async()=>{
+ const button=document.getElementById('refreshWeightConnection'),label=document.getElementById('weightConnectionStatus');button.disabled=true;
+ try{if(!cloudReady())throw Error('Connect NONZERO cloud in Settings first.');if(!await pullCloudState({force:true}))throw Error('Cloud refresh did not complete. Check connection and retry.');renderSurgeryReadiness()}
+ catch(e){label.textContent=e.message}finally{button.disabled=false}
+});
+
+document.getElementById('openWeightSettings')?.addEventListener('click',()=>{
+ document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('weightConnectionCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+});
 function surgeryDaysRemaining(){
  const ds=state.surgeryPlan?.date;if(!ds)return null;
  const target=new Date(ds+'T12:00:00'),today=new Date(localDateStr()+'T12:00:00');
@@ -1586,7 +1659,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.49",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.51",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
