@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.52 · Intelligent Training</title>
+<title>NONZERO v3.53 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -271,6 +271,8 @@ body.trainingFocus .jointHeader{margin:4px 0}.trainingFocus .jointRow{padding:4p
 
 
 body.trainingFocus .focusToolbar{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}body.trainingFocus .focusToolbar>span{display:none!important}body.trainingFocus .focusToolbar button{min-width:0!important;min-height:44px!important;padding:5px 3px!important;font-size:11px!important;white-space:normal;line-height:1.2}
+
+.weightDailyStatus{border:1px solid #475569;border-left:5px solid #38bdf8;border-radius:14px;padding:14px;margin:12px 0;background:#142334}.weightDailyStatus strong{display:block;font-size:17px}.weightDailyStatus[data-tone="good"]{border-left-color:#22c55e;background:#112c24}.weightDailyStatus[data-tone="warning"]{border-left-color:#f59e0b;background:#302718}.weightDailyActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.weightDailyActions button{min-height:44px}.weightDailyStatus button:disabled{opacity:.6}
 </style>
 
 
@@ -290,7 +292,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.52</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.53</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -308,9 +310,13 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
   <main id="tabToday">
 <section id="surgeryReadiness" class="card surgeryReadiness">
 <div class="readinessEyebrow">ARRIVE READY · RIGHT HIP</div><h2 id="readinessCountdown"></h2>
-<p id="readinessPriority"></p><div class="readinessMetrics"><div><small>PERSONAL WEIGHT GOAL</small><strong>Below 220 lb</strong></div><div><small>LATEST WEIGHT</small><strong id="readinessWeight">—</strong></div><div><small>7-DAY AVERAGE</small><strong id="readinessAverage">—</strong></div></div>
+<p id="readinessPriority"></p><div id="weightDailyStatus" class="weightDailyStatus" data-tone="neutral" role="status" aria-live="polite">
+<strong id="weightDailyTitle">Checking today's weight…</strong><p id="weightDailyDetail" class="small"></p>
+<div class="weightDailyActions"><button type="button" id="addWeightNow">Add weight manually</button><button type="button" id="checkWeightNow">Check sync</button></div>
+</div>
+<div class="readinessMetrics"><div><small>PERSONAL WEIGHT GOAL</small><strong>Below 220 lb</strong></div><div><small>LATEST WEIGHT</small><strong id="readinessWeight">—</strong></div><div><small>7-DAY AVERAGE</small><strong id="readinessAverage">—</strong></div></div>
 <p id="readinessDataStatus" class="small"></p><p id="readinessTraining" class="small"></p>
-<button type="button" id="openWeightSettings">Apple Health weight sync</button><details><summary>Add a weight reading</summary><p class="small">Optional manual entry. Apple Health imports keep their original reading dates.</p><label for="readinessWeightInput">Weight (lb)</label><input id="readinessWeightInput" type="number" min="50" max="700" step="0.1"><label for="readinessWeightDate">Reading date</label><input id="readinessWeightDate" type="date"><button id="saveReadinessWeight" type="button">Save weight</button><p id="readinessWeightReceipt" role="status"></p></details></section>
+<button type="button" id="openWeightSettings">Apple Health weight sync</button><details id="manualWeightDetails"><summary>Add or edit a weight manually</summary><p class="small">Always available if daily sync is delayed or blocked. Use the actual date of your measurement; saving a manual reading updates your progress immediately.</p><label for="readinessWeightInput">Weight (lb)</label><input id="readinessWeightInput" type="number" min="50" max="700" step="0.1"><label for="readinessWeightDate">Reading date</label><input id="readinessWeightDate" type="date"><button id="saveReadinessWeight" type="button">Save weight</button><p id="readinessWeightReceipt" role="status"></p></details></section>
     <section class="todayCockpit">
       <div id="focusToolbar" class="focusToolbar" hidden><span>NONZERO</span><button id="focusRestBtn" type="button" hidden>Rest 90s</button><button id="focusViewBtn" type="button">Main app</button></div>
       <div class="timerpanel cockpitTimer">
@@ -920,6 +926,7 @@ let canonicalSyncInterval=null;
 let cloudPushInFlight=false;
 let cloudPushPending=false;
 let cloudPullInFlight=false;
+let weightCloudFailure=false;
 let cloudBaseState=readStoredObject('nonzero.suite.base')||JSON.parse(JSON.stringify(state));
 let recoveryBase=stateStorageRecovered?(readStoredObject('nonzero.suite.recoveryBase')||JSON.parse(JSON.stringify(state))):null;
 if(stateStorageRecovered)localStorage.setItem('nonzero.suite.recoveryBase',JSON.stringify(recoveryBase));
@@ -1057,6 +1064,7 @@ async function pullCloudState({force=false}={}){
    if(localDirty || cloudPushInFlight || cloudPushPending)return false;
  }
  cloudPullInFlight=true;
+ if(typeof renderWeightDailyStatus==='function')renderWeightDailyStatus();
  const pullSeq=cloudMutationSeq,pullBase=JSON.parse(JSON.stringify(cloudBaseState));
  try{
    setSyncStatus('Checking cloud…','busy');
@@ -1066,6 +1074,7 @@ async function pullCloudState({force=false}={}){
    const remoteTime=Number(remote?.updatedAt||remote.state?._meta?.updatedAt||0);
    const localTime=Number(state?._meta?.updatedAt||0);
    if(remoteRev<cloudRevision){setSyncStatus('Waiting for current cloud revision','busy');return true}
+   weightCloudFailure=false;
    if(stateStorageRecovered){const latest=JSON.parse(JSON.stringify(state));applyCanonicalState(remote,{render:false});state=NonZeroSuite.rebase(recoveryBase,latest,state);stateStorageRecovered=false;localStorage.removeItem('nonzero.suite.recoveryPending');localStorage.removeItem('nonzero.suite.recoveryBase');localDirty=true;cloudPushPending=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));document.getElementById('storageRecoveryNotice')?.remove();renderAfterSessionChange();queueCloudPush();}
    else if(force || remoteRev>cloudRevision || remoteTime>localTime){const latest=JSON.parse(JSON.stringify(state));applyCanonicalState(remote,{render:true});if(cloudMutationSeq!==pullSeq){state=NonZeroSuite.rebase(pullBase,latest,state);localDirty=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));queueCloudPush();renderToday();renderWeek();renderProgress();}}
    cloudRevision=Math.max(cloudRevision,remoteRev);
@@ -1073,10 +1082,12 @@ async function pullCloudState({force=false}={}){
    return true;
  }catch(err){
    console.warn(err);
+   weightCloudFailure=true;
    setSyncStatus('Offline · using local state','err');
    return false;
  }finally{
    cloudPullInFlight=false;
+   if(typeof renderWeightDailyStatus==='function')renderWeightDailyStatus();
  }
 }
 async function resumeCloudSync(){
@@ -1102,6 +1113,47 @@ function makeSyncKey(){
 function localDateStr(d=new Date()){return NonZeroSuite.dateKey(d)}
 function weekdayIndex(){return new Date(NonZeroSuite.dateKey()+'T12:00:00Z').getUTCDay()}
 
+(function(root){
+'use strict';
+function describe(summary,today,minutes,options={}){
+ const latest=summary.latest;
+ if(latest&&latest.date===today){
+  const manual=latest.source!=='apple-health';
+  return {kind:'current',tone:'good',needsManual:false,title:"Today's weight is saved · "+Number(latest.weightLb).toFixed(1)+' lb',detail:(manual?'Entered manually.':'Received from Apple Health.')+' No manual entry needed.'+(options.pendingUpload?' Saved on this phone; cloud upload is pending.':'')};
+ }
+ if(options.checking)return {kind:'checking',tone:'neutral',needsManual:false,title:"Checking for today's weight…",detail:'Checking the cloud before asking you to add a reading.'};
+ const last=latest?' Latest saved reading: '+latest.date+'.':'';
+ if(options.offline||options.cloudFailed)return {kind:'unverified',tone:'warning',needsManual:true,title:"Today's weight is not saved on this phone",detail:'The cloud could not be checked. Add a real measurement manually, or retry when connected.'+last};
+ if(minutes<600)return {kind:'pending',tone:'neutral',needsManual:false,title:"Today's weight is pending",detail:'The daily sync target is 10:00 a.m. Manual entry is available anytime.'+last};
+ return {kind:'missing',tone:'warning',needsManual:true,title:"Add today's weight or retry sync",detail:'No reading dated today has arrived. Enter your measurement below, or check the cloud again.'+last};
+}
+root.NonZeroWeightStatus={describe};
+if(typeof module!=='undefined')module.exports=root.NonZeroWeightStatus;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+function renderWeightDailyStatus(){
+ const box=document.getElementById('weightDailyStatus');if(!box)return;
+ const cloudConnected=cloudReady(),checking=cloudConnected&&cloudPullInFlight;
+ const result=NonZeroWeightStatus.describe(NonZeroReadiness.summary(state,localDateStr()),localDateStr(),NonZeroSuite.minute(new Date()),{checking,offline:navigator.onLine===false,cloudFailed:cloudConnected&&weightCloudFailure,pendingUpload:cloudConnected&&localDirty});
+ box.dataset.tone=result.tone;
+ document.getElementById('weightDailyTitle').textContent=result.title;
+ document.getElementById('weightDailyDetail').textContent=result.detail;
+ document.getElementById('addWeightNow').textContent=result.kind==='current'?'Edit / add weight':'Add weight manually';
+ const retry=document.getElementById('checkWeightNow');retry.disabled=checking||!cloudConnected;retry.textContent=checking?'Checking…':!cloudConnected?'Cloud not connected':'Check sync';
+ const date=document.getElementById('readinessWeightDate');if(date)date.max=localDateStr();
+}
+document.getElementById('addWeightNow')?.addEventListener('click',()=>{
+ const panel=document.getElementById('manualWeightDetails'),input=document.getElementById('readinessWeightInput');
+ panel.open=true;if(!input.value)document.getElementById('readinessWeightDate').value=localDateStr();
+ panel.scrollIntoView({behavior:'smooth',block:'nearest'});input.focus();
+});
+document.getElementById('checkWeightNow')?.addEventListener('click',async()=>{
+ const button=document.getElementById('checkWeightNow');button.disabled=true;
+ try{if(!cloudReady())return;const ok=await pullCloudState({force:true});if(!ok)weightCloudFailure=true;renderSurgeryReadiness()}
+ catch{weightCloudFailure=true;renderSurgeryReadiness()}
+ finally{renderWeightDailyStatus()}
+});
+
 function renderSurgeryReadiness(){
  const x=NonZeroReadiness.summary(state,localDateStr()),el=id=>document.getElementById(id),text=(id,v)=>{if(el(id))el(id).textContent=v};
  text('readinessCountdown',Number.isFinite(x.days)?x.days>0?x.days+' days to surgery':x.days===0?'Surgery day':Math.abs(x.days)+' days into recovery':'Set your surgery date');
@@ -1111,7 +1163,7 @@ function renderSurgeryReadiness(){
  text('readinessDataStatus',x.latest?x.latest.date+' · '+(x.latest.source==='apple-health'?(x.latest.sourceName==='Apple Health'?'Apple Health':x.latest.sourceName+' via Apple Health'):x.latest.source==='withings'?'Withings':x.latest.source==='withings-reported'?'Withings · user reported':'Manual entry')+(x.stale?' · Out of date: add a fresh reading':x.goalMet?' · Below your personal goal':' · Personal goal: below 220 lb')+' · '+x.trendDays+' day(s) in weekly average':'Withings not connected · Add a current reading to establish your baseline. This is your personal weight goal.');
  const start=NonZeroSuite.dateAdd(localDateStr(),-6),done=(state.sessions||[]).filter(s=>s.completed===true&&s.date>=start&&s.date<=localDateStr());
  text('readinessTraining',done.length+' completed sessions in the last 7 days · '+Math.round(done.reduce((n,s)=>n+Math.max(0,Number(s.duration)||0),0))+' training minutes · Keep your approved strength and mobility work consistent.');
- renderWeightConnection();
+ renderWeightConnection();renderWeightDailyStatus();
  if(el('readinessWeightDate')&&!el('readinessWeightDate').value)el('readinessWeightDate').value=localDateStr();
 }
 document.getElementById('saveReadinessWeight')?.addEventListener('click',()=>{
@@ -1669,7 +1721,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.52",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.53",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -2200,8 +2252,10 @@ function persistActiveState(){
  if(cloudReady())drainCloudPush();
 }
 async function resumeApp({refreshWall=false}={}){
+ renderSurgeryReadiness();
  garageArrival();
  await resumeCloudSync();
+ renderSurgeryReadiness();
  if(refreshWall)fetchWallHealth();
  renderTimer();
  setTimeout(()=>{if(todayProgram().type==='bike')importLatestConcept2({silent:true})},1200);
