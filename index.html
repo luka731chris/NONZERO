@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.51 · Intelligent Training</title>
+<title>NONZERO v3.52 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -290,7 +290,7 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.51</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.52</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -473,33 +473,37 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
       <p class="small">The countdown adapts motivation and phase graphics. It does not override instructions from your surgeon or physical therapist.</p>
     </section>
     <section class="card" id="weightConnectionCard">
-      <h2>Apple Health weight sync</h2>
-      <p>Withings → Apple Health → NONZERO. New readings update your surgery progress on the phone and wall.</p>
+      <h2>Daily weight sync · 10:00 a.m.</h2>
+      <p>Send the latest weight already in Apple Health to NONZERO once a day. Withings does not need to be opened or closed to trigger this automation.</p>
       <p id="weightConnectionStatus" class="small" role="status">No Apple Health weight received yet.</p>
-      <button id="refreshWeightConnection" type="button">Check for imported weight</button>
-      <details class="settingsDisclosure"><summary>Set up the free iPhone Shortcut</summary>
-        <p class="small">One-time setup in Apple Shortcuts. This website cannot read Apple Health directly. No Withings developer account is needed.</p>
-        <button id="createWeightConnection" type="button">Create weight-only connection</button>
+      <button id="refreshWeightConnection" type="button">Check imported weight</button>
+      <details class="settingsDisclosure"><summary>Set up daily sync · four actions</summary>
+        <p class="small">Install Worker 5.13 first. Create one private sync link, then build the four actions below in Apple Shortcuts.</p>
+        <button id="createWeightConnection" type="button">Create my sync link</button>
         <p id="weightSetupReceipt" role="status" class="small"></p>
         <div id="weightSetupSecrets" hidden>
-          <p class="small">Keep this credential private. It can submit weights only. Creating another connection replaces the old credential.</p>
-          <label for="weightEndpoint">Shortcut URL</label><input id="weightEndpoint" readonly autocomplete="off"><button id="copyWeightEndpoint" type="button">Copy URL</button>
-          <label for="weightToken">X-NONZERO-Weight header</label><input id="weightToken" readonly type="password" autocomplete="off"><button id="copyWeightToken" type="button">Copy weight credential</button>
+          <label for="weightEndpoint">Private sync link</label><input id="weightEndpoint" readonly autocomplete="off"><button id="copyWeightEndpoint" type="button">Copy sync link</button>
+          <p class="small">This link can submit weights only. Keep it private. Creating another link replaces the previous one.</p>
         </div>
+        <p><b>Create a shortcut named NONZERO Weight Sync:</b></p>
         <ol style="padding-left:22px;line-height:1.65">
-          <li>In Shortcuts, create <b>NONZERO Weight Sync</b>. Add <b>Find Health Samples</b>: Type is <b>Weight</b>, sort by <b>Start Date · Latest First</b>, Limit <b>1</b>. Remove any default date filter. If a Source filter is offered, select Withings.</li>
-          <li>Add <b>If</b> Health Samples <b>has any value</b>; put the remaining actions inside it. If empty, stop without sending.</li>
-          <li>Add <b>Get Details of Health Samples → Value</b> from the found sample. Save it with <b>Set Variable → Weight</b>.</li>
-          <li>Add <b>Get Details of Health Samples → Start Date</b>. Explicitly select the original <b>Health Samples</b> variable as input. Add <b>Format Date → ISO 8601</b>. Save as <b>MeasuredAt</b>.</li>
-          <li>Add <b>Get Contents of URL</b>, using the copied URL. Set Method <b>POST</b>. Add header <b>X-NONZERO-Weight</b> with the copied credential. Set Request Body <b>JSON</b> with Text fields: <b>weight</b> = Weight variable; <b>unit</b> = <b>lb</b> if Health displays pounds, or <b>kg</b> for kilograms; <b>measuredAt</b> = MeasuredAt variable; <b>source</b> = <b>Withings</b> only if your selected sample is from Withings (otherwise <b>Apple Health</b>). Use variables, not typed example numbers.</li>
-          <li>Run once while the iPhone is unlocked. View the response with <b>Show Result</b> during setup; successful results include <b>ok: true</b>. Then tap <b>Check for imported weight</b> here. Remove Show Result before automating.</li>
-          <li>In Shortcuts → Automation → <b>App</b>, choose <b>Withings → Is Closed → Run Immediately</b>, then <b>Run Shortcut → NONZERO Weight Sync</b>. Closing Withings gives it time to refresh first. You can also use a daily unlocked-time trigger; a locked phone may prevent Health access.</li>
+          <li><b>Find Health Samples</b> — Type: <b>Weight</b>; Sort: <b>Start Date, Latest First</b>; Limit: <b>1</b>. Remove any default date filter.</li>
+          <li><b>Format Date</b> — use <b>Health Samples</b>, tap the variable and select its <b>Start Date</b>. Format: <b>ISO 8601</b>.</li>
+          <li><b>Text</b> — copy the template below. Replace <b>REPLACE_WITH_WEIGHT</b> with the <b>Health Samples</b> variable, then tap it and choose <b>Value</b>. Replace <b>REPLACE_WITH_DATE</b> with <b>Formatted Date</b>.</li>
+          <li><b>Get Contents of URL</b> — paste your private sync link; Method: <b>POST</b>; Request Body: <b>File</b>; choose the <b>Text</b> action as the file. No headers or JSON fields.</li>
         </ol>
-        <p class="small">This runs when the automation fires, rather than immediately on every scale reading. Withings must finish syncing into Health first. If the reading is unchanged, NONZERO skips it. Re-run the Shortcut after a missed sync. Historical dates are never replaced by today's date.</p>
+        <pre id="weightTextTemplate" style="white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;background:var(--panel);border-radius:12px">weight=REPLACE_WITH_WEIGHT
+measuredAt=REPLACE_WITH_DATE
+unit=lb</pre><button id="copyWeightTemplate" type="button">Copy Text template</button>
+        <p class="small">The template uses pounds. If Health displays numeric weights in kilograms, change the last line to unit=kg.</p>
+        <p><b>Schedule it:</b> Add a <b>Time of Day</b> automation to this shortcut: <b>10:00 a.m. → Daily → Run Immediately</b> (turn off Ask Before Running if shown). On newer Shortcuts versions, add the trigger under the shortcut's <b>Edit → Automation</b>. This schedule is set on your iPhone; NONZERO cannot create or confirm it from this webpage.</p>
+        <p><b>Test once:</b> Run the shortcut while unlocked and allow Weight access and the network request. Then tap <b>Check imported weight</b> here. After that, the time trigger runs it without a Withings app action.</p>
+        <p class="small">Important iPhone limit: allowing the shortcut to run while locked does not guarantee access to protected Health data. If iOS blocks the 10 a.m. read, the run needs to be retried while unlocked. There is no guaranteed new-weight event trigger in this free setup.</p>
+        <p class="small">Repeated readings are skipped without another state write. The reading keeps its original date. No Withings developer account, subscription or Pi update is required.</p>
       </details>
-      <details><summary>Disconnect weight imports</summary><p class="small">Revokes the Shortcut credential. Existing weights remain.</p><button id="revokeWeightConnection" type="button">Revoke weight connection</button></details>
+      <details><summary>Advanced connection details</summary><label for="weightAdvancedEndpoint">Existing JSON import endpoint</label><input id="weightAdvancedEndpoint" readonly><label for="weightToken">Weight-only credential</label><input id="weightToken" readonly type="password" autocomplete="off"><button id="copyWeightToken" type="button">Copy weight credential</button></details>
+      <details><summary>Disconnect weight imports</summary><p class="small">Revokes the sync link. Existing weights remain.</p><button id="revokeWeightConnection" type="button">Revoke sync link</button></details>
     </section>
-
     <section class="card">
       <h2>PM5 connection</h2>
       <div class="settingsStatus"><b id="pm5ConnectionStatus">USB → Raspberry Pi</b><span id="pm5ConnectionDetail">Checking direct connection</span></div>
@@ -1104,7 +1108,7 @@ function renderSurgeryReadiness(){
  text('readinessPriority',x.days<0?'Follow your clinician-cleared recovery plan.':(x.date?new Date(x.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'Date TBD')+' · Build consistency, protect your hip, arrive ready.');
  text('readinessWeight',x.latest?Number(x.latest.weightLb).toFixed(1)+' lb':'No reading yet');
  text('readinessAverage',x.average==null?'Need readings':x.average.toFixed(1)+' lb');
- text('readinessDataStatus',x.latest?x.latest.date+' · '+(x.latest.source==='apple-health'?(x.latest.sourceName+' via Apple Health'):x.latest.source==='withings'?'Withings':x.latest.source==='withings-reported'?'Withings · user reported':'Manual entry')+(x.stale?' · Out of date: add a fresh reading':x.goalMet?' · Below your personal goal':' · Personal goal: below 220 lb')+' · '+x.trendDays+' day(s) in weekly average':'Withings not connected · Add a current reading to establish your baseline. This is your personal weight goal.');
+ text('readinessDataStatus',x.latest?x.latest.date+' · '+(x.latest.source==='apple-health'?(x.latest.sourceName==='Apple Health'?'Apple Health':x.latest.sourceName+' via Apple Health'):x.latest.source==='withings'?'Withings':x.latest.source==='withings-reported'?'Withings · user reported':'Manual entry')+(x.stale?' · Out of date: add a fresh reading':x.goalMet?' · Below your personal goal':' · Personal goal: below 220 lb')+' · '+x.trendDays+' day(s) in weekly average':'Withings not connected · Add a current reading to establish your baseline. This is your personal weight goal.');
  const start=NonZeroSuite.dateAdd(localDateStr(),-6),done=(state.sessions||[]).filter(s=>s.completed===true&&s.date>=start&&s.date<=localDateStr());
  text('readinessTraining',done.length+' completed sessions in the last 7 days · '+Math.round(done.reduce((n,s)=>n+Math.max(0,Number(s.duration)||0),0))+' training minutes · Keep your approved strength and mobility work consistent.');
  renderWeightConnection();
@@ -1126,22 +1130,23 @@ async function weightConnectionAction(action){
  if(!cloudReady())throw Error('Set your cloud URL and private key in Settings, then sync first.');
  const abort=new AbortController(),timeout=setTimeout(()=>abort.abort(),15000);
  try{
+  if(action==='setup'){const healthResponse=await fetch(normalizeEndpoint(cloudConfig.endpoint)+'/health',{signal:abort.signal,cache:'no-store'});const health=await healthResponse.json();if(!healthResponse.ok||health.simpleWeightShortcut!==true)throw Error('Install Worker 5.13 before creating the simple daily sync link. Existing credentials were not changed.');}
   const response=await fetch(normalizeEndpoint(cloudConfig.endpoint)+'/health/weight/'+action,{method:'POST',headers:{'X-NONZERO-Key':cloudConfig.syncKey},signal:abort.signal});
-  const data=await response.json();if(!response.ok)throw Error(response.status===404?'Install Worker 5.12 before connecting weights.':data.error||'Could not update the weight connection.');return data;
+  const data=await response.json();if(!response.ok)throw Error(response.status===404?'Install Worker 5.13 before connecting weights.':data.error||'Could not update the weight connection.');return data;
  }finally{clearTimeout(timeout)}
 }
 for(const [id,action] of [['createWeightConnection','setup'],['revokeWeightConnection','revoke']])document.getElementById(id)?.addEventListener('click',async()=>{
  const button=document.getElementById(id),receipt=document.getElementById('weightSetupReceipt');button.disabled=true;receipt.textContent='Updating weight connection…';
  try{
   const data=await weightConnectionAction(action);
-  document.getElementById('weightEndpoint').value=data.endpoint||'';document.getElementById('weightToken').value=data.token||'';document.getElementById('weightSetupSecrets').hidden=action!=='setup';
-  receipt.textContent=action==='setup'?'Connection created. Copy the URL and credential below into your Shortcut. No weights have been sent yet.':'Weight credential revoked. Existing weights are retained.';
+  document.getElementById('weightEndpoint').value=data.shortcutUrl||'';document.getElementById('weightAdvancedEndpoint').value=data.endpoint||'';document.getElementById('weightToken').value=data.token||'';document.getElementById('weightSetupSecrets').hidden=action!=='setup';
+  receipt.textContent=action==='setup'?'Private sync link created. Copy the link, build the four actions, then add the daily 10 a.m. trigger in Shortcuts. No readings have been sent yet.':'Weight credential revoked. Existing weights are retained.';
  }catch(e){receipt.textContent=e.name==='AbortError'?'Connection timed out. Check your network and try again.':e.message}
  finally{button.disabled=false}
 });
 for(const [id,target] of [['copyWeightEndpoint','weightEndpoint'],['copyWeightToken','weightToken']])document.getElementById(id)?.addEventListener('click',async()=>{
  const input=document.getElementById(target),receipt=document.getElementById('weightSetupReceipt');
- try{if(!input.value)throw Error('Create the weight connection first.');await navigator.clipboard.writeText(input.value);receipt.textContent=target==='weightToken'?'Weight-only credential copied.':'Import URL copied.'}
+ try{if(!input.value)throw Error('Create the weight connection first.');await navigator.clipboard.writeText(input.value);receipt.textContent=target==='weightToken'?'Weight-only credential copied.':'Private sync link copied.'}
  catch{input.focus();input.select();receipt.textContent='Select and copy the field manually.'}
 });
 document.getElementById('refreshWeightConnection')?.addEventListener('click',async()=>{
@@ -1152,6 +1157,11 @@ document.getElementById('refreshWeightConnection')?.addEventListener('click',asy
 
 document.getElementById('openWeightSettings')?.addEventListener('click',()=>{
  document.querySelector('[data-tab="Settings"]')?.click();document.getElementById('weightConnectionCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('copyWeightTemplate')?.addEventListener('click',async()=>{
+ const template=document.getElementById('weightTextTemplate'),receipt=document.getElementById('weightSetupReceipt');
+ try{await navigator.clipboard.writeText(template.textContent);receipt.textContent='Text template copied. Replace the two placeholders with your Shortcut variables.'}
+ catch{receipt.textContent='Copy the three-line Text template manually.'}
 });
 function surgeryDaysRemaining(){
  const ds=state.surgeryPlan?.date;if(!ds)return null;
@@ -1659,7 +1669,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.51",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.52",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -2323,7 +2333,7 @@ async function toggleHealthExport(){
  const label=document.getElementById('appleHealthStatus');
  try{healthExportURL();const enabled=state.healthImport?.autoExport?.enabled===false;const response=await fetch(normalizeEndpoint(cloudConfig.endpoint)+'/health/import/control',{method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':cloudConfig.syncKey},body:JSON.stringify({enabled})});const data=await response.json();if(!response.ok)throw Error(data.error||'Could not change import setting');await checkHealthExport();}catch(error){label.textContent=error.message;}
 }
-async function copyHealthSetting(kind){try{const value=kind==='url'?healthExportURL():(healthExportURL(),cloudConfig.syncKey);if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(value);document.getElementById('appleHealthStatus').textContent=kind==='url'?'Import URL copied.':'Private key copied. Paste it only into your Health Auto Export automation.';}else prompt(kind==='url'?'Copy this import URL':'Copy this private key',value);}catch(error){document.getElementById('appleHealthStatus').textContent=error.message;}}
+async function copyHealthSetting(kind){try{const value=kind==='url'?healthExportURL():(healthExportURL(),cloudConfig.syncKey);if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(value);document.getElementById('appleHealthStatus').textContent=kind==='url'?'Private sync link copied.':'Private key copied. Paste it only into your Health Auto Export automation.';}else prompt(kind==='url'?'Copy this import URL':'Copy this private key',value);}catch(error){document.getElementById('appleHealthStatus').textContent=error.message;}}
 function renderHealthReview(){
  const toggle=document.getElementById('toggleHealthExportBtn');if(toggle)toggle.textContent=state.healthImport?.autoExport?.enabled===false?'Resume imports':'Pause imports';
  const host=document.getElementById('healthImportReview');if(!host)return;
