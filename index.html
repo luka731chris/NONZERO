@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v3.59 · Intelligent Training</title>
+    <title>NONZERO v3.61 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -2579,7 +2579,7 @@ body[data-page='Coach'] .sectionBrand {
 }
 </style>
 <style>
-/* Phone 3.59: overview → prepare → train. */
+/* Phone 3.61: overview → prepare → train. */
 .todayFlow {
   background: #080f18;
   color: #edf3f8;
@@ -3588,6 +3588,62 @@ body.trainingFocus .focusToolbar button {
     flex-shrink: 0;
   }
 }
+
+#workoutAdjust {
+  z-index: 10000;
+}
+#workoutAdjust .editSheetPanel {
+  max-height: 90dvh;
+  overflow: auto;
+  max-width: 560px;
+  width: 100%;
+  box-sizing: border-box;
+}
+#workoutAdjust label {
+  display: block;
+  margin: 12px 0 6px;
+}
+#workoutAdjust input,
+#workoutAdjust select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  font-size: 16px;
+}
+.adjustFields {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 12px;
+}
+#adjustError {
+  color: #f6b6a8;
+  min-height: 22px;
+}
+body.trainingFocus .focusToolbar {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+body.trainingFocus .focusToolbar button {
+  padding: 7px 10px;
+  min-height: 40px;
+}
+body.trainingFocus .focusToolbar span {
+  margin-right: auto;
+}
+
+#workoutAdjust input,
+#workoutAdjust select {
+  background: #111d30;
+  border: 1px solid #3c4c65;
+  border-radius: 12px;
+  color: #f2f4f8;
+  padding: 10px;
+}
+#adjustSave {
+  background: #d6b961;
+  color: #101827;
+  border-color: #d6b961;
+}
 </style>
 <style>
 #rideRemote[hidden] {
@@ -3694,6 +3750,38 @@ body.trainingFocus .focusToolbar button {
 .ridePhoneOpen {
   min-height: 36px;
 }
+
+.focusToolbar {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.focusToolbar .rideQuickControl {
+  min-height: 44px;
+  font-size: 13px;
+  padding: 8px 10px;
+}
+.focusToolbar .rideQuickControl[aria-pressed='true'] {
+  background: #3c3825;
+  border-color: #dfc780;
+  color: #ffebaf;
+}
+#rrSoundTheme {
+  color: #dfc780 !important;
+}
+#rideRemote h3 {
+  margin: 18px 0 6px;
+  font-size: 17px;
+}
+
+#focusRideStatus {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: #bcd0d8;
+  line-height: 1.4;
+}
+#focusRideStatus:empty {
+  display: none;
+}
 </style>
   </head>
   <body class="todayFlow" data-today-scene="home">
@@ -3702,7 +3790,7 @@ body.trainingFocus .focusToolbar button {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v3.59</small></span>
+            <span class="flowBrand">NONZERO <small>v3.61</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -3749,6 +3837,7 @@ body.trainingFocus .focusToolbar button {
         <section class="todayCockpit">
           <div id="focusToolbar" class="focusToolbar" hidden>
             <span>NONZERO</span><button id="focusRestBtn" type="button" hidden>Rest 90s</button
+            ><button id="focusAdjustBtn" type="button">Adjust</button
             ><button id="focusViewBtn" type="button">Main app</button>
           </div>
           <div class="timerpanel cockpitTimer">
@@ -4657,6 +4746,89 @@ unit=lb</pre>
       </div>
 
       <div
+        id="workoutAdjust"
+        class="editSheet hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="adjustTitle"
+      >
+        <div class="editSheetPanel">
+          <h2 id="adjustTitle">Adjust this workout</h2>
+          <p id="adjustHistory" class="small"></p>
+          <label
+            >What to adjust<select id="adjustKind">
+              <option value="exercises">Exercises and sets</option>
+              <option value="ride">Ride targets</option>
+            </select></label
+          >
+          <div id="adjustExerciseFields">
+            <label
+              >Training lane<select id="adjustLane">
+                <option value="primary">Chris</option>
+                <option id="adjustPartnerOption" value="partner">Sam</option>
+              </select></label
+            ><label>Exercise<select id="adjustExercise"></select></label
+            ><label>Exercise name<input id="adjustName" maxlength="100" /></label>
+            <div class="adjustFields">
+              <label
+                >Sets<input
+                  id="adjustSets"
+                  type="number"
+                  min="1"
+                  max="8"
+                  inputmode="numeric" /></label
+              ><label
+                >Reps, time or load<input
+                  id="adjustDetail"
+                  maxlength="160"
+                  placeholder="8 reps @ 35 lb"
+              /></label>
+            </div>
+          </div>
+          <div id="adjustRideFields" hidden>
+            <label
+              >Goal type<select id="adjustGoalMode">
+                <option value="intensity">Effort and time</option>
+                <option value="calories">Calories and time</option>
+              </select></label
+            ><label
+              >Effort limit<select id="adjustIntensity">
+                <option value="easy">Easy</option>
+                <option value="steady">Steady</option>
+                <option value="challenging">Challenging</option>
+              </select></label
+            >
+            <div class="adjustFields">
+              <label
+                >Minutes<input
+                  id="adjustMinutes"
+                  type="number"
+                  min="5"
+                  max="180"
+                  inputmode="numeric" /></label
+              ><label id="adjustCalorieField"
+                >PM5 calorie goal<input
+                  id="adjustCalories"
+                  type="number"
+                  min="10"
+                  max="3000"
+                  inputmode="numeric"
+              /></label>
+            </div>
+            <p class="small">
+              Targets use your existing profile and coaching limits. These are PM5 exercise
+              calories.
+            </p>
+          </div>
+          <p id="adjustError" role="alert"></p>
+          <button id="adjustRemove" type="button">Remove unstarted exercise</button>
+          <div class="editSheetActions">
+            <button id="adjustCancel" type="button">Cancel</button
+            ><button id="adjustSave" type="button" class="saveTime">Save changes</button>
+          </div>
+        </div>
+      </div>
+      <div
         id="finishReview"
         class="editSheet hidden"
         role="dialog"
@@ -4907,18 +5079,20 @@ unit=lb</pre>
     <div id="rideRemote" hidden role="dialog" aria-modal="true" aria-labelledby="rideRemoteTitle">
       <section class="rideRemotePanel">
         <header>
-          <h2 id="rideRemoteTitle">Choose your ride</h2>
+          <h2 id="rideRemoteTitle">Ride controls</h2>
           <button id="rideRemoteClose" type="button">Done</button>
         </header>
-        <p>Pick a landscape for the wall. Workout timer and checklist keep running.</p>
+        <p>Switch views, choose your scene, or start the soundtrack. Your workout keeps running.</p>
         <div class="rrScenes" id="rideRemoteScenes"></div>
         <div class="rrRow">
           <button id="rrPrev">← Previous</button><button id="rrNext">Next →</button
-          ><button id="rrView">Show lab</button>
+          ><button id="rrView">Show main metrics</button>
         </div>
+        <h3>Adaptive soundtrack</h3>
+        <p id="rrSoundTheme"></p>
         <div class="rrRow">
-          <button id="rrPhoneSound" aria-pressed="false">▶ Play on phone</button
-          ><button id="rrWallSound" aria-pressed="false">▶ Play on wall</button>
+          <button id="rrPhoneSound" aria-pressed="false">▶ Soundtrack on · phone</button
+          ><button id="rrWallSound" aria-pressed="false">▶ Soundtrack on · TV</button>
         </div>
         <label class="rrVolume"
           >Volume<input
@@ -4930,13 +5104,16 @@ unit=lb</pre>
             aria-label="Soundtrack volume"
         /></label>
         <p id="rrAudioStatus" role="status">
-          Original adaptive instrumental · no music subscription needed.
+          Tap Soundtrack on · phone to hear the original scene score through your phone or connected
+          speaker.
         </p>
         <p id="rideRemoteStatus" role="status"></p>
         <p class="rrHint">
-          Phone audio follows the latest wall cadence update (about 15 seconds); wall audio uses
-          direct PM5 telemetry. If wall audio is blocked, tap Enable local score once on the wall.
-          These are original illustrated landscapes, not filmed routes.
+          The rhythm follows cadence; each landscape has its own musical palette. Phone cadence
+          updates arrive about every 15 seconds; TV audio follows the PM5 directly. Choose one
+          output to avoid an echo. Phone audio pauses when the app is hidden or the workout is
+          paused. If no live cadence arrives, the phone uses a steady tempo. TV audio requires an
+          enabled Pi audio output. This original instrumental does not control Amazon Music.
         </p>
       </section>
     </div>
@@ -7319,7 +7496,7 @@ function parseSetCount(detail = '') {
 }
 function currentItems() {
   const p = todayProgram();
-  return mode === 'flare' ? FLARE : p[mode] || p.full || [];
+  return mode === 'flare' ? p.flare || FLARE : p[mode] || p.full || [];
 }
 function normalizeSetState(a, items = currentItems()) {
   if (!a.sets || !Array.isArray(a.sets)) a.sets = [];
@@ -8135,6 +8312,8 @@ function jointEnabled() {
 }
 function currentPartnerProgram() {
   if (!jointEnabled()) return null;
+  const active = NonZeroWorkoutPolicy.active(state);
+  if (active?.partnerProgramSnapshot) return active.partnerProgramSnapshot;
   const p = todayProgram(),
     fingerprint = programFingerprint(p);
   if (
@@ -8782,7 +8961,7 @@ function diagnosticsText() {
       wallPresence: state.wallPresence,
       wallHealth: systemHealth.wallHealth || null,
       lastWallCommand: state.wallCommand || null,
-      phoneVersion: '3.59',
+      phoneVersion: '3.61',
       pendingUpload: localDirty,
       cloudConfigured: cloudReady(),
       recentEvents: events
@@ -8907,7 +9086,7 @@ function renderWorkout() {
       sets = sourceSets?.[i] || Array(n).fill(Boolean(sourceChecks?.[i])),
       prefix = partner ? 'partner-' : '';
     return `<div class="exerciseV315 ${!partner && i === focus ? 'current' : ''}">
-     <label class="exerciseCheckHit" aria-label="Complete ${partner ? 'Sam ' : ''}${x[0]}"><input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i] ? 'checked' : ''} aria-label="Complete ${partner ? 'Sam ' : ''}${x[0]}"></label>
+     <label class="exerciseCheckHit" aria-label="Complete ${partner ? 'Sam ' : ''}${escapeActivity(x[0])}"><input type="checkbox" data-${prefix}check="${i}" ${sourceChecks?.[i] ? 'checked' : ''} aria-label="Complete ${partner ? 'Sam ' : ''}${escapeActivity(x[0])}"></label>
      <div><b>${escapeActivity(x[0])}</b><small>${escapeActivity(x[1])}</small>
        <div class="setRow">${sets.map((done, j) => `<button class="setBtn ${done ? 'done' : ''}" data-${prefix}set="${i}:${j}">${done ? '✓' : j + 1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
@@ -8926,7 +9105,7 @@ function renderWorkout() {
           const n = parseSetCount(x[1]),
             sets = active?.sets?.[i] || Array(n).fill(Boolean(checks[i]));
           return `<div class="exerciseV315 ${i === focus ? 'current' : ''}">
-     <label class="exerciseCheckHit" aria-label="Complete ${x[0]}"><input type="checkbox" data-check="${i}" ${checks[i] ? 'checked' : ''} aria-label="Complete ${x[0]}"></label>
+     <label class="exerciseCheckHit" aria-label="Complete ${escapeActivity(x[0])}"><input type="checkbox" data-check="${i}" ${checks[i] ? 'checked' : ''} aria-label="Complete ${escapeActivity(x[0])}"></label>
      <div><b>${escapeActivity(x[0])}</b><small>${escapeActivity(x[1])}</small>
        <div class="setRow">${sets.map((done, j) => `<button class="setBtn ${done ? 'done' : ''} ${i === focus && !done ? 'current' : ''}" data-set="${i}:${j}" aria-label="Set ${j + 1}, ${escapeActivity(x[0])}" aria-pressed="${done}">${done ? '✓' : j + 1}</button>`).join('')}</div>
        <div class="exerciseMeta">${sets.filter(Boolean).length}/${sets.length} sets complete</div>
@@ -9726,8 +9905,9 @@ function completeWorkout() {
   const completionRatio = checks.length ? checks.filter(Boolean).length / checks.length : 1,
     painAfter = Number(post?.painAfter ?? pain),
     rpe = Number(post?.rpe || 0),
-    programCredit =
-      p.source === 'anchor-built'
+    programCredit = p.sessionAdjusted
+      ? false
+      : p.source === 'anchor-built'
         ? p.programCreditCandidate === true &&
           completionRatio >= 0.67 &&
           (rpe === 0 || rpe <= 8.5) &&
@@ -9746,6 +9926,7 @@ function completeWorkout() {
     duration,
     checks,
     sets: a.sets,
+    adjustments: Array.isArray(a.adjustments) ? a.adjustments : [],
     exerciseNames: items.map((x) => x[0]),
     movementIds: Array.isArray(p.movementIds) ? p.movementIds : [],
     progression: p.progression || null,
@@ -10733,7 +10914,7 @@ renderHealthReview();
               })
             : 'No shared agenda published yet',
           version
-            ? 'Wall ' + version + (version === '7.13.1' ? '' : ' · update available')
+            ? 'Wall ' + version + (version === '7.15.0' ? '' : ' · update available')
             : 'Wall has not reported yet',
           stamp
             ? 'Wall last reported ' +
@@ -12355,6 +12536,45 @@ document.getElementById('focusRestBtn').onclick = () => {
     draft = read();
     render();
   };
+  async function applyGoal(next, entered = null) {
+    const minutes = Number(next.durationMinutes),
+      calories = Number(next.calories);
+    if (
+      !Number.isFinite(minutes) ||
+      minutes < 5 ||
+      minutes > 180 ||
+      (next.mode === 'calories' && (!Number.isFinite(calories) || calories < 10 || calories > 3000))
+    )
+      throw Error('Choose 5–180 minutes and a calorie goal between 10 and 3000.');
+    draft = NonZeroGoals.normalize({ ...next, updatedAt: Date.now() });
+    const previous = state.activeWorkout?.rideGoal || state.rideGoal || null;
+    state.rideGoal = draft;
+    if (entered) state.rideTargetProfile = { ...entered, updatedAt: Date.now() };
+    if (
+      state.activeWorkout &&
+      ['ready', 'active', 'running', 'paused'].includes(state.activeWorkout.status)
+    ) {
+      const a = state.activeWorkout;
+      a.rideGoal = { ...draft };
+      a.updatedAt = Date.now();
+      if (!Array.isArray(a.adjustments)) a.adjustments = [];
+      a.adjustments.push({
+        at: a.updatedAt,
+        action: 'ride-goal',
+        before: previous,
+        after: { ...draft }
+      });
+    }
+    save();
+    render();
+    $('rideGoalStatus').textContent = 'Saved on this phone · syncing to the Pi…';
+    const synced = cloudReady() ? await pushCloudState() : false;
+    $('rideGoalStatus').textContent = synced
+      ? 'Goal synced. Your paired Pi will apply it on its next refresh.'
+      : 'Saved locally · syncing will retry when connected.';
+    return { goal: draft, synced };
+  }
+  window.NonZeroRideGoals = { apply: applyGoal };
   $('rideGoalApply').onclick = async () => {
     const button = $('rideGoalApply');
     button.disabled = true;
@@ -12382,27 +12602,7 @@ document.getElementById('focusRestBtn').onclick = () => {
         }
       if (entered.maxHr && entered.restingHr >= entered.maxHr)
         throw Error('Maximum HR must exceed resting HR.');
-      draft = read();
-      state.rideGoal = draft;
-      state.rideTargetProfile = { ...entered, updatedAt: Date.now() };
-      if (
-        state.activeWorkout &&
-        ['ready', 'active', 'running', 'paused'].includes(state.activeWorkout.status)
-      ) {
-        state.activeWorkout.rideGoal = { ...draft };
-        state.activeWorkout.updatedAt = Date.now();
-      }
-      save();
-      render();
-      $('rideGoalStatus').textContent = 'Saved on this phone · syncing to the Pi…';
-      if (cloudReady()) {
-        const ok = await pushCloudState();
-        $('rideGoalStatus').textContent = ok
-          ? 'Goal synced. Your paired Pi will apply it on its next refresh.'
-          : 'Saved locally · syncing will retry when connected.';
-      } else
-        $('rideGoalStatus').textContent =
-          'Saved on this phone. Connect Cloud Sync to send it to your Pi.';
+      await applyGoal(read(), entered);
     } catch (e) {
       $('rideGoalStatus').textContent = e.message;
     } finally {
@@ -12488,6 +12688,158 @@ document.getElementById('focusRestBtn').onclick = () => {
     const r = clamp(finite(rpm), 0, 180);
     return { bpm: clamp(r * 1.55, 84, 156), energy: clamp((r - 40) / 65, 0, 1) };
   }
+  // Musical palettes are original arrangements, selected by landscape.
+  const SOUND_THEMES = {
+    pittsburgh: {
+      name: 'North Shore pulse',
+      roots: [55, 65.41, 49, 43.65],
+      notes: [0, 7, 12, 14, 19, 14, 12, 7],
+      wave: 'triangle',
+      lift: 1,
+      hat: 1
+    },
+    'west-virginia': {
+      name: 'Country road acoustic',
+      roots: [49, 65.41, 55, 43.65],
+      notes: [0, 4, 7, 12, 16, 12, 7, 4],
+      wave: 'triangle',
+      lift: 0.75,
+      hat: 0.55
+    },
+    'mountain-bike': {
+      name: 'Trail drive',
+      roots: [41.2, 49, 55, 36.71],
+      notes: [0, 3, 7, 10, 12, 10, 7, 3],
+      wave: 'sawtooth',
+      lift: 1.1,
+      hat: 1.1
+    },
+    beach: {
+      name: 'Coastal flow',
+      roots: [65.41, 55, 73.42, 49],
+      notes: [0, 4, 7, 11, 14, 11, 7, 4],
+      wave: 'sine',
+      lift: 0.7,
+      hat: 0.45
+    },
+    'salt-flats': {
+      name: 'Open horizon ambient',
+      roots: [43.65, 49, 65.41, 55],
+      notes: [0, 7, 14, 19, 24, 19, 14, 7],
+      wave: 'sine',
+      lift: 0.55,
+      hat: 0.25
+    },
+    rockies: {
+      name: 'Alpine ascent',
+      roots: [36.71, 49, 43.65, 55],
+      notes: [0, 7, 10, 14, 17, 14, 10, 7],
+      wave: 'triangle',
+      lift: 0.9,
+      hat: 0.7
+    },
+    france: {
+      name: 'Grand tour momentum',
+      roots: [55, 73.42, 65.41, 49],
+      notes: [0, 4, 7, 12, 14, 16, 19, 12],
+      wave: 'triangle',
+      lift: 1.05,
+      hat: 0.9
+    }
+  };
+  function soundTheme(id) {
+    return SOUND_THEMES[id] || SOUND_THEMES.pittsburgh;
+  }
+  class RideCoach {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.session = null;
+      this.candidate = '';
+      this.since = 0;
+      this.current = null;
+    }
+    update(t, o = {}, now = Date.now()) {
+      if (o.session !== this.session) {
+        this.reset();
+        this.session = o.session;
+      }
+      const g = o.targets || {},
+        rpm = finite(t?.cadence ?? t?.rpm),
+        hr = finite(t?.heartRate),
+        watts = finite(t?.watts);
+      let key = 'steady',
+        cue = '',
+        urgent = false;
+      if (o.paused) {
+        key = 'paused';
+        cue = 'Workout paused · resume when you are ready.';
+        urgent = true;
+      } else if (!fresh(t, now)) {
+        key = 'waiting';
+        cue = 'Waiting for live PM5 data · ride at your comfortable pace.';
+        urgent = true;
+      } else if (g.hrMax > 0 && hr > g.hrMax) {
+        key = 'hr-high';
+        cue = 'Ease your effort · heart rate is above your target.';
+        urgent = true;
+      } else if (hr > 0 && /HEART RATE RISING/i.test(o.coach || '')) {
+        key = 'hr-rising';
+        cue = 'Heart rate rising · hold or ease your effort, and check your breathing.';
+        urgent = true;
+      } else if (rpm < 3 && watts < 5) {
+        key = 'rest';
+        cue = 'Take your recovery · start smoothly when ready.';
+        urgent = true;
+      } else if (g.goalReached) {
+        key = 'complete';
+        cue = 'Goal reached. You showed up · finish with an easy cooldown.';
+        urgent = true;
+      } else if (g.pace === 'extend') {
+        key = 'extend';
+        cue = 'Keep a sustainable effort · allow more time for your goal.';
+        urgent = true;
+      } else if (g.phase === 'warmup') {
+        key = 'warmup';
+        cue = 'Build gradually · relaxed shoulders, smooth pedal strokes.';
+      } else if (g.phase === 'cooldown') {
+        key = 'cooldown';
+        cue = 'Ease down gradually · let your breathing settle.';
+      } else if (g.cadenceMin > 0 && rpm < g.cadenceMin) {
+        key = 'cadence-low';
+        cue = `If comfortable, build smoothly toward ${g.cadenceMin}–${g.cadenceMax} RPM.`;
+      } else if (g.cadenceMax > 0 && rpm > g.cadenceMax) {
+        key = 'cadence-high';
+        cue = `Settle into ${g.cadenceMin}–${g.cadenceMax} RPM · stay controlled.`;
+      } else if (g.powerMax > 0 && watts > g.powerMax) {
+        key = 'power-high';
+        cue = 'Soften your effort · bring power back inside your target.';
+      } else {
+        const cues = [
+          'Find a repeatable rhythm · consistency builds your next milestone.',
+          'Relax your grip and shoulders · keep every stroke smooth.',
+          'Stay with this minute · controlled effort is progress.',
+          'Check your breathing · choose a pace you can sustain.'
+        ];
+        cue = cues[Math.floor(now / 15000) % cues.length];
+        if (g.powerMin > 0 && watts < g.powerMin) {
+          key = 'power-low';
+          cue = 'If comfortable, build power gradually toward your target.';
+        } else if (g.calibration) {
+          key = 'calibrating';
+          cue = 'Ride comfortably · learning your pace before refining targets.';
+        }
+      }
+      if (key !== this.candidate) {
+        this.candidate = key;
+        this.since = now;
+      }
+      if (urgent || !this.current || key === this.current.key || now - this.since >= 4000)
+        this.current = { key, cue, alert: key === 'hr-high' };
+      return { ...this.current, phase: g.phase || 'live ride' };
+    }
+  }
   function fresh(t, now = Date.now()) {
     const at = finite(t?.updatedAt);
     return !!(
@@ -12523,6 +12875,8 @@ document.getElementById('focusRestBtn').onclick = () => {
       this.paused = false;
       this.now = 0;
       this.lastTick = 0;
+      this.measuredSpeed = null;
+      this.lastSampleAt = 0;
     }
     ingest(t, o = {}, now = Date.now()) {
       if (o.session && o.session !== this.session) {
@@ -12531,6 +12885,10 @@ document.getElementById('focusRestBtn').onclick = () => {
         this.visualDistance = 0;
         this.lastDistance = null;
         this.lastStamp = '';
+        this.now = 0;
+        this.speed = 0;
+        this.measuredSpeed = null;
+        this.lastSampleAt = 0;
       }
       this.active = !!o.active;
       this.paused = !!o.paused;
@@ -12540,6 +12898,20 @@ document.getElementById('focusRestBtn').onclick = () => {
       this.rpm = valid ? clamp(finite(t.cadence ?? t.rpm), 0, 180) : 0;
       if (valid && key !== this.lastStamp) {
         const d = finite(t.distanceMeters, -1);
+        const sampleAt = finite(t.updatedAt),
+          gap = (sampleAt - this.lastSampleAt) / 1000;
+        const directSpeed = Number(t.speedMps);
+        if (
+          t.speedMps != null &&
+          Number.isFinite(directSpeed) &&
+          directSpeed >= 0 &&
+          directSpeed <= 30
+        )
+          this.measuredSpeed = directSpeed;
+        else if (gap > 0 && gap < 3 && this.lastDistance !== null && d >= this.lastDistance)
+          this.measuredSpeed = clamp((d - this.lastDistance) / gap, 0, 30);
+        else this.measuredSpeed = null;
+        this.lastSampleAt = sampleAt;
         if (d >= 0) {
           if (this.lastDistance !== null && d >= this.lastDistance)
             this.distance += d - this.lastDistance;
@@ -12557,8 +12929,8 @@ document.getElementById('focusRestBtn').onclick = () => {
       this.bpm += (target.bpm - this.bpm) * ease;
       this.energy += ((live && rpm >= 3 ? target.energy : 0) - this.energy) * ease;
       // Visual motion is an illustrative cadence-controlled ride, not measured speed.
-      const speed = live && rpm >= 3 ? clamp(rpm * 0.14, 0, 24) : 0;
-      this.speed += (speed - this.speed) * (1 - Math.exp(-dt * 3));
+      const speed = live && rpm >= 3 ? (this.measuredSpeed ?? clamp(rpm * 0.1, 0, 18)) : 0;
+      this.speed = live ? this.speed + (speed - this.speed) * (1 - Math.exp(-dt * 3)) : 0;
       this.now += this.speed * dt;
       this.visualDistance += (this.distance - this.visualDistance) * (1 - Math.exp(-dt * 5));
       return {
@@ -12587,6 +12959,7 @@ document.getElementById('focusRestBtn').onclick = () => {
       this.state = 'ready';
       this.noise = null;
       this.started = false;
+      this.theme = 'pittsburgh';
     }
     async unlock() {
       if (this.unlocking) return;
@@ -12671,7 +13044,9 @@ document.getElementById('focusRestBtn').onclick = () => {
       };
     }
     schedule(state) {
-      this.bpm = state.bpm;
+      this.theme = SOUND_THEMES[state.theme] ? state.theme : this.theme;
+      const palette = soundTheme(this.theme);
+      this.bpm = clamp(finite(state.bpm, 100), 84, 156);
       this.energy = state.energy;
       this.live = state.live;
       if (!this.ctx || this.ctx.state !== 'running') return;
@@ -12687,25 +13062,26 @@ document.getElementById('focusRestBtn').onclick = () => {
       while (this.next < now + 0.14 && count++ < 8) {
         const beat = this.step % 16,
           bar = Math.floor(this.step / 16),
-          roots = [55, 43.65, 65.41, 49],
+          roots = palette.roots,
           bass = roots[Math.floor(bar / 2) % 4],
           at = this.next;
         if (beat % 4 === 0) {
           const kick = this.tone(125, at, 0.24, 0.62);
           kick.frequency.exponentialRampToValueAtTime(42, at + 0.18);
-          this.tone(bass, at, 0.32, 0.22, 'triangle');
+          this.tone(bass, at, 0.32, 0.18 * palette.lift, palette.wave);
         }
-        if (beat === 4 || beat === 12) this.hat(at, 0.18);
-        if (beat % 2 === 0 && this.energy > 0.18) this.hat(at, 0.06 + this.energy * 0.045);
-        const notes = [0, 7, 12, 14, 19, 14, 12, 7],
+        if (beat === 4 || beat === 12) this.hat(at, 0.18 * palette.hat);
+        if (beat % 2 === 0 && this.energy > 0.18)
+          this.hat(at, (0.06 + this.energy * 0.045) * palette.hat);
+        const notes = palette.notes,
           note = notes[(Math.floor(beat / 2) + bar) % notes.length];
         if (beat % 2 === 0)
           this.tone(
             bass * 4 * Math.pow(2, note / 12),
             at,
             0.35,
-            0.075 + this.energy * 0.035,
-            'sine'
+            (0.075 + this.energy * 0.035) * palette.lift,
+            palette.wave
           );
         if (beat === 0) {
           [0, 7, 12].forEach((n) =>
@@ -12722,7 +13098,17 @@ document.getElementById('focusRestBtn').onclick = () => {
       this.live = false;
     }
   }
-  root.NonZeroRideCore = { RideState, Score, musicTarget, fresh, resolution, THEMES };
+  root.NonZeroRideCore = {
+    RideState,
+    Score,
+    RideCoach,
+    musicTarget,
+    soundTheme,
+    SOUND_THEMES,
+    fresh,
+    resolution,
+    THEMES
+  };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.NonZeroRideCore;
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -12749,16 +13135,42 @@ document.getElementById('focusRestBtn').onclick = () => {
     lastFocus = null,
     confirmed = '';
   const score = new NonZeroRideCore.Score(window);
-  const message = (t) => ($('rideRemoteStatus').textContent = t);
+  const message = (t) => {
+    $('rideRemoteStatus').textContent = t;
+    if ($('focusRideStatus')) $('focusRideStatus').textContent = t;
+  };
   function render() {
     document
       .querySelectorAll('#rideRemoteScenes [data-scene]')
       .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scene === desired.scene)));
-    $('rrView').textContent = desired.view === 'ride' ? 'Show lab' : 'Show ride';
-    $('rrWallSound').textContent = desired.wallMusic ? 'Mute wall' : '▶ Play on wall';
+    $('rrView').textContent = desired.view === 'ride' ? 'Show main metrics' : 'Show ride scenes';
+    $('rrView').setAttribute('aria-pressed', String(desired.view === 'lab'));
+    const view = $('focusRideViewBtn');
+    if (view) {
+      view.textContent = desired.view === 'ride' ? 'Metrics view' : 'Ride scenes';
+      view.setAttribute('aria-pressed', String(desired.view === 'lab'));
+    }
+    const sound = $('focusSoundtrackBtn');
+    if (sound) {
+      sound.textContent = playing
+        ? 'Soundtrack: on'
+        : desired.wallMusic
+          ? 'Soundtrack: TV on'
+          : 'Soundtrack: off';
+      sound.setAttribute('aria-pressed', String(playing || desired.wallMusic));
+    }
+    $('rrSoundTheme').textContent =
+      'SCENE SCORE · ' + (NonZeroRideCore.soundTheme?.(desired.scene).name || desired.scene);
+    $('rrWallSound').textContent = desired.wallMusic
+      ? 'Soundtrack off · TV'
+      : '▶ Soundtrack on · TV';
     $('rrWallSound').setAttribute('aria-pressed', String(desired.wallMusic));
-    $('rrPhoneSound').textContent = playing ? 'Pause phone' : '▶ Play on phone';
+    $('rrPhoneSound').textContent = playing ? 'Soundtrack off · phone' : '▶ Soundtrack on · phone';
     $('rrPhoneSound').setAttribute('aria-pressed', String(playing));
+    if (!playing)
+      $('rrAudioStatus').textContent = desired.wallMusic
+        ? 'TV soundtrack requested · see Wall confirmation below.'
+        : 'Soundtrack off · choose phone or TV to begin.';
   }
   function send(patch) {
     desired = { ...desired, ...patch };
@@ -12802,10 +13214,20 @@ document.getElementById('focusRestBtn').onclick = () => {
       const data = await r.json();
       latestHealth = data.health;
       healthAt = Date.now();
+      const wallRide = latestHealth?.ride;
+      if (wallRide && !pending && (!confirmed || wallRide.controlNonce === confirmed)) {
+        if (scenes.some(([id]) => id === wallRide.scene)) desired.scene = wallRide.scene;
+        if (typeof wallRide.active === 'boolean') desired.view = wallRide.active ? 'ride' : 'lab';
+        if (typeof wallRide.muted === 'boolean') desired.wallMusic = !wallRide.muted;
+        render();
+      }
+
       if (confirmed && latestHealth?.ride?.controlNonce === confirmed) {
-        message('Wall confirmed · ' + (latestHealth.ride.active ? 'ride view' : 'lab view'));
+        message('Wall confirmed · ' + (latestHealth.ride.active ? 'ride scenes' : 'main metrics'));
         if (desired.wallMusic && latestHealth.ride.audioState !== 'running')
-          message('Scene ready · wall audio needs Enable local score on the wall');
+          message(
+            'TV audio did not start. Use Soundtrack on · phone, or check the Pi audio output.'
+          );
       }
     } catch (e) {
       if (!$('rideRemote').hidden) message(e.message + ' · retrying');
@@ -12883,19 +13305,27 @@ document.getElementById('focusRestBtn').onclick = () => {
   $('rrPrev').onclick = () => cycle(-1);
   $('rrNext').onclick = () => cycle(1);
   $('rrView').onclick = () => send({ view: desired.view === 'ride' ? 'lab' : 'ride' });
-  $('rrWallSound').onclick = () =>
-    send({ wallMusic: !desired.wallMusic, volume: Number($('rrVolume').value) / 100 });
+  $('rrWallSound').onclick = () => {
+    if (!desired.wallMusic && playing) {
+      playing = false;
+      score.mute();
+    }
+    return send({ wallMusic: !desired.wallMusic, volume: Number($('rrVolume').value) / 100 });
+  };
   $('rrPhoneSound').onclick = async () => {
     if (playing) {
       playing = false;
       score.mute();
       render();
+      message('Phone soundtrack off');
       return;
     }
     const button = $('rrPhoneSound');
     button.disabled = true;
+    if ($('focusSoundtrackBtn')) $('focusSoundtrackBtn').disabled = true;
     await score.unlock();
     button.disabled = false;
+    if ($('focusSoundtrackBtn')) $('focusSoundtrackBtn').disabled = false;
     playing = score.state === 'running';
     score.enabled = playing;
     score.volume = Number($('rrVolume').value) / 100;
@@ -12903,21 +13333,49 @@ document.getElementById('focusRestBtn').onclick = () => {
     if (!playing)
       $('rrAudioStatus').textContent =
         'Audio did not start. Tap again or check this phone’s audio output.';
-    else void health();
+    else {
+      message('Soundtrack on · phone output · follows your scene and cadence');
+      if (cloudReady() && desired.wallMusic) void send({ wallMusic: false });
+      void health();
+    }
   };
   $('rrVolume').oninput = () => {
     score.volume = Number($('rrVolume').value) / 100;
   };
   $('rrVolume').onchange = () => send({ volume: Number($('rrVolume').value) / 100 });
+  for (const [id, label, action] of [
+    ['focusRideViewBtn', 'Metrics view', () => $('rrView').onclick()],
+    [
+      'focusSoundtrackBtn',
+      'Soundtrack: off',
+      () =>
+        playing || !desired.wallMusic ? $('rrPhoneSound').onclick() : send({ wallMusic: false })
+    ]
+  ]) {
+    const button = document.createElement('button');
+    button.id = id;
+    button.type = 'button';
+    button.textContent = label;
+    button.className = 'rideQuickControl';
+    button.onclick = action;
+    $('focusToolbar')?.append(button);
+  }
   for (const host of [$('focusToolbar'), $('rideGoalCard')]) {
     if (!host) continue;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'ridePhoneOpen';
-    button.textContent = 'Ride & music';
+    button.textContent = 'Ride controls';
     button.onclick = open;
     host.append(button);
   }
+  const quickStatus = document.createElement('span');
+  quickStatus.id = 'focusRideStatus';
+  quickStatus.setAttribute('role', 'status');
+  $('focusToolbar')?.append(quickStatus);
+  let soundAt = Date.now(),
+    soundBpm = 100,
+    soundEnergy = 0;
   setInterval(() => {
     if (playing || !$('rideRemote').hidden) {
       if (Date.now() - healthAt > 3000) void health();
@@ -12938,12 +13396,20 @@ document.getElementById('focusRestBtn').onclick = () => {
       cadence = fresh ? Number(p.cadence) || 0 : 65,
       target = NonZeroRideCore.musicTarget(cadence),
       live = !!workout && !document.hidden && (!fresh || cadence >= 3);
-    score.schedule({ ...target, live });
-    $('rrAudioStatus').textContent = live
+    const now = Date.now(),
+      dt = Math.min(0.5, Math.max(0, (now - soundAt) / 1000)),
+      ease = 1 - Math.exp(-dt / 3);
+    soundAt = now;
+    soundBpm += (target.bpm - soundBpm) * ease;
+    soundEnergy += (target.energy - soundEnergy) * ease;
+    score.schedule({ bpm: soundBpm, energy: soundEnergy, live, theme: desired.scene });
+    const audioStatus = live
       ? fresh
-        ? 'Playing on phone · ' + Math.round(target.bpm) + ' BPM · latest wall cadence'
+        ? 'Playing on phone · ' + Math.round(soundBpm) + ' BPM · latest wall cadence'
         : 'Playing on phone · steady tempo · awaiting wall cadence'
       : 'Phone soundtrack ready · resumes while your workout is running';
+    $('rrAudioStatus').textContent = audioStatus;
+    if ($('focusRideStatus')) $('focusRideStatus').textContent = audioStatus;
   }, 150);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) score.mute();
@@ -14956,6 +15422,223 @@ document.getElementById('focusRestBtn').onclick = () => {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
+})();
+
+/* Edit an active session without restarting its timer or replacing completed work. */
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  let returnFocus = null;
+  function active() {
+    return NonZeroWorkoutPolicy.active(state);
+  }
+  function lane() {
+    return $('adjustLane').value === 'partner' ? 'partner' : 'primary';
+  }
+  function itemsFor(which) {
+    return which === 'partner' ? currentPartnerItems() : currentItems();
+  }
+  function completed(a, which, index) {
+    return (which === 'partner' ? a.partnerSets : a.sets)?.[index] || [];
+  }
+  function error(message) {
+    $('adjustError').textContent = message;
+  }
+  function loadItem() {
+    const a = active();
+    if (!a) return;
+    const list = itemsFor(lane()),
+      i = Number($('adjustExercise').value),
+      item = list[i] || ['', '3 × 8'];
+    $('adjustName').value = item[0];
+    $('adjustDetail').value = item[1];
+    $('adjustSets').value = parseSetCount(item[1]);
+    const flags = completed(a, lane(), i);
+    $('adjustHistory').textContent = flags.some(Boolean)
+      ? `${flags.filter(Boolean).length} completed sets preserved. Keep this exercise name; add a new exercise for a substitution.`
+      : 'Edit the remaining work. The timer keeps its current running or paused state.';
+    $('adjustRemove').disabled = !list[i] || flags.some(Boolean);
+    error('');
+  }
+  function populate(selectIndex = 0) {
+    const list = itemsFor(lane());
+    $('adjustExercise').replaceChildren();
+    list.forEach((x, i) => {
+      const o = document.createElement('option');
+      o.value = String(i);
+      o.textContent = `${i + 1}. ${x[0]}`;
+      $('adjustExercise').append(o);
+    });
+    const add = document.createElement('option');
+    add.value = String(list.length);
+    add.textContent = '+ Add exercise';
+    $('adjustExercise').append(add);
+    $('adjustExercise').value = String(Math.min(selectIndex, list.length));
+    loadItem();
+  }
+  function showKind() {
+    const ride = $('adjustKind').value === 'ride';
+    $('adjustExerciseFields').hidden = ride;
+    $('adjustRideFields').hidden = !ride;
+    $('adjustRemove').hidden = ride;
+    $('adjustCalorieField').hidden = $('adjustGoalMode').value !== 'calories';
+    error('');
+  }
+  async function saveGoal() {
+    const a = active();
+    if (!a) return close();
+    $('adjustSave').disabled = true;
+    try {
+      await window.NonZeroRideGoals.apply({
+        mode: $('adjustGoalMode').value,
+        intensity: $('adjustIntensity').value,
+        durationMinutes: Number($('adjustMinutes').value),
+        calories: Number($('adjustCalories').value)
+      });
+      renderTimer();
+      close();
+    } catch (e) {
+      error(e.message);
+    } finally {
+      $('adjustSave').disabled = false;
+    }
+  }
+  function open() {
+    const a = active();
+    if (!a) return;
+    returnFocus = document.activeElement;
+    $('adjustLane').value = 'primary';
+    $('adjustPartnerOption').disabled = !jointEnabled();
+    $('workoutAdjust').classList.remove('hidden');
+    populate(Math.max(0, firstIncompleteIndex(a)));
+    const goal = NonZeroGoals.normalize(a.rideGoal || state.rideGoal || {});
+    $('adjustGoalMode').value = goal.mode;
+    $('adjustIntensity').value = goal.intensity;
+    $('adjustMinutes').value = goal.durationMinutes;
+    $('adjustCalories').value = goal.calories;
+    $('adjustKind').value = /bike|erg|row|ski|aerobic|cycling/i.test(a.type || '')
+      ? 'ride'
+      : 'exercises';
+    showKind();
+    $('adjustKind').focus();
+  }
+  function close() {
+    $('workoutAdjust').classList.add('hidden');
+    returnFocus?.focus();
+  }
+  function apply(remove = false) {
+    const a = active();
+    if (!a) return close();
+    const which = lane(),
+      i = Number($('adjustExercise').value),
+      list = itemsFor(which).map((x) => [...x]),
+      previous = list[i] || null;
+    const name = $('adjustName').value.trim(),
+      detail = $('adjustDetail').value.trim(),
+      count = Number($('adjustSets').value),
+      flags = completed(a, which, i);
+    if (
+      !remove &&
+      (!name ||
+        name.length > 100 ||
+        !detail ||
+        detail.length > 160 ||
+        !Number.isInteger(count) ||
+        count < 1 ||
+        count > 8)
+    )
+      return error('Enter an exercise, a target, and 1–8 sets.');
+    if (previous && flags.some(Boolean) && (remove || name !== previous[0]))
+      return error(
+        'Completed sets stay with their exercise. Choose Add exercise for a substitution.'
+      );
+    const lastDone = flags.reduce((n, v, j) => (v ? j : n), -1);
+    if (!remove && count <= lastDone)
+      return error(`Keep at least ${lastDone + 1} sets to preserve completed work.`);
+    const setKey = which === 'partner' ? 'partnerSets' : 'sets',
+      checkKey = which === 'partner' ? 'partnerChecks' : 'checks';
+    const sets = (a[setKey] || []).map((s) => [...s]);
+    if (remove) {
+      if (!previous) return;
+      list.splice(i, 1);
+      sets.splice(i, 1);
+      if (!list.length) return error('Keep at least one exercise in this lane.');
+    } else {
+      const target = `${count} × ` + detail.replace(/^\d+\s*[×x]\s*/i, '');
+      list[i] = [name, target];
+      sets[i] = Array.from({ length: count }, (_, j) => !!flags[j]);
+    }
+    const program = JSON.parse(
+        JSON.stringify(which === 'partner' ? currentPartnerProgram() : todayProgram())
+      ),
+      whichMode = a.mode || mode;
+    program[whichMode] = list;
+    program.sessionAdjusted = true;
+    if (Array.isArray(program.movementIds)) {
+      if (remove) program.movementIds.splice(i, 1);
+      else if (!previous || previous[0] !== name) program.movementIds[i] = '';
+    }
+    if (which === 'partner') {
+      a.partnerProgramSnapshot = program;
+      if (state.jointToday) state.jointToday.samProgram = program;
+    } else a.programSnapshot = program;
+    a[setKey] = sets;
+    a[checkKey] = sets.map((s) => s.length > 0 && s.every(Boolean));
+    const now = Date.now();
+    a.setUpdatedAt = now;
+    a.progressUpdatedAt = now;
+    a.updatedAt = now;
+    a.manualFocusIndex = Math.min(a.manualFocusIndex || 0, Math.max(0, currentItems().length - 1));
+    if (!Array.isArray(a.adjustments)) a.adjustments = [];
+    a.adjustments.push({
+      at: now,
+      lane: which,
+      index: i,
+      action: remove ? 'remove' : previous ? 'update' : 'add',
+      before: previous,
+      after: remove ? null : list[i],
+      completedSets: flags.filter(Boolean).length
+    });
+    recordEvent('workout_adjustment', {
+      lane: which,
+      index: i,
+      action: remove ? 'remove' : previous ? 'update' : 'add'
+    });
+    save();
+    renderToday();
+    renderTimer();
+    close();
+  }
+  $('focusAdjustBtn').onclick = open;
+  $('adjustCancel').onclick = close;
+  $('adjustLane').onchange = () => populate();
+  $('adjustExercise').onchange = loadItem;
+  $('adjustSave').onclick = () => ($('adjustKind').value === 'ride' ? saveGoal() : apply());
+  $('adjustKind').onchange = showKind;
+  $('adjustGoalMode').onchange = showKind;
+  $('adjustRemove').onclick = () => apply(true);
+  $('workoutAdjust').onclick = (e) => {
+    if (e.target === $('workoutAdjust')) close();
+  };
+  document.addEventListener('keydown', (e) => {
+    if ($('workoutAdjust').classList.contains('hidden')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close();
+    }
+    if (e.key === 'Tab') {
+      const fields = [...$('workoutAdjust').querySelectorAll('button,input,select')].filter(
+        (x) => !x.disabled
+      );
+      if (e.shiftKey && document.activeElement === fields[0]) {
+        e.preventDefault();
+        fields.at(-1).focus();
+      } else if (!e.shiftKey && document.activeElement === fields.at(-1)) {
+        e.preventDefault();
+        fields[0].focus();
+      }
+    }
+  });
 })();
 </script>
   </body>
