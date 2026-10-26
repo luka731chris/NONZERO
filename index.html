@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 
-<title>NONZERO v3.56 · Intelligent Training</title>
+<title>NONZERO v3.57 · Intelligent Training</title>
 <style>
 :root{
  --bg:#0f172a;--card:#111827;--panel:#0b1220;--border:#334155;--text:#f8fafc;--muted:#94a3b8;
@@ -291,12 +291,29 @@ body.workoutInProgress:not(.trainingFocus) .tabbar{position:fixed;left:14px;righ
 </style><style>
 .wj-compact svg text{fill:#a7b9ca;font:10px system-ui}.wj-live .wj-compact{font-size:clamp(11px,.7vw,22px)}
 </style><style>.coach-app{--cg:#d8bb79;--cm:#b5c6d2;color:#edf2f6;font:16px system-ui,-apple-system,Segoe UI,sans-serif;max-width:820px;margin:0 auto;padding:8px 0 30px;line-height:1.45}.coach-app *{box-sizing:border-box}.coach-app h2{font-size:24px;margin:0 0 12px}.coach-app h3{font-size:19px;margin:0 0 10px}.coach-app p{margin:8px 0;color:var(--cm)}.coach-app .cc-card{margin:14px 0;padding:18px;background:#112432;border:1px solid #3c5564;border-radius:15px;min-width:0}.coach-app .cc-hero{border-color:#b29b65;background:linear-gradient(115deg,#21352e,#102233)}.coach-app .cc-hero strong{display:block;font-size:29px;color:#f1d28b;line-height:1.15}.coach-app .cc-kicker{color:var(--cg);font-size:12px;letter-spacing:.08em}.coach-app .cc-status{font-size:13px;color:#a1dfc3;min-height:20px;overflow-wrap:anywhere}.coach-app .cc-status[data-pending=true]{color:#f1cc8b}.coach-app label{display:block;margin:12px 0;color:#e6edf3}.coach-app input:not([type=checkbox]),.coach-app select,.coach-app textarea{display:block;width:100%;font:inherit;color:#edf3f6;background:#081924;border:1px solid #557382;border-radius:9px;padding:11px;margin-top:6px;max-width:100%}.coach-app input[type=checkbox]{width:24px;height:24px;flex:none;accent-color:var(--cg);margin:0}.coach-app .cc-check{display:flex;align-items:flex-start;gap:12px;min-height:44px}.coach-app button{min-height:44px;border:1px solid #5a7381;border-radius:9px;background:#243c4b;color:#edf2f6;font:600 15px system-ui;padding:10px 13px;cursor:pointer}.coach-app button.primary{background:var(--cg);color:#0b202b;border:0}.coach-app button:disabled{opacity:.5;cursor:default}.coach-app .cc-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.coach-app .cc-row>label{flex:1;min-width:110px}.coach-app small,.coach-app .cc-note{font-size:12px;color:var(--cm);line-height:1.45}.coach-app details>summary{font-size:20px;font-weight:650;cursor:pointer;min-height:36px}.coach-app .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.coach-app .cc-grid strong{font-size:21px;display:block;color:#f1d28b}.coach-app .cc-history{list-style:none;margin:8px 0;padding:0}.coach-app .cc-history li{border-top:1px solid #38505c;padding:9px 0;font-size:13px;overflow-wrap:anywhere}.coach-app .cc-history button{float:right;font-size:12px;min-height:36px;padding:4px 8px}.coach-app .cc-conflict{border-color:#e1ad71;background:#382a1a}.coach-app .cc-step{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #334c5c;padding:9px 0}.coach-app .cc-step b{color:#a6ddc5}.coach-app a{color:#dfc585}.coach-app [hidden]{display:none!important}.coach-app .cc-chart{display:block;width:100%;height:90px}.coach-app .cc-chart text{fill:#b9c8d0;font-size:11px}.coach-app .cc-chart path{fill:none;stroke:#ddc185;stroke-width:3}.coach-app .cc-chart circle{fill:#ddc185}@media(max-width:430px){.coach-app .cc-card{padding:15px}.coach-app .cc-hero strong{font-size:25px}.coach-app .cc-grid{grid-template-columns:1fr}.coach-app .cc-row>label{min-width:120px}}
-.tabbar{grid-template-columns:repeat(5,minmax(0,1fr))!important}body[data-page="Coach"] .hero{display:none}body[data-page="Coach"] .sectionBrand{display:block}.wj-milestones{grid-template-columns:repeat(auto-fit,minmax(55px,1fr))!important}</style></head>
+.tabbar{grid-template-columns:repeat(5,minmax(0,1fr))!important}body[data-page="Coach"] .hero{display:none}body[data-page="Coach"] .sectionBrand{display:block}.wj-milestones{grid-template-columns:repeat(auto-fit,minmax(55px,1fr))!important}</style><style>/* Phone 3.57: overview → prepare → train. */
+.todayFlow{background:#080f18;color:#edf3f8}.todayFlow .wrap{max-width:760px;padding-bottom:105px}.todayFlow [hidden]{display:none!important}
+.todayFlow .hero,.todayFlow .todayUtilityHidden{display:none!important}.todayFlow button{touch-action:manipulation;min-height:46px}.todayFlow :focus-visible{outline:2px solid #e7ca7c;outline-offset:3px}
+.todayFlow .todayHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px 0}.todayFlow .todayHeader h1{font-size:22px;margin:5px 0 0;letter-spacing:-.04em}.flowBrand{font-size:11px;letter-spacing:.18em;color:#d7bf79;font-weight:850}.flowBrand small{letter-spacing:0;color:#96a8b9;margin-left:5px}.todayHeader button{font-size:12px;padding:8px 12px;border-radius:24px;background:#142130;color:#bdccda}
+.flowMotivation{font-size:14px;color:#afbdcb;margin:13px 2px 16px;line-height:1.5}.flowPlan{border:1px solid #3d493f;border-radius:22px;padding:21px;background:linear-gradient(135deg,#1b2a32,#111e2b)}.flowEyebrow{font-size:10px;letter-spacing:.17em;color:#dfc77d;font-weight:850}.flowPlan h2{font-size:clamp(23px,6.4vw,32px);line-height:1.13;letter-spacing:-.04em;margin:10px 0}.flowPlan p{line-height:1.45;font-size:14px;color:#b7c6d4}.flowPlan .flowMeta{font-size:12px;color:#e0c98b;text-transform:capitalize}.flowPlan #homeSessionReason{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.flowOutline{border-top:1px solid #ffffff12;padding-top:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.flowPlan button{width:100%;margin-top:8px}.todayFlow .primary{background:#dcc47e;color:#101923;border:0;border-radius:13px;font-weight:850;min-height:50px}.flowPlan .flowSecondary{display:flex;justify-content:space-between;background:transparent;color:#e6edf5;border:1px solid #506175;border-radius:13px}
+.todayFlow .flowProgress{display:block;text-align:left;width:100%;padding:17px 19px;border-radius:20px;border:1px solid #2a394b;background:#111c2a;color:#c4d0dc;margin:14px 0}.flowProgress>strong{display:block;font-size:21px;letter-spacing:-.03em;color:#e6d39c}.flowWeight{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 6px}.flowWeight div{display:flex;flex-direction:column;flex-shrink:0}.flowWeight span{font-size:11px}.flowWeight b{font-size:25px;color:#eef4fa}.flowWeight svg{max-width:45%;height:48px;color:#b8d4bf}.flowProgress>span,.flowProgress>small{display:block;font-size:12px;line-height:1.5}.flowProgress>small{color:#92a6b8}.flowProgress .flowLink{margin-top:9px;font-weight:800;color:#e0c98b}.flowQuick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.flowQuick button{background:#142130;border:1px solid #2b3d50;border-radius:13px;color:#cdd9e4;font-size:13px}
+.todayFlow:not(.trainingFocus) .todayCockpit{display:none!important}.todayFlow:not(.trainingFocus) #tabToday .workoutSnapshot,.todayFlow:not(.trainingFocus) .builderHeader{display:none}.todayFlow[data-today-scene="builder"]:not(.trainingFocus) .todayLanding,.todayFlow[data-today-scene="builder"]:not(.trainingFocus) .todayHeader{display:none}.todayFlow[data-today-scene="builder"]:not(.trainingFocus) #tabToday .workoutSnapshot{display:block}.todayFlow[data-today-scene="builder"]:not(.trainingFocus) .builderHeader{display:block}.builderHeader h1{font-size:28px;letter-spacing:-.04em}.builderHeader p{font-size:14px;color:#9cb0c3}.builderHeader>button{background:transparent;border:0;color:#e0c98b;padding-left:0}
+.todayFlow .workoutSnapshot{background:#111c2a;border:1px solid #2a394b;border-radius:20px}.builderTools,.builderPartner,.builderModes{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid #29394b}.builderTools h2,.builderPartner h2,.builderModes h2,.builderPreviewLabel h2{font-size:18px}.builderTools{display:grid;grid-template-columns:1fr 1fr;gap:9px}.builderTools h2,.builderTools p{grid-column:1/-1;margin:0 0 4px}.builderTools button{font-size:13px;white-space:normal;width:100%;margin:0!important}.builderTools #anchorBuilderBtn{grid-column:1/-1}.builderTools #anchorBuilderBtn small{font-size:12px}.builderPartner #jointWorkoutBtn{margin:6px 0}.builderRide{margin:0 0 18px;border-bottom:1px solid #29394b;padding-bottom:16px}.builderRide summary{min-height:44px;line-height:44px;color:#dcc47e;font-weight:700}.builderRide #rideGoalCard{margin:8px 0;padding:12px;border:0;background:#0c1520}.builderModes #makeNonzeroBtn{width:100%;margin-top:9px}.builderStart{width:100%;margin-top:15px}.todayFlow .workoutSnapshot>.secondaryControls,.todayFlow .workoutSnapshot>.workoutPicker,.todayFlow .workoutSnapshot>div.small:first-child{display:none}.progressDetails>summary{font-weight:800;padding:10px 0}.progressDetails #surgeryReadiness{border:0;padding:12px 0;margin:0;background:transparent}
+.todayFlow .tabbar{background:#0e1926f5;border:1px solid #2c3c4e;border-radius:18px}.todayFlow .tabbar button{font-size:12px;border-radius:12px}.todayFlow .tabbar button.active{background:#293a48;color:#ead495}.todayFlow .activeWorkoutDock{border-radius:18px;background:#182735f7;border-color:#8a7849}
+/* Preserve the existing automatic full-screen session, with no setup or nutrition stack. */
+body.todayFlow.trainingFocus .todayHeader,body.todayFlow.trainingFocus .todayLanding,body.todayFlow.trainingFocus .builderHeader,body.todayFlow.trainingFocus .builderTools,body.todayFlow.trainingFocus .builderPartner,body.todayFlow.trainingFocus .builderModes,body.todayFlow.trainingFocus .builderPreviewLabel,body.todayFlow.trainingFocus .builderRide,body.todayFlow.trainingFocus .builderStart{display:none!important}
+body.todayFlow.trainingFocus .todayCockpit{background:#0f1c29;border:1px solid #263b4d;border-radius:18px;padding:8px}.todayFlow.trainingFocus .workoutSnapshot{background:#0e1925}.todayFlow.trainingFocus .focusToolbar{color:#ddc786}.todayFlow.trainingFocus #phoneLiveWeight{display:none}.todayFlow.trainingFocus .setRow{display:flex!important;flex-wrap:wrap;gap:6px}.todayFlow.trainingFocus .setBtn{min-width:44px;min-height:44px;padding:4px 8px}.todayFlow.trainingFocus .exerciseV315 small{display:block;font-size:12px}.todayFlow.trainingFocus .jointHeader{position:sticky;top:0;z-index:2;background:#0e1925}.todayFlow.trainingFocus .jointLane{min-width:0}.todayFlow.trainingFocus .jointLane b{overflow-wrap:anywhere}.todayFlow.trainingFocus #tabToday{gap:8px}
+@media(max-width:360px){.todayFlow .wrap{padding-left:10px;padding-right:10px}.flowPlan{padding:16px}.flowPlan h2{font-size:24px}.flowWeight b{font-size:22px}.flowProgress>strong{font-size:20px}.todayHeader button{font-size:11px;padding:6px 9px}}
+
+@media(max-width:430px){.todayFlow .jointLane:not(.sam)::before{content:"YOU";display:block;color:#dfc77d;font-size:10px;font-weight:850;letter-spacing:.12em}}
+.builderReadiness{margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #29394b}.builderReadiness summary{min-height:44px;line-height:44px;color:#d8c58f;font-weight:750}.flowReadinessInputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.flowReadinessInputs input{font-size:16px;margin-top:6px}
+body.todayFlow.trainingFocus .builderReadiness{display:none!important}body.todayFlow.trainingFocus .focusToolbar button{min-height:44px}body.todayFlow.trainingFocus .cockpitControls .finishControl{grid-column:auto!important;background:#dcc47e;color:#101923;border-radius:13px}
+</style></head>
 <body>
 <div class="wrap">
   <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
   <section class="card hero">
-    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.56</span>
+    <span class="badge">NONZERO · PHONE</span><span class="badge" style="margin-left:6px">v3.57</span>
     <h1 id="todayHeading">Today</h1>
     <p id="todaySub"></p><button type="button" onclick="openManualActivity()" style="min-height:48px;width:100%;margin:8px 0">＋ Log activity</button><button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button><div class="small" style="margin-top:-3px;color:#8fa1b5">Plan · start · track · finish. Wall controls live in Settings.</div>
     <button id="systemStatusButton" class="systemStatusBar warn"><span class="systemDot"></span><b id="systemStatusText">CHECKING SYSTEM</b><span>DETAILS ›</span></button>
@@ -1774,7 +1791,7 @@ async function fetchWallHealth(){
 }
 function diagnosticsText(){
  const a=state.activeWorkout||{},events=(state.eventLog||[]).slice(-50);
- return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.53",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
+ return JSON.stringify({generatedAt:new Date().toISOString(),cloudRevision,online:navigator.onLine,activeWorkout:a,wallPresence:state.wallPresence,wallHealth:systemHealth.wallHealth||null,lastWallCommand:state.wallCommand||null,phoneVersion:"3.57",pendingUpload:localDirty,cloudConfigured:cloudReady(),recentEvents:events},null,2);
 }
 async function copyDiagnostics(){
  const txt=diagnosticsText();try{await navigator.clipboard.writeText(txt);alert('Session diagnostics copied.')}catch{prompt('Copy diagnostics:',txt)}
@@ -3029,6 +3046,77 @@ async function refresh(){try{const c=await ensure();if(!cloudReady()){ui?.render
 async function acknowledge(){const a=NonZeroWorkoutPolicy.active(state);if(!a||!cloudReady()||ackSession===a.sessionId||Date.now()<ackRetry)return;ackRetry=Date.now()+15000;try{await http({...cloudConfig},'/connection',{sessionId:a.sessionId});ackSession=a.sessionId;ackRetry=0}catch{}}
 function tick(){void ensure().then(c=>{if(state.coachDoc)c.accept(state.coachDoc);void c.flush();if(document.body.dataset.page==='Coach'&&!document.hidden)ui?.render()}).catch(e=>{const host=document.getElementById('coachApp');if(host&&!ui)host.textContent=e.message});void acknowledge()}
 window.NonZeroPhoneCoach={open:()=>{void refresh()},refresh,snapshot:()=>current?.snapshot(),save:(...args)=>current.save(...args),enqueue:ops=>current.enqueue(ops),acknowledge,model:()=>ui?.model()};setInterval(tick,2000);window.addEventListener('online',()=>{void refresh();void acknowledge()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){ackRetry=0;void acknowledge();if(document.body.dataset.page==='Coach')void refresh()}});tick();
+})();
+
+</script>
+<script>
+/* Today is an overview; workout preparation and execution have separate surfaces.
+   Existing controls are moved, never cloned, so persistence and Sam's lane stay canonical. */
+(function(){'use strict';
+let scene='home',ready=false;
+const $=id=>document.getElementById(id),node=(tag,cls,html)=>{const e=document.createElement(tag);e.className=cls||'';if(html)e.innerHTML=html;return e};
+function text(id,value){const e=$(id);if(e&&e.textContent!==value)e.textContent=value}
+function openBuilder(){scene='builder';document.body.dataset.todayScene=scene;refresh();window.scrollTo(0,0);$('builderBack').focus({preventScroll:true})}
+function home(){scene='home';document.body.dataset.todayScene=scene;refresh();window.scrollTo(0,0);$('homeCustomize').focus({preventScroll:true})}
+function coach(){selectAppPage('Coach');window.scrollTo(0,0)}
+function refresh(){if(!ready)return;
+ const p=todayProgram(),a=NonZeroWorkoutPolicy.active(state),record=todaySessionRecord(),items=currentItems(),joint=jointEnabled();
+ text('homeSession',p.name||'Your planned session');text('homeSessionReason',p.why||'Make room for one achievable session.');
+ text('homeSessionMeta',[p.type||'Workout',items.length+' movements',joint?'You + Sam':'Your plan'].join(' · '));
+ text('homeDate',new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}));
+ const preview=items.slice(0,3).map(x=>x[0]).join(' · ')+(items.length>3?' + '+(items.length-3)+' more':'');text('homeOutline',preview||'Open Customize to prepare your session.');
+ text('homeStart',a?(a.status==='paused'?'Resume workout':'Open active workout'):record?'Start another session':'Start workout');
+ text('homeEyebrow',record?'SESSION SAVED':'TODAY’S PLAN');
+ text('homeMotivation',record?'Work logged. Carry that momentum into your next small choice.':'One session. One step closer. Follow your approved plan.');
+ text('homeCountdown',$('readinessCountdown')?.textContent||'Your next milestone');
+ const m=NonZeroWeightJourney.model(state,localDateStr(),30),readiness=NonZeroReadiness.summary(state,localDateStr());text('homeMilestone',Number.isFinite(readiness.days)&&readiness.days>=0?'Personal pre-surgery goal · below 220 lb':Number.isFinite(readiness.days)&&readiness.days<0?'Recovery first · follow your cleared plan':m.next?'Next milestone · '+m.next.weight+' lb':'Your long-term progress');text('homeWeight',m.avg==null?'Add a weight':m.avg.toFixed(1)+' lb');
+ text('homeWeightLabel','7-day average');text('homeWeightDetail',m.latest?(m.stale?'Reading out of date · ':m.coverage+'/7 days recorded · ')+m.latest.date:'No readings yet');
+ text('homeWeightChange',m.weekly==null?'Building your trend':(m.weekly>0?'+':m.weekly<0?'−':'')+Math.abs(m.weekly).toFixed(1)+' lb vs prior week');
+ const rr=m.shown,svg=$('homeSpark');svg.replaceChildren();if(rr.length>1){const vals=rr.map(r=>r.average),min=Math.min(...vals)-.3,max=Math.max(...vals)+.3,first=NonZeroWeightJourney.day(rr[0].date),last=NonZeroWeightJourney.day(rr.at(-1).date);const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',rr.map((r,i)=>(i?'L':'M')+(4+232*(NonZeroWeightJourney.day(r.date)-first)/Math.max(1,last-first)).toFixed(1)+' '+(42-36*(r.average-min)/(max-min)).toFixed(1)).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','currentColor');path.setAttribute('stroke-width','3');svg.append(path)}
+ text('builderContext',joint?'Two synchronized plans · separate progress for you and Sam':'Your session · choose the plan that fits today');
+ $('homeResume').hidden=!a;text('homeResume',a?.status==='paused'?'Resume active workout':'Return to active workout');
+ // Calendar widgets are created by the existing integration after page startup.
+ for(const id of ['nz325Command','suiteChanges']){const e=$(id);if(e&&e.parentElement!==$('weekContext'))$('weekContext').append(e)}
+ const cockpit=document.querySelector('.todayCockpit');if(cockpit)cockpit.setAttribute('aria-label','Active workout');
+}
+function init(){if(ready)return;const today=$('tabToday'),snapshot=document.querySelector('.workoutSnapshot'),hero=document.querySelector('.hero');
+ const heading=node('header','todayHeader','<div><span class="flowBrand">NONZERO <small>v3.57</small></span><h1 id="homeDate"></h1></div><button id="homeConnections" aria-label="Open connection settings" type="button">Connections</button>');
+ $('todayHeading').replaceWith(Object.assign(node('span'),{id:'todayHeading',hidden:true}));hero.append($('todayHeading'));
+ today.prepend(heading);text('homeDate',new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}));
+ const landing=node('div','todayLanding',`<p id="homeMotivation" class="flowMotivation"></p>
+ <section class="flowPlan"><div class="flowEyebrow" id="homeEyebrow">TODAY’S PLAN</div><h2 id="homeSession"></h2><p id="homeSessionMeta" class="flowMeta"></p><p id="homeSessionReason"></p><p id="homeOutline" class="flowOutline"></p><button id="homeStart" class="primary" type="button">Start workout</button><button id="homeCustomize" class="flowSecondary" type="button">Customize workout <span aria-hidden="true">→</span></button><button id="homeResume" type="button" hidden>Return to active workout</button></section>
+ <button id="homeProgress" class="flowProgress" type="button" aria-label="Open weight progress and surgery readiness"><strong id="homeCountdown"></strong><small id="homeMilestone"></small><div class="flowWeight"><div><span id="homeWeightLabel"></span><b id="homeWeight"></b></div><svg id="homeSpark" viewBox="0 0 240 48" role="img" aria-label="Thirty-day rolling weight trend"></svg></div><span id="homeWeightChange"></span><small id="homeWeightDetail"></small><span class="flowLink">Progress & check-in →</span></button>
+ <div class="flowQuick"><button id="homeLog" type="button">Log activity</button><button id="homeWeek" type="button">View week →</button></div>`);
+ heading.after(landing);
+ const builder=node('header','builderHeader','<button id="builderBack" type="button">← Today</button><h1>Build your session</h1><p id="builderContext"></p>');snapshot.before(builder);
+ // Keep the same workout controls and exercise DOM used by the running workout.
+ const tools=node('section','builderTools','<h2>Choose your approach</h2><p class="small">Keep the planned session, adapt it, or build something new.</p>');tools.id='builderTools';
+ for(const id of ['adaptiveBtn','randomWorkoutBtn','anchorBuilderBtn','restorePlanBtn'])tools.append($(id));
+ tools.querySelector('#randomWorkoutBtn').textContent='Random workout';tools.querySelector('#adaptiveBtn').textContent='Adapt · 30 minutes';tools.querySelector('#restorePlanBtn').textContent='Use planned workout';
+ const readiness=node('details','builderReadiness','<summary>Adjust for how you feel</summary><div class="flowReadinessInputs"></div>');readiness.id='builderReadiness';
+ for(const [id,title,min,max] of [['pain','Hip pain · 0–10',0,10],['energy','Energy · 1–5',1,5]]){const label=node('label','small');label.textContent=title;const input=$(id);input.min=min;input.max=max;label.append(input);readiness.querySelector('div').append(label)}readiness.append($('painAdvice'));
+ const partner=node('section','builderPartner','<h2>Train together</h2><p class="small">Separate exercise lanes for you and Sam, with shared session timing.</p>');partner.id='builderPartner';partner.append($('jointWorkoutBtn'),$('jointSummary'));
+ const intensity=node('section','builderModes','<h2>Fit today’s capacity</h2>');intensity.append(snapshot.querySelector('.modegrid'));
+ const fast=$('makeNonzeroBtn');fast.textContent='Start the minimum session';intensity.append(fast);
+ const preview=node('div','builderPreviewLabel','<h2>Session preview</h2><p class="small">Your exercise order and separate Sam lane appear below.</p>');
+ snapshot.prepend(readiness,tools,partner,intensity,preview);const ride=$('rideGoalCard');const rideDetails=node('details','builderRide','<summary>Bike / erg targets</summary>');rideDetails.id='builderRide';rideDetails.append(ride);tools.after(rideDetails);
+ const start=node('button','primary builderStart','Start this workout');start.type='button';start.id='builderStart';snapshot.append(start);
+ const details=node('details','card progressDetails','<summary>Weight progress & surgery readiness</summary>');details.id='coachProgressDetails';details.append($('surgeryReadiness'));$('tabCoach').prepend(details);
+ const week=node('details','card','<summary>Family schedule & calendar updates</summary>');week.id='weekContext';$('tabPlan').append(week);
+ // Status and secondary statistics live in their relevant destinations.
+ $('guidedSetupCard').prepend($('systemStatusButton'));$('tabHistory').prepend(hero.querySelector('.grid3'));$('tabHistory').append($('healthWeekMinutes'),$('todayEditTimeBtn'));hero.hidden=true;
+ $('homeConnections').onclick=()=>{selectAppPage('Settings');$('guidedSetupCard').scrollIntoView({block:'start'})};
+ $('homeCustomize').onclick=openBuilder;$('builderBack').onclick=home;
+ const startCurrent=async()=>{if(NonZeroWorkoutPolicy.active(state)){if(NonZeroWorkoutPolicy.active(state).status==='paused')await startTimer();showActiveWorkout()}else await startTimer();refresh()};
+ $('homeStart').onclick=startCurrent;$('builderStart').onclick=startCurrent;$('homeResume').onclick=startCurrent;
+ $('homeProgress').onclick=()=>{coach();details.open=true;details.scrollIntoView({block:'start'})};$('homeLog').onclick=openManualActivity;$('homeWeek').onclick=()=>{selectAppPage('Plan');window.scrollTo(0,0)};
+ const wrap=fn=>function(...args){const out=fn.apply(this,args);refresh();return out};
+ renderToday=wrap(renderToday);renderWorkout=wrap(renderWorkout);renderContextControls=wrap(renderContextControls);renderSurgeryReadiness=wrap(renderSurgeryReadiness);
+ const oldSelect=selectAppPage;selectAppPage=function(tab,...args){const out=oldSelect(tab,...args);if(tab==='Today'&&!document.body.classList.contains('trainingFocus')){scene='home';document.body.dataset.todayScene=scene}refresh();return out};
+ ready=true;document.body.classList.add('todayFlow');document.body.dataset.todayScene=scene;refresh();
+ window.NonZeroTodayFlow={refresh,home,openBuilder};
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 
 </script>
