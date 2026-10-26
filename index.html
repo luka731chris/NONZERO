@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v3.58 · Intelligent Training</title>
+    <title>NONZERO v3.59 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -2579,7 +2579,7 @@ body[data-page='Coach'] .sectionBrand {
 }
 </style>
 <style>
-/* Phone 3.58: overview → prepare → train. */
+/* Phone 3.59: overview → prepare → train. */
 .todayFlow {
   background: #080f18;
   color: #edf3f8;
@@ -3702,7 +3702,7 @@ body.trainingFocus .focusToolbar button {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v3.58</small></span>
+            <span class="flowBrand">NONZERO <small>v3.59</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -4444,6 +4444,15 @@ unit=lb</pre>
         </section>
         <section class="card" id="wallControlsCard">
           <h2>Garage Wall</h2>
+          <p>
+            <a href="http://nonzero-pi.local:8788/?show=1" target="_blank" rel="noopener noreferrer"
+              >Show Wall controls QR</a
+            >
+          </p>
+          <p class="small">
+            Same Wi-Fi as the Pi. Tap above to briefly show the TV QR code, then scan it or enter
+            the TV access code. Includes pairing repair without a Pi keyboard.
+          </p>
           <div class="wallHealthCard">
             <h3 id="wallHealthStatus">Checking Wall…</h3>
             <div id="wallHealthDetail" class="small">
@@ -4576,7 +4585,7 @@ unit=lb</pre>
                   ------
                 </div>
                 <div id="pairCodeStatus" class="small">
-                  Enter this code on the Wall. It expires in 10 minutes.
+                  Enter this code in local Wall controls on your phone. It expires in 10 minutes.
                 </div>
               </div>
             </div>
@@ -8773,7 +8782,7 @@ function diagnosticsText() {
       wallPresence: state.wallPresence,
       wallHealth: systemHealth.wallHealth || null,
       lastWallCommand: state.wallCommand || null,
-      phoneVersion: '3.58',
+      phoneVersion: '3.59',
       pendingUpload: localDirty,
       cloudConfigured: cloudReady(),
       recentEvents: events
@@ -10195,7 +10204,10 @@ async function generateRokuPairCode() {
     if (!res.ok || !body.code) throw new Error(body.error || 'Pairing ' + res.status);
     value.textContent = body.code;
     const mins = Math.max(1, Math.round(Number(body.expiresInSeconds || 600) / 60));
-    status.textContent = 'Enter this code on the Roku Wall. Expires in about ' + mins + ' minutes.';
+    status.textContent =
+      'Enter this code in local Wall controls on your phone. Expires in about ' +
+      mins +
+      ' minutes.';
   } catch (err) {
     value.textContent = '------';
     status.textContent = 'Could not create pairing code: ' + err.message;
@@ -10721,7 +10733,7 @@ renderHealthReview();
               })
             : 'No shared agenda published yet',
           version
-            ? 'Wall ' + version + (version === '7.13.0' ? '' : ' · update available')
+            ? 'Wall ' + version + (version === '7.13.1' ? '' : ' · update available')
             : 'Wall has not reported yet',
           stamp
             ? 'Wall last reported ' +
