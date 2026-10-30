@@ -3884,6 +3884,11 @@ body.trainingFocus .focusToolbar span {
 </style>
   <style id="nz-phone-first-style">
 /* v7.17.7 contextual phone-first wall controls */
+/* v7.17.11: controls are inline, never a floating obstruction */
+#nzRemoteDock{display:none!important}
+.nzWallInlineButton{min-height:40px;padding:8px 12px;border:1px solid #547f91;border-radius:10px;background:#183b47;color:#f4fbff;font:600 13px system-ui,sans-serif}
+.nzWallInlineButton:focus-visible{outline:3px solid #a8e7ef}
+
 #nzRemoteDock[hidden],#nzRemoteDrawer[hidden],#nzRemoteAdvanced[hidden]{display:none!important}
 #nzRemoteDock{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom,0px));right:12px;z-index:8500;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 24px);padding:7px 9px;border:1px solid #547f91;border-radius:16px;background:#10252ff2;color:#fff;box-shadow:0 5px 24px #0007;font:600 13px system-ui,sans-serif}
 #nzRemoteDock button,#nzRemoteDrawer button{border:1px solid #507384;border-radius:11px;background:#214455;color:#fff;padding:11px 12px;min-height:44px;font:600 14px system-ui,sans-serif}
@@ -16530,6 +16535,21 @@ document.getElementById('focusRestBtn').onclick = () => {
     </div>
   </section>`;
   document.body.append(...root.children);
+  // Embed access in the existing phone UI rather than floating over workout buttons.
+  const wallLaunchers = [];
+  for (const [parentId, label] of [['homeConnections','Wall'],['wallModeBtn','Wall remote']]) {
+    const anchor = $(parentId);
+    if (!anchor || !anchor.parentElement) continue;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'nzWallInlineButton';
+    button.textContent = label;
+    button.setAttribute('aria-label','Open NONZERO Wall controls');
+    button.setAttribute('aria-haspopup','dialog');
+    anchor.insertAdjacentElement('afterend',button);
+    wallLaunchers.push(button);
+  }
+
   const scenes = [
     ['pittsburgh','Pittsburgh'],['west-virginia','WV roads'],['mountain-bike','Mountain biking'],
     ['beach','Hilton Head'],['salt-flats','Salt flats'],['rockies','Rocky Mountains'],['france','French tour']
@@ -16617,8 +16637,9 @@ document.getElementById('focusRestBtn').onclick = () => {
     finally {busy=false;update();}
   }
   function showDrawer(){open=true;$('nzRemoteDrawer').hidden=false;$('nzRemoteClose').focus();void refresh(true);update();}
-  function hideDrawer(){open=false;$('nzRemoteDrawer').hidden=true;$('nzRemoteOpen').focus();}
+  function hideDrawer(){open=false;$('nzRemoteDrawer').hidden=true;const launcher=wallLaunchers.find(b=>b.offsetParent!==null)||wallLaunchers[0];if(launcher)launcher.focus();}
   $('nzRemoteOpen').onclick=showDrawer;
+  for (const button of wallLaunchers) button.onclick=showDrawer;
   $('nzRemoteClose').onclick=hideDrawer;
   $('nzRemotePrimary').onclick=()=>activeRide?command({view:'lab',wallMusic:false},'cockpit'):showDrawer();
   $('nzRemoteRide').onclick=()=>command({view:'ride'},'immersive ride');
