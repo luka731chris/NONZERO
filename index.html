@@ -3882,7 +3882,28 @@ body.trainingFocus .focusToolbar span {
   display: none;
 }
 </style>
-  </head>
+  <style id="nz-phone-first-style">
+/* v7.17.7 contextual phone-first wall controls */
+#nzRemoteDock[hidden],#nzRemoteDrawer[hidden],#nzRemoteAdvanced[hidden]{display:none!important}
+#nzRemoteDock{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom,0px));right:12px;z-index:8500;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 24px);padding:7px 9px;border:1px solid #547f91;border-radius:16px;background:#10252ff2;color:#fff;box-shadow:0 5px 24px #0007;font:600 13px system-ui,sans-serif}
+#nzRemoteDock button,#nzRemoteDrawer button{border:1px solid #507384;border-radius:11px;background:#214455;color:#fff;padding:11px 12px;min-height:44px;font:600 14px system-ui,sans-serif}
+#nzRemoteDock button:disabled,#nzRemoteDrawer button:disabled{opacity:.5}
+#nzRemoteDock #nzRemotePrimary{background:#176a77;border-color:#47a3a6}
+#nzRemoteDrawer{position:fixed;inset:auto 0 0 0;z-index:8600;max-height:83dvh;overflow:auto;background:#10222d;color:#f7fcff;border:1px solid #416372;border-radius:22px 22px 0 0;padding:17px 16px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -15px 45px #0009;font:14px system-ui,sans-serif}
+#nzRemoteDrawer .nzTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+#nzRemoteDrawer h2{margin:0;font-size:20px;color:#fff}
+#nzRemoteDrawer .nzGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:10px 0}
+#nzRemoteDrawer .nzWide{grid-column:1/-1}
+#nzRemoteDrawer .nzDanger{background:#6a2834;border-color:#a95760}
+#nzRemoteDrawer .nzScene{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#nzRemoteDrawer .nzScene button[aria-pressed=true]{background:#176a77;border-color:#77cfd1}
+#nzRemoteDrawer .nzMuted{color:#b3cbd5;font-size:12px;line-height:1.5}
+#nzRemoteDrawer #nzRemoteMessage{min-height:22px;color:#cce8f0}
+#nzRemoteDrawer .nzSection{border-top:1px solid #385562;padding-top:11px;margin-top:12px}
+#nzRemoteDrawer button:focus-visible,#nzRemoteDock button:focus-visible{outline:3px solid #a8e7ef}
+@media(max-width:380px){#nzRemoteDock{font-size:11px}#nzRemoteDock button{padding:8px}}
+</style>
+</head>
   <body class="todayFlow" data-today-scene="home">
     <div class="wrap">
       <div class="sectionBrand">NONZERO <span id="sectionName"></span></div>
@@ -5312,14 +5333,21 @@ unit=lb</pre>
     let weekMinutes = 0;
     const current = new Set(),
       prior = new Set();
+    const seenWorkoutIds = new Set();
     for (const s of sessions || []) {
+      const isCompleted = s?.completed === true || s?.status === 'complete' || s?.status === 'completed';
+      if (!isCompleted) continue;
+      const workoutId = String(s.sessionId || s.recordingId || s.id || '').trim();
+      if (workoutId && seenWorkoutIds.has(workoutId)) continue;
+      if (workoutId) seenWorkoutIds.add(workoutId);
       const k = s?.date;
       if (!/^\d{4}-\d{2}-\d{2}$/.test(k || '') || k > today) continue;
-      if (s.completed === true) allCompleted.add(k);
+      if (isCompleted) allCompleted.add(k);
       if (k >= start) {
         started.add(k);
-        if (s.completed === true) completed.add(k);
-        const dur = Math.max(0, Number(s.duration) || 0);
+        if (isCompleted) completed.add(k);
+        const rawDuration = Number(s.duration);
+        const dur = Number.isFinite(rawDuration) ? Math.max(0, rawDuration) : 0;
         weekMinutes += dur;
         mins[keys.indexOf(k)] += dur;
       }
@@ -16473,5 +16501,141 @@ document.getElementById('focusRestBtn').onclick = () => {
   render();
 })();
 </script>
+<script id="nz-phone-first-controls">(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const root = document.createElement('div');
+  root.innerHTML = `<div id="nzRemoteDock" aria-label="Wall remote">
+    <span id="nzRemoteState">Wall remote</span>
+    <button type="button" id="nzRemotePrimary">Wall controls</button>
+    <button type="button" id="nzRemoteOpen" aria-label="More wall controls">•••</button>
+  </div>
+  <section id="nzRemoteDrawer" role="dialog" aria-modal="true" aria-label="NONZERO Wall controls" hidden>
+    <div class="nzTop"><h2>Wall controls</h2><button id="nzRemoteClose" type="button">Done</button></div>
+    <div id="nzRemoteMessage" role="status" aria-live="polite">Ready</div>
+    <div class="nzGrid">
+      <button id="nzRemoteRide" type="button">Start immersive ride</button>
+      <button id="nzRemoteCockpit" type="button" class="nzDanger">End ride · Cockpit</button>
+      <button id="nzRemoteAudio" type="button">Soundtrack</button>
+      <button id="nzRemoteScenesToggle" type="button">Change scenery</button>
+    </div>
+    <div id="nzRemoteScenes" class="nzScene" hidden></div>
+    <div class="nzSection"><button id="nzRemoteAdvancedToggle" type="button" aria-expanded="false">More options</button>
+      <div id="nzRemoteAdvanced" hidden class="nzGrid">
+        <button id="nzRemoteOriginal" type="button">Detailed ride controls</button>
+        <button id="nzRemoteRefresh" type="button">Check Wall status</button>
+        <button id="nzRemoteRecovery" type="button" class="nzDanger nzWide">Recover cockpit</button>
+      </div>
+      <p class="nzMuted">Ending the immersive view does not end your workout. Wall confirmation is required; a request alone is not success.</p>
+    </div>
+  </section>`;
+  document.body.append(...root.children);
+  const scenes = [
+    ['pittsburgh','Pittsburgh'],['west-virginia','WV roads'],['mountain-bike','Mountain biking'],
+    ['beach','Hilton Head'],['salt-flats','Salt flats'],['rockies','Rocky Mountains'],['france','French tour']
+  ];
+  let health = null, busy = false, activeRide = false, scene = 'pittsburgh', open = false, status = 'unknown', lastNonce = '';
+  let lastAction = 0;
+  const msg = t => { $('nzRemoteMessage').textContent = t; };
+  const connected = () => typeof cloudReady === 'function' && cloudReady();
+  const config = () => ({base:cloudConfig.endpoint.replace(/\/$/,''), key:cloudConfig.syncKey});
+  function workoutActive() {
+    try {const a = state?.activeWorkout; return !!a && ['active','running','paused'].includes(String(a.status||'').toLowerCase());}
+    catch (_) {return false;}
+  }
+  function update() {
+    const workout = workoutActive();
+    const hasWall = status === 'online';
+    $('nzRemoteState').textContent = hasWall ? (activeRide ? 'Ride active' : workout ? 'Workout active' : 'Wall ready') : status === 'offline' ? 'Wall offline' : 'Wall remote';
+    $('nzRemotePrimary').textContent = activeRide ? 'End ride now' : workout ? 'Ride controls' : 'Wall controls';
+    $('nzRemoteRide').hidden = activeRide;
+    $('nzRemoteCockpit').hidden = !activeRide;
+    $('nzRemoteAudio').hidden = !workout && !activeRide;
+    $('nzRemoteScenesToggle').hidden = !workout && !activeRide;
+    for (const b of $('nzRemoteScenes').querySelectorAll('[data-scene]')) b.setAttribute('aria-pressed',String(b.dataset.scene === scene));
+    for (const id of ['nzRemoteRide','nzRemoteCockpit','nzRemoteAudio','nzRemoteRecovery']) $(id).disabled = busy;
+  }
+  async function request(url, options = {}, timeout=6000) {
+    const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(),timeout);
+    try {return await fetch(url,{...options,signal:ctl.signal,cache:'no-store'});} finally {clearTimeout(timer);}
+  }
+  async function refresh(quiet=false) {
+    if (!connected()) {status='offline';update();if(!quiet)msg('Cloud connection unavailable. Check Settings.');return null;}
+    try {
+      const {base,key}=config();
+      const r=await request(base+'/wall/health',{headers:{'X-NONZERO-Key':key}},5000);
+      if(!r.ok) throw Error('Wall health unavailable ('+r.status+')');
+      const data=await r.json();
+      health=data.health||null;
+      // A successful cloud response does not by itself establish a connected Wall.
+      const stamp=Number(health?.at)||0;
+      const fresh=stamp>0 && Math.abs(Date.now()-stamp)<45000;
+      status=fresh?'online':'offline';
+      if(fresh && health?.ride) {
+        activeRide=health.ride.active===true;
+        scene=health.ride.scene||scene;
+      } else if (!fresh) {
+        // Do not display a stale ride state as if the Wall is still responding.
+        activeRide=false;
+      }
+      update();
+      if(!quiet) msg(fresh?'Wall responded · '+(activeRide?'immersive ride':'cockpit / ambient'):'Wall has not reported recently');
+      return health;
+    } catch(e) {status='offline';update();if(!quiet)msg('Cannot confirm Wall: '+e.message);return null;}
+  }
+  async function command(patch,label) {
+    if(busy)return;
+    if(!connected()){msg('Cloud not connected. Check Settings.');return;}
+    busy=true;lastAction=Date.now();update();msg('Sending '+label+'…');
+    try {
+      const {base,key}=config();
+      const r=await request(base+'/ride/control',{
+        method:'POST',headers:{'Content-Type':'application/json','X-NONZERO-Key':key},body:JSON.stringify(patch)
+      },7000);
+      const data=await r.json();
+      if(!r.ok || !data.ok)throw Error(data.error||'Command rejected ('+r.status+')');
+      const nonce=String(data.control?.nonce||'');
+      if(!nonce)throw Error('Command sent but no acknowledgment identifier returned');
+      lastNonce=nonce;
+      msg('Sent · waiting for Wall…');
+      let confirmed=false;
+      for(let i=0;i<7;i++){
+        await new Promise(resolve=>setTimeout(resolve,1100));
+        const h=await refresh(true);
+        if(status==='online' && h?.ride?.controlNonce===nonce){
+          // Require a fresh heartbeat and the actual requested state, not merely a nonce.
+          if(patch.view==='lab' && h.ride.active===true)continue;
+          if(patch.view==='ride' && h.ride.active!==true)continue;
+          if(typeof patch.scene==='string' && h.ride.scene!==patch.scene)continue;
+          confirmed=true;
+          break;
+        }
+      }
+      if(!confirmed)throw Error('No Wall acknowledgment. Check that the Pi is responsive.');
+      msg('Wall confirmed · '+label);
+    }catch(e){msg('Not confirmed: '+e.message+' · Retry available.');}
+    finally {busy=false;update();}
+  }
+  function showDrawer(){open=true;$('nzRemoteDrawer').hidden=false;$('nzRemoteClose').focus();void refresh(true);update();}
+  function hideDrawer(){open=false;$('nzRemoteDrawer').hidden=true;$('nzRemoteOpen').focus();}
+  $('nzRemoteOpen').onclick=showDrawer;
+  $('nzRemoteClose').onclick=hideDrawer;
+  $('nzRemotePrimary').onclick=()=>activeRide?command({view:'lab',wallMusic:false},'cockpit'):showDrawer();
+  $('nzRemoteRide').onclick=()=>command({view:'ride'},'immersive ride');
+  $('nzRemoteCockpit').onclick=()=>command({view:'lab',wallMusic:false},'cockpit');
+  $('nzRemoteRecovery').onclick=()=>command({view:'lab',wallMusic:false},'cockpit recovery');
+  $('nzRemoteRefresh').onclick=()=>refresh(false);
+  $('nzRemoteOriginal').onclick=()=>{$('nzRemoteClose').click();$('rideRemoteClose')&&$('rideRemoteClose').click();const b=document.querySelector('.ridePhoneOpen');if(b)b.click();else msg('Detailed ride controls unavailable');};
+  $('nzRemoteAudio').onclick=()=>{const b=$('rrPhoneSound');if(b){showOriginalAudio();}else msg('Soundtrack unavailable');};
+  function showOriginalAudio(){hideDrawer();const b=document.querySelector('.ridePhoneOpen');if(b)b.click();}
+  $('nzRemoteScenesToggle').onclick=()=>{$('nzRemoteScenes').hidden=!$('nzRemoteScenes').hidden;};
+  $('nzRemoteAdvancedToggle').onclick=()=>{const hidden=!$('nzRemoteAdvanced').hidden;$('nzRemoteAdvanced').hidden=hidden;$('nzRemoteAdvancedToggle').setAttribute('aria-expanded',String(!hidden));};
+  for(const [id,label] of scenes){const b=document.createElement('button');b.type='button';b.dataset.scene=id;b.textContent=label;b.onclick=()=>command({scene:id,view:'ride'},label+' scene');$('nzRemoteScenes').append(b);}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&open)hideDrawer();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh(true);});
+  window.addEventListener('suite-state-changed',update);
+  setInterval(()=>{update();if(!document.hidden && Date.now()-lastAction>10000)void refresh(true);},10000);
+  update();void refresh(true);
+})();</script>
   </body>
 </html>
