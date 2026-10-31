@@ -5565,7 +5565,14 @@ unit=lb</pre>
     const baseWeights = new Map((base?.bodyMeasurements || []).map((x) => [x.id, x]));
     for (const x of local?.bodyMeasurements || [])
       if (!equal(x, baseWeights.get(x.id))) weights.set(x.id, clone(x));
+    for (const x of base?.bodyMeasurements || [])
+      if (x?.id && !weights.has(x.id)) weights.set(x.id, clone(x));
     out.bodyMeasurements = [...weights.values()];
+    const validAgenda = (ag) => ag && (Array.isArray(ag.days) ? ag.days.length > 0 : Boolean(ag.date));
+    if (!validAgenda(out.autopilotAgenda))
+      out.autopilotAgenda = validAgenda(local?.autopilotAgenda)
+        ? clone(local.autopilotAgenda)
+        : validAgenda(base?.autopilotAgenda) ? clone(base.autopilotAgenda) : out.autopilotAgenda;
     return out;
   }
   root.NonZeroSuite = {
@@ -11301,7 +11308,8 @@ renderHealthReview();
     return state.suitePreferences || {};
   }
   function agenda() {
-    return state.autopilotAgenda || cached;
+    return (state.autopilotAgenda && (state.autopilotAgenda.days?.length || state.autopilotAgenda.date))
+      ? state.autopilotAgenda : cached;
   }
   function family() {
     let modal = $('suiteFamilyModal');
@@ -11554,6 +11562,21 @@ document.getElementById('focusRestBtn').onclick = () => {
     }
   }
   function renderJourney() {
+    if (!local && state) {
+      try {
+        const binding = (localStorage.getItem('nz.endpoint') || '') + '|' + (localStorage.getItem('nz.wallToken') || '');
+        const prior = JSON.parse(localStorage.getItem('nz.weightJourney.v1') || 'null');
+        const merged = new Map();
+        for (const x of prior?.binding === binding ? (prior.state?.bodyMeasurements || []) : [])
+          if (x?.id) merged.set(x.id, x);
+        for (const x of state.bodyMeasurements || []) if (x?.id) merged.set(x.id, x);
+        localStorage.setItem('nz.weightJourney.v1', JSON.stringify({binding, state: {
+          bodyMeasurements: [...merged.values()],
+          surgeryPlan: state.surgeryPlan || prior?.state?.surgeryPlan || {},
+          pm5Analytics: {health: state.pm5Analytics?.health?.length ? state.pm5Analytics.health : (prior?.state?.pm5Analytics?.health || [])}
+        }}));
+      } catch (e) { console.warn('Weight history cache refresh failed', e); }
+    }
     weightState = journeyState();
     const target = host.querySelector('#mWeightJourney');
     target.innerHTML =
