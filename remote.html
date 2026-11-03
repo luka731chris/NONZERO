@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nonzero Wall controls</title>
+    <link rel="stylesheet" href="remote.css" />
+  </head>
+  <body>
+    <main>
+      <small>NONZERO · LOCAL WALL REMOTE</small>
+      <h1>Your Wall, in your hand.</h1>
+      <p>
+        Use the same Wi-Fi as your Pi. These controls work even when cloud pairing needs repair.
+      </p>
+      <button id="showAccess">Show access QR on TV</button>
+      <p id="accessMessage" role="status"></p>
+      <form id="access">
+        <label
+          >TV access code<input
+            id="key"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false" /></label
+        ><button>Connect</button>
+      </form>
+      <p id="status" role="status" aria-live="polite">Connecting…</p>
+      <section id="controls" hidden>
+        <h2>Display</h2>
+        <div class="grid">
+          <button data-action="performance">Performance</button
+          ><button data-action="ambient">Ambient</button><button data-action="night">Night</button
+          ><button data-action="deep">Deep sleep</button
+          ><button data-action="schedule">Resume schedule</button
+          ><button data-action="quote-next">Next quote</button>
+        </div>
+        <h2>Ride view</h2>
+        <p>Control the TV from your phone. No keyboard or mouse needed. Metrics keeps the workout recording.</p>
+        <div class="grid">
+          <button data-action="ride-on">Show ride</button>
+          <button data-action="ride-off">Metrics view</button>
+          <button data-action="ride-next">Next scenery</button>
+          <button data-action="ride-center">Center view</button>
+          <button data-action="ride-left">Look left</button>
+          <button data-action="ride-right">Look right</button>
+          <button data-action="ride-up">Look up</button>
+          <button data-action="ride-down">Look down</button>
+        </div>
+        <h2>Pair or repair</h2>
+        <p>
+          In the Nonzero app, open Settings → Pair or re-pair Wall and generate a six-digit code.
+          Enter it here. No Pi keyboard needed.
+        </p>
+        <form id="pair">
+          <label
+            >Six-digit Wall pairing code<input
+              id="code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              pattern="[0-9]{6}"
+              maxlength="6"
+              required /></label
+          ><button>Pair Wall</button>
+        </form>
+        <h2>Diagnostics</h2>
+        <div class="grid">
+          <button data-action="health">Show TV health</button
+          ><button data-action="setup">Show TV setup</button
+          ><button data-action="close">Close TV panels</button
+          ><button data-action="retry">Retry cloud</button>
+        </div>
+        <p id="receipt" role="status" aria-live="polite"></p>
+        <button id="forget">Disconnect this phone</button>
+      </section>
+      <p class="note">
+        Local network only. Do not forward port 8788 to the internet. The TV access code changes
+        when the Pi web service restarts.
+      </p>
+    </main>
+    <script src="remote.js"></script>
+  </body>
+</html>

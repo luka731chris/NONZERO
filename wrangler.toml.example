@@ -1,0 +1,9 @@
+name = "nonzero-nutrition-api"
+main = "index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nonzero_nutrition"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"

@@ -1,0 +1,152 @@
+.wj-panel {
+  color: #eaf0f8;
+  border: 1px solid #354859;
+  background: linear-gradient(135deg, #152535, #0b1420);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 16px 0;
+  box-sizing: border-box;
+}
+.wj-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.wj-heading h3 {
+  margin: 5px 0;
+  font-size: 25px;
+}
+.wj-heading > b {
+  font-size: 30px;
+  color: #d6b961;
+}
+.wj-heading small,
+.wj-note,
+.wj-stats small,
+.wj-milestones small {
+  color: #a7b9ca;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.wj-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+.wj-stats strong,
+.wj-stats small {
+  display: block;
+}
+.wj-stats strong {
+  font-size: 20px;
+}
+.wj-track {
+  height: 7px;
+  background: #293b4b;
+  border-radius: 9px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.wj-track i {
+  display: block;
+  height: 100%;
+  background: #d6b961;
+}
+.wj-milestones {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+.wj-milestones > div {
+  padding: 9px 4px;
+  text-align: center;
+  border: 1px solid #354859;
+  border-radius: 8px;
+}
+.wj-milestones small {
+  display: block;
+}
+.wj-milestones .met {
+  border-color: #67c28a;
+  color: #67c28a;
+}
+.wj-milestones .next {
+  border-color: #d6b961;
+  color: #d6b961;
+  background: #d6b96116;
+}
+.wj-panel svg {
+  width: 100%;
+  display: block;
+  max-height: 300px;
+}
+.wj-panel svg text {
+  fill: #a7b9ca;
+  font-size: 10px;
+  font-family: system-ui;
+}
+.wj-compact {
+  color: #d6b961;
+  font-size: clamp(12px, 0.85vw, 28px);
+  line-height: 1.3;
+}
+.wj-compact span,
+.wj-compact small {
+  display: block;
+}
+.wj-compact small {
+  font-size: 0.85em;
+  color: #b4c3d2;
+}
+.wj-compact .wj-track {
+  margin: 7px 0;
+  height: 5px;
+}
+.wj-live {
+  margin: 8px 0;
+  padding: 8px 12px;
+  border: 1px solid #526147;
+  border-radius: 8px;
+  background: #0d1922;
+}
+.wj-live .wj-compact {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 3px 12px;
+}
+.wj-live .wj-track {
+  grid-column: 1/-1;
+}
+.wj-live small {
+  grid-column: 1/-1;
+}
+@media (max-width: 500px) {
+  .wj-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wj-milestones b {
+    font-size: 13px;
+  }
+  .wj-milestones small {
+    font-size: 10px;
+  }
+  .wj-panel {
+    padding: 12px;
+  }
+  .wj-live .wj-compact {
+    display: block;
+  }
+  .wj-heading h3 {
+    font-size: 22px;
+  }
+}
+
+.wj-compact svg text {
+  fill: #a7b9ca;
+  font: 10px system-ui;
+}
+.wj-live .wj-compact {
+  font-size: clamp(11px, 0.7vw, 22px);
+}

@@ -1,0 +1,358 @@
+/* The goal coach takes a full-width, room-readable band; footer statistics retire. */
+#ambient .connected-ambient {
+  display: none !important;
+}
+#ambient .mindset {
+  top: 12.5vh !important;
+  height: 21vh !important;
+}
+#ambient .mindset .quote {
+  font-size: 3.6vw !important;
+  line-height: 1.05 !important;
+  padding: 0.4vh 0 !important;
+}
+#ambient .mindset .author {
+  font-size: 1.15vw !important;
+  padding-bottom: 0.35vh !important;
+}
+#ambient .kpis {
+  top: 54.2vh !important;
+  height: 12.5vh !important;
+}
+#ambient .lower {
+  top: 67.7vh !important;
+  bottom: 9.2vh !important;
+  --card-title: 1.35vw;
+  --card-detail: 0.95vw;
+  --card-heading: 1.1vw;
+}
+#ambient .lower .panel-title {
+  font-size: 1.1vw !important;
+}
+#ambient .lower .check-copy strong,
+#ambient .lower .agenda-title,
+#ambient .lower .agenda-time {
+  font-size: 1.35vw !important;
+  line-height: 1.15 !important;
+}
+#ambient .lower .check-copy > span,
+#ambient .lower .agenda-meta,
+#ambient .lower .today-detail {
+  font-size: 0.95vw !important;
+  line-height: 1.15 !important;
+}
+#ambient .lower .check-row {
+  min-height: 0 !important;
+  padding: 0.25vh 0 !important;
+}
+.goal-coach {
+  position: absolute;
+  left: 4.6vw;
+  right: 4.8vw;
+  top: 34.2vh;
+  height: 19vh;
+  border: 1px solid #d6b66a70;
+  border-left: 4px solid #e1be75;
+  border-radius: 0.65vw;
+  background: linear-gradient(115deg, #23332d, #122332 65%, #0b1926);
+  padding: 1vh 1vw;
+  color: #eaf2f6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vh;
+}
+.goal-coach-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1vw;
+  align-items: baseline;
+  min-height: 1.8vh;
+}
+.goal-coach-heading span {
+  font-size: 0.95vw;
+  letter-spacing: 0.09em;
+  color: #edcb84;
+}
+.goal-coach-heading strong {
+  font-size: 1.05vw;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+}
+.goal-coach-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.1fr 1.7fr;
+  gap: 1.4vw;
+  flex: 1;
+  min-height: 0;
+}
+.goal-coach-grid > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35vh;
+}
+.goal-coach-grid > div:not(:last-child) {
+  border-right: 1px solid #bdd7d52a;
+  padding-right: 1.1vw;
+}
+.goal-coach-grid > div > strong {
+  font-size: 2.25vw;
+  line-height: 1.05;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #f1d18f;
+  white-space: nowrap;
+}
+.goal-coach-grid > div > b {
+  font-size: 0.85vw;
+  line-height: 1.2;
+  color: #c4d1db;
+  letter-spacing: 0.045em;
+  font-weight: 550;
+}
+.goal-coach-grid > div > span {
+  font-size: 0.86vw;
+  line-height: 1.25;
+  color: #bbccd5;
+}
+.goal-coach-grid .goal-coach-action > strong {
+  font-size: 1.35vw;
+  white-space: normal;
+  color: #f0f5f7;
+  font-weight: 550;
+  line-height: 1.14;
+}
+.goal-coach-grid .goal-coach-action > span {
+  font-size: 0.8vw;
+  line-height: 1.2;
+}
+.goal-road {
+  height: 0.45vh;
+  min-height: 3px;
+  background: #344953;
+  border-radius: 7px;
+  overflow: hidden;
+  width: 90%;
+  margin-top: 0.15vh;
+}
+.goal-road i {
+  display: block;
+  height: 100%;
+  background: #e1c283;
+  width: 0;
+}
+.goal-coach-gap > small {
+  font-size: 0.65vw;
+  color: #b7c8cf;
+  line-height: 1;
+}
+.goal-action-dots {
+  display: flex;
+  gap: 0.8vw;
+  margin-top: auto;
+}
+.goal-action-dots i {
+  font-style: normal;
+  font-size: 0.67vw;
+  color: #aabfc8;
+  white-space: nowrap;
+}
+.goal-action-dots i[data-done='true'] {
+  color: #8ce2bf;
+}
+.goal-coach-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1vw;
+  border-top: 1px solid #a4c4cc27;
+  padding-top: 0.45vh;
+  font-size: 0.7vw;
+  color: #b2c8cb;
+  line-height: 1;
+}
+.goal-coach[data-phase='heal'] {
+  border-color: #8abbdc;
+  border-left-color: #a6d4ed;
+  background: linear-gradient(110deg, #233746, #0e1c2c);
+}
+.goal-coach[data-phase='heal'] .goal-coach-grid > div > strong {
+  color: #b6e0f0;
+}
+.goal-coach-open {
+  position: absolute;
+  left: 38vw;
+  bottom: 0.5vh;
+  height: 7.7vh;
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  text-decoration: none;
+  color: #b8c9d1;
+  font-size: 0.8vw;
+  letter-spacing: 0.04em;
+}
+.goal-coach-open img {
+  height: 7.2vh;
+  width: 7.2vh;
+  background: white;
+  border-radius: 4px;
+  padding: 3px;
+}
+.goal-coach-open span {
+  max-width: 21vw;
+  line-height: 1.4;
+}
+#ambient .weight-readiness-context {
+  font-size: 0.6vw;
+}
+.wj-milestones {
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)) !important;
+}
+#ambient .goal-coach {
+  height: 20.3vh;
+}
+#ambient .kpis {
+  top: 55.5vh !important;
+  height: 11.7vh !important;
+}
+#ambient .lower {
+  top: 68.2vh !important;
+}
+.goal-coach-bottom {
+  flex: none;
+  min-height: 1.6vh;
+  align-items: center;
+}
+#ambient .lower .panel.accent {
+  display: flex !important;
+  flex-direction: column !important;
+}
+#ambient #todayChecks {
+  display: grid !important;
+  grid-template-rows: repeat(var(--workout-rows), minmax(0, 1fr)) !important;
+  flex: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  gap: 0.2vh !important;
+  overflow: hidden !important;
+}
+#ambient #todayChecks .check {
+  display: grid !important;
+  grid-template-columns: 2vw minmax(0, 1fr) !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  padding: 0.15vh 0 !important;
+  overflow: hidden !important;
+}
+#ambient #todayChecks .check-copy {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr) !important;
+  flex-direction: unset !important;
+  align-items: center !important;
+  gap: 0.6vw !important;
+  min-width: 0 !important;
+}
+#ambient #todayChecks .check-copy strong {
+  font-size: 1.25vw !important;
+  line-height: 1.1 !important;
+}
+#ambient #todayChecks .check-copy > span {
+  font-size: 0.95vw !important;
+  line-height: 1.15 !important;
+}
+#ambient #todayChecks .check-marker {
+  font-size: 1.4vw !important;
+}
+#ambient #todayChecks .check {
+  align-self: stretch !important;
+  height: 100% !important;
+  padding: 0 !important;
+}
+#ambient #todayChecks .check-copy strong {
+  font-size: 1.15vw !important;
+  line-height: 1.05 !important;
+}
+#ambient #todayChecks .check-copy > span {
+  font-size: 0.9vw !important;
+  line-height: 1.1 !important;
+}
+#ambient #todayChecks .check-marker {
+  font-size: 1.2vw !important;
+  line-height: 1 !important;
+}
+#ambient .weight-readiness-kpi {
+  padding: 0.45vh 0.75vw !important;
+  gap: 0.25vh !important;
+}
+#ambient #agendaRows .agenda-row {
+  grid-template-columns: 5.8vw minmax(0, 1fr) !important;
+}
+#ambient #agendaRows .agenda-time {
+  white-space: nowrap !important;
+  font-size: 1.2vw !important;
+  line-height: 1.2 !important;
+}
+
+/* Fit the complete KPI context and keep QR/branding clear at 720p too. */
+#ambient .kpi:not(.weight-readiness-kpi) {
+  padding: 0.45vh 0.75vw !important;
+}
+#ambient .kpi:not(.weight-readiness-kpi) .kpi-label {
+  font-size: clamp(11px, 0.76vw, 29px) !important;
+  line-height: 1.05 !important;
+}
+#ambient .kpi:not(.weight-readiness-kpi) .kpi-value {
+  font-size: clamp(28px, 2.12vw, 82px) !important;
+  line-height: 1 !important;
+}
+#ambient .kpi:not(.weight-readiness-kpi) .kpi-context {
+  font-size: clamp(10px, 0.73vw, 28px) !important;
+  line-height: 1.12 !important;
+  margin-top: 0.35vh !important;
+  flex-shrink: 0 !important;
+}
+#ambient .footer-brand {
+  width: 32vw !important;
+  justify-content: flex-start !important;
+}
+#ambient .footer-brand .skyline-stack {
+  width: 11.5vw !important;
+  flex-basis: 11.5vw !important;
+}
+#ambient .footer-brand .lukalab strong {
+  font-size: 1.68vw !important;
+}
+#ambient .footer-brand .lukalab span {
+  font-size: 0.62vw !important;
+}
+#ambient .header .flag {
+  width: 12.8vw !important;
+  max-width: none !important;
+}
+#ambient .header .cloud {
+  position: absolute !important;
+  left: auto !important;
+  right: 15vw !important;
+  top: 0 !important;
+  bottom: auto !important;
+  white-space: nowrap !important;
+  font-size: 1.05vw !important;
+}
+
+#coachPerformance {
+  font-size: 0.72vw;
+  line-height: 1.2;
+  color: #d4c18e;
+  margin: 0.35vh 0;
+  overflow-wrap: anywhere;
+}
+
+.goal-coach-action > strong,
+.goal-coach-action > #goalActionWhy {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  flex-shrink: 0;
+}

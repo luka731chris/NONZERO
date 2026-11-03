@@ -1,0 +1,122 @@
+[
+  {
+    "id": "pittsburgh-start",
+    "src": "assets/routes/pittsburgh-start.jpg",
+    "author": "Dough4872",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Pittsburgh_skyline_from_North_Shore_near_Acrisure_Stadium_August_2025.jpeg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Pittsburgh_skyline_from_North_Shore_near_Acrisure_Stadium_August_2025.jpeg",
+    "size": [
+      2133,
+      1600
+    ]
+  },
+  {
+    "id": "pittsburgh-pnc",
+    "src": "assets/routes/pittsburgh-pnc.jpg",
+    "author": "Dough4872",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Pittsburgh_skyline_from_North_Shore_near_PNC_Park_August_2025.jpeg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/0/07/Pittsburgh_skyline_from_North_Shore_near_PNC_Park_August_2025.jpeg",
+    "size": [
+      2133,
+      1600
+    ]
+  },
+  {
+    "id": "france-reynard",
+    "src": "assets/routes/france-reynard.jpg",
+    "author": "V\u00e9ronique PAGNIER",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Chalet_Reynard_-_Mont_Ventoux.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Chalet_Reynard_-_Mont_Ventoux.jpg",
+    "size": [
+      2133,
+      1600
+    ]
+  },
+  {
+    "id": "rockies-rainbow",
+    "src": "assets/routes/rockies-rainbow.jpg",
+    "author": "National Park Service",
+    "license": "Public domain (NPS photograph)",
+    "page": "https://www.nps.gov/places/romo_rainbowcurve.htm",
+    "download": "https://www.nps.gov/common/uploads/cropped_image/primary/5863FE15-92C2-E7C3-9BA7C9267E0F128E.jpg?width=1600&quality=90&mode=crop",
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "id": "rockies-rockcut",
+    "src": "assets/routes/rockies-rockcut.jpg",
+    "author": "National Park Service",
+    "license": "Public domain (NPS photograph)",
+    "page": "https://www.nps.gov/places/romo_rockcut.htm",
+    "download": "https://www.nps.gov/common/uploads/cropped_image/primary/2F76F5F3-CE62-85FA-40B5BA2799EAA098.jpg?width=1600&quality=90&mode=crop",
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "id": "beach",
+    "src": "assets/routes/beach.jpg",
+    "author": "National Park Service",
+    "license": "Public domain (NPS photograph)",
+    "page": "https://www.nps.gov/places/head-of-the-meadow-beach.htm",
+    "download": "https://www.nps.gov/common/uploads/cropped_image/primary/FDC310B7-FDCE-35CC-754224F3046F472E.jpg?width=1600&quality=90&mode=crop",
+    "size": [
+      1600,
+      900
+    ]
+  },
+  {
+    "id": "france-bedoin",
+    "src": "assets/routes/france-bedoin.jpg",
+    "author": "V\u00e9ronique PAGNIER",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Bedoin_-_Vue_village_et_vignes.JPG",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/5/54/Bedoin_-_Vue_village_et_vignes.JPG",
+    "size": [
+      2133,
+      1600
+    ]
+  },
+  {
+    "id": "france-summit",
+    "src": "assets/routes/france-summit.jpg",
+    "author": "V\u00e9ronique PAGNIER",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Mont_Ventou.JPG",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/7/76/Mont_Ventou.JPG",
+    "size": [
+      1045,
+      1600
+    ]
+  },
+  {
+    "id": "mountain-bike",
+    "src": "assets/routes/mountain-bike.jpg",
+    "author": "Acp~commonswiki",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Slickrockbiketrail.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/9/92/Slickrockbiketrail.jpg",
+    "size": [
+      1024,
+      681
+    ]
+  },
+  {
+    "id": "beach-trail",
+    "src": "assets/routes/beach-trail.jpg",
+    "author": "National Park Service",
+    "license": "Public domain (NPS photograph)",
+    "page": "https://www.nps.gov/thingstodo/head-of-the-meadow-bike-trail.htm",
+    "download": "https://www.nps.gov/common/uploads/cropped_image/primary/44AFB177-E8B7-CA5A-1EB7AE189542E278.jpg?width=1300&quality=90&mode=crop",
+    "size": [
+      1300,
+      731
+    ]
+  }
+]

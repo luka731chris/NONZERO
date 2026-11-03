@@ -1,0 +1,703 @@
+/* NONZERO 7.5.1 — Performance lab, scoped to preserve ambient optics. */
+#performance {
+  background: radial-gradient(ellipse at 65% 20%, #123348 0%, #071522 50%, #030910 100%) !important;
+}
+#performance:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #4ccef908 1px, transparent 1px),
+    linear-gradient(#4ccef908 1px, transparent 1px);
+  background-size: 5vw 5vw;
+  pointer-events: none;
+}
+#performance .header {
+  left: 1.5vw !important;
+  right: 1.5vw !important;
+  top: 1vh !important;
+  height: 6vh !important;
+  align-items: center !important;
+}
+#performance .header-kb-premium {
+  width: 3.7vw !important;
+  height: 5.5vh !important;
+  object-fit: contain;
+}
+#performance .brand {
+  font-size: 2vw !important;
+}
+#performance .flag {
+  width: 5vw !important;
+}
+#performance .mode-pill {
+  font-size: 1.05vw !important;
+  color: #74eaff !important;
+  border-color: #55dfff66 !important;
+}
+#performance .cloud {
+  font-size: 1vw !important;
+}
+#performance .perf-grid {
+  position: absolute !important;
+  inset: 8vh 1.5vw 2.5vh !important;
+  display: grid !important;
+  grid-template-columns: 24% minmax(0, 1fr) !important;
+  gap: 1vw !important;
+}
+#performance .perf-panel {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #75daf933 !important;
+  border-radius: 1vw !important;
+  background: linear-gradient(145deg, #173047dd, #091521f5) !important;
+  box-shadow:
+    inset 0 1px 0 #a3d6ef44,
+    0 1vh 3vh #0008 !important;
+  padding: 1.4vh 1vw !important;
+}
+#performance .left {
+  border-top: 3px solid #ffcf70 !important;
+  border-left-width: 1px !important;
+}
+#performance .perf-eyebrow,
+#performance .badge {
+  font-size: 1.05vw !important;
+  letter-spacing: 0.09em !important;
+}
+#performance .session {
+  font-size: 2.25vw !important;
+  line-height: 1.08 !important;
+  margin: 1.2vh 0 !important;
+}
+#performance .why {
+  font-size: 1.2vw !important;
+  line-height: 1.3 !important;
+}
+#performance .coach-strip {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 1vh !important;
+  margin: 2vh 0 !important;
+  padding: 1.6vh 0.9vw !important;
+  background: linear-gradient(130deg, #194642, #0b202e) !important;
+  border: 1px solid #65edb266 !important;
+  min-height: 14vh !important;
+  border-radius: 0.6vw !important;
+}
+#performance .coach-strip span {
+  font-size: 1vw !important;
+  color: #7df1c0 !important;
+  letter-spacing: 0.18em !important;
+}
+#performance .coach-strip strong {
+  font-size: 1.65vw !important;
+  line-height: 1.25 !important;
+  color: #f0fff9 !important;
+}
+#performance .coach-strip em {
+  font-size: 1.05vw !important;
+  line-height: 1.3 !important;
+}
+#performance .section-label {
+  font-size: 1.05vw !important;
+  letter-spacing: 0.15em !important;
+  margin-top: 2vh !important;
+  color: #9dc8dd !important;
+}
+#performance .current {
+  font-size: 2.2vw !important;
+  line-height: 1.15 !important;
+  margin-top: 0.6vh !important;
+}
+#performance .detail {
+  font-size: 1.3vw !important;
+  line-height: 1.3 !important;
+  margin-top: 1vh !important;
+}
+#performance .next {
+  font-size: 1.55vw !important;
+  line-height: 1.25 !important;
+  margin-top: 1vh !important;
+}
+#performance .cockpit {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 1.2vh 1vw !important;
+}
+#performance .cockpit-top {
+  height: 9vh !important;
+  flex: none !important;
+  align-items: center !important;
+}
+#performance .cockpit-clock {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 1vw !important;
+}
+#performance .timer {
+  font-size: 4.4vw !important;
+  line-height: 1 !important;
+  color: #fff !important;
+}
+#performance .motivation {
+  font-size: 1.15vw !important;
+}
+#performance .pm5-status {
+  font-size: 1vw !important;
+  padding: 0.6vh 0.7vw !important;
+}
+#performance .cockpit-dash {
+  flex: 1 !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  grid-template-rows: 26vh 22vh 10vh !important;
+  gap: 0.7vw !important;
+  margin-top: 1vh !important;
+}
+#performance .dial,
+#performance .micro,
+#performance .trend-panel {
+  background: linear-gradient(145deg, #152d42, #07121e) !important;
+  border: 1px solid #79c8ed33 !important;
+  border-radius: 0.6vw !important;
+  box-shadow: inset 0 1px 0 #def7ff22 !important;
+}
+#performance .power-dial {
+  grid-column: 1/6 !important;
+  grid-row: 1 !important;
+  border-top: 3px solid #53dfff !important;
+}
+#performance .cadence-dial {
+  grid-column: 6/10 !important;
+  grid-row: 1 !important;
+  border-top: 3px solid #ffcf70 !important;
+}
+#performance .hr-metric {
+  grid-column: 10/13 !important;
+  grid-row: 1 !important;
+  border-top: 3px solid #ff7197 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+#performance .dial {
+  position: relative !important;
+  padding: 1vh 0.9vw !important;
+  overflow: hidden !important;
+}
+#performance .dial > small,
+#performance .micro > small {
+  font-size: 1.15vw !important;
+  letter-spacing: 0.14em !important;
+  color: #c4e0ed !important;
+  position: relative;
+  z-index: 2;
+}
+#performance .dial svg {
+  position: absolute !important;
+  width: 100% !important;
+  height: 23vh !important;
+  left: 0 !important;
+  top: 1vh !important;
+  margin: 0 !important;
+  opacity: 0.8 !important;
+}
+#performance .dial-track {
+  stroke: #2b4355 !important;
+  stroke-width: 7 !important;
+}
+#performance .dial-fill {
+  stroke-width: 9 !important;
+  filter: drop-shadow(0 0 5px #65dfff55) !important;
+}
+#performance .power-dial .dial-fill {
+  stroke: #53dfff !important;
+}
+#performance .cadence-dial .dial-fill {
+  stroke: #ffcf70 !important;
+}
+#performance .dial-readout {
+  position: absolute !important;
+  bottom: 1.2vh !important;
+  left: 0 !important;
+  right: 0 !important;
+  text-align: center !important;
+}
+#performance .dial-readout strong {
+  font-size: 6vw !important;
+  line-height: 0.95 !important;
+  font-weight: 750 !important;
+  text-shadow: 0 0 24px #47c9f92b !important;
+}
+#performance .dial-readout span {
+  font-size: 1.2vw !important;
+}
+#performance .dial-readout em {
+  font-size: 1.1vw !important;
+  color: #bae8f4 !important;
+  margin-top: 0.5vh !important;
+}
+#performance .hr-metric strong {
+  font-size: 4.8vw !important;
+  color: #ff92ae !important;
+  line-height: 1.05 !important;
+}
+#performance .hr-metric > span {
+  font-size: 1.2vw !important;
+}
+.lab-hr-target {
+  font-size: 1vw;
+  line-height: 1.3;
+  margin-top: 1.2vh;
+  color: #edbed0;
+}
+#performance .trend-panel {
+  grid-column: 1/13 !important;
+  grid-row: 2 !important;
+  padding: 1vh 0.8vw !important;
+}
+#performance .trend-head {
+  font-size: 1.05vw !important;
+  height: 3vh !important;
+  color: #c8e4f2 !important;
+}
+#performance .legend-power {
+  background: #53dfff !important;
+}
+#performance .legend-rpm {
+  background: #ffcf70 !important;
+}
+.lab-plot {
+  display: flex;
+  height: 14vh;
+  gap: 0.5vw;
+}
+.plot-scale {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 4.8vw;
+  flex: none;
+  font-size: 1vw;
+  font-variant-numeric: tabular-nums;
+  padding: 0 0 0.4vh;
+}
+.power-scale {
+  color: #74e7ff;
+}
+.cadence-scale {
+  color: #ffcf70;
+  text-align: right;
+}
+.plot-scale b {
+  font-weight: 600;
+  white-space: nowrap;
+}
+#performance .trend-panel svg {
+  flex: 1 !important;
+  min-width: 0 !important;
+  height: 14vh !important;
+  overflow: visible !important;
+}
+#performance .graph-grid path {
+  stroke: #8ebad42b !important;
+  stroke-width: 1 !important;
+}
+#performance .power-trace {
+  stroke: #53dfff !important;
+  stroke-width: 3 !important;
+  fill: none !important;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+#performance .cadence-trace {
+  stroke: #ffcf70 !important;
+  stroke-width: 2.5 !important;
+  fill: none !important;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+.plot-time {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5vh 5.3vw 0;
+  font-size: 0.95vw;
+  color: #b4cbd9;
+}
+#performance .pace-metric {
+  grid-column: 1/5 !important;
+  grid-row: 3 !important;
+}
+#performance .distance-metric {
+  grid-column: 5/9 !important;
+  grid-row: 3 !important;
+}
+#performance .calories-metric {
+  grid-column: 9/13 !important;
+  grid-row: 3 !important;
+}
+#performance .micro {
+  padding: 0.8vh 0.8vw !important;
+}
+#performance .micro strong {
+  font-size: 2.8vw !important;
+  line-height: 1.05 !important;
+  margin: 0.3vh 0 !important;
+}
+#performance .micro > span {
+  font-size: 1vw !important;
+}
+#performance .metric-rail {
+  display: none !important;
+}
+#performance .analytics-ribbon {
+  flex: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  height: 9vh !important;
+  margin-top: 1vh !important;
+  background: #07121ecf !important;
+  border: 1px solid #6db8dc33 !important;
+  border-radius: 0.6vw !important;
+}
+#performance .analytics-title {
+  display: none !important;
+}
+#performance .analytics-cell {
+  padding: 1vh 0.65vw !important;
+  min-width: 0 !important;
+}
+#performance .analytics-cell small {
+  font-size: 1vw !important;
+  color: #b7d8e8 !important;
+}
+#performance .analytics-cell strong {
+  font-size: 2vw !important;
+  margin-top: 0.6vh !important;
+  color: #fff !important;
+}
+#performance .session-insight {
+  flex: none !important;
+  height: 4vh !important;
+  font-size: 1.05vw !important;
+  white-space: normal !important;
+  line-height: 1.2 !important;
+  margin: 0.3vh 0 0 !important;
+  color: #9bdccf !important;
+}
+#performance .cockpit-agenda-label,
+#performance .cockpit-agenda,
+#performance .footer {
+  display: none !important;
+}
+#performance .progress {
+  left: 1.5vw !important;
+  right: 1.5vw !important;
+  bottom: 1vh !important;
+  height: 0.4vh !important;
+  background: #1b3546 !important;
+}
+#performance .telemetry.recovering:after {
+  font-size: 1vw !important;
+  background: #102437 !important;
+  z-index: 5 !important;
+}
+#performance .rest {
+  position: absolute !important;
+  z-index: 6 !important;
+  right: 1vw !important;
+  top: 10vh !important;
+  width: 70% !important;
+  background: #12332ff5 !important;
+}
+/* Browser-verified resets for legacy layout inheritance. */
+#performance .header .brand {
+  line-height: 1.15 !important;
+}
+#performance .header .mode-pill {
+  position: static !important;
+  inset: auto !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+#performance .header .cloud {
+  position: static !important;
+  inset: auto !important;
+  margin-left: auto !important;
+  opacity: 1 !important;
+  line-height: 1.2 !important;
+}
+#performance .header .flag {
+  position: static !important;
+  inset: auto !important;
+  margin-left: 1vw !important;
+  align-self: center !important;
+}
+#performance .dial {
+  display: block !important;
+  grid-template-columns: none !important;
+  align-items: initial !important;
+}
+#performance .dial > small {
+  position: absolute !important;
+  left: 1vw !important;
+  top: 1.2vh !important;
+  line-height: 1.2 !important;
+}
+#performance .dial-readout {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45vh !important;
+  bottom: 1vh !important;
+}
+#performance .dial-readout strong {
+  font-size: 5.4vw !important;
+  line-height: 1.12 !important;
+}
+#performance .dial-readout span {
+  line-height: 1.2 !important;
+  color: #bcd9e9 !important;
+}
+#performance .dial-readout em {
+  margin: 0 !important;
+  line-height: 1.2 !important;
+  font-size: 1vw !important;
+  letter-spacing: 0.06em !important;
+}
+#performance .dial svg {
+  top: 1.4vh !important;
+  height: 20.5vh !important;
+}
+#performance .hr-metric strong {
+  font-size: 4.8vw !important;
+  line-height: 1.15 !important;
+}
+#performance .hr-metric > small {
+  position: static !important;
+  line-height: 1.2 !important;
+}
+#performance .hr-metric {
+  gap: 0.5vh !important;
+  align-items: flex-start !important;
+}
+#performance .lab-hr-target {
+  font-size: 1.05vw !important;
+  margin-top: 1vh !important;
+}
+#performance .trend-panel {
+  display: block !important;
+  grid-template-columns: none !important;
+  align-items: initial !important;
+}
+#performance .trend-head {
+  font-size: 1.12vw !important;
+  align-items: center !important;
+  height: 3.3vh !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 0.6vh !important;
+}
+#performance .trend-head span,
+#performance .trend-head b {
+  font-size: inherit !important;
+  line-height: 1.2 !important;
+  color: inherit !important;
+  letter-spacing: inherit !important;
+  padding: 0 !important;
+}
+#performance .trend-head i {
+  height: 0.35vh !important;
+  width: 0.9vw !important;
+}
+#performance .plot-scale {
+  width: 5.7vw !important;
+  font-size: 1.05vw !important;
+  line-height: 1.2 !important;
+}
+#performance .plot-scale span,
+#performance .plot-time span {
+  font-size: inherit !important;
+  line-height: 1.2 !important;
+  color: inherit !important;
+  padding: 0 !important;
+  letter-spacing: 0 !important;
+}
+#performance .plot-time {
+  font-size: 1vw !important;
+  margin-left: 6.2vw !important;
+  margin-right: 6.2vw !important;
+}
+#performance .micro strong {
+  line-height: 1.15 !important;
+}
+#performance .micro > small {
+  line-height: 1.2 !important;
+}
+#performance .cockpit .timer {
+  line-height: 1.15 !important;
+}
+#performance .analytics-cell strong {
+  line-height: 1.15 !important;
+}
+#performance .dial,
+#performance .micro,
+#performance .trend-panel {
+  min-height: 0 !important;
+}
+#performance .telemetry > div:before,
+#performance .telemetry > div:after {
+  display: none !important;
+}
+#performance .telemetry.flowing .power-dial,
+#performance .telemetry.flowing .cadence-dial {
+  animation: none !important;
+}
+#performance .telemetry.recovering:after {
+  content: none !important;
+}
+#performance .telemetry.recovering .dial,
+#performance .telemetry.recovering .hr-metric {
+  opacity: 0.6 !important;
+}
+#performance .hr-metric.hr-above {
+  background: linear-gradient(145deg, #542b33, #1f121d) !important;
+  border-color: #ff9d8877 !important;
+}
+#performance .coach-strip[data-alert='above'] {
+  background: linear-gradient(130deg, #583627, #221d22) !important;
+  border-color: #ffb48b !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  #performance * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+#performance .dial-readout strong {
+  line-height: 1.2 !important;
+}
+
+/* v7.7.1 — three independent live graphs with explicit goal overlays */
+#performance .goal-charts {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.8vw !important;
+  padding: 0.8vh 0.65vw !important;
+}
+#performance .target-chart {
+  min-width: 0;
+  --target-color: #53dfff;
+}
+#performance .heart-chart {
+  --target-color: #ff92ae;
+}
+#performance .cadence-chart {
+  --target-color: #ffcf70;
+}
+#performance .target-chart-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35vh;
+  height: 4.2vh;
+  padding: 0 0.2vw;
+  color: var(--target-color);
+  font-size: 1.05vw;
+  line-height: 1.25;
+}
+#performance .target-chart-head b {
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+#performance .target-chart-head span {
+  font-size: 1vw;
+  color: #e8f3f8;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+#performance .target-chart-plot {
+  display: flex;
+  gap: 0.3vw;
+  height: 12vh;
+  min-width: 0;
+}
+#performance .target-chart-plot .plot-scale {
+  width: 3.8vw !important;
+  font-size: 0.86vw !important;
+  color: var(--target-color);
+  padding: 0;
+}
+#performance .target-chart-plot svg {
+  height: 12vh !important;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden !important;
+}
+#performance .target-band {
+  fill: var(--target-color);
+  opacity: 0.13;
+}
+#performance .target-boundary {
+  fill: none;
+  stroke: var(--target-color);
+  stroke-width: 1.3;
+  stroke-dasharray: 7 5;
+  opacity: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+#performance .heart-trace {
+  stroke: #ff92ae;
+  stroke-width: 2.5;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+#performance .target-live-dot {
+  fill: var(--target-color);
+  stroke: #06131d;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+#performance .target-chart-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3vw;
+  height: 2.7vh;
+  font-size: 0.8vw;
+  color: #a6c3d4;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+#performance .target-chart-footer b {
+  font-size: 0.85vw;
+  font-weight: 650;
+  color: #afc2ce;
+}
+#performance .target-chart[data-goal-state='on'] .target-chart-footer b {
+  color: #7ceac1;
+}
+#performance .target-chart[data-goal-state='below'] .target-chart-footer b {
+  color: #ffcf70;
+}
+#performance .target-chart[data-goal-state='above'] .target-chart-footer b {
+  color: #ffab99;
+}
+#performance .dial-goal-arc {
+  stroke: #98f1d2 !important;
+  stroke-width: 3 !important;
+  fill: none;
+  opacity: 1;
+}
+#performance .dial-goal-ticks {
+  stroke: #d7fff0 !important;
+  stroke-width: 2 !important;
+  fill: none;
+}
+#performance .goal-charts .target-chart:not(:last-child) {
+  border-right: 1px solid #709cb52b;
+  padding-right: 0.6vw;
+}

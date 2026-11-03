@@ -1,0 +1,458 @@
+/* Recorder insight panels; scoped to avoid changing Night, agenda or scenery. */
+#performance .left {
+  display: flex !important;
+  flex-direction: column !important;
+}
+#performance .left .coach-strip {
+  min-height: 9vh !important;
+  gap: 0.4vh !important;
+  margin: 1vh 0 !important;
+  padding: 1vh 0.65vw !important;
+}
+#performance .left .coach-strip strong {
+  font-size: 1.35vw !important;
+}
+#performance .left .session {
+  font-size: 1.8vw !important;
+  max-height: 9vh;
+  overflow: hidden;
+}
+#performance .left .why {
+  font-size: 1vw !important;
+  max-height: 5vh;
+  overflow: hidden;
+}
+#performance .left .section-label {
+  margin-top: 1vh !important;
+  font-size: 0.9vw !important;
+}
+#performance .left .current {
+  font-size: 1.55vw !important;
+  max-height: 6vh;
+  overflow: hidden;
+}
+#performance .left .detail {
+  font-size: 1vw !important;
+  max-height: 5vh;
+  overflow: hidden;
+  margin-top: 0.4vh !important;
+}
+#performance .left .next {
+  font-size: 1.1vw !important;
+  max-height: 4vh;
+  overflow: hidden;
+  margin-top: 0.4vh !important;
+}
+.connected-cockpit {
+  margin-top: auto;
+  padding-top: 1.2vh;
+  border-top: 1px solid #8dc6cc40;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  color: #d5e9ee;
+  min-height: 0;
+}
+.connected-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+  font-size: 0.85vw;
+  letter-spacing: 0.11em;
+}
+.connected-heading span {
+  color: #e7c783;
+}
+.connected-heading b {
+  font-size: 0.75vw;
+  color: #87d3bd;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+.connected-comparison strong {
+  font-size: 1.9vw;
+  color: #92e9ce;
+  line-height: 1.1;
+  font-weight: 650;
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+.connected-cockpit small {
+  display: block;
+  font-size: 0.83vw;
+  line-height: 1.3;
+  color: #a9bfcc;
+  letter-spacing: 0;
+}
+.connected-comparison small {
+  margin-top: 0.5vh;
+}
+.connected-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3vh;
+  padding: 0.6vh 0;
+  border-bottom: 1px solid #a6ced51b;
+}
+.connected-detail > span {
+  font-size: 0.75vw;
+  letter-spacing: 0.11em;
+  color: #8da9bb;
+}
+.connected-detail > strong {
+  font-size: 1.05vw;
+  font-weight: 550;
+  color: #eff4f6;
+}
+.connected-zones {
+  display: flex;
+  gap: 3px;
+  height: 0.8vh;
+  min-height: 5px;
+  overflow: hidden;
+  border-radius: 9px;
+}
+.connected-zones i {
+  flex: 1;
+  background: #6a8a9e;
+}
+.connected-zones i:nth-child(2) {
+  background: #62b7ca;
+}
+.connected-zones i:nth-child(3) {
+  background: #80d9ae;
+}
+.connected-zones i:nth-child(4) {
+  background: #d4c976;
+}
+.connected-zones i:nth-child(5) {
+  background: #dfa56c;
+}
+.connected-zones i:nth-child(6) {
+  background: #d77778;
+}
+.connected-zones i:nth-child(7) {
+  background: #b48ce0;
+}
+.connected-quality {
+  border-top: 1px solid #bad4d626;
+  padding-top: 0.7vh;
+  color: #8cabb8 !important;
+}
+#performance .analytics-cell strong {
+  font-size: 1.6vw !important;
+  white-space: nowrap !important;
+}
+#performance .analytics-cell small {
+  font-size: 0.78vw !important;
+}
+.connected-ambient {
+  position: absolute;
+  left: 16vw;
+  right: 24vw;
+  bottom: 1vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 1.1vw;
+  height: 6.6vh;
+  align-items: center;
+}
+.connected-ambient > div {
+  min-width: 0;
+  border-left: 1px solid #b1c5d133;
+  padding-left: 1vw;
+  position: relative;
+}
+.connected-ambient small {
+  font-size: 0.68vw;
+  letter-spacing: 0.08em;
+  color: #a3b4bd;
+  display: block;
+  white-space: nowrap;
+}
+.connected-ambient strong {
+  font-size: 1.25vw;
+  color: #e4c687;
+  font-weight: 550;
+  line-height: 1.3;
+  display: block;
+  white-space: nowrap;
+}
+.connected-ambient span {
+  font-size: 0.7vw;
+  color: #acbfca;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.connected-ambient svg {
+  position: absolute;
+  width: 5vw;
+  height: 2.3vh;
+  right: 0;
+  bottom: 0.3vh;
+  opacity: 0.65;
+}
+.connected-ambient polyline {
+  fill: none;
+  stroke: #83d5bd;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.connected-ambient[data-stale='true'] {
+  opacity: 0.55;
+}
+.ride-progress-insight {
+  font-size: clamp(16px, 1.1vw, 38px);
+  color: #c6eee1;
+  margin: 0.5vh 0 1vh;
+  text-shadow: 0 2px 6px #000;
+}
+@media (max-width: 1100px) {
+  .connected-ambient span {
+    display: none;
+  }
+  .connected-ambient {
+    height: 5.8vh;
+  }
+  .connected-ambient svg {
+    display: none;
+  }
+}
+
+.connected-pacing {
+  color: #d9c68f !important;
+  font-size: 0.85vw !important;
+  line-height: 1.3;
+}
+/* Existing footer puts the clock on the right; reserve the left for studio branding. */
+#ambient .footer-brand {
+  left: 4.6vw !important;
+  right: auto !important;
+  transform: none !important;
+}
+#ambient .connected-ambient {
+  left: 35vw;
+  right: 18vw;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75vw;
+}
+#ambient .connected-ambient strong {
+  font-size: 1.18vw;
+}
+/* Reserve space for the weight strip instead of letting fixed telemetry rows overlap it. */
+#performance .cockpit-dash {
+  flex: none !important;
+  height: 54vh !important;
+  grid-template-rows: minmax(0, 1.03fr) minmax(0, 0.95fr) minmax(0, 0.4fr) !important;
+}
+#performance #wallLiveWeight {
+  flex: none !important;
+  height: 5.3vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0.5vh 0 !important;
+  padding: 0.45vh 0.7vw !important;
+}
+#performance #wallLiveWeight .wj-compact {
+  font-size: 0.82vw !important;
+  line-height: 1.15 !important;
+  gap: 0.1vh 0.5vw !important;
+}
+#performance #wallLiveWeight .wj-track {
+  height: 3px !important;
+  margin: 0.25vh 0 !important;
+}
+#performance #wallLiveWeight small {
+  font-size: 0.65vw !important;
+  line-height: 1.1 !important;
+}
+/* Keep countdown, latest weight and its sparkline inside the existing readiness card. */
+#ambient .readiness-kpi {
+  position: relative !important;
+}
+#ambient #surgeryDays {
+  position: absolute !important;
+  left: 0.65vw;
+  top: 2.4vh;
+  font-size: 2.3vw !important;
+  line-height: 1.05 !important;
+  width: 41%;
+  white-space: nowrap;
+}
+#ambient #surgeryWeight {
+  position: absolute;
+  left: 0.65vw;
+  top: 6.4vh;
+  width: 40%;
+  font-size: 0.75vw;
+  margin: 0;
+  line-height: 1.2;
+}
+#ambient #wallWeightTrend {
+  position: absolute;
+  left: 44%;
+  right: 0.6vw;
+  top: 2.5vh;
+  margin: 0;
+}
+#ambient #wallWeightTrend .wj-compact > b,
+#ambient #wallWeightTrend .wj-compact > small {
+  display: none;
+}
+#ambient #wallWeightTrend .wj-compact > span {
+  font-size: 0.68vw;
+  line-height: 1.15;
+}
+#ambient #wallWeightTrend .wj-track {
+  height: 3px;
+  margin: 3px 0;
+}
+#ambient #wallWeightTrend .wj-compact svg {
+  height: 4.2vh !important;
+}
+#ambient #surgeryContext {
+  position: absolute;
+  left: 0.65vw;
+  right: 0.65vw;
+  bottom: 0.3vh;
+  font-size: 0.6vw !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  line-height: 1.1 !important;
+}
+#ambient .header #cloudStatus {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 14vw !important;
+  font-size: 1vw !important;
+  line-height: 1.3 !important;
+}
+#ambient #surgeryDays {
+  font-size: 2vw !important;
+}
+#ambient #wallWeightTrend svg text {
+  display: none;
+}
+
+/* One coordinated weight-and-readiness card replaces the workout-days trend. */
+#ambient .weight-readiness-kpi {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 0.6vh 0.8vw !important;
+  gap: 0.45vh !important;
+}
+.weight-readiness-head,
+.weight-readiness-values,
+.weight-readiness-context {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8vw;
+  min-width: 0;
+}
+#ambient .weight-readiness-head .kpi-label {
+  font-size: 0.77vw !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.08em !important;
+  margin: 0 !important;
+  white-space: nowrap;
+}
+.weight-readiness-head > span:last-child,
+.weight-readiness-values > div:last-child,
+.weight-readiness-context > span:last-child {
+  text-align: right;
+}
+.weight-readiness-values > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+#ambient #weightKpiValue,
+#ambient .weight-readiness-kpi #surgeryDays {
+  display: block;
+  position: static !important;
+  width: auto !important;
+  font-family: inherit !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.03em;
+  font-weight: 650 !important;
+  color: #f0f4f6;
+}
+#ambient #weightKpiValue {
+  font-size: 2.15vw !important;
+}
+#ambient .weight-readiness-kpi #surgeryDays {
+  font-size: 2.5vw !important;
+  white-space: nowrap;
+}
+.weight-readiness-values span {
+  display: block;
+  font-size: 0.64vw;
+  color: #afc1cb;
+  line-height: 1.2;
+  white-space: nowrap;
+  margin-top: 0.3vh;
+}
+.weight-progress-rail {
+  position: relative;
+  flex: none;
+  height: 0.65vh;
+  min-height: 4px;
+  background: #283d4c;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 0.3vh;
+}
+.weight-progress-rail i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, #ba9555, #e8c788);
+  width: 0;
+  transition: width 0.7s ease;
+}
+.weight-progress-rail b {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #09172288;
+  left: 20%;
+}
+.weight-progress-rail b:nth-of-type(2) {
+  left: 40%;
+}
+.weight-progress-rail b:nth-of-type(3) {
+  left: 60%;
+}
+.weight-progress-rail b:nth-of-type(4) {
+  left: 80%;
+}
+.weight-readiness-context {
+  font-size: 0.64vw;
+  line-height: 1.25;
+  color: #d4bd8f;
+  white-space: nowrap;
+}
+#ambient .weight-readiness-kpi [hidden] {
+  display: none !important;
+}
+
+#ambient .weight-readiness-kpi #surgeryDays {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  gap: 0.35vw;
+}
+#ambient .weight-readiness-kpi #surgeryDays .surgery-day-unit {
+  font-size: 0.9vw !important;
+  line-height: 1 !important;
+  margin: 0;
+  color: #d6dfe5;
+  letter-spacing: 0.02em;
+}

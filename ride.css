@@ -1,0 +1,320 @@
+/* Ride is an optional Performance surface; typography stays sharp at native size. */
+#performance .ride-stage {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: #102b40;
+  color: #eef9f7;
+  font-family: inherit;
+  overflow: hidden;
+}
+#performance.ride-enabled .ride-stage {
+  display: block;
+}
+#performance.ride-enabled > .header,
+#performance.ride-enabled > .perf-grid,
+#performance.ride-enabled > .progress,
+#performance.ride-enabled > .footer {
+  visibility: hidden;
+  pointer-events: none;
+}
+#rideCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ride-view-button {
+  position: absolute;
+  z-index: 4;
+  right: 2.7vw;
+  top: 2.5vh;
+  padding: 0.7em 1.1em;
+  font-size: clamp(14px, 1vw, 30px);
+  border: 1px solid #d9f6f655;
+  background: #0c223ce0;
+  color: #e4f8f9;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.ride-top {
+  position: absolute;
+  inset: 5.5vh 5vw auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  pointer-events: none;
+  text-shadow: 0 2px 16px #071b2d;
+}
+.ride-kicker,
+.ride-destination small {
+  font-size: clamp(13px, 0.9vw, 26px);
+  letter-spacing: 0.16em;
+  color: #b0dfde;
+}
+.ride-top h1 {
+  font-size: clamp(26px, 2.5vw, 85px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0.25em 0;
+}
+.ride-top h2 {
+  font-size: clamp(18px, 1.5vw, 48px);
+  font-weight: 500;
+  margin: 0.35em 0;
+}
+.ride-top span {
+  font-size: clamp(13px, 0.9vw, 27px);
+  color: #c1dddc;
+}
+.ride-destination {
+  text-align: right;
+  margin-top: 4.5vh;
+}
+#rideResolution {
+  opacity: 0.55;
+}
+.ride-bottom {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 7vh 5vw 3vh;
+  background: linear-gradient(transparent, #061725e6);
+}
+.ride-cue {
+  font-size: clamp(18px, 1.4vw, 45px);
+  letter-spacing: 0.03em;
+  margin-bottom: 2vh;
+  color: #d4ede6;
+  max-width: 85vw;
+}
+.ride-stats {
+  display: flex;
+  gap: 4vw;
+  align-items: baseline;
+}
+.ride-stats > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7vw;
+}
+.ride-stats strong {
+  font-size: clamp(27px, 2.7vw, 95px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.ride-stats span {
+  font-size: clamp(12px, 0.85vw, 26px);
+  letter-spacing: 0.1em;
+  color: #a8cbd0;
+}
+.ride-stats .ride-clock {
+  display: none;
+}
+#performance.ride-show-clock .ride-clock {
+  display: flex;
+}
+.ride-controls {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  margin-top: 3vh;
+  flex-wrap: wrap;
+}
+.ride-controls button {
+  font: inherit;
+  font-size: clamp(12px, 0.8vw, 25px);
+  letter-spacing: 0.04em;
+  border: 1px solid #cee9ec55;
+  color: #d5ecee;
+  background: #0e2739bf;
+  padding: 0.75em 1em;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.ride-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+  font-size: clamp(12px, 0.8vw, 25px);
+  color: #adcbd0;
+}
+.ride-controls input {
+  width: 8vw;
+  accent-color: #8ef0e7;
+}
+.ride-music-caption {
+  margin-left: auto;
+  text-align: right;
+  display: flex;
+  gap: 0.8vw;
+  flex-wrap: wrap;
+  justify-content: end;
+  font-size: clamp(12px, 0.85vw, 26px);
+  color: #b3d5d5;
+}
+.ride-music-caption small {
+  width: 100%;
+  font-size: clamp(10px, 0.6vw, 19px);
+  letter-spacing: 0.08em;
+  color: #82a9b0;
+}
+.ride-controls button:focus-visible,
+.ride-view-button:focus-visible {
+  outline: 3px solid #9bf8ee;
+  outline-offset: 4px;
+}
+@media (max-width: 900px) {
+  .ride-music-caption {
+    margin-left: 0;
+  }
+  .ride-controls input {
+    width: 90px;
+  }
+  .ride-stats {
+    gap: 3vw;
+  }
+  .ride-top {
+    inset: 7vh 4vw auto;
+  }
+  .ride-destination {
+    margin-top: 7vh;
+  }
+  .ride-bottom {
+    padding: 8vh 4vw 3vh;
+  }
+}
+
+.ride-photo-credit {
+  font-size: clamp(11px, 0.7vw, 22px);
+  max-width: 48vw;
+  line-height: 1.5;
+  color: #e2e9e7;
+  margin-top: 8px;
+  text-shadow: 0 1px 4px #000;
+}
+/* Reserve header space for the Lab/Ride toggle instead of covering cloud status and flag. */
+#performance:not(.ride-enabled) > .header {
+  right: 14vw !important;
+}
+#performance:not(.ride-enabled) > .ride-view-button {
+  top: 1vh;
+  max-height: 6vh;
+  padding: 0.5em 0.8em;
+}
+
+#rideImmersiveCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#rideImmersiveCanvas[hidden] {
+  display: none;
+}
+.ride-data-state {
+  font-size: clamp(13px, 1vw, 25px);
+  color: #b4e2d4;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+#performance.ride-enabled > .perf-grid * {
+  visibility: hidden !important;
+}
+.ride-top {
+  z-index: 2;
+}
+.ride-top > div:first-child {
+  max-width: 63%;
+}
+.ride-top h1 {
+  font-size: clamp(26px, 2.1vw, 68px);
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+}
+.ride-destination {
+  max-width: 31%;
+}
+.ride-stage:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(#061a3b66, transparent 34%);
+}
+.ride-bottom {
+  z-index: 2;
+}
+
+/* Ride cockpit: high contrast values readable across the garage. */
+.ride-bottom {
+  padding: 5vh 4vw 2.5vh;
+  background: linear-gradient(transparent, #061321e8 24%, #061321f5);
+}
+.ride-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1vw;
+}
+.ride-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35vh;
+  padding: 1.5vh 1.7vw;
+  border: 1px solid #b4e4da44;
+  border-radius: 14px;
+  background: #071524df;
+  box-shadow: 0 8px 28px #0004;
+}
+.ride-stats strong {
+  font-size: clamp(54px, 6vw, 220px);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: #fff;
+}
+.ride-stats span {
+  font-size: clamp(14px, 1.1vw, 40px);
+  font-weight: 600;
+  color: #c3ddd9;
+}
+.ride-stats small {
+  font-size: clamp(12px, 0.95vw, 34px);
+  color: #dfca8b;
+  letter-spacing: 0.025em;
+}
+.ride-coach-phase {
+  color: #dfca8b;
+  font-size: clamp(14px, 1vw, 36px);
+  letter-spacing: 0.13em;
+  margin-bottom: 0.5vh;
+}
+.ride-cue {
+  font-size: clamp(22px, 1.9vw, 64px);
+  font-weight: 550;
+  line-height: 1.25;
+  margin-bottom: 1.2vh;
+  max-width: 92vw;
+}
+.ride-cue[data-alert='true'] {
+  color: #ffd5a2;
+}
+.ride-data-state {
+  position: absolute;
+  right: 4vw;
+  top: 3.5vh;
+  font-size: clamp(13px, 0.95vw, 32px);
+}
+.ride-controls {
+  margin-top: 1.5vh;
+}
+#performance.ride-show-clock .ride-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+#performance.ride-show-clock .ride-clock strong {
+  font-size: clamp(40px, 4.4vw, 160px);
+}
+#performance.ride-show-clock .ride-clock {
+  display: flex;
+}
