@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.18.0.1 · Intelligent Training</title>
+    <title>NONZERO v7.18.1.0 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3912,6 +3912,26 @@ body.trainingFocus .focusToolbar span {
 #nzNutritionCard{margin:14px 0;padding:15px;border:1px solid #355066;border-radius:15px;background:#112434;color:#f1f6fb}#nzNutritionCard button,#nzNutritionModal button{cursor:pointer;border-radius:9px;padding:10px;border:1px solid #42617b;background:#20394f;color:white;font-weight:650}#nzNutritionCard .nzStats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}#nzNutritionCard .nzStats div{background:#1d3446;padding:8px 4px;border-radius:8px;text-align:center;font-size:12px}#nzNutritionCard .nzStats b{display:block;font-size:18px}#nzNutritionModal{position:fixed;inset:0;background:rgba(2,9,17,.93);z-index:999999;overflow:auto;color:#f3f7fc;padding:18px max(14px,calc((100vw - 620px)/2));box-sizing:border-box}#nzNutritionModal[hidden]{display:none!important}#nzNutritionModal .nzPanel{max-width:620px;margin:auto;padding-bottom:60px}#nzNutritionModal input,#nzNutritionModal select,#nzNutritionModal textarea{box-sizing:border-box;width:100%;padding:11px;border-radius:9px;border:1px solid #4c6275;background:#13283a;color:white;font-size:16px;margin:5px 0 12px}#nzNutritionModal label{display:block;font-size:13px;color:#cbd7e2}#nzNutritionModal .nzRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#nzNutritionModal .nzRow>*{flex:1}#nzNutritionModal .nzItem{padding:12px 0;border-bottom:1px solid #344a5b;display:flex;justify-content:space-between;gap:10px}#nzNutritionModal .nzHint{color:#b2c5d5;font-size:12px}#nzNutritionModal .nzPrimary{background:#227b6b!important}#nzNutritionModal h2{margin:0 0 10px}#nzNutritionModal h3{margin:18px 0 8px}#nzNutritionModal .nzError{color:#ffb8a8}#nzNutritionModal .nzSmall{font-size:12px}
 </style>
 <script id="nonzero-release-metadata" type="application/json">{"product": "NONZERO", "component": "phone", "version": "7.18.0.1", "platformBaseline": "7.18.0", "legacyVersion": "3.64", "changeType": "nutrition-sync-correction", "source": "NONZERO-Phone-v7.18.0.0", "generatedAt": "2026-11-03T14:20:48.336721+00:00"}</script>
+<style id="nzSimplifiedUI">
+.tabbar{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important}
+.tabbar button{min-width:0!important;font-size:clamp(10px,2.6vw,13px)!important;padding:11px 2px!important}
+.tabbar button.nzLegacyNav{display:none!important}
+#nzNutritionModal{padding:0!important;background:#081621!important}
+#nzNutritionModal .nzPanel{max-width:720px!important;padding:20px 16px 85px!important}
+#nzNutritionModal .nzPanel>h3{margin-top:24px!important}
+#nzCloudPanel{border-color:#4c9e9c!important;background:#102c36!important;margin:12px 0 20px!important}
+#nzCloudPanel .nzCloudHeading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+#nzCloudPanel .nzCloudHeading button{background:#206c66!important;border-color:#56a8a0!important}
+#nzCloudPanel #nzCloudStatus{font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+#nzCloudPanel details{margin:12px 0;border-top:1px solid #42617b;padding-top:10px}
+#nzNutritionModal .nzPanel>.nzRow:first-child{position:sticky;top:-20px;z-index:3;background:#0c2030;padding:12px 0;border-bottom:1px solid #345263}
+#nzNutritionCard{cursor:pointer}
+#nzMoreSheet{position:fixed;inset:0;background:#06121bda;z-index:999997;display:flex;align-items:flex-end;justify-content:center}
+#nzMoreSheet[hidden]{display:none!important}
+#nzMoreSheet .nzMorePanel{background:#102736;border:1px solid #466579;border-radius:20px 20px 0 0;width:min(100%,620px);padding:24px 20px 40px;color:#f3f7fc}
+#nzMoreSheet button{width:100%;text-align:left;margin:5px 0;padding:15px;border-radius:12px;border:1px solid #4a677a;background:#193749;color:#f3f7fc;font-size:16px}
+#nzMoreSheet .nzMoreClose{text-align:center;background:#244d58}
+</style>
 </head>
   <body class="todayFlow" data-today-scene="home">
     <div class="wrap">
@@ -3919,7 +3939,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.18.0.1</small></span>
+            <span class="flowBrand">NONZERO <small>v7.18.1.0</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -5218,9 +5238,11 @@ unit=lb</pre>
       </aside>
       <nav class="tabbar">
         <button data-tab="Today" class="active">Today</button>
-        <button data-tab="Plan">Week</button>
-        <button data-tab="History">History</button>
-        <button data-tab="Coach">Coach</button><button data-tab="Settings">Settings</button>
+        <button data-tab="Plan">Training</button>
+        <button id="nzNutritionNav" type="button">Nutrition</button>
+        <button data-tab="History">Progress</button>
+        <button id="nzMoreNav" type="button">More</button>
+        <button data-tab="Coach" class="nzLegacyNav" hidden>Coach</button><button data-tab="Settings" class="nzLegacyNav" hidden>Settings</button>
       </nav>
     </div>
 
@@ -16810,8 +16832,8 @@ status(Object.keys(queue()).length?'Connected · some changes need conflict revi
 }catch(e){status('Sync issue: '+e.message+' · local entries preserved')}finally{busy=false}}
 function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel)return;
 const section=document.createElement('section');section.id='nzCloudPanel';section.style.cssText='border:1px solid #42617b;border-radius:12px;padding:12px;margin:12px 0;background:#0d2434';
-section.innerHTML='<details><summary style="cursor:pointer;font-weight:700">Nutrition Cloud · D1 settings</summary><label>Cloudflare Worker HTTPS URL<input type="url" id="nzCloudUrl" placeholder="https://your-worker.workers.dev"></label><label>Private API token</label><div class="nzRow"><input type="password" id="nzCloudToken" autocomplete="off" aria-label="Private API token" style="min-width:0;flex:1"><button type="button" id="nzCloudShow">Show</button><button type="button" id="nzCloudCopy">Copy</button><button type="button" id="nzCloudPaste">Paste</button></div><p class="nzHint">The token is stored in this browser. Never commit it to GitHub.</p><div class="nzRow"><button id="nzCloudConnect" type="button">Connect & sync</button><button id="nzCloudForget" type="button">Forget credentials</button></div></details><div class="nzRow"><span id="nzCloudStatus" class="nzHint">Not connected</span><button id="nzCloudSync" type="button">Sync now</button></div>';
-panel.insertBefore(section,panel.children[1]||null);$('nzCloudUrl').value=cfg().url||'';$('nzCloudToken').value=cfg().token||'';
+section.innerHTML='<div class="nzCloudHeading"><strong>Nutrition Cloud</strong><button type="button" id="nzOpenCloudSettings">Connection settings</button></div><details id="nzCloudDetails"><summary style="cursor:pointer;font-weight:700">Worker URL and sync key</summary><label>Cloudflare Worker HTTPS URL<input type="url" id="nzCloudUrl" placeholder="https://your-worker.workers.dev"></label><label>Private API token</label><div class="nzRow"><input type="password" id="nzCloudToken" autocomplete="off" aria-label="Private API token" style="min-width:0;flex:1"><button type="button" id="nzCloudShow">Show</button><button type="button" id="nzCloudCopy">Copy</button><button type="button" id="nzCloudPaste">Paste</button></div><p class="nzHint">The token is stored in this browser. Never commit it to GitHub.</p><div class="nzRow"><button id="nzCloudConnect" type="button">Connect & sync</button><button id="nzCloudForget" type="button">Forget credentials</button></div></details><div class="nzRow"><span id="nzCloudStatus" class="nzHint">Not connected</span><button id="nzCloudSync" type="button">Sync now</button></div>';
+panel.insertBefore(section,panel.children[1]||null);$('nzOpenCloudSettings').onclick=()=>{const d=$('nzCloudDetails');d.open=!d.open;if(d.open)$('nzCloudUrl').focus()};$('nzCloudUrl').value=cfg().url||'';$('nzCloudToken').value=cfg().token||'';
 $('nzCloudShow').onclick=()=>{const i=$('nzCloudToken'),show=i.type==='password';i.type=show?'text':'password';$('nzCloudShow').textContent=show?'Hide':'Show'};
 $('nzCloudCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('nzCloudToken').value);status('Key copied')}catch{status('Copy unavailable; use browser copy')}};
 $('nzCloudPaste').onclick=async()=>{try{$('nzCloudToken').value=await navigator.clipboard.readText();status('Key pasted; select Connect')}catch{status('Paste unavailable; use browser paste')}};
@@ -16825,5 +16847,21 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<div id="nzMoreSheet" hidden role="dialog" aria-modal="true" aria-label="More options"><div class="nzMorePanel"><h2>More</h2><p style="color:#b9d0db">Advanced controls are kept out of your daily workflow.</p><button type="button" id="nzGoCoach">Coach</button><button type="button" id="nzGoSettings">System settings &amp; connections</button><button type="button" id="nzMoreClose" class="nzMoreClose">Close</button></div></div>
+<script id="nzSimpleNavigation">
+(()=>{'use strict';
+const $=id=>document.getElementById(id),modal=$('nzNutritionModal'),more=$('nzMoreSheet');
+const openNutrition=()=>{const trigger=$('nzOpenNutrition');if(trigger)trigger.click();else if(modal)modal.hidden=false;more.hidden=true;document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('active',b.id==='nzNutritionNav'));};
+$('nzNutritionNav')?.addEventListener('click',openNutrition);
+$('nzNutritionCard')?.addEventListener('click',e=>{if(!e.target.closest('button,input,a'))openNutrition()});
+$('nzMoreNav')?.addEventListener('click',()=>{more.hidden=false});
+$('nzMoreClose')?.addEventListener('click',()=>{more.hidden=true});
+more?.addEventListener('click',e=>{if(e.target===more)more.hidden=true});
+$('nzGoCoach')?.addEventListener('click',()=>{more.hidden=true;document.querySelector('[data-tab="Coach"]')?.click()});
+$('nzGoSettings')?.addEventListener('click',()=>{more.hidden=true;document.querySelector('[data-tab="Settings"]')?.click()});
+$('nzCloseNutrition')?.addEventListener('click',()=>{document.querySelector('[data-tab="Today"]')?.click()});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!more.hidden)more.hidden=true});
+})();
+</script>
 </body>
 </html>
