@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.18.1.2 · Intelligent Training</title>
+    <title>NONZERO v7.18.1.3 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.18.1.2</small></span>
+            <span class="flowBrand">NONZERO <small>v7.18.1.3</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16822,9 +16822,9 @@ $('nzDay').addEventListener('change',render);$('nzAddFood').addEventListener('cl
 </script>
 
 <script id="nzCloudBridge">
-/* NONZERO Nutrition 7.18.1.2: cloud tombstones win by ID; preserve unrelated local-only records. */
+/* NONZERO Nutrition 7.18.1.3: cloud tombstones win by ID; preserve unrelated local-only records. */
 (()=>{'use strict';
-const KEY='nonzero.nutrition.v1',CFG='nonzero.nutrition.cloud.config',SHADOW='nonzero.nutrition.cloud.shadow',PENDING='nonzero.nutrition.cloud.pending';
+const KEY='nonzero.nutrition.v1',CFG='nonzero.nutrition.cloud.config',SHADOW='nonzero.nutrition.cloud.shadow',PENDING='nonzero.nutrition.cloud.pending',QUARANTINE='nonzero.nutrition.cloud.legacy_review.v71813';
 const $=id=>document.getElementById(id),managed=new Set(['food','favorite','target']);
 const get=(k,fallback={})=>{try{return JSON.parse(localStorage.getItem(k)||'null')??fallback}catch{return fallback}};
 const cfg=()=>get(CFG),read=()=>get(KEY),shadow=()=>get(SHADOW),queue=()=>get(PENDING);
@@ -16844,10 +16844,19 @@ put(PENDING,pending);if(Object.keys(pending).length){status(Object.keys(pending)
 function schedule(){clearTimeout(timer);timer=setTimeout(()=>void sync(),1100)}
 async function api(path,method='GET',body){const c=cfg();if(!/^https:\/\/[a-z0-9.-]+(?::443)?\/?$/i.test(c.url||'')||!c.token)throw Error('Configure the HTTPS Worker URL and API key');
 const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),12000);try{const r=await fetch(c.url.replace(/\/$/,'')+path,{method,headers:{Authorization:'Bearer '+c.token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:ctrl.signal});const j=await r.json();if(!r.ok)throw Error(j.error||'HTTP '+r.status);return j}finally{clearTimeout(t)}}
-function merge(records,known,pending){const d=read();d.entries=Array.isArray(d.entries)?d.entries:[];d.favorites=Array.isArray(d.favorites)?d.favorites:[];
+function merge(records,known,pending,firstPull=false){const d=read();d.entries=Array.isArray(d.entries)?d.entries:[];d.favorites=Array.isArray(d.favorites)?d.favorites:[];
 // Read the full server state, including tombstones. D1 is authoritative for cloud IDs;
 // unmatched local-only records remain intact until the user explicitly deletes them.
 const server=new Map(records.filter(r=>managed.has(r.kind)).map(r=>[key(r),r]));
+// On the first pull of this release, isolate legacy entries not known to D1.
+// They remain recoverable in a separate browser backup but cannot pollute the
+// active cloud log or be silently uploaded as newly created records.
+if(firstPull){const legacy=get(QUARANTINE,[]),saved=new Set(legacy.map(x=>String(x.id)));
+const keep=[];for(const x of d.entries){const k='food:'+String(x.id);
+if(server.has(k)||pending[k]){keep.push(x);continue}
+if(!saved.has(String(x.id))){legacy.push(x);saved.add(String(x.id))}}
+if(legacy.length)put(QUARANTINE,legacy);d.entries=keep;
+}
 for(const [k,r] of server){if(r.deleted){if(r.kind==='food')d.entries=d.entries.filter(x=>String(x.id)!==r.id);
 if(r.kind==='favorite')d.favorites=d.favorites.filter(x=>String(x.id).replace(/[^\w-]/g,'_')!==r.id);
 // A stale queued create/update must never resurrect a D1 tombstone.
@@ -16863,9 +16872,9 @@ put(PENDING,pending);put(KEY,d);lastSnapshot=JSON.stringify(d);window.nzNutritio
 async function sync(){if(busy)return;if(!cfg().url||!cfg().token){status('Local only · connect to sync');return}busy=true;try{
 const response=await api('/v1/records');if(response.truncated)throw Error('Cloud record limit reached');const remote=response.records,old=shadow(),pending=queue();
 // Pull before staging. Existing pending edits are retained, never silently discarded.
-merge(remote,old,pending);
+merge(remote,old,pending,true);
 const known={...old};for(const r of remote)known[key(r)]={kind:r.kind,id:r.id,payload:r.payload,revision:r.revision,deleted:!!r.deleted};put(SHADOW,known);
-initialized=true;lastSnapshot="";stage();const changes=queue(),remoteMap=new Map(remote.map(r=>[key(r),r]));
+initialized=true;lastSnapshot=JSON.stringify(read());const changes=queue(),remoteMap=new Map(remote.map(r=>[key(r),r]));
 for(const [k,change] of Object.entries(changes)){
 const current=remoteMap.get(k),prior=old[k];
 if(current?.deleted&&!change.deleted){delete changes[k];put(PENDING,changes);status('Cloud deletion applied: '+k);continue}
@@ -16878,7 +16887,17 @@ status(Object.keys(queue()).length?'Connected · some changes need conflict revi
 function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel)return;
 const section=document.createElement('section');section.id='nzCloudPanel';section.style.cssText='border:1px solid #42617b;border-radius:12px;padding:12px;margin:12px 0;background:#0d2434';
 section.innerHTML='<div class="nzCloudHeading"><strong>Nutrition Cloud</strong><button type="button" id="nzOpenCloudSettings">Connection settings</button></div><details id="nzCloudDetails"><summary style="cursor:pointer;font-weight:700">Worker URL and sync key</summary><label>Cloudflare Worker HTTPS URL<input type="url" id="nzCloudUrl" placeholder="https://your-worker.workers.dev"></label><label>Private API token</label><div class="nzRow"><input type="password" id="nzCloudToken" autocomplete="off" aria-label="Private API token" style="min-width:0;flex:1"><button type="button" id="nzCloudShow">Show</button><button type="button" id="nzCloudCopy">Copy</button><button type="button" id="nzCloudPaste">Paste</button></div><p class="nzHint">The token is stored in this browser. Never commit it to GitHub.</p><div class="nzRow"><button id="nzCloudConnect" type="button">Connect & sync</button><button id="nzCloudForget" type="button">Forget credentials</button></div></details><div class="nzRow"><span id="nzCloudStatus" class="nzHint">Not connected</span><button id="nzCloudSync" type="button">Sync now</button></div>';
-panel.insertBefore(section,panel.children[1]||null);$('nzOpenCloudSettings').onclick=()=>{const d=$('nzCloudDetails');d.open=!d.open;if(d.open)$('nzCloudUrl').focus()};$('nzCloudUrl').value=cfg().url||'';$('nzCloudToken').value=cfg().token||'';
+panel.insertBefore(section,panel.children[1]||null);
+const review=document.createElement('div');review.id='nzLegacyReview';review.style.cssText='margin-top:8px;font-size:12px';
+review.innerHTML='<button type="button" id="nzReviewLegacy">Review archived local foods</button> <span id="nzLegacyCount"></span><div id="nzLegacyItems" hidden></div>';
+section.append(review);
+function refreshLegacy(){const a=get(QUARANTINE,[]);$('nzLegacyCount').textContent=a.length?'('+a.length+' preserved)':'';return a}
+$('nzReviewLegacy').onclick=()=>{const list=$('nzLegacyItems');list.hidden=!list.hidden;if(list.hidden)return;const a=refreshLegacy();list.replaceChildren();
+if(!a.length){list.textContent='No archived entries.';return}
+const backup=document.createElement('button');backup.textContent='Download archived foods JSON';backup.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(a,null,2)],{type:'application/json'}));const el=document.createElement('a');el.href=url;el.download='nonzero-archived-local-foods.json';el.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};list.append(backup);
+for(const food of a){const row=document.createElement('div');row.style.cssText='padding:7px 0;border-bottom:1px solid #42617b';const label=document.createElement('span');label.textContent=(food.day||'')+' · '+(food.name||'Unnamed food')+' · '+(food.cal??'?')+' kcal';row.append(label);
+const restore=document.createElement('button');restore.textContent='Restore as new food';restore.style.marginLeft='8px';restore.onclick=()=>{if(!confirm('Restore this archived food to the active log and upload it as a new D1 record?'))return;const d=read();d.entries=Array.isArray(d.entries)?d.entries:[];const copy={...food,id:crypto.randomUUID()};d.entries.push(copy);put(KEY,d);put(QUARANTINE,get(QUARANTINE,[]).filter(x=>x.id!==food.id));window.nzNutritionReloadFromCloud?.();window.dispatchEvent(new Event('nz-nutrition-local-saved'));$('nzReviewLegacy').click();refreshLegacy()};row.append(restore);list.append(row)}};
+refreshLegacy();$('nzOpenCloudSettings').onclick=()=>{const d=$('nzCloudDetails');d.open=!d.open;if(d.open)$('nzCloudUrl').focus()};$('nzCloudUrl').value=cfg().url||'';$('nzCloudToken').value=cfg().token||'';
 $('nzCloudShow').onclick=()=>{const i=$('nzCloudToken'),show=i.type==='password';i.type=show?'text':'password';$('nzCloudShow').textContent=show?'Hide':'Show'};
 $('nzCloudCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('nzCloudToken').value);status('Key copied')}catch{status('Copy unavailable; use browser copy')}};
 $('nzCloudPaste').onclick=async()=>{try{$('nzCloudToken').value=await navigator.clipboard.readText();status('Key pasted; select Connect')}catch{status('Paste unavailable; use browser paste')}};
