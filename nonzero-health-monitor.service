@@ -1,0 +1,12 @@
+[Unit]
+Description=NONZERO Titanium stability observer
+After=nonzero-web.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/NONZERO-Pi/bin/titanium-observer.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

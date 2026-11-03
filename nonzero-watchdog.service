@@ -1,0 +1,13 @@
+[Unit]
+Description=NONZERO Pi browser heartbeat watchdog
+After=nonzero-web.service
+StartLimitIntervalSec=60
+StartLimitBurst=10
+[Service]
+Type=simple
+ExecStart=/usr/bin/bash %h/NONZERO-Pi/bin/watchdog.sh
+Restart=always
+RestartSec=2
+TimeoutStopSec=5
+[Install]
+WantedBy=default.target

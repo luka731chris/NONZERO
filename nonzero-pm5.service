@@ -1,0 +1,14 @@
+[Unit]
+Description=NONZERO always-observing Concept2 PM5 live metrics bridge
+After=default.target
+
+[Service]
+Type=simple
+Environment=NONZERO_ERG_MACHINE=BikeErg
+Environment=PYTHONPATH=%h/NONZERO-Pi/vendor
+ExecStart=/usr/bin/python3 %h/NONZERO-Pi/bin/pm5_bridge.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

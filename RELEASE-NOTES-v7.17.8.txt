@@ -1,0 +1,12 @@
+NONZERO v7.17.8 — Weekly minutes integrity hotfix
+
+- Weekly exercise minutes count only completed workouts, not scheduled or in-progress sessions.
+- Repeated session/recording IDs count once.
+- Does not alter or delete saved workouts or body measurements.
+- Does not change pairing, immersive ride, phone controls, or Cloudflare Worker.
+
+Known limitation: Distinct IDs referring to the same physical workout can still double count.
+Actual 367-minute discrepancy cannot be reconciled without the user's session data.
+Missing weight measurements cannot be recovered from source code alone.
+
+Install through existing desktop Update NONZERO shortcut. Retain v7.17.5 recovery ZIP.
