@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.18.1.4 · Intelligent Training</title>
+    <title>NONZERO v7.18.2.0 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.18.1.4</small></span>
+            <span class="flowBrand">NONZERO <small>v7.18.2.0</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16822,7 +16822,7 @@ $('nzDay').addEventListener('change',render);$('nzAddFood').addEventListener('cl
 </script>
 
 <script id="nzCloudBridge">
-/* NONZERO Nutrition 7.18.1.4: cloud tombstones win by ID; preserve unrelated local-only records. */
+/* NONZERO Nutrition 7.18.2.0: cloud tombstones win by ID; preserve unrelated local-only records. */
 (()=>{'use strict';
 const KEY='nonzero.nutrition.v1',CFG='nonzero.nutrition.cloud.config',SHADOW='nonzero.nutrition.cloud.shadow',PENDING='nonzero.nutrition.cloud.pending',QUARANTINE='nonzero.nutrition.cloud.legacy_review.v71813';
 const $=id=>document.getElementById(id),managed=new Set(['food','favorite','target']);
@@ -16965,6 +16965,28 @@ if(dailyTargets){const target=document.createElement('details');target.className
 const note=document.createElement('p');note.className='nzHint';note.textContent='Nutrition data is saved locally first. Cloud sync status appears above.';cloud.after(note);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorganize);else reorganize();
+})();
+</script>
+<style id="nzFoodIntelligenceStyles">
+#nzFoodIntelligence{background:#102b3b;border:1px solid #42647b;border-radius:15px;padding:14px;margin:12px 0;color:#f3f8ff}#nzFoodIntelligence .nfi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}#nzFoodIntelligence button{background:#244b61;border:1px solid #56788e;border-radius:10px;color:#fff;padding:12px 8px;font-weight:650;cursor:pointer}#nzFoodIntelligence input{width:100%;padding:11px;border-radius:8px;background:#102536;border:1px solid #5b7588;color:white;box-sizing:border-box;font-size:16px}#nzFoodIntelligence .nfi-row{display:flex;gap:7px;margin:9px 0}#nzFoodIntelligence .nfi-row input{flex:1;min-width:0}#nzFoodIntelligence .nfi-note{font-size:12px;color:#bed0df;margin:8px 0}#nzFoodIntelligence .nfi-result{display:block;width:100%;margin:6px 0;text-align:left}#nzFoodIntelligence #nfiPreview{padding:10px;border:1px solid #507f75;border-radius:9px;margin-top:9px}#nzFoodIntelligence video{width:100%;max-height:260px;border-radius:10px;background:#000}#nzFoodIntelligence [hidden]{display:none!important}
+</style>
+<script id="nzFoodIntelligenceScript">
+(()=>{'use strict';const $=id=>document.getElementById(id),CFG='nonzero.nutrition.cloud.config';let foods=[],choice=null,stream=null,scanTimer=null;
+const box=document.createElement('section');box.id='nzFoodIntelligence';box.innerHTML=`<strong style="font-size:18px">Add food · Smart lookup</strong><p class="nfi-note">USDA foods, packaged-product barcodes, and camera nutrition analysis. Review values before saving.</p><div class="nfi-grid"><button id="nfiSearchMode">Search USDA</button><button id="nfiBarcodeMode">Scan barcode</button><button id="nfiMealMode">Photo of meal</button><button id="nfiLabelMode">Photo of label</button></div><div id="nfiSearch" hidden><div class="nfi-row"><input id="nfiQuery" placeholder="Food name, e.g. cottage cheese"><button id="nfiFind">Find</button></div></div><div id="nfiBarcode" hidden><div class="nfi-row"><input id="nfiCode" inputmode="numeric" placeholder="UPC / EAN barcode"><button id="nfiFindCode">Look up</button></div><button id="nfiCameraScan">Use camera scanner</button><video id="nfiVideo" playsinline muted hidden></video><button id="nfiStopScan" hidden>Stop camera</button></div><div id="nfiPhoto" hidden><label class="nfi-note">Choose or take a photo<input id="nfiImage" type="file" accept="image/*" capture="environment"></label><button id="nfiAnalyze">Analyze photo</button></div><div id="nfiStatus" class="nfi-note" role="status"></div><div id="nfiResults"></div><div id="nfiPreview" hidden><div id="nfiFoodName"></div><p class="nfi-note" id="nfiFoodMeta"></p><label>Portion multiplier <input id="nfiPortion" type="number" min="0.1" max="50" step="0.1" value="1"></label><p class="nfi-note" id="nfiMacros"></p><button id="nfiUse" style="width:100%;background:#227965">Review in food log</button></div>`;
+const status=t=>$('nfiStatus').textContent=t;const config=()=>{try{return JSON.parse(localStorage.getItem(CFG)||'{}')}catch{return {}}};
+async function api(path,body){const c=config();if(!/^https:\/\/[a-z0-9.-]+\/?$/i.test(c.url||'')||!c.token)throw Error('Connect Nutrition Cloud first');const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),30000);try{const r=await fetch(c.url.replace(/\/$/,'')+path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+c.token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,signal:controller.signal});const d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');return d}finally{clearTimeout(timeout)}}
+function show(mode){stop();for(const id of ['nfiSearch','nfiBarcode','nfiPhoto'])$(id).hidden=true;$('nfiPreview').hidden=true;$('nfiResults').replaceChildren();$('nfiStatus').textContent='';if(mode==='search')$('nfiSearch').hidden=false;if(mode==='barcode')$('nfiBarcode').hidden=false;if(mode==='meal'||mode==='label'){$('nfiPhoto').hidden=false;$('nfiPhoto').dataset.mode=mode;$('nfiImage').value=''}}
+function stop(){if(scanTimer)clearInterval(scanTimer);scanTimer=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if($('nfiVideo')){$('nfiVideo').hidden=true;$('nfiStopScan').hidden=true}}
+function display(items){foods=items;$('nfiResults').replaceChildren();$('nfiPreview').hidden=true;if(!items.length)return status('No complete food records found. Use manual entry below.');status(items.length+' food option(s). Select the correct one.');items.forEach((f,i)=>{const b=document.createElement('button');b.className='nfi-result';b.textContent=f.name+' · '+f.source;b.onclick=()=>select(i);$('nfiResults').append(b)})}
+function select(i){choice=foods[i];$('nfiPreview').hidden=false;$('nfiFoodName').textContent=choice.name;$('nfiFoodMeta').textContent=choice.source+' · '+(choice.serving||'100 g')+(choice.notes?' · '+choice.notes:'');$('nfiPortion').value=1;preview()}
+function values(){const f=choice;if(!f)return null;const base=f.per100||f;const grams=Number(f.grams)||100;const scale=(f.per100?grams/100:1)*Number($('nfiPortion').value);return Object.fromEntries(['cal','protein','carbs','fat','fiber'].map(k=>[k,base[k]===null||base[k]===undefined?null:Math.round(base[k]*scale*10)/10]))}
+function preview(){if(!choice)return;const v=values();$('nfiMacros').textContent=`${v.cal??'?'} kcal · ${v.protein??'?'}g protein · ${v.carbs??'?'}g carbs · ${v.fat??'?'}g fat`+(choice.confidence?' · '+choice.confidence+' confidence':'')}
+async function find(path){try{status('Searching nutrition sources…');const d=await api(path);display(d.foods||[])}catch(e){status('Lookup unavailable: '+e.message)}}
+async function resize(file){if(!file||file.size>15000000)throw Error('Image too large (15 MB maximum)');const bitmap=await createImageBitmap(file),scale=Math.min(1,1400/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();return canvas.toDataURL('image/jpeg',0.75)}
+async function analyze(){const file=$('nfiImage').files?.[0];if(!file)return status('Take or select a photo first.');try{status('Analyzing photo; please wait…');const image=await resize(file),d=await api('/v1/food/analyze',{mode:$('nfiPhoto').dataset.mode,image});display([d.food]);status(d.estimated?'AI meal estimate. Verify portions, ingredients and cooking oils.':'Extracted label. Check serving size and values against the photo.')}catch(e){status('Photo analysis unavailable: '+e.message)}}
+async function scan(){if(!('BarcodeDetector'in window)||!navigator.mediaDevices?.getUserMedia)return status('Camera barcode scanning unavailable in this browser. Enter the barcode above.');try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});const video=$('nfiVideo');video.srcObject=stream;video.hidden=false;$('nfiStopScan').hidden=false;await video.play();const detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});scanTimer=setInterval(async()=>{if(!stream||video.readyState<2)return;try{const codes=await detector.detect(video);if(codes.length){const code=codes[0].rawValue;stop();$('nfiCode').value=code;await find('/v1/food/barcode?code='+encodeURIComponent(code))}}catch(_){}},700)}catch(e){stop();status('Camera unavailable: '+e.message+'. Enter barcode manually.')}}
+function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel)return;const plus=$('nzNutritionPlus'),quick=plus?.closest('.nzAdvancedTools');(quick||plus||panel.querySelector('#nzCloudPanel')||panel).insertAdjacentElement('afterend',box);$('nfiSearchMode').onclick=()=>show('search');$('nfiBarcodeMode').onclick=()=>show('barcode');$('nfiMealMode').onclick=()=>show('meal');$('nfiLabelMode').onclick=()=>show('label');$('nfiFind').onclick=()=>find('/v1/food/search?q='+encodeURIComponent($('nfiQuery').value.trim()));$('nfiQuery').onkeydown=e=>{if(e.key==='Enter')$('nfiFind').click()};$('nfiFindCode').onclick=()=>find('/v1/food/barcode?code='+encodeURIComponent($('nfiCode').value.trim()));$('nfiCameraScan').onclick=scan;$('nfiStopScan').onclick=stop;$('nfiAnalyze').onclick=analyze;$('nfiPortion').oninput=preview;$('nfiUse').onclick=()=>{const v=values();if(!v||['cal','protein','carbs','fat'].some(k=>v[k]===null))return status('Missing required nutrients. Enter missing values manually.');$('nzName').value=choice.name;for(const [id,k] of [['nzCal','cal'],['nzProtein','protein'],['nzCarbs','carbs'],['nzFat','fat'],['nzFiber','fiber']])$(id).value=v[k]??'';$('nzServings').value=1;$('nzSource').value=choice.source?.includes('AI')?'estimate':choice.source?.includes('label')?'label':'database';status('Nutrition filled into Quick add. Review and tap Add to food log.');$('nzName').scrollIntoView({behavior:'smooth',block:'center'})};show('search');document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});$('nzCloseNutrition')?.addEventListener('click',stop)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0));else setTimeout(init,0);
 })();
 </script>
 </body>
