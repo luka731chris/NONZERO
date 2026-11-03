@@ -1,124 +1,38 @@
-# NONZERO Architecture
+# Architecture and data flow
 
-## Current components
+```mermaid
+flowchart TD
+  P[Phone app / GitHub Pages] -->|Bearer token HTTPS| W[Cloudflare Nutrition Worker]
+  C[Nutrition Command Center] -->|Bearer token HTTPS| W
+  W --> D[(Nutrition D1 database)]
+  W --> U[USDA FoodData Central]
+  W --> O[Open Food Facts]
+  W --> A[OpenAI API - text and image interpretation]
+  P -. workout controls and metrics .-> PI[Raspberry Pi Wall / PM5]
+  P -. partial agenda integration .-> AP[AutoPilot]
+```
 
-### Phone/PWA — v3.9
-Primary human control surface.
+## Ownership and responsibility
+- **Phone:** primary user experience, local food drafts, local history, pending mutation queue, macro displays, conversational review, camera UI.
+- **Nutrition Worker:** authentication, CORS, records synchronization, food catalog search/ranking, external APIs, AI inference, usage ledger.
+- **D1:** durable shared nutrition records, mutation idempotency, tombstones, food catalog/cache, AI usage ledger.
+- **Nutrition Command Center:** occasional laptop review and administration; not intended as the primary logger.
+- **Pi Wall:** exercise performance/ambient display and PM5 telemetry; independent release stream.
 
-Responsibilities:
-- readiness: hip pain + energy;
-- today's program and mode;
-- durable workout timer and controls;
-- completion/post-workout metrics;
-- progress/history;
-- surgery date/countdown;
-- BikeErg automation setup;
-- cloud configuration;
-- Roku pairing and schedule in Settings.
+## Synchronization contract
+- Phone saves locally first and attempts to upload after edits; retries when connectivity returns.
+- Pull on page open, focus/visibility return, reconnect, and roughly 60-second intervals **while active**. Browser suspension prevents guaranteed background polling.
+- `/v1/records` returns tombstones (`deleted=true`) and revisions. Client must apply them to its in-memory UI **and** persisted local state, not just one layer.
+- Each mutation uses a stable ID and `expectedRevision` to detect concurrent edits. A `409` conflict requires explicit reconciliation; never blindly overwrite.
+- Cloud-managed and legacy local-only entries must be distinguished; preserve unmatched local foods in a recoverable archive instead of deleting without review.
+- The historic “protein shake” test demonstrated a real delete-sync failure. D1 contained two tombstones at revision 2 and one active `D1 sync verification` record; the phone still showed the deleted shake. The 7.18.1.3/7.18.1.4 fixes were generated but not conclusively validated in production.
 
-The phone is local-first. Cloud state improves continuity but should not make the basic workout UI unusable offline.
+## Search architecture
+1. Search recent/verified personal catalog first.
+2. Query cached external results, USDA, and Open Food Facts.
+3. Normalize names, rank exact brand/product matches, deduplicate, abbreviate display names.
+4. Show no-match states instead of unrelated results. Search is optional when free-text meal logging is faster.
+5. User-reviewed entries are stored as foods/recipes; do not label model estimates as verified USDA data.
 
-### Cloudflare Worker — v4.3
-Shared-state/orchestration layer backed by `NONZERO_STATE` KV.
-
-Responsibilities:
-- phone-key state GET/PUT;
-- Roku pairing-code creation/claim;
-- Wall-token state GET;
-- BikeErg/ErgData start intents;
-- simple one-link Shortcuts setup/run/revoke;
-- quote feed/feedback;
-- optional Concept2 latest-result lookup;
-- scheduled Concept2 reconciliation.
-
-Current health target:
-
-`version: 4.3`
-`ergDataFirst: true`
-`quoteDiscovery: true`
-`rokuPairing: true`
-`bikeErgAuto: true`
-`simpleShortcut: true`
-
-`concept2` is true only when `C2_API_TOKEN` is configured.
-
-### Roku Wall — v4.3.5
-Persistent read-mostly display.
-
-Modes:
-- **Ambient** — motivation, progress, mission/countdown.
-- **Performance** — active/paused workout.
-- **Victory** — immediate/completed-day accomplishment treatment.
-- **Night** — low-light clock/branding.
-- **Deep Panel Protect** — near-black overnight mode while keeping NONZERO's schedule heartbeat alive.
-
-## State authority
-
-The phone historically writes full state. Worker v4.x is also a narrow writer for automation/reconciliation. This creates a known race risk: a stale whole-state phone PUT could overwrite a newer Worker-created state.
-
-**Required hardening:** revision/ETag or field-aware merge semantics before expanding multi-writer behavior.
-
-## Pairing protocol
-
-1. Authenticated phone calls `POST /pair/create`.
-2. Worker creates short-lived six-digit code.
-3. Roku sends `{code}` to public `POST /pair/claim`.
-4. Worker returns a random `wallToken`.
-5. Roku stores token locally.
-6. Roku polls `GET /state` with `X-NONZERO-Wall`.
-7. Invalid/expired token returns `missing_or_invalid_key`.
-
-Do not require Worker URL/private key entry on the television.
-
-## BikeErg automation
-
-### Design constraint
-ErgData owns the PM5 Bluetooth connection.
-
-### Start
-Phone v3.9 creates a dedicated opaque automation URL through authenticated Worker setup. Apple Shortcuts calls that URL when ErgData opens. Worker marks:
-
-- `activeWorkout.status = active`
-- `activeWorkout.source = ergdata-automation`
-- `activeWorkout.type = bike`
-- durable `sessionId`
-- timestamp-based running timer
-
-Roku sees active state on its normal cloud poll and enters Performance.
-
-### App switching
-Reopening ErgData while the same automation session is active is idempotent. Closing ErgData is not a stop signal.
-
-### Completion
-Preferred future-complete loop:
-
-`ErgData → Concept2 Logbook → Worker cron → new result detected → metrics mapped → active workout completed → Roku returns to schedule`
-
-This path requires `C2_API_TOKEN`.
-
-## Surgery countdown
-
-Shared state includes `surgeryPlan.date`. The phone and Wall derive days remaining and presentation phase from the date.
-
-Countdown logic must remain presentation/program-emphasis logic, not an autonomous medical prescription engine.
-
-## Wall schedule
-
-Default:
-- Ambient 06:00
-- Night 20:30
-- Deep 01:00
-
-Active or paused workout overrides schedule. Completion releases the override.
-
-## Release invariants
-
-Never ship a release that silently breaks:
-- six-digit pairing;
-- existing Wall token behavior without a documented re-pair;
-- cloud state loading;
-- active → Performance;
-- completed → scheduled mode;
-- ErgData single-recorder architecture;
-- saved progress compatibility.
-
+## AI interpretation
+The v7.19.0 text endpoint asks an OpenAI model to infer item-level macro estimates from a description. This is **estimation**, not deterministic USDA nutrient matching. The phone presents editable results before saving. For future accuracy, add ingredient-level source provenance, serving uncertainty, and deterministic summation using verified nutrient records.
