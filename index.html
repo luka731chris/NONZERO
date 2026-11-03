@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.18.2.0 · Intelligent Training</title>
+    <title>NONZERO v7.18.3.0 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.18.2.0</small></span>
+            <span class="flowBrand">NONZERO <small>v7.18.3.0</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16987,6 +16987,108 @@ async function analyze(){const file=$('nfiImage').files?.[0];if(!file)return sta
 async function scan(){if(!('BarcodeDetector'in window)||!navigator.mediaDevices?.getUserMedia)return status('Camera barcode scanning unavailable in this browser. Enter the barcode above.');try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});const video=$('nfiVideo');video.srcObject=stream;video.hidden=false;$('nfiStopScan').hidden=false;await video.play();const detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});scanTimer=setInterval(async()=>{if(!stream||video.readyState<2)return;try{const codes=await detector.detect(video);if(codes.length){const code=codes[0].rawValue;stop();$('nfiCode').value=code;await find('/v1/food/barcode?code='+encodeURIComponent(code))}}catch(_){}},700)}catch(e){stop();status('Camera unavailable: '+e.message+'. Enter barcode manually.')}}
 function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel)return;const plus=$('nzNutritionPlus'),quick=plus?.closest('.nzAdvancedTools');(quick||plus||panel.querySelector('#nzCloudPanel')||panel).insertAdjacentElement('afterend',box);$('nfiSearchMode').onclick=()=>show('search');$('nfiBarcodeMode').onclick=()=>show('barcode');$('nfiMealMode').onclick=()=>show('meal');$('nfiLabelMode').onclick=()=>show('label');$('nfiFind').onclick=()=>find('/v1/food/search?q='+encodeURIComponent($('nfiQuery').value.trim()));$('nfiQuery').onkeydown=e=>{if(e.key==='Enter')$('nfiFind').click()};$('nfiFindCode').onclick=()=>find('/v1/food/barcode?code='+encodeURIComponent($('nfiCode').value.trim()));$('nfiCameraScan').onclick=scan;$('nfiStopScan').onclick=stop;$('nfiAnalyze').onclick=analyze;$('nfiPortion').oninput=preview;$('nfiUse').onclick=()=>{const v=values();if(!v||['cal','protein','carbs','fat'].some(k=>v[k]===null))return status('Missing required nutrients. Enter missing values manually.');$('nzName').value=choice.name;for(const [id,k] of [['nzCal','cal'],['nzProtein','protein'],['nzCarbs','carbs'],['nzFat','fat'],['nzFiber','fiber']])$(id).value=v[k]??'';$('nzServings').value=1;$('nzSource').value=choice.source?.includes('AI')?'estimate':choice.source?.includes('label')?'label':'database';status('Nutrition filled into Quick add. Review and tap Add to food log.');$('nzName').scrollIntoView({behavior:'smooth',block:'center'})};show('search');document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});$('nzCloseNutrition')?.addEventListener('click',stop)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0));else setTimeout(init,0);
+})();
+</script>
+<style id="nzUx21821">
+#nzFoodIntelligence{background:transparent!important;border:0!important;padding:0!important;margin:8px 0!important}
+#nzFoodIntelligence .nfi-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#nzFoodIntelligence .nfi-grid button{font-size:12px;min-height:49px}
+#nzFoodIntelligence #nfiSearch{display:block!important}
+#nzFoodIntelligence #nfiQuery{font-size:17px;min-height:52px;border-radius:13px;padding-right:40px}
+#nzFoodIntelligence #nfiFind{min-width:80px}
+#nzFoodIntelligence .nfi-result{padding:12px!important;border:1px solid #38546b!important;background:#132b3d!important;border-radius:13px!important;margin:6px 0!important;text-align:left!important}
+#nzFoodIntelligence .nfi-result strong{display:block;font-size:15px;line-height:1.3}
+#nzFoodIntelligence .nfi-result small{display:block;font-size:12px;color:#bad0dc;margin-top:5px}
+#nfiSearchClear{min-width:42px!important;background:#344e62!important}
+#nzFoodIntelligence .nfi-note{font-size:13px}
+#nzFoodIntelligence #nfiStatus{min-height:24px;font-size:14px}
+#nzNutritionModal .nzPanel{max-width:760px!important;width:100%!important;box-sizing:border-box!important}
+#nzNutritionModal #nzCloudPanel{display:none!important}
+#nzNutritionModal #nzAdvancedNutritionTools{display:none!important}
+#nzNutritionModal #nzFoodIntelligence .nfi-grid{margin-top:10px}
+#nzNutritionModal #nfiPreview{background:#133c37;border-radius:14px}
+#nzNutritionModal .nzStats{position:relative}
+#nzTodayNutrition{margin:12px 0;padding:15px;background:#132b3c;border:1px solid #38536b;border-radius:16px}
+#nzTodayNutrition .nzTodayTiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+#nzTodayNutrition .nzTodayTiles div{background:#203b50;border-radius:10px;padding:9px 4px;text-align:center}
+#nzTodayNutrition .nzTodayTiles b{display:block;font-size:17px}
+#nzTodayNutrition .nzTodayTiles small{font-size:10px;color:#c5d4df}
+#nzTodayNutrition button{width:100%;min-height:45px}
+#nzSettingsNutrition{margin:14px 0;padding:12px;border:1px solid #466277;border-radius:12px}
+#nzSettingsNutrition #nzCloudPanel{display:block!important}
+#nzSettingsNutrition #nzCloudPanel input{max-width:100%}
+#nzAutoPilotToday{padding:12px;margin:10px 0;border:1px solid #38536b;border-radius:12px;background:#102331}
+@media(max-width:420px){#nzTodayNutrition .nzTodayTiles b{font-size:14px}}
+</style>
+<script id="nzUx21821Script">
+(()=>{'use strict';const $=id=>document.getElementById(id);
+function init(){const box=$('nzFoodIntelligence'),modal=$('nzNutritionModal'),settings=$('tabSettings');if(!box||!modal||!settings)return;
+ const cloud=$('nzCloudPanel');if(cloud){let section=$('nzSettingsNutrition');if(!section){section=document.createElement('details');section.id='nzSettingsNutrition';section.innerHTML='<summary><strong>Nutrition cloud &amp; connectivity</strong></summary>';settings.append(section)}section.append(cloud);cloud.style.display='block';}
+ const h=box.querySelector('strong');if(h)h.textContent='Find and log food';const intro=box.querySelector('.nfi-note');if(intro)intro.textContent='Type a food or brand. Select a result, adjust the portion, then add it to your log.';
+ const grid=box.querySelector('.nfi-grid');if(grid){$('nfiSearchMode').textContent='Search';$('nfiBarcodeMode').textContent='Barcode';$('nfiMealMode').textContent='Meal photo';$('nfiLabelMode').textContent='Label photo';}
+ const search=$('nfiSearch'),query=$('nfiQuery'),find=$('nfiFind'),results=$('nfiResults'),status=$('nfiStatus');if(!search||!query)return;
+ query.placeholder='Search foods or brands…';query.setAttribute('type','search');query.setAttribute('autocomplete','off');
+ const clear=document.createElement('button');clear.id='nfiSearchClear';clear.type='button';clear.textContent='×';clear.setAttribute('aria-label','Clear food search');query.after(clear);
+ const help=document.createElement('p');help.className='nfi-note';help.textContent='Search by a few words, e.g. “Smashin Greens” or “cottage cheese”.';search.after(help);
+ let debounce=null,serial=0;
+ const originalFind=find.onclick;
+ const doSearch=()=>{const q=query.value.trim();const current=++serial;results.replaceChildren();$('nfiPreview').hidden=true;if(q.length<2){status.textContent=q?'Enter at least 2 characters.':'Start typing to find a food.';return;}status.textContent='Searching for “'+q+'”…';
+ // Uses existing authenticated Worker configuration and existing result selection handlers.
+ const config=(()=>{try{return JSON.parse(localStorage.getItem('nonzero.nutrition.cloud.config')||'{}')}catch{return {}}})();
+ if(!config.url||!config.token){status.textContent='Nutrition connection required. Open Settings → Nutrition cloud.';return;}
+ const url=config.url.replace(/\/$/,'')+'/v1/food/search?q='+encodeURIComponent(q);
+ fetch(url,{headers:{Authorization:'Bearer '+config.token}}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error||'Search failed');return d}).then(d=>{if(current!==serial)return;const items=(d.foods||[]);results.replaceChildren();if(!items.length){status.textContent='No matching foods found. Try fewer words, scan the barcode, or enter the food manually.';return;}status.textContent=items.length+' matching foods';
+ // Reuse the existing selection/portion workflow through its result-rendering callback.
+ const saved=window.__nzFoodSearchItems=items;
+ items.forEach((f,i)=>{const b=document.createElement('button');b.type='button';b.className='nfi-result';const strong=document.createElement('strong');strong.textContent=(f.brand?f.brand+' · ':'')+(f.shortName||f.name||'Food').replace(/^.*? · /,'');const meta=document.createElement('small');meta.textContent=(f.serving||'100 g')+' · '+(f.per100?.cal??f.cal??'—')+' kcal per 100 g · '+(f.source||'USDA');b.append(strong,meta);b.onclick=()=>{ // The original script owns selection state. Render its original results then select by index.
+ const orig=originalFind; // selection is closure-private, so pass through original result renderer by temporarily reusing API response
+ window.__nzChosenFood=f;const preview=$('nfiPreview');preview.hidden=false;$('nfiFoodName').textContent=f.name;$('nfiFoodMeta').textContent=(f.serving||'100 g')+' · '+(f.source||'USDA');$('nfiPortion').value='1';
+ const base=f.per100||f,grams=Number(f.grams)||100,scale=f.per100?grams/100:1;
+ const recalc=()=>{const mult=Math.max(.1,Number($('nfiPortion').value)||1),values={};for(const k of ['cal','protein','carbs','fat','fiber'])values[k]=base[k]==null?null:Math.round(base[k]*scale*mult*10)/10;window.__nzChosenValues=values;$('nfiMacros').textContent=`${values.cal??'—'} kcal · ${values.protein??'—'}g protein · ${values.carbs??'—'}g carbs · ${values.fat??'—'}g fat`;};$('nfiPortion').oninput=recalc;recalc();preview.scrollIntoView({block:'nearest',behavior:'smooth'});
+ };results.append(b)});}).catch(e=>{if(current!==serial)return;status.textContent=e.message==='invalid_query'?'Enter at least two characters to search.':'Food lookup is temporarily unavailable. Try again or add manually.';});};
+ find.onclick=doSearch;query.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(debounce);doSearch()}if(e.key==='Escape'){clear.click()}};
+ query.addEventListener('input',()=>{clearTimeout(debounce);debounce=setTimeout(doSearch,400)});
+ clear.onclick=()=>{serial++;clearTimeout(debounce);query.value='';results.replaceChildren();$('nfiPreview').hidden=true;status.textContent='Search cleared. Start typing a food name.';query.focus()};
+ const use=$('nfiUse'),oldUse=use?.onclick;if(use)use.onclick=()=>{const f=window.__nzChosenFood,v=window.__nzChosenValues;if(!f||!v){if(oldUse)oldUse();return}if(['cal','protein','carbs','fat'].some(k=>v[k]==null)){status.textContent='This food is missing macros. Use manual entry.';return;}$('nzName').value=f.name;for(const [id,k] of [['nzCal','cal'],['nzProtein','protein'],['nzCarbs','carbs'],['nzFat','fat'],['nzFiber','fiber']])$(id).value=v[k]??'';$('nzServings').value=1;$('nzSource').value='database';status.textContent='Ready to save. Review the values and select Add to food log.';$('nzName').scrollIntoView({block:'center',behavior:'smooth'})};
+ $('nfiSearchMode').onclick=()=>{search.hidden=false;$('nfiBarcode').hidden=true;$('nfiPhoto').hidden=true;query.focus()};
+ // Preserve the other camera modes; only override search.
+ const today=$('tabToday');if(today){const card=document.createElement('section');card.id='nzTodayNutrition';card.innerHTML='<strong>Today · Nutrition</strong><div class="nzTodayTiles"><div><b id="nzTodayCal">—</b><small>Calories</small></div><div><b id="nzTodayProtein">—</b><small>Protein</small></div><div><b id="nzTodayCarbs">—</b><small>Carbs</small></div><div><b id="nzTodayFat">—</b><small>Fat</small></div></div><button id="nzTodayAddFood" type="button">+ Log food</button>';const landing=today.querySelector('.todayLanding');(landing||today).prepend(card);$('nzTodayAddFood').onclick=()=>{const open=document.querySelector('[data-open-nutrition],#openNutritionBtn,#nzOpenNutrition');if(open)open.click();else{modal.hidden=false;modal.style.display='flex';}};
+ const ap=document.createElement('section');ap.id='nzAutoPilotToday';ap.innerHTML='<strong>AutoPilot · Today</strong><p class="nfi-note">Family schedule insights appear here when AutoPilot data is connected.</p>';card.after(ap);
+ const update=()=>{let data;try{data=JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')}catch{return}const date=new Date().toLocaleDateString('en-CA');let entries=Array.isArray(data)?data:(data.foods||data.entries||data.log||[]);if(!Array.isArray(entries))entries=[];const todays=entries.filter(x=>x.day===date&&!x.deleted);for(const [id,key] of [['nzTodayCal','cal'],['nzTodayProtein','protein'],['nzTodayCarbs','carbs'],['nzTodayFat','fat']])$(id).textContent=todays.length?Math.round(todays.reduce((sum,x)=>sum+(Number(x[key])||0),0)): '—';};update();setInterval(update,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)update()});}
+ status.textContent='Start typing to search. No need to press Find.';
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,250));else setTimeout(init,250);
+})();
+</script>
+<style id="nzSmartFoodSearchStyles">
+#nzFoodIntelligence #nfiResults{max-height:45vh;overflow-y:auto;overscroll-behavior:contain}
+#nzFoodIntelligence .nfi-result{min-height:65px;display:flex!important;flex-direction:column;justify-content:center;gap:5px}
+#nzFoodIntelligence .nfi-result .nzSmartTitle{font-size:15px;font-weight:700;white-space:normal;overflow-wrap:anywhere}
+#nzFoodIntelligence .nfi-result .nzSmartMeta{font-size:12px;color:#bcd0dc}
+#nzSmartRecent{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
+#nzSmartRecent button{font-size:12px!important;padding:8px 10px!important;border-radius:999px!important}
+#nfiSearchClear{font-size:20px!important;min-width:45px!important}
+#nzSmartHint{font-size:13px;color:#cbdce6;margin:8px 0}
+</style>
+<script id="nzSmartFoodSearchScript">
+(()=>{'use strict';const $=id=>document.getElementById(id),KEY='nonzero.nutrition.cloud.config';let timer,seq=0,chosen=null,values=null,active=false;
+function cfg(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
+function status(t){const e=$('nfiStatus');if(e)e.textContent=t}
+function reset(){seq++;clearTimeout(timer);chosen=null;values=null;$('nfiResults')?.replaceChildren();if($('nfiPreview'))$('nfiPreview').hidden=true;}
+function name(f){return String(f.shortName||f.name||'Food').replace(/^.*? · /,'').slice(0,100)}
+function choose(f){chosen=f;window.__nzChosenFood=f;$('nfiPreview').hidden=false;$('nfiFoodName').textContent=[f.brand,name(f)].filter(Boolean).join(' · ');$('nfiFoodMeta').textContent=[f.serving||'100 g',f.source||'Food database'].join(' · ');$('nfiPortion').value='1';const update=()=>{const b=f.per100||f,m=Math.max(.1,Number($('nfiPortion').value)||1)*(f.per100?(Number(f.grams)||100)/100:1);values={};for(const k of ['cal','protein','carbs','fat','fiber'])values[k]=b[k]==null?null:Math.round(Number(b[k])*m*10)/10;window.__nzChosenValues=values;$('nfiMacros').textContent=`${values.cal??'—'} kcal · ${values.protein??'—'}g protein · ${values.carbs??'—'}g carbs · ${values.fat??'—'}g fat`};$('nfiPortion').oninput=update;update();$('nfiPreview').scrollIntoView({behavior:'smooth',block:'nearest'});}
+async function search(){const q=$('nfiQuery').value.trim(),my=++seq,results=$('nfiResults');results.replaceChildren();$('nfiPreview').hidden=true;chosen=null;window.__nzChosenFood=null;if(q.length<2){status(q?'Type at least two characters.':'Search foods, brands, or your saved foods.');return}const c=cfg();if(!c.url||!c.token){status('Connect Nutrition Cloud in Settings to search.');return}status('Finding matches…');try{const r=await fetch(c.url.replace(/\/$/,'')+'/v2/food/search?q='+encodeURIComponent(q),{headers:{Authorization:'Bearer '+c.token}});const d=await r.json();if(!r.ok)throw Error(d.error||'search_unavailable');if(my!==seq)return;const items=d.foods||[];if(!items.length){status('No close match found. Try a shorter name, scan a barcode, or add the product manually.');return}status(`${items.length} relevant match${items.length===1?'':'es'} · Select a food`);for(const f of items){const b=document.createElement('button');b.type='button';b.className='nfi-result';const t=document.createElement('span');t.className='nzSmartTitle';t.textContent=[f.brand,name(f)].filter(Boolean).join(' · ');const m=document.createElement('span');m.className='nzSmartMeta';m.textContent=[f.serving||'100 g',f.per100?.cal!=null?Math.round(f.per100.cal)+' kcal/100 g':null,f.verifiedByUser?'My verified food':f.source].filter(Boolean).join('  •  ');b.append(t,m);b.onclick=()=>choose(f);results.append(b)}}catch(e){if(my!==seq)return;status('Food search unavailable. You can still add food manually. ('+String(e.message).slice(0,45)+')')}}
+function init(){const input=$('nfiQuery'),find=$('nfiFind'),clear=$('nfiSearchClear'),searchMode=$('nfiSearchMode'),use=$('nfiUse');if(!input||!find||!clear||!use)return;
+ input.placeholder='Search food, brand, or part of a name';find.onclick=search;input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(timer);search()}if(e.key==='Escape')clear.click()};input.addEventListener('input',()=>{reset();clearTimeout(timer);const q=input.value.trim();if(q.length<2){status('Type at least two characters.');return}timer=setTimeout(search,650)});
+ clear.onclick=()=>{input.value='';reset();status('Search cleared. Enter another food.');input.focus()};
+ searchMode.onclick=()=>{$('nfiSearch').hidden=false;$('nfiBarcode').hidden=true;$('nfiPhoto').hidden=true;input.focus()};
+ const previous=use.onclick;use.onclick=()=>{if(!chosen||!values){if(previous)previous();return}if(['cal','protein','carbs','fat'].some(k=>values[k]==null)){status('Nutrition values incomplete. Enter this food manually.');return}const f=chosen;const full=[f.brand,name(f)].filter(Boolean).join(' · ');$('nzName').value=full;for(const [id,k] of [['nzCal','cal'],['nzProtein','protein'],['nzCarbs','carbs'],['nzFat','fat'],['nzFiber','fiber']])$(id).value=values[k]??'';$('nzServings').value=1;$('nzSource').value=f.verifiedByUser?'label':'database';status('Review and tap Add to food log.');$('nzName').scrollIntoView({block:'center',behavior:'smooth'});
+ // Catalog only after explicit user confirmation in Add to food log; do not block logging on network.
+ const add=$('nzAddFood');if(add){const once=()=>{add.removeEventListener('click',once);const c=cfg();if(!c.url||!c.token)return;fetch(c.url.replace(/\/$/,'')+'/v2/food/catalog',{method:'POST',headers:{Authorization:'Bearer '+c.token,'Content-Type':'application/json'},body:JSON.stringify({food:{...f,name:full,per100:f.per100||{...values},brand:f.brand||'',source:f.source||'Personal food'}})}).catch(()=>{});};add.addEventListener('click',once)}
+ };
+ status('Start typing to search your foods and nutrition databases.');
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,700));else setTimeout(init,700);
 })();
 </script>
 </body>
