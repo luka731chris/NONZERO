@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.18.1.1 · Intelligent Training</title>
+    <title>NONZERO v7.18.1.2 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.18.1.1</small></span>
+            <span class="flowBrand">NONZERO <small>v7.18.1.2</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16822,7 +16822,7 @@ $('nzDay').addEventListener('change',render);$('nzAddFood').addEventListener('cl
 </script>
 
 <script id="nzCloudBridge">
-/* NONZERO Nutrition 7.18.0.1: cloud-first initial merge, local-first edits, guarded conflicts. */
+/* NONZERO Nutrition 7.18.1.2: cloud tombstones win by ID; preserve unrelated local-only records. */
 (()=>{'use strict';
 const KEY='nonzero.nutrition.v1',CFG='nonzero.nutrition.cloud.config',SHADOW='nonzero.nutrition.cloud.shadow',PENDING='nonzero.nutrition.cloud.pending';
 const $=id=>document.getElementById(id),managed=new Set(['food','favorite','target']);
@@ -16837,19 +16837,29 @@ if(d.targets&&Object.keys(d.targets).length)a.push({kind:'target',id:'daily',pay
 return a.filter(r=>/^[\w-]{1,100}$/.test(r.id))}
 function stage(){if(!initialized)return;const current=JSON.stringify(read());if(current===lastSnapshot)return;lastSnapshot=current;
 const local=new Map(recs(read()).map(r=>[key(r),r])),known=shadow(),pending=queue();
-for(const [k,r] of local)if(JSON.stringify(r.payload)!==JSON.stringify(known[k]?.payload))pending[k]={...r,deleted:false,mutationId:crypto.randomUUID()};
+// D1 tombstones are authoritative for the same record ID. Never queue a resurrection.
+for(const [k,r] of local){if(known[k]?.deleted){delete pending[k];continue}if(JSON.stringify(r.payload)!==JSON.stringify(known[k]?.payload))pending[k]={...r,deleted:false,mutationId:crypto.randomUUID()}}
 for(const [k,r] of Object.entries(known))if(managed.has(r.kind)&&!r.deleted&&!local.has(k))pending[k]={kind:r.kind,id:r.id,payload:{},deleted:true,mutationId:crypto.randomUUID()};
 put(PENDING,pending);if(Object.keys(pending).length){status(Object.keys(pending).length+' pending changes');schedule()}}
 function schedule(){clearTimeout(timer);timer=setTimeout(()=>void sync(),1100)}
 async function api(path,method='GET',body){const c=cfg();if(!/^https:\/\/[a-z0-9.-]+(?::443)?\/?$/i.test(c.url||'')||!c.token)throw Error('Configure the HTTPS Worker URL and API key');
 const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),12000);try{const r=await fetch(c.url.replace(/\/$/,'')+path,{method,headers:{Authorization:'Bearer '+c.token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:ctrl.signal});const j=await r.json();if(!r.ok)throw Error(j.error||'HTTP '+r.status);return j}finally{clearTimeout(t)}}
 function merge(records,known,pending){const d=read();d.entries=Array.isArray(d.entries)?d.entries:[];d.favorites=Array.isArray(d.favorites)?d.favorites:[];
-const localFood=new Map(d.entries.map((x,i)=>[String(x.id),i])),localFav=new Map(d.favorites.map((x,i)=>[String(x.id),i]));
-for(const r of records){if(!managed.has(r.kind)||pending[key(r)])continue;
-if(r.kind==='food'){const i=localFood.get(r.id);if(r.deleted){if(i!==undefined)d.entries=d.entries.filter(x=>String(x.id)!==r.id)}else if(i===undefined)d.entries.push(r.payload);else if(JSON.stringify(d.entries[i])===JSON.stringify(known[key(r)]?.payload))d.entries[i]=r.payload}
-if(r.kind==='favorite'){const i=localFav.get(r.id);if(r.deleted){if(i!==undefined)d.favorites=d.favorites.filter(x=>String(x.id)!==r.id)}else if(i===undefined)d.favorites.push(r.payload);else if(JSON.stringify(d.favorites[i])===JSON.stringify(known[key(r)]?.payload))d.favorites[i]=r.payload}
-if(r.kind==='target'&&r.id==='daily'&&!r.deleted){if(!d.targets||!Object.keys(d.targets).length)d.targets={calories:r.payload.cal??null,protein:r.payload.protein??null,carbs:r.payload.carbs??null,fat:r.payload.fat??null}}}
-put(KEY,d);lastSnapshot=JSON.stringify(d);window.nzNutritionReloadFromCloud?.();window.dispatchEvent(new Event('nz-nutrition-cloud-updated'))}
+// Read the full server state, including tombstones. D1 is authoritative for cloud IDs;
+// unmatched local-only records remain intact until the user explicitly deletes them.
+const server=new Map(records.filter(r=>managed.has(r.kind)).map(r=>[key(r),r]));
+for(const [k,r] of server){if(r.deleted){if(r.kind==='food')d.entries=d.entries.filter(x=>String(x.id)!==r.id);
+if(r.kind==='favorite')d.favorites=d.favorites.filter(x=>String(x.id).replace(/[^\w-]/g,'_')!==r.id);
+// A stale queued create/update must never resurrect a D1 tombstone.
+if(pending[k]&&!pending[k].deleted)delete pending[k];
+continue}
+if(pending[k])continue;
+if(r.kind==='food'){const i=d.entries.findIndex(x=>String(x.id)===r.id);if(i<0)d.entries.push(r.payload);
+else if(!known[k]||JSON.stringify(d.entries[i])===JSON.stringify(known[k]?.payload))d.entries[i]=r.payload}
+if(r.kind==='favorite'){const i=d.favorites.findIndex(x=>String(x.id).replace(/[^\w-]/g,'_')===r.id);if(i<0)d.favorites.push(r.payload);
+else if(!known[k]||JSON.stringify(d.favorites[i])===JSON.stringify(known[k]?.payload))d.favorites[i]=r.payload}
+if(r.kind==='target'&&r.id==='daily'){if(!d.targets||!Object.keys(d.targets).length)d.targets={calories:r.payload.cal??null,protein:r.payload.protein??null,carbs:r.payload.carbs??null,fat:r.payload.fat??null}}}
+put(PENDING,pending);put(KEY,d);lastSnapshot=JSON.stringify(d);window.nzNutritionReloadFromCloud?.();window.dispatchEvent(new Event('nz-nutrition-cloud-updated'))}
 async function sync(){if(busy)return;if(!cfg().url||!cfg().token){status('Local only · connect to sync');return}busy=true;try{
 const response=await api('/v1/records');if(response.truncated)throw Error('Cloud record limit reached');const remote=response.records,old=shadow(),pending=queue();
 // Pull before staging. Existing pending edits are retained, never silently discarded.
@@ -16858,6 +16868,7 @@ const known={...old};for(const r of remote)known[key(r)]={kind:r.kind,id:r.id,pa
 initialized=true;lastSnapshot="";stage();const changes=queue(),remoteMap=new Map(remote.map(r=>[key(r),r]));
 for(const [k,change] of Object.entries(changes)){
 const current=remoteMap.get(k),prior=old[k];
+if(current?.deleted&&!change.deleted){delete changes[k];put(PENDING,changes);status('Cloud deletion applied: '+k);continue}
 if(current&&(!prior||prior.revision!==current.revision)){status('Conflict: '+k+' · local food preserved');continue}
 const res=await api('/v1/records','POST',{kind:change.kind,id:change.id,payload:change.payload,deleted:!!change.deleted,expectedRevision:current?.revision||0,mutationId:change.mutationId});
 known[k]={kind:change.kind,id:change.id,payload:change.payload,revision:res.revision,deleted:!!change.deleted};delete changes[k];put(PENDING,changes);put(SHADOW,known)}
