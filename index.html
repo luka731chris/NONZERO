@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.18.1.0 · Intelligent Training</title>
+    <title>NONZERO v7.18.1.1 · Intelligent Training</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3932,6 +3932,40 @@ body.trainingFocus .focusToolbar span {
 #nzMoreSheet button{width:100%;text-align:left;margin:5px 0;padding:15px;border-radius:12px;border:1px solid #4a677a;background:#193749;color:#f3f7fc;font-size:16px}
 #nzMoreSheet .nzMoreClose{text-align:center;background:#244d58}
 </style>
+<style id="nzNutritionPageFix">
+/* Full-width mobile nutrition destination; all original input IDs and handlers preserved */
+#nzNutritionModal{inset:0!important;padding:0!important;background:#071724!important;overflow-y:auto!important;z-index:999999!important}
+#nzNutritionModal .nzPanel{max-width:920px!important;width:100%!important;margin:0 auto!important;padding:18px 16px 105px!important;box-sizing:border-box!important}
+#nzNutritionModal .nzPanel>.nzRow:first-child{position:static!important;background:transparent!important;border:0!important;padding:0 0 10px!important}
+#nzNutritionModal .nzPanel>.nzRow:first-child h2{font-size:23px!important;flex:1!important;line-height:1.3!important;margin:0!important}
+#nzNutritionModal #nzCloseNutrition{display:none!important}
+#nzNutritionModal #nzCloudPanel{margin:12px 0!important;border:1px solid #407c76!important;background:#102e37!important;padding:16px!important;border-radius:15px!important}
+#nzNutritionModal #nzCloudPanel .nzCloudHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#nzNutritionModal #nzCloudPanel .nzCloudHeading strong{font-size:17px}
+#nzNutritionModal #nzCloudPanel #nzOpenCloudSettings{background:#276c60!important}
+#nzNutritionModal #nzCloudStatus{font-size:14px!important;color:#c3e9dd!important}
+#nzNutritionModal #nzCloudDetails{padding:12px 0}
+#nzNutritionModal #nzModalStats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+#nzNutritionModal #nzModalStats>div{min-width:0;padding:12px 5px;background:#17374a;border-radius:10px;text-align:center;font-size:12px}
+#nzNutritionModal #nzModalStats b{font-size:21px;display:block}
+#nzNutritionModal #nzNutritionPlus{border:0!important;padding:0!important;background:transparent!important;margin:0!important}
+#nzNutritionModal #nzNutritionPlus>strong,#nzNutritionModal #nzNutritionPlus>.nzPlusMuted:first-of-type{display:none!important}
+#nzNutritionModal #nzNutritionPlus .nzPlusGrid{display:none!important} /* Existing top-level stats are the canonical cards */
+#nzNutritionModal .nzAdvancedTools{margin:16px 0;border:1px solid #35566a;border-radius:12px;background:#0d2434;padding:12px}
+#nzNutritionModal .nzAdvancedTools>summary{font-size:15px;font-weight:750;cursor:pointer;padding:4px 0}
+#nzNutritionModal .nzAdvancedTools[open]>summary{margin-bottom:12px}
+#nzNutritionModal .nzNutritionQuickActions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+#nzNutritionModal .nzNutritionQuickActions button{flex:1;min-width:120px}
+#nzNutritionModal .nzNutritionDayBar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#nzNutritionModal .nzNutritionDayBar label{flex:1;min-width:160px}
+#nzNutritionModal .nzNutritionTitleBar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#nzNutritionModal .nzNutritionTitleBar button{background:#1d4252!important}
+#nzNutritionModal #nzNutritionPlus .nzPlusRow{flex-wrap:wrap}
+#nzNutritionModal #nzCloudDetails .nzRow{align-items:stretch}
+#nzNutritionModal #nzCloudDetails .nzRow input{flex:3!important;min-width:180px!important}
+#nzNutritionModal #nzCloudDetails .nzRow button{flex:0 0 auto!important}
+@media(max-width:600px){#nzNutritionModal .nzPanel{padding:14px 12px 90px!important}#nzNutritionModal #nzModalStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}#nzNutritionModal #nzCloudDetails .nzRow input{flex-basis:100%!important}}
+</style>
 </head>
   <body class="todayFlow" data-today-scene="home">
     <div class="wrap">
@@ -3939,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.18.1.0</small></span>
+            <span class="flowBrand">NONZERO <small>v7.18.1.1</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16850,17 +16884,49 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <div id="nzMoreSheet" hidden role="dialog" aria-modal="true" aria-label="More options"><div class="nzMorePanel"><h2>More</h2><p style="color:#b9d0db">Advanced controls are kept out of your daily workflow.</p><button type="button" id="nzGoCoach">Coach</button><button type="button" id="nzGoSettings">System settings &amp; connections</button><button type="button" id="nzMoreClose" class="nzMoreClose">Close</button></div></div>
 <script id="nzSimpleNavigation">
 (()=>{'use strict';
-const $=id=>document.getElementById(id),modal=$('nzNutritionModal'),more=$('nzMoreSheet');
-const openNutrition=()=>{const trigger=$('nzOpenNutrition');if(trigger)trigger.click();else if(modal)modal.hidden=false;more.hidden=true;document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('active',b.id==='nzNutritionNav'));};
-$('nzNutritionNav')?.addEventListener('click',openNutrition);
+const $=id=>document.getElementById(id);
+const modal=$('nzNutritionModal'),more=$('nzMoreSheet'),nav=$('nzNutritionNav');
+if(!modal||!nav)return;
+const tabs=()=>[...document.querySelectorAll('.tabbar button')];
+function selectTab(target){tabs().forEach(b=>b.classList.toggle('active',b===target))}
+function openNutrition(){more.hidden=true;modal.hidden=false;const day=$('nzDay');if(day&&!day.value)day.value=new Date().toLocaleDateString('en-CA');day?.dispatchEvent(new Event('change'));selectTab(nav);modal.scrollTop=0}
+function leaveNutrition(){modal.hidden=true}
+function openMore(){leaveNutrition();more.hidden=false;selectTab($('nzMoreNav'))}
+nav.addEventListener('click',openNutrition);
+$('nzOpenNutrition')?.addEventListener('click',()=>{openNutrition()});
 $('nzNutritionCard')?.addEventListener('click',e=>{if(!e.target.closest('button,input,a'))openNutrition()});
-$('nzMoreNav')?.addEventListener('click',()=>{more.hidden=false});
-$('nzMoreClose')?.addEventListener('click',()=>{more.hidden=true});
-more?.addEventListener('click',e=>{if(e.target===more)more.hidden=true});
+$('nzMoreNav')?.addEventListener('click',openMore);
+$('nzMoreClose')?.addEventListener('click',()=>{more.hidden=true;selectTab(document.querySelector('[data-tab="Today"]'))});
+more?.addEventListener('click',e=>{if(e.target===more){more.hidden=true;selectTab(document.querySelector('[data-tab="Today"]'))}});
 $('nzGoCoach')?.addEventListener('click',()=>{more.hidden=true;document.querySelector('[data-tab="Coach"]')?.click()});
 $('nzGoSettings')?.addEventListener('click',()=>{more.hidden=true;document.querySelector('[data-tab="Settings"]')?.click()});
-$('nzCloseNutrition')?.addEventListener('click',()=>{document.querySelector('[data-tab="Today"]')?.click()});
-window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!more.hidden)more.hidden=true});
+$('nzCloseNutrition')?.addEventListener('click',()=>{leaveNutrition();document.querySelector('[data-tab="Today"]')?.click()});
+for(const tab of tabs())if(tab!==nav&&tab.id!=='nzMoreNav')tab.addEventListener('click',()=>{leaveNutrition();more.hidden=true;selectTab(tab)});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!more.hidden){more.hidden=true;selectTab(document.querySelector('[data-tab="Today"]'))}});
+function reorganize(){const panel=modal.querySelector('.nzPanel'),plus=$('nzNutritionPlus'),cloud=$('nzCloudPanel');if(!panel||!plus||!cloud)return;
+// Native controls remain in DOM; only their presentation and grouping change.
+const heading=panel.querySelector(':scope > .nzRow:first-child');if(heading){heading.classList.add('nzNutritionTitleBar');const back=document.createElement('button');back.type='button';back.textContent='← Today';back.id='nzNutritionBack';back.onclick=()=>{leaveNutrition();document.querySelector('[data-tab="Today"]')?.click()};heading.prepend(back)}
+const tagline=document.createElement('p');tagline.className='nzHint';tagline.textContent='Food log · macros · cloud sync';panel.insertBefore(tagline,heading?.nextSibling||panel.firstChild);
+const day=$('nzDay')?.closest('label');if(day)day.classList.add('nzNutritionDayBar');
+const stats=$('nzModalStats');if(stats&&day)day.after(stats);
+// The cloud status is visible immediately, before food tools.
+if(heading)heading.after(cloud);
+const tools=document.createElement('details');tools.className='nzAdvancedTools';tools.id='nzAdvancedNutritionTools';tools.innerHTML='<summary>Food search, barcode &amp; recent meals</summary>';
+const trend=plus.querySelector('details');const notes=[...plus.children].filter(x=>x.tagName==='P'&&x.textContent.includes('Food data:'));
+for(const el of [...plus.children])if(el!==trend&&!notes.includes(el))tools.append(el);
+plus.prepend(tools);for(const note of notes){note.style.display='none'}
+// Put food lookup behind one optional disclosure, not ahead of the log.
+const quickHeading=[...panel.querySelectorAll(':scope > h3')].find(x=>x.textContent.trim()==='Quick add');if(quickHeading)quickHeading.before(plus);
+if(trend){const trends=document.createElement('details');trends.className='nzAdvancedTools';trends.innerHTML='<summary>7-day trends &amp; targets</summary>';trends.append(trend);panel.append(trends)}
+// Move advanced data portability to the bottom and collapse it.
+const portability=[...panel.querySelectorAll(':scope > h3')].find(x=>x.textContent.includes('Data portability'));
+if(portability){const backup=document.createElement('details');backup.className='nzAdvancedTools';backup.innerHTML='<summary>Backups &amp; data tools</summary>';let n=portability;while(n){const next=n.nextElementSibling;backup.append(n);n=next}panel.append(backup)}
+const dailyTargets=[...panel.querySelectorAll(':scope > h3')].find(x=>x.textContent.includes('Daily targets'));
+if(dailyTargets){const target=document.createElement('details');target.className='nzAdvancedTools';target.innerHTML='<summary>Daily macro targets</summary>';let n=dailyTargets;while(n&&n!==panel.querySelector('.nzAdvancedTools:last-child')){const next=n.nextElementSibling;target.append(n);if(n.id==='nzSaveTargets')break;n=next}panel.append(target)}
+// No duplicate totals cards; the existing nzModalStats remains authoritative.
+const note=document.createElement('p');note.className='nzHint';note.textContent='Nutrition data is saved locally first. Cloud sync status appears above.';cloud.after(note);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorganize);else reorganize();
 })();
 </script>
 </body>
