@@ -1,2 +1,12 @@
 *.DS_Store
 Thumbs.db
+
+# Local/generated artifacts
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+!.env.example
+node_modules/
+*.log
