@@ -1,0 +1,86 @@
+/* Ambient-only celebration; existing geometry, quote typography and utility chrome stay intact. */
+#ambient.day-victory {
+  background:
+    radial-gradient(ellipse at 80% 5%, #9b70272b, transparent 56%),
+    radial-gradient(ellipse at 5% 50%, #154d3425, transparent 60%), #080e15;
+}
+#ambient.day-victory .mode-pill {
+  color: #ffe7a3;
+  border: 1px solid #b48b48;
+  background: #392b14b8;
+  box-shadow: 0 0 1.1vw #e6b85b20;
+}
+#ambient.day-victory .eyebrow {
+  color: #f9da91;
+}
+#ambient.day-victory .divider {
+  border-color: #c5a15c66;
+  box-shadow: 0 1px 10px #e4bf4e18;
+}
+#ambient.day-victory .kpi {
+  border-color: #9a783a80;
+  box-shadow: inset 0 1px #f4d38c18;
+}
+#ambient.day-victory .kpi-value {
+  color: #ffe9b2;
+}
+#ambient.day-victory .lower .accent {
+  border-color: #ba9652;
+  box-shadow:
+    inset 0.16vw 0 #e4bf72,
+    0 0 1.4vw #c7982c10;
+}
+#ambient.day-victory #todayTitle,
+#ambient.day-victory #workoutStatus {
+  color: #ffe5a0;
+}
+#ambient.day-victory #todayDetail {
+  color: #d8c393;
+}
+.victory-sparkles {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+#ambient.victory-arrival .victory-sparkles {
+  display: block;
+}
+.victory-sparkles i {
+  position: absolute;
+  left: var(--x);
+  top: -3vh;
+  width: 0.28vw;
+  height: 1.1vh;
+  background: #e6c36e;
+  opacity: 0;
+  animation: victory-fall 5s var(--delay) ease-out both;
+}
+.victory-sparkles i:nth-child(3n) {
+  background: #82b59b;
+  width: 0.2vw;
+  height: 0.7vh;
+}
+@keyframes victory-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(var(--turn));
+  }
+  12% {
+    opacity: 0.65;
+  }
+  75% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(65vh) rotate(calc(var(--turn) + 200deg));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .victory-sparkles {
+    display: none !important;
+  }
+}

@@ -1,0 +1,13 @@
+[Unit]
+Description=NONZERO Concept2 PM5 Bluetooth fallback receiver
+After=default.target bluetooth.target
+
+[Service]
+Type=simple
+Environment=NONZERO_ERG_MACHINE=BikeErg
+ExecStart=/usr/bin/python3 %h/NONZERO-Pi/bin/pm5_ble_bridge.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

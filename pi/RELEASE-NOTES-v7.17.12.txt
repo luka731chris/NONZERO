@@ -1,0 +1,1 @@
+NONZERO v7.17.12: remove unnecessary 6h browser restarts; persist Chromium crash logs; preserve valid AutoPilot agenda and historical weight readings against incomplete cloud snapshots; phone-side weight cache refresh. No Cloudflare or pairing changes. Live data and hardware validation still required.

@@ -1,0 +1,8 @@
+NONZERO v7.17.9 - targeted audit fixes
+- Phone weekly totals now exclude unfinished sessions and deduplicate stable IDs, matching Pi.
+- Both phone and Pi handle completed status markers consistently for streak and weekly minutes.
+- Non-finite workout duration cannot corrupt weekly totals.
+- Phone command acknowledgment requires confirmed target ride state, not merely matching nonce.
+- Existing pairing recovery and ride isolation retained.
+- Historical data and Cloudflare Worker are not modified.
+Known limitations: hardware soak and actual data reconciliation remain unverified; duplicate physical sessions with distinct IDs are not automatically identified.

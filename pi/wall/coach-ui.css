@@ -1,0 +1,212 @@
+.coach-app {
+  --cg: #d8bb79;
+  --cm: #b5c6d2;
+  color: #edf2f6;
+  font:
+    16px system-ui,
+    -apple-system,
+    Segoe UI,
+    sans-serif;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 8px 0 30px;
+  line-height: 1.45;
+}
+.coach-app * {
+  box-sizing: border-box;
+}
+.coach-app h2 {
+  font-size: 24px;
+  margin: 0 0 12px;
+}
+.coach-app h3 {
+  font-size: 19px;
+  margin: 0 0 10px;
+}
+.coach-app p {
+  margin: 8px 0;
+  color: var(--cm);
+}
+.coach-app .cc-card {
+  margin: 14px 0;
+  padding: 18px;
+  background: #112432;
+  border: 1px solid #3c5564;
+  border-radius: 15px;
+  min-width: 0;
+}
+.coach-app .cc-hero {
+  border-color: #b29b65;
+  background: linear-gradient(115deg, #21352e, #102233);
+}
+.coach-app .cc-hero strong {
+  display: block;
+  font-size: 29px;
+  color: #f1d28b;
+  line-height: 1.15;
+}
+.coach-app .cc-kicker {
+  color: var(--cg);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.coach-app .cc-status {
+  font-size: 13px;
+  color: #a1dfc3;
+  min-height: 20px;
+  overflow-wrap: anywhere;
+}
+.coach-app .cc-status[data-pending='true'] {
+  color: #f1cc8b;
+}
+.coach-app label {
+  display: block;
+  margin: 12px 0;
+  color: #e6edf3;
+}
+.coach-app input:not([type='checkbox']),
+.coach-app select,
+.coach-app textarea {
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: #edf3f6;
+  background: #081924;
+  border: 1px solid #557382;
+  border-radius: 9px;
+  padding: 11px;
+  margin-top: 6px;
+  max-width: 100%;
+}
+.coach-app input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  accent-color: var(--cg);
+  margin: 0;
+}
+.coach-app .cc-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 44px;
+}
+.coach-app button {
+  min-height: 44px;
+  border: 1px solid #5a7381;
+  border-radius: 9px;
+  background: #243c4b;
+  color: #edf2f6;
+  font: 600 15px system-ui;
+  padding: 10px 13px;
+  cursor: pointer;
+}
+.coach-app button.primary {
+  background: var(--cg);
+  color: #0b202b;
+  border: 0;
+}
+.coach-app button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.coach-app .cc-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.coach-app .cc-row > label {
+  flex: 1;
+  min-width: 110px;
+}
+.coach-app small,
+.coach-app .cc-note {
+  font-size: 12px;
+  color: var(--cm);
+  line-height: 1.45;
+}
+.coach-app details > summary {
+  font-size: 20px;
+  font-weight: 650;
+  cursor: pointer;
+  min-height: 36px;
+}
+.coach-app .cc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.coach-app .cc-grid strong {
+  font-size: 21px;
+  display: block;
+  color: #f1d28b;
+}
+.coach-app .cc-history {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+}
+.coach-app .cc-history li {
+  border-top: 1px solid #38505c;
+  padding: 9px 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.coach-app .cc-history button {
+  float: right;
+  font-size: 12px;
+  min-height: 36px;
+  padding: 4px 8px;
+}
+.coach-app .cc-conflict {
+  border-color: #e1ad71;
+  background: #382a1a;
+}
+.coach-app .cc-step {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid #334c5c;
+  padding: 9px 0;
+}
+.coach-app .cc-step b {
+  color: #a6ddc5;
+}
+.coach-app a {
+  color: #dfc585;
+}
+.coach-app [hidden] {
+  display: none !important;
+}
+.coach-app .cc-chart {
+  display: block;
+  width: 100%;
+  height: 90px;
+}
+.coach-app .cc-chart text {
+  fill: #b9c8d0;
+  font-size: 11px;
+}
+.coach-app .cc-chart path {
+  fill: none;
+  stroke: #ddc185;
+  stroke-width: 3;
+}
+.coach-app .cc-chart circle {
+  fill: #ddc185;
+}
+@media (max-width: 430px) {
+  .coach-app .cc-card {
+    padding: 15px;
+  }
+  .coach-app .cc-hero strong {
+    font-size: 25px;
+  }
+  .coach-app .cc-grid {
+    grid-template-columns: 1fr;
+  }
+  .coach-app .cc-row > label {
+    min-width: 120px;
+  }
+}

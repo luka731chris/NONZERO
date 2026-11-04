@@ -1,0 +1,9 @@
+NONZERO v7.17.10 — deeper reliability audit
+
+1. Wall heartbeats every 15 seconds in Ambient and Performance, consistent with Worker 35-second freshness check.
+2. Phone requires fresh Wall health, matching nonce, requested view and requested scene before reporting success.
+3. Bundled phone HTML is byte-identical to standalone phone release; fixes a divergence where a nonce could incorrectly be treated as confirmed despite wrong view.
+4. Ride idle timeout setting takes effect immediately rather than only after reload.
+5. No changes to Cloudflare Worker deployment, pairing credentials or workout/weight data.
+
+Not hardware-certified: retain v7.17.5 rollback, and validate live PM5/GPU/network failure handling.

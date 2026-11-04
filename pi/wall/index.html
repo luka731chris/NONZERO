@@ -1,0 +1,739 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NONZERO Wall</title>
+    <link rel="stylesheet" href="nonzero-wall.css?v=7.17.3" />
+    <link rel="stylesheet" href="performance-lab.css?v=7.17.3" />
+    <link rel="stylesheet" href="ride.css?v=7.17.3" />
+    <link rel="stylesheet" href="victory-lap.css?v=7.17.3" />
+    <link rel="stylesheet" href="weight-journey.css?v=7.17.3" />
+    <link rel="stylesheet" href="connected-analytics.css?v=7.17.3" />
+    <link rel="stylesheet" href="goal-coach.css?v=7.17.3" />
+  <style>#rideEndNow{display:none}#performance.ride-enabled #rideEndNow{display:block}</style></head>
+  <body>
+    <div id="wall" class="wall">
+      <section id="ambient" class="mode ambient active">
+        <div class="sweep"></div>
+        <div class="victory-sparkles" aria-hidden="true">
+          <i style="--x: 5%; --delay: 0s; --turn: 0deg"></i
+          ><i style="--x: 10.6%; --delay: 0.16s; --turn: 47deg"></i
+          ><i style="--x: 16.2%; --delay: 0.32s; --turn: 94deg"></i
+          ><i style="--x: 21.8%; --delay: 0.48s; --turn: 141deg"></i
+          ><i style="--x: 27.4%; --delay: 0.64s; --turn: 188deg"></i
+          ><i style="--x: 33%; --delay: 0s; --turn: 235deg"></i
+          ><i style="--x: 38.6%; --delay: 0.16s; --turn: 282deg"></i
+          ><i style="--x: 44.2%; --delay: 0.32s; --turn: 329deg"></i
+          ><i style="--x: 49.8%; --delay: 0.48s; --turn: 376deg"></i
+          ><i style="--x: 55.4%; --delay: 0.64s; --turn: 423deg"></i
+          ><i style="--x: 61%; --delay: 0s; --turn: 470deg"></i
+          ><i style="--x: 66.6%; --delay: 0.16s; --turn: 517deg"></i
+          ><i style="--x: 72.2%; --delay: 0.32s; --turn: 564deg"></i
+          ><i style="--x: 77.8%; --delay: 0.48s; --turn: 611deg"></i
+          ><i style="--x: 83.4%; --delay: 0.64s; --turn: 658deg"></i
+          ><i style="--x: 89%; --delay: 0s; --turn: 705deg"></i
+          ><i style="--x: 94.6%; --delay: 0.16s; --turn: 752deg"></i>
+        </div>
+        <div class="header">
+          <img class="header-kb-premium" src="assets/nonzero-kettlebell-slash.png" alt="" />
+          <div class="brand">NONZERO</div>
+          <div id="ambientModePill" class="mode-pill">AMBIENT WALL</div>
+          <div id="cloudStatus" class="cloud">CLOUD · CONNECTING</div>
+          <img class="flag" src="assets/us-flag.png" />
+        </div>
+        <div id="mindset" class="mindset">
+          <div id="mindsetEyebrow" class="eyebrow">NONZERO MINDSET</div>
+          <div id="ambientQuote" class="quote">WELL DONE IS BETTER THAN WELL SAID.</div>
+          <div id="ambientAuthor" class="author">— BENJAMIN FRANKLIN</div>
+          <div class="divider"></div>
+        </div>
+        <div id="milestoneToast" class="milestone-toast" aria-live="polite"></div>
+        <section id="goalCoach" class="goal-coach" aria-label="Weight and recovery goal coach">
+          <div class="goal-coach-heading">
+            <span id="goalCoachPhase"
+              >PERSONAL GOAL · UNDER 220 BY NOV 20</span
+            ><strong id="goalCoachIdentity">WIN THE NEXT DECISION.</strong>
+          </div>
+          <div class="goal-coach-grid">
+            <div class="goal-coach-gap">
+              <strong id="goalGapValue">WEIGH IN</strong
+              ><b id="goalGapLabel">TO YOUR SUB-220 TARGET</b
+              ><span id="goalGapContext">Waiting for current weight.</span>
+              <div class="goal-road"><i id="goalRoadFill"></i></div>
+              <small id="goalRoadLabel">ROAD TO 185</small>
+            </div>
+            <div class="goal-coach-calories">
+              <strong id="goalCalorieValue">PLANNING</strong
+              ><b id="goalCalorieLabel">CALORIE TARGET</b
+              ><span id="goalCalorieNote">No measured deficit is inferred.</span>
+            </div>
+            <div class="goal-coach-action">
+              <b>YOUR NEXT MOVE</b
+              ><strong id="goalNextAction">Choose your next meal before hunger decides.</strong
+              ><span id="goalActionWhy"></span>
+              <div id="goalActionDots" class="goal-action-dots">
+                <i>○ PLAN THE MEAL</i><i>○ PROTEIN AT MEALS</i><i>○ SAFE MOVEMENT</i>
+              </div>
+            </div>
+          </div>
+          <div class="goal-coach-bottom">
+            <span id="goalStrengthSignal">PROTECT STRENGTH AS YOU LEAN DOWN</span
+            ><span id="goalActionProgress">0/3 ACTIONS LOGGED TODAY</span>
+          </div>
+        </section>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-label">CURRENT STREAK</div>
+            <div id="kpiStreak" class="kpi-value">0</div>
+            <div class="bar"><i id="streakBar" style="width: 0"></i></div>
+            <div id="streakContext" class="kpi-context">DAILY STREAK · NO ACTIVE CHAIN</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">THIS WEEK</div>
+            <div id="kpiWeek" class="kpi-value">0/7</div>
+            <div id="weekSegments" class="segments"></div>
+            <div id="weekContext" class="kpi-context">TODAY OPEN</div>
+          </div>
+          <div class="kpi minutes-kpi">
+            <div class="kpi-label">WEEKLY MINUTES</div>
+            <div id="kpiMinutes" class="kpi-value">0 / 160</div>
+            <div class="bar goal-bar">
+              <i id="minutesBar" style="width: 0"></i
+              ><b class="goal-marker" aria-hidden="true"><span>160</span></b>
+            </div>
+            <div id="minutesContext" class="kpi-context">160 MIN WEEKLY TARGET</div>
+          </div>
+          <div class="kpi readiness-kpi weight-readiness-kpi">
+            <div class="weight-readiness-head">
+              <span class="kpi-label">WEIGHT PROGRESS</span
+              ><span id="surgeryLabel" class="kpi-label">SURGERY · NOV 20</span>
+            </div>
+            <div class="weight-readiness-values">
+              <div>
+                <strong id="weightKpiValue">—</strong
+                ><span id="weightKpiBasis">7-DAY AVG · LB</span>
+              </div>
+              <div>
+                <strong id="surgeryDays">— DAYS</strong
+                ><span id="weightSurgeryGoal">GOAL · BELOW 220 LB</span>
+              </div>
+            </div>
+            <div
+              id="weightProgressRail"
+              class="weight-progress-rail"
+              role="progressbar"
+              aria-label="Progress toward 185 pounds"
+              aria-valuemin="0"
+              aria-valuemax="42.1"
+              aria-valuenow="0"
+            >
+              <i id="weightProgressFill"></i><b></b><b></b><b></b><b></b>
+            </div>
+            <div class="weight-readiness-context">
+              <span id="weightLostContext">ADD A DATED WEIGHT</span
+              ><span id="weightNextContext">ROAD TO 185</span>
+            </div>
+            <span id="surgeryWeight" hidden></span><span id="surgeryContext" hidden></span>
+            <div id="wallWeightTrend" hidden></div>
+            <span id="kpi30" hidden></span><span id="completionBar" hidden></span
+            ><span id="completionContext" hidden></span>
+          </div>
+        </div>
+        <div class="lower">
+          <div class="panel">
+            <div class="panel-title-row">
+              <div class="panel-title">AUTOPILOT</div>
+              <div id="agendaStatus" class="panel-state">READY</div>
+            </div>
+            <div id="agendaRows"></div>
+          </div>
+          <div class="panel accent">
+            <div class="panel-title-row">
+              <div id="todayTitle" class="panel-title today-title">TODAY · WORKOUT</div>
+              <div id="workoutStatus" class="panel-state">READY</div>
+            </div>
+            <div id="todayDetail" class="today-detail">Reading canonical NONZERO state.</div>
+            <div id="todayChecks"></div>
+          </div>
+        </div>
+        <div class="footer">
+          <a
+            id="goalCoachOpen"
+            class="goal-coach-open"
+            href="https://luka731chris.github.io/NONZERO/#check-in"
+            ><img
+              src="/api/coaching/qr.svg"
+              alt="Scan to open check-in in the Nonzero phone app"
+            /><span id="coachApiStatus">SCAN FOR A 20-SECOND CHECK-IN</span></a
+          >
+          <div id="connectedAmbient" class="connected-ambient">
+            <div>
+              <small>RECORDED RIDING · THIS WEEK</small><strong id="ambientRideMinutes">—</strong
+              ><span id="ambientRideContext">Waiting for ride history</span>
+            </div>
+            <div>
+              <small id="ambientRideProgressLabel">BEST RECORDED 5 MIN</small
+              ><strong id="ambientRideProgress">BUILDING HISTORY</strong
+              ><svg
+                viewBox="0 0 130 32"
+                aria-label="Recent ride average power; durations may differ"
+              >
+                <polyline id="ambientRideSpark" points="" />
+              </svg>
+            </div>
+            <div>
+              <small>NEXT WEIGHT MILESTONE</small
+              ><strong id="ambientWeightTarget">ADD WEIGHT</strong
+              ><span id="ambientWeightContext">Recent weight needed</span>
+            </div>
+          </div>
+          <div class="tray">
+            <div id="wifi" class="wifi-indicator unpaired">
+              <img src="assets/wifi-windows-tray.svg" alt="Wi-Fi" /><i></i>
+            </div>
+            <div>
+              <div id="footerClock" class="tray-clock">--:--</div>
+              <div id="footerDate" class="tray-date">---</div>
+            </div>
+          </div>
+          <div class="footer-brand">
+            <div class="skyline-stack">
+              <img class="skyline deep" src="assets/lukalab-skyline-deep-shadow.png" /><img
+                class="skyline bevel"
+                src="assets/lukalab-skyline-bevel-shadow.png"
+              /><img class="skyline main" src="assets/lukalab-skyline-v622-tight.png" /><img
+                class="skyline highlight"
+                src="assets/lukalab-skyline-v622-highlight.png"
+              />
+            </div>
+            <div class="lukalab">
+              <strong>LukaLab AI Creative</strong><span>PITTSBURGH · AI PRODUCT STUDIO</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="performance" class="mode performance">
+        <button id="rideEndNow" type="button" class="ride-view-button" style="position:absolute;right:1rem;bottom:5rem;z-index:100" aria-label="End immersive ride and return to cockpit">END RIDE NOW</button>
+        <button id="rideViewButton" hidden class="ride-view-button" aria-pressed="true">
+          METRICS VIEW
+        </button>
+        <div class="ride-stage">
+          <canvas
+            id="rideCanvas"
+            aria-label="Continuous rendered ride scenery. Waypoints follow PM5 distance."
+          ></canvas>
+          <div class="ride-top">
+            <div>
+              <div class="ride-kicker">NONZERO · RIDE</div>
+              <h1 id="rideWorld">PACIFIC COAST</h1>
+              <span id="rideResolution"></span>
+              <div id="ridePhotoCredit" class="ride-photo-credit"></div>
+            </div>
+            <div class="ride-destination">
+              <small>NEXT DESTINATION</small>
+              <h2 id="rideLandmark">LIGHTHOUSE POINT</h2>
+              <span id="rideLandmarkDetail">PEDAL TO EXPLORE</span>
+            </div>
+          </div>
+          <div class="ride-bottom">
+            <div id="rideCoachPhase" class="ride-coach-phase">LIVE COACH</div>
+            <div class="ride-cue" id="rideCoach">Find your rhythm. Follow the road.</div>
+            <div id="rideProgressInsight" class="ride-progress-insight"></div>
+            <div id="rideDataState" class="ride-data-state">PM5 · WAITING FOR DATA</div>
+            <div class="ride-stats">
+              <div>
+                <span>POWER · WATTS</span><strong id="rideWatts">—</strong
+                ><small id="ridePowerTarget">TARGET · CALIBRATING</small>
+              </div>
+              <div>
+                <span>CADENCE · RPM</span><strong id="rideCadence">—</strong
+                ><small id="rideCadenceTarget">TARGET · CALIBRATING</small>
+              </div>
+              <div>
+                <span>HEART RATE · BPM</span><strong id="rideHeart">—</strong
+                ><small id="rideHeartTarget">HEART RATE · MONITORING</small>
+              </div>
+              <div class="ride-clock">
+                <strong id="rideElapsed">00:00</strong><span>ELAPSED</span>
+              </div>
+            </div>
+            <div class="ride-controls">
+              <button id="rideSceneButton">CHANGE SCENE</button
+              ><button id="rideMusicButton" aria-pressed="false">ENABLE LOCAL SCORE</button
+              ><label
+                >VOLUME
+                <input
+                  id="rideVolume"
+                  type="range"
+                  min="0"
+                  max="70"
+                  step="1"
+                  aria-label="Local score volume" /></label
+              ><button id="rideClockButton" aria-pressed="false">SHOW CLOCK</button>
+              <div class="ride-music-caption">
+                <span id="rideSoundTheme"></span><span id="rideMusicState">LOCAL SCORE · OFF</span
+                ><span id="rideBpm">100 BPM</span
+                ><small>ORIGINAL INSTRUMENTAL · NO STREAMING SERVICE</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="header">
+          <img class="header-kb-premium" src="assets/nonzero-kettlebell-slash.png" alt="" />
+          <div class="brand">NONZERO</div>
+          <div class="mode-pill">PERFORMANCE LAB</div>
+          <div id="perfCloud" class="cloud">CLOUD · LIVE</div>
+          <img class="flag" src="assets/us-flag.png" />
+        </div>
+        <div class="perf-grid">
+          <div class="perf-panel left">
+            <div class="perf-top">
+              <div class="perf-eyebrow">TODAY · NONZERO DAY</div>
+              <div id="perfBadge" class="badge">READY</div>
+            </div>
+            <div id="perfSession" class="session">CONNECTING…</div>
+            <div id="perfWhy" class="why">Reading shared NONZERO state.</div>
+            <div id="coachStrip" class="coach-strip">
+              <span>COACH</span><strong id="coachCue">START WITH INTENT</strong
+              ><em id="finishProjection"></em>
+            </div>
+            <div class="section-label">CURRENT</div>
+            <div id="currentMove" class="current">READY TO START</div>
+            <div id="currentDetail" class="detail">Your only obligation is to start.</div>
+            <div class="section-label">NEXT UP</div>
+            <div id="nextMove" class="next">—</div>
+            <div id="connectedCockpit" class="connected-cockpit" data-state="waiting">
+              <div class="connected-heading">
+                <span>YOUR PROGRESS</span><b id="connectedStatus">CONNECTING TO RECORDER</b>
+              </div>
+              <div class="connected-comparison">
+                <strong id="connectedCompare">BUILD YOUR BASELINE</strong
+                ><small id="connectedCompareContext"
+                  >A comparison needs a prior ride of similar duration.</small
+                >
+              </div>
+              <div class="connected-detail">
+                <span>PERSONAL BENCHMARK</span
+                ><strong id="connectedRecord">NO PRIOR BENCHMARK</strong
+                ><small id="connectedRecordContext">Recorded rides build your baseline.</small>
+              </div>
+              <div class="connected-detail">
+                <span id="connectedEfficiencyLabel">EFFICIENCY</span
+                ><strong id="connectedEfficiency">HR OR WEIGHT NEEDED</strong
+                ><small id="connectedEfficiencyContext">Missing data stays missing.</small>
+              </div>
+              <div id="connectedZones" class="connected-zones" role="img">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <small id="connectedZonesContext">POWER ZONES · SET YOUR FTP IN ANALYTICS</small>
+              <p id="coachPerformance" class="coach-performance"></p>
+              <small id="connectedPacing" class="connected-pacing"
+                >PACE PROJECTIONS NEED LIVE DATA</small
+              ><small id="connectedQuality" class="connected-quality"
+                >Waiting for recorded samples.</small
+              >
+            </div>
+          </div>
+          <div class="perf-panel live-panel cockpit">
+            <div class="cockpit-top">
+              <div>
+                <div class="perf-eyebrow">LIVE PERFORMANCE</div>
+                <div class="cockpit-clock">
+                  <span id="liveTimer" class="timer">00:00</span
+                  ><span id="motivation" class="motivation">KEEP PUSHING</span>
+                </div>
+              </div>
+              <div id="pm5Status" class="pm5-status">PM5 · STANDBY</div>
+            </div>
+            <div id="rest" class="rest">
+              <span>RECOVER</span><strong id="restClock">01:30</strong><span id="restNext"></span>
+            </div>
+            <div id="telemetry" class="telemetry cockpit-dash">
+              <div class="dial power-dial">
+                <small>POWER</small
+                ><svg viewBox="0 0 240 165" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="powerArc" x1="0" x2="1">
+                      <stop offset="0" stop-color="#4fd89b" />
+                      <stop offset=".55" stop-color="#f1c45f" />
+                      <stop offset="1" stop-color="#e66a52" />
+                    </linearGradient>
+                  </defs>
+                  <path class="dial-track" pathLength="100" d="M30 140 A90 90 0 0 1 210 140" />
+                  <path
+                    id="powerGauge"
+                    class="dial-fill"
+                    pathLength="100"
+                    d="M30 140 A90 90 0 0 1 210 140"
+                  />
+                  <path id="powerGoalArc" class="dial-goal-arc" d="" />
+                  <path id="powerGoalTicks" class="dial-goal-ticks" d="" />
+                  <g class="ticks">
+                    <path
+                      d="M30 140l10-3M46 90l9 5M78 55l5 9M120 44v11M162 55l-5 9M194 90l-9 5M210 140l-10-3"
+                    />
+                  </g>
+                </svg>
+                <div class="dial-readout">
+                  <strong id="watts">—</strong><span>WATTS</span><em id="powerZone">READY</em>
+                </div>
+              </div>
+              <div class="dial cadence-dial">
+                <small>CADENCE</small
+                ><svg viewBox="0 0 240 165" aria-hidden="true">
+                  <path class="dial-track" pathLength="100" d="M30 140 A90 90 0 0 1 210 140" />
+                  <path
+                    id="cadenceGauge"
+                    class="dial-fill"
+                    pathLength="100"
+                    d="M30 140 A90 90 0 0 1 210 140"
+                  />
+                  <path id="cadenceGoalArc" class="dial-goal-arc" d="" />
+                  <path id="cadenceGoalTicks" class="dial-goal-ticks" d="" />
+                  <g class="ticks">
+                    <path
+                      d="M30 140l10-3M46 90l9 5M78 55l5 9M120 44v11M162 55l-5 9M194 90l-9 5M210 140l-10-3"
+                    />
+                  </g>
+                </svg>
+                <div class="dial-readout">
+                  <strong id="rpm">—</strong><span id="cadenceUnit">RPM</span
+                  ><em id="cadenceZone">READY</em>
+                </div>
+              </div>
+              <div class="trend-panel goal-charts">
+                <div class="target-chart power-chart" id="powerTargetChart">
+                  <div class="target-chart-head">
+                    <b>POWER</b><span id="powerGoalLabel">GOAL NOT SET</span>
+                  </div>
+                  <div class="target-chart-plot">
+                    <div class="plot-scale">
+                      <b id="powerScaleTop">— W</b><span id="powerScaleMid">—</span><span>0</span>
+                    </div>
+                    <svg
+                      id="effortGraph"
+                      viewBox="0 0 800 150"
+                      preserveAspectRatio="none"
+                      role="img"
+                      aria-label="Live power over 60 seconds with target range"
+                    >
+                      <defs>
+                        <linearGradient id="labArea" x1="0" y1="0" x2="0" y2="1">
+                          <stop stop-color="#49e2ff" stop-opacity=".22" />
+                          <stop offset="1" stop-color="#49e2ff" stop-opacity=".01" />
+                        </linearGradient>
+                      </defs>
+                      <g class="graph-grid">
+                        <path d="M0 10H800M0 77.5H800M0 145H800M200 10V145M400 10V145M600 10V145" />
+                      </g>
+                      <rect
+                        id="powerTargetBand"
+                        class="target-band"
+                        x="0"
+                        y="145"
+                        width="800"
+                        height="0"
+                      />
+                      <path id="powerTargetLow" class="target-boundary" d="" />
+                      <path id="powerTargetHigh" class="target-boundary" d="" />
+                      <path id="powerArea" fill="url(#labArea)" />
+                      <path id="powerTrace" class="power-trace" d="" />
+                      <circle
+                        id="powerLiveDot"
+                        class="target-live-dot"
+                        r="4"
+                        cx="800"
+                        cy="145"
+                        visibility="hidden"
+                      />
+                    </svg>
+                  </div>
+                  <div class="target-chart-footer">
+                    <span>−60s</span><b id="powerGoalStatus">WAITING FOR DATA</b><span>NOW</span>
+                  </div>
+                </div>
+                <div class="target-chart heart-chart" id="heartTargetChart">
+                  <div class="target-chart-head">
+                    <b>HEART RATE</b><span id="heartGoalLabel">GOAL NOT SET</span>
+                  </div>
+                  <div class="target-chart-plot">
+                    <div class="plot-scale">
+                      <b id="heartScaleTop">— BPM</b><span id="heartScaleMid">—</span><span>0</span>
+                    </div>
+                    <svg
+                      id="heartGraph"
+                      viewBox="0 0 800 150"
+                      preserveAspectRatio="none"
+                      role="img"
+                      aria-label="Live heart rate over 60 seconds with target range"
+                    >
+                      <g class="graph-grid">
+                        <path d="M0 10H800M0 77.5H800M0 145H800M200 10V145M400 10V145M600 10V145" />
+                      </g>
+                      <rect
+                        id="heartTargetBand"
+                        class="target-band"
+                        x="0"
+                        y="145"
+                        width="800"
+                        height="0"
+                      />
+                      <path id="heartTargetLow" class="target-boundary" d="" />
+                      <path id="heartTargetHigh" class="target-boundary" d="" />
+                      <path id="heartTrace" class="heart-trace" d="" />
+                      <circle
+                        id="heartLiveDot"
+                        class="target-live-dot"
+                        r="4"
+                        cx="800"
+                        cy="145"
+                        visibility="hidden"
+                      />
+                    </svg>
+                  </div>
+                  <div class="target-chart-footer">
+                    <span>−60s</span><b id="heartGoalStatus">WAITING FOR DATA</b><span>NOW</span>
+                  </div>
+                </div>
+                <div class="target-chart cadence-chart" id="cadenceTargetChart">
+                  <div class="target-chart-head">
+                    <b>CADENCE</b><span id="cadenceGoalLabel">GOAL NOT SET</span>
+                  </div>
+                  <div class="target-chart-plot">
+                    <div class="plot-scale">
+                      <b id="cadenceScaleTop">— RPM</b><span id="cadenceScaleMid">—</span
+                      ><span>0</span>
+                    </div>
+                    <svg
+                      id="cadenceGraph"
+                      viewBox="0 0 800 150"
+                      preserveAspectRatio="none"
+                      role="img"
+                      aria-label="Live cadence over 60 seconds with target range"
+                    >
+                      <g class="graph-grid">
+                        <path d="M0 10H800M0 77.5H800M0 145H800M200 10V145M400 10V145M600 10V145" />
+                      </g>
+                      <rect
+                        id="cadenceTargetBand"
+                        class="target-band"
+                        x="0"
+                        y="145"
+                        width="800"
+                        height="0"
+                      />
+                      <path id="cadenceTargetLow" class="target-boundary" d="" />
+                      <path id="cadenceTargetHigh" class="target-boundary" d="" />
+                      <path id="cadenceTrace" class="cadence-trace" d="" />
+                      <circle
+                        id="cadenceLiveDot"
+                        class="target-live-dot"
+                        r="4"
+                        cx="800"
+                        cy="145"
+                        visibility="hidden"
+                      />
+                    </svg>
+                  </div>
+                  <div class="target-chart-footer">
+                    <span>−60s</span><b id="cadenceGoalStatus">WAITING FOR DATA</b><span>NOW</span>
+                  </div>
+                </div>
+              </div>
+              <div class="micro pace-metric">
+                <small>PACE</small><strong id="pace">—</strong><span id="paceUnit">/1KM</span>
+                <div class="metric-rail"><i id="paceRail"></i></div>
+              </div>
+              <div class="micro distance-metric">
+                <small>DISTANCE</small><strong id="distance">—</strong><span>METERS</span>
+                <div class="metric-rail"><i id="distanceRail"></i></div>
+              </div>
+              <div class="micro calories-metric">
+                <small>OUTPUT</small><strong id="calories">—</strong><span>KCAL</span>
+                <div class="metric-rail"><i id="caloriesRail"></i></div>
+              </div>
+              <div class="micro hr-metric">
+                <small>HEART RATE</small><strong id="heartRate">—</strong><span>BPM</span>
+                <div id="labHrTarget" class="lab-hr-target">LIVE MONITORING</div>
+              </div>
+            </div>
+            <div id="wallLiveWeight" class="wj-live"></div>
+            <div class="analytics-ribbon">
+              <div class="analytics-title">
+                <span id="analyticsPage">SESSION INTELLIGENCE</span
+                ><em>PM5 DIRECT + NONZERO DERIVED</em>
+              </div>
+              <div class="analytics-cell">
+                <small id="metricLabel1">AVG POWER</small><strong id="metricValue1">—</strong>
+              </div>
+              <div class="analytics-cell">
+                <small id="metricLabel2">PEAK 30S</small><strong id="metricValue2">—</strong>
+              </div>
+              <div class="analytics-cell">
+                <small id="metricLabel3">WORK</small><strong id="metricValue3">—</strong>
+              </div>
+              <div class="analytics-cell">
+                <small id="metricLabel4">AVG SPEED</small><strong id="metricValue4">—</strong>
+              </div>
+              <div class="analytics-cell">
+                <small id="metricLabel5">CONSISTENCY</small><strong id="metricValue5">—</strong>
+              </div>
+            </div>
+            <div id="sessionInsight" class="session-insight">
+              PEDAL TO BEGIN · NONZERO WILL START AUTOMATICALLY
+            </div>
+            <div class="agenda-label cockpit-agenda-label">WORKOUT AGENDA</div>
+            <div id="perfAgenda" class="agenda cockpit-agenda"></div>
+          </div>
+        </div>
+        <div class="progress"><i id="perfProgress" style="width: 0"></i></div>
+        <div class="footer">
+          <div class="tray">
+            <div id="perfWifi" class="wifi-indicator unpaired">
+              <img src="assets/wifi-windows-tray.svg" alt="Wi-Fi" /><i></i>
+            </div>
+            <div>
+              <div id="perfFooterClock" class="tray-clock">--:--</div>
+              <div id="perfFooterDate" class="tray-date">---</div>
+            </div>
+          </div>
+          <div class="footer-brand">
+            <div class="skyline-stack">
+              <img class="skyline deep" src="assets/lukalab-skyline-deep-shadow.png" /><img
+                class="skyline bevel"
+                src="assets/lukalab-skyline-bevel-shadow.png"
+              /><img class="skyline main" src="assets/lukalab-skyline-v622-tight.png" /><img
+                class="skyline highlight"
+                src="assets/lukalab-skyline-v622-highlight.png"
+              />
+            </div>
+            <div class="lukalab">
+              <strong>LukaLab AI Creative</strong><span>PITTSBURGH · AI PRODUCT STUDIO</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="night" class="mode night">
+        <div class="night-top">
+          <div class="night-brand">NONZERO · NIGHT</div>
+          <div id="nightDate" class="night-date"></div>
+          <img
+            class="flag-small"
+            src="assets/us-flag.png"
+            style="position: absolute; right: 0; top: 4vh"
+          />
+        </div>
+        <div id="nightClock" class="night-clock">--:--</div>
+        <div id="nightQuote" class="night-quote"></div>
+        <div id="nightAuthor" class="night-author"></div>
+        <div id="dayClosure" class="day-closure"></div>
+      </section>
+      <section id="deep" class="mode deep">
+        <div class="deep-status">
+          <div id="deepClock" class="deep-clock">--:--</div>
+          <div id="deepDate" class="deep-date"></div>
+          <div class="deep-label">NONZERO · PANEL PROTECT · AUTO WAKE 6:00 AM</div>
+        </div>
+      </section>
+
+      <aside id="phoneRemote" hidden aria-label="Phone Wall controls">
+        <img id="phoneRemoteQR" alt="Scan to control this Wall" />
+        <div>
+          <strong>PHONE WALL CONTROLS</strong><span id="phoneRemoteURL"></span
+          ><span>Access code <b id="phoneRemoteCode"></b></span
+          ><small>Same Wi-Fi · scan with phone camera</small>
+        </div>
+      </aside>
+      <div id="setupOverlay" class="overlay">
+        <div class="dialog">
+          <h2>NONZERO Pi Wall Setup</h2>
+          <p>
+            <a href="analytics.html" style="color: #d6b961">OPEN PERFORMANCE ANALYTICS</a> ·
+            <a href="route-credits.html" style="color: #d6b961">PHOTO CREDITS</a>
+          </p>
+          <p>
+            Pair this Pi to the same NONZERO cloud state. Generate a six-digit Wall code from the
+            phone app, enter it below, and press Pair.
+          </p>
+          <h3>Live coaching targets</h3>
+          <p>
+            Set the ride calorie or intensity goal in the NONZERO phone app. Targets adjust
+            automatically. Manual ranges below are a fallback for older phones.
+          </p>
+          <label>Power minimum / maximum (watts, optional)</label
+          ><input
+            id="powerMin"
+            type="number"
+            min="0"
+            max="3000"
+            placeholder="No power goal"
+          /><input
+            id="powerMax"
+            type="number"
+            min="0"
+            max="3000"
+            placeholder="No power goal"
+          /><label>Cadence minimum / maximum (RPM)</label
+          ><input id="cadenceMin" type="number" min="3" max="200" /><input
+            id="cadenceMax"
+            type="number"
+            min="3"
+            max="200"
+          /><label>Heart-rate minimum / maximum (BPM, optional)</label
+          ><input id="hrMin" type="number" min="0" max="240" /><input
+            id="hrMax"
+            type="number"
+            min="0"
+            max="240"
+          /><button id="saveCoachTargets">SAVE COACHING TARGETS</button
+          ><label>Worker endpoint</label><input id="endpointInput" /><label
+            >Six-digit pairing code</label
+          ><input id="pairCode" inputmode="numeric" maxlength="6" placeholder="123456" />
+          <div>
+            <button id="pairButton" class="primary">PAIR WALL</button
+            ><button id="closeSetup">CLOSE</button><button id="clearPair">CLEAR PAIRING</button>
+          </div>
+          <div id="setupStatus" class="statusline"></div>
+          <p>
+            Keyboard: F2/S = setup · A = Ambient · P = Performance · N = Night · D = Deep · Esc =
+            resume schedule · ↑/↓ quote preference · → next quote.
+          </p>
+        </div>
+      </div>
+      <div id="healthOverlay" class="overlay">
+        <div class="dialog">
+          <h2>NONZERO Appliance Health</h2>
+          <div id="healthText" class="statusline"></div>
+          <button id="closeHealth">CLOSE</button>
+        </div>
+      </div>
+    </div>
+    <script src="agenda-labels.js?v=7.17.3"></script>
+    <script src="quote-catalog.js?v=7.17.3"></script>
+    <script src="day-mood.js?v=7.17.3"></script>
+    <script src="quote-rotation.js?v=7.17.3"></script>
+    <script src="route-catalog.js?v=7.17.3"></script>
+    <script src="photo-routes.js?v=7.17.3"></script>
+
+    <script src="ride-scenery.js?v=7.17.3"></script>
+    <script src="ride-engine.js?v=7.17.6"></script>
+    <script src="goal-engine.js?v=7.17.3"></script>
+    <script src="weight-journey.js?v=7.17.3"></script>
+    <script src="readiness.js?v=7.17.3"></script>
+    <script src="workout-policy.js?v=7.17.3"></script>
+    <script src="connected-core.js?v=7.17.3"></script>
+    <script src="connected-analytics.js?v=7.17.3"></script>
+    <script src="coach-protocol.js?v=7.17.3"></script>
+    <script src="goal-coach-core.js?v=7.17.3"></script>
+    <script src="coach-insights.js?v=7.17.3"></script>
+    <script src="coach-bridge.js?v=7.17.3"></script>
+    <script src="goal-coach.js?v=7.17.3"></script>
+    <script src="pm5-reconcile.js?v=7.17.3"></script>
+    <script src="pairing-recovery.js?v=7.17.5"></script>
+    <script src="app.js?v=7.17.3"></script>
+    <script src="metrics-sync.js?v=7.17.3"></script>
+  </body>
+</html>

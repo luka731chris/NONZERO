@@ -1,0 +1,10 @@
+NONZERO v7.17.14 - Crash Diagnostics + Nutrition Quick Log
+Pi: read-only 30-second Chromium health sampler installed as a user service.
+Outputs: ~/.local/state/nonzero/diagnostics/latest-report.txt and health.jsonl
+Sampler does not restart browser, change Chromium flags, or touch data.
+Immersive graphics remain disabled as in v7.17.13.
+Phone: includes v7.17.15 Nutrition Quick Log / meal logging interface.
+IMPORTANT: Phone nutrition entries are stored in browser localStorage; they are NOT
+automatically synchronized to the Pi or Cloudflare by this release.
+The new phone HTML must be separately published to the phone app host.
+This is a diagnostic release, not a proven fix for Chromium renderer crashes.

@@ -1,0 +1,93 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  background: #0a1120;
+  color: #f2f4f8;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 620px;
+  padding: 28px 20px 48px;
+  margin: auto;
+}
+small {
+  color: #d6b961;
+  letter-spacing: 0.14em;
+}
+h1 {
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 20px 0;
+}
+h2 {
+  font-size: 20px;
+  margin-top: 30px;
+}
+p {
+  line-height: 1.5;
+  color: #bac5d6;
+}
+label {
+  display: block;
+  font-size: 16px;
+}
+input,
+button {
+  font: inherit;
+  border-radius: 12px;
+  min-height: 50px;
+  padding: 12px;
+  border: 1px solid #3c4c65;
+}
+input {
+  width: 100%;
+  margin: 8px 0 12px;
+  background: #111d30;
+  color: white;
+}
+button {
+  background: #192b44;
+  color: white;
+  cursor: pointer;
+}
+form > button {
+  width: 100%;
+  background: #d6b961;
+  color: #101827;
+  font-weight: 700;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #d6b961;
+  outline-offset: 3px;
+}
+#status,
+#receipt {
+  color: #e7cc88;
+  min-height: 24px;
+}
+.note {
+  font-size: 13px;
+  margin-top: 32px;
+}
+#forget {
+  width: 100%;
+  margin-top: 24px;
+}
+[hidden] {
+  display: none !important;
+}

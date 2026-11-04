@@ -1,0 +1,264 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_LINK="$HOME/NONZERO-Pi"
+STATE_ROOT="$HOME/.local/share/nonzero"
+RELEASES="$STATE_ROOT/releases"
+PREVIOUS="$STATE_ROOT/previous"
+mkdir -p "$RELEASES" "$HOME/.config/systemd/user" "$HOME/.config/autostart" "$HOME/.local/bin"
+
+restart_wall(){
+  local units=(nonzero-web.service nonzero-watchdog.service nonzero-health-monitor.service)
+  if [[ -f "$APP_LINK/systemd/nonzero-pm5.service" ]]; then
+    units+=(nonzero-pm5.service)
+    if [[ -f "$APP_LINK/systemd/nonzero-pm5-ble.service" ]] && python3 -c "import bleak" >/dev/null 2>&1; then units+=(nonzero-pm5-ble.service); fi
+  else
+    systemctl --user disable --now nonzero-pm5.service >/dev/null 2>&1 || true
+  fi
+  systemctl --user daemon-reload
+  systemctl --user enable --now "${units[@]}" >/dev/null
+  systemctl --user restart "${units[@]}"
+  pkill -TERM -f 'chromium.*127.0.0.1:8787' 2>/dev/null || true
+}
+
+if [[ "${1:-}" == "--status" ]]; then
+  printf 'Current:  '; readlink -f "$APP_LINK" 2>/dev/null || printf 'not installed\n'
+  printf 'Previous: '; readlink -f "$PREVIOUS" 2>/dev/null || printf 'none\n'
+  systemctl --user --no-pager --full status nonzero-web.service nonzero-watchdog.service nonzero-pm5.service || true
+  exit 0
+fi
+
+if [[ "${1:-}" == "--rollback" ]]; then
+  [[ -L "$PREVIOUS" ]] || { echo "No rollback release is available."; exit 1; }
+  old="$(readlink -f "$APP_LINK")"; prior="$(readlink -f "$PREVIOUS")"
+  ln -sfn "$prior" "$STATE_ROOT/current.next"
+  mv -Tf "$STATE_ROOT/current.next" "$APP_LINK"
+  ln -sfn "$old" "$PREVIOUS"
+  cp "$APP_LINK/systemd/"*.service "$HOME/.config/systemd/user/"
+  restart_wall
+  echo "Rolled back to $(basename "$prior")."
+  exit 0
+fi
+
+SOURCE="${1:-}"
+if [[ -z "$SOURCE" || "$SOURCE" == "--latest" ]]; then
+ SOURCE="$(python3 - "$HOME" "$PWD" <<'NZ_SELECT_PY'
+"""Choose complete NONZERO Pi releases by embedded version, never filename or age."""
+from pathlib import Path, PurePosixPath
+import re, zipfile, sys, os
+REQUIRED=('wall/index.html','wall/app.js','bin/nonzero-update','bin/nonzero_server.py','bin/pm5_bridge.py','wall/readiness.js')
+def version_tuple(text):
+ m=re.fullmatch(r'NONZERO Pi Wall v(\d+)\.(\d+)\.(\d+)\s*',text)
+ return tuple(map(int,m.groups())) if m else None
+def release_info(path):
+ try:
+  with zipfile.ZipFile(path) as z:
+   names=set(z.namelist());versions=[n for n in names if PurePosixPath(n).name=='VERSION.txt' and len(PurePosixPath(n).parts)<=2]
+   if len(versions)!=1:return None
+   n=versions[0];info=z.getinfo(n)
+   if info.file_size>256:return None
+   version=version_tuple(z.read(n).decode());prefix=n[:-len('VERSION.txt')]
+   if version is None or any(prefix+x not in names for x in REQUIRED):return None
+   if any(PurePosixPath(n).is_absolute() or '..' in PurePosixPath(n).parts or '\\' in n for n in names):return None
+   return version,prefix
+ except (OSError,ValueError,UnicodeError,zipfile.BadZipFile,RuntimeError):return None
+
+def download_dirs(home,cwd):
+ dirs=[Path(home)/'Downloads',Path(cwd)]
+ config=Path(home)/'.config/user-dirs.dirs'
+ try:
+  m=re.search(r'^XDG_DOWNLOAD_DIR="([^"\n]+)"',config.read_text(),re.M)
+  if m:dirs.insert(0,Path(m[1].replace('$HOME',str(home))))
+ except OSError:pass
+ return list(dict.fromkeys(p.resolve() for p in dirs))
+def choose_release(dirs,required=None):
+ candidates=[]
+ for folder in dirs:
+  try:files=list(folder.iterdir())
+  except OSError:continue
+  for p in files:
+   if not p.is_file() or p.suffix.lower()!='.zip' or not re.search(r'nonzero[-_]pi',p.name,re.I):continue
+   info=release_info(p)
+   if info and (required is None or info[0]==required):candidates.append((info[0],p.stat().st_mtime_ns,str(p.resolve()),info[1]))
+ return max(candidates,default=None)
+
+home=Path(sys.argv[1]);selected=choose_release(download_dirs(home,sys.argv[2]))
+if not selected:
+ print('No complete NONZERO-Pi ZIP found. Download the full Pi update ZIP to Downloads.',file=sys.stderr);sys.exit(2)
+installed=None
+try:installed=version_tuple((home/'NONZERO-Pi/VERSION.txt').read_text())
+except OSError:pass
+if installed and selected[0]<=installed:
+ print('Already running v'+'.'.join(map(str,installed))+'. No newer complete release was found.',file=sys.stderr)
+else:
+ print('Selected v'+'.'.join(map(str,selected[0]))+' from '+selected[2],file=sys.stderr);print(selected[2])
+NZ_SELECT_PY
+ )"
+ [[ -n "$SOURCE" ]] || exit 0
+fi
+SOURCE="$(realpath "$SOURCE")"
+echo "Update source: $SOURCE"
+[[ -e "$SOURCE" ]] || { echo "Release not found: $SOURCE"; exit 2; }
+
+STAGE="$(mktemp -d "$STATE_ROOT/.stage.XXXXXX")"
+cleanup(){ rm -rf "$STAGE"; }
+trap cleanup EXIT
+if [[ -d "$SOURCE" ]]; then
+  cp -a "$SOURCE" "$STAGE/source"
+else
+  unzip -q "$SOURCE" -d "$STAGE/unpacked"
+  root="$(find "$STAGE/unpacked" -mindepth 1 -maxdepth 2 -type f -name VERSION.txt -printf '%h\n' | head -n1)"
+  [[ -n "$root" ]] || { echo "Invalid release: VERSION.txt missing."; exit 3; }
+  cp -a "$root" "$STAGE/source"
+fi
+
+SRC="$STAGE/source"
+VERSION="$(awk '/NONZERO Pi Wall v/{print $4; exit}' "$SRC/VERSION.txt")"
+[[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid release version: $VERSION"; exit 3; }
+if [[ -f "$APP_LINK/VERSION.txt" ]]; then
+ CURRENT_VERSION="$(awk '/NONZERO Pi Wall v/{print $4; exit}' "$APP_LINK/VERSION.txt")"
+ if python3 - "$CURRENT_VERSION" "$VERSION" <<'NZ_VERSION_PY'
+import sys,re
+values=[tuple(map(int,x[1:].split('.'))) if re.fullmatch(r'v\d+\.\d+\.\d+',x) else (0,0,0) for x in sys.argv[1:]]
+sys.exit(0 if values[0]>values[1] else 1)
+NZ_VERSION_PY
+ then
+  echo "Refusing older release $VERSION: $CURRENT_VERSION is installed. Run nonzero-update --latest, or --rollback for an intentional rollback."
+  exit 3
+ fi
+fi
+echo "Installing $VERSION"
+if [[ -f "$SRC/bin/pm5_ble_bridge.py" ]] && ! python3 -c "import bleak" >/dev/null 2>&1; then
+  sudo apt-get install -y python3-bleak bluez || { echo "Bluetooth dependencies could not be installed. USB remains available."; }
+fi
+for required in wall/ride-render-worker.js wall/ride-worker-view.js wall/immersive-ride.js wall/vendor/three.min.js bin/wall_remote.py wall/remote.html wall/remote.js wall/remote.css VERSION.txt wall/index.html wall/app.js wall/ride-engine.js wall/ride.css wall/nonzero-wall.css bin/nonzero_server.py bin/pm5_bridge.py bin/metrics.py bin/pm5_capture.py bin/goal_coach_store.py wall/goal-coach-core.js wall/goal-coach.js wall/goal-coach.css wall/coach.html wall/coach-protocol.js wall/coach-insights.js wall/coach-ui.js wall/coach-client.js wall/coach-local.js wall/coach-ui.css wall/coach-bridge.js wall/suite-core.js bin/coach_protocol.py bin/connection_monitor.py vendor/qrcode/main.py bin/connected_analytics.py wall/connected-core.js wall/connected-analytics.js wall/connected-analytics.css wall/analytics.html wall/metrics-ui.js wall/metrics-sync.js wall/metrics.css wall/goal-engine.js bin/kiosk-loop.sh bin/watchdog.sh systemd/nonzero-web.service systemd/nonzero-watchdog.service systemd/nonzero-pm5.service systemd/99-nonzero-concept2.rules vendor/pyrow/pyrow.py vendor/usb/core.py; do
+  [[ -f "$SRC/$required" ]] || { echo "Invalid release: missing $required"; exit 3; }
+done
+python3 -m py_compile "$SRC/bin/nonzero_server.py"
+python3 -m py_compile "$SRC/bin/pm5_bridge.py"
+python3 - "$SRC/wall/index.html" <<'PY'
+from html.parser import HTMLParser
+from pathlib import Path
+import sys
+class P(HTMLParser): pass
+p=P(); p.feed(Path(sys.argv[1]).read_text()); p.close()
+PY
+
+# Updates also need native libusb; vendored PyUSB alone is insufficient.
+if ! PYTHONPATH="$SRC/vendor" python3 -c 'import usb.backend.libusb1; assert usb.backend.libusb1.get_backend() is not None' 2>/dev/null; then
+  echo "Installing PM5 USB runtime..."
+  sudo apt-get install -y libusb-1.0-0
+fi
+
+if ! cmp -s "$SRC/systemd/99-nonzero-concept2.rules" /etc/udev/rules.d/99-nonzero-concept2.rules 2>/dev/null; then
+  echo "One-time PM5 USB permission setup (Pi password required)..."
+  sudo install -m 0644 "$SRC/systemd/99-nonzero-concept2.rules" /etc/udev/rules.d/99-nonzero-concept2.rules
+  sudo udevadm control --reload-rules
+  sudo udevadm trigger
+fi
+
+KIOSK_WAS_RUNNING=0
+if [[ -r "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/nonzero-wall/chromium.pid" ]]; then
+ oldpid=$(cat "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/nonzero-wall/chromium.pid" 2>/dev/null || true)
+ if [[ "$oldpid" =~ ^[0-9]+$ ]] && kill -0 "$oldpid" 2>/dev/null; then KIOSK_WAS_RUNNING=1; fi
+fi
+DEST="$RELEASES/$VERSION"
+
+NEW_DEST="$RELEASES/.${VERSION}.new"
+rm -rf "$NEW_DEST"
+cp -a "$SRC" "$NEW_DEST"
+find "$NEW_DEST/bin" -maxdepth 1 -type f \( -name '*.sh' -o -name 'nonzero-update' -o -name '*.py' \) -exec chmod 0755 {} +
+
+if [[ -e "$APP_LINK" && ! -L "$APP_LINK" ]]; then
+  LEGACY="$RELEASES/v6.0.0-soak-$(date +%Y%m%d-%H%M%S)"
+  mv "$APP_LINK" "$LEGACY"
+  ln -sfn "$LEGACY" "$PREVIOUS"
+elif [[ -L "$APP_LINK" ]]; then
+  CURRENT="$(readlink -f "$APP_LINK")"
+  [[ "$CURRENT" != "$DEST" ]] && ln -sfn "$CURRENT" "$PREVIOUS"
+fi
+
+rm -rf "$DEST"
+mv "$NEW_DEST" "$DEST"
+ln -sfn "$DEST" "$STATE_ROOT/current.next"
+mv -Tf "$STATE_ROOT/current.next" "$APP_LINK"
+install -m 0755 "$DEST/bin/nonzero-update" "$HOME/.local/bin/nonzero-update"
+cp "$DEST/systemd/"*.service "$HOME/.config/systemd/user/"
+cat > "$HOME/.config/autostart/nonzero-wall.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=NONZERO Wall
+Comment=NONZERO Pi kiosk
+Exec=$HOME/NONZERO-Pi/bin/launch-nonzero.sh
+Terminal=false
+X-GNOME-Autostart-enabled=true
+EOF
+loginctl enable-linger "${USER:-$(id -un)}" 2>/dev/null || true
+# If kiosk was running before deployment, require browser return after update.
+restart_wall
+
+ok=0
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  if curl --max-time 3 -fsS http://127.0.0.1:8787/api/health | python3 -c 'import json,sys; p=json.load(sys.stdin); sys.exit(0 if p.get("ok") is True and str(p.get("version"))==sys.argv[1] else 1)' "${VERSION#v}" 2>/dev/null; then ok=1; break; fi
+  echo "Waiting for the wall server to report $VERSION ($_/10)..."
+  sleep 1
+done
+if [[ "$ok" != 1 ]]; then
+  echo "Wall did not report the expected version $VERSION; automatically rolling back."
+  [[ -L "$PREVIOUS" ]] && "$HOME/.local/bin/nonzero-update" --rollback
+  exit 4
+fi
+echo "Checking Titanium observer..."
+observer_ok=0
+for _ in 1 2 3 4 5 6; do
+ if systemctl --user is-active --quiet nonzero-health-monitor.service; then observer_ok=1; break; fi
+ sleep 2
+done
+if [[ "$observer_ok" != 1 ]]; then
+ echo "ERROR: Titanium observer did not start; rolling back."
+ [[ -L "$PREVIOUS" ]] && "$HOME/.local/bin/nonzero-update" --rollback || true
+ exit 5
+fi
+sample_ok=0
+for _ in $(seq 1 12); do
+ if python3 - "$HOME/.local/state/nonzero/diagnostics/health.jsonl" "${VERSION#v}" <<'PY_VERIFY_OBSERVER'
+import json,sys,datetime
+try:
+ with open(sys.argv[1], 'rb') as f:
+  f.seek(0,2);end=f.tell();f.seek(max(0,end-100000));lines=f.read().splitlines()
+ data=json.loads(lines[-1]); ts=datetime.datetime.fromisoformat(data['ts'])
+ age=(datetime.datetime.now(datetime.timezone.utc)-ts).total_seconds()
+ assert data.get('observerRelease')==sys.argv[2] and -5 <= age <= 25
+except (OSError,ValueError,IndexError,KeyError,AssertionError):sys.exit(1)
+PY_VERIFY_OBSERVER
+ then sample_ok=1; break; fi
+ sleep 2
+done
+if [[ "$sample_ok" != 1 ]]; then
+ echo "ERROR: Titanium observer did not produce a fresh sample for $VERSION; rolling back."
+ [[ -L "$PREVIOUS" ]] && "$HOME/.local/bin/nonzero-update" --rollback || true
+ exit 6
+fi
+echo "Titanium observer active with fresh telemetry."
+# Browser heartbeat is best-effort: kiosk may not have launched yet in headless SSH sessions.
+if [[ -f "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/nonzero-wall/heartbeat.json" ]]; then
+ echo "Kiosk heartbeat present."
+else
+ echo "NOTICE: Kiosk heartbeat not yet present; verify screen on next display session."
+fi
+if [[ "$KIOSK_WAS_RUNNING" == 1 ]]; then
+ echo "Verifying Chromium kiosk has relaunched..."
+ kiosk_ok=0
+ for _ in $(seq 1 20); do
+  newpid=$(cat "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/nonzero-wall/chromium.pid" 2>/dev/null || true)
+  if [[ "$newpid" =~ ^[0-9]+$ ]] && kill -0 "$newpid" 2>/dev/null && \
+     tr '\0' ' ' < "/proc/$newpid/cmdline" 2>/dev/null | grep -q '127.0.0.1:8787'; then kiosk_ok=1; break; fi
+  sleep 2
+ done
+ if [[ "$kiosk_ok" != 1 ]]; then
+  echo "ERROR: Chromium kiosk did not return; rolling back."
+  [[ -L "$PREVIOUS" ]] && "$HOME/.local/bin/nonzero-update" --rollback || true
+  exit 7
+ fi
+fi
+echo "Updated to $VERSION. Pairing and browser settings preserved."

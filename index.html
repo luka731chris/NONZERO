@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.19.0 · Intelligent Training</title>
+    <title>NONZERO v7.19.3 · Addition by Subtraction UX Candidate</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.19.0</small></span>
+            <span class="flowBrand">NONZERO <small>v7.19.2 UX</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -17123,6 +17123,214 @@ async function analyze(){if(busy)return;const text=$('nzConvText').value.trim();
 function saveAll(){if(busy||!draft.length)return;const items=draft.map(x=>({...x}));if(items.some(x=>!x.name||['cal','protein','carbs','fat'].some(k=>!Number.isFinite(Number(x[k]))||x[k]===''))){$('nzConvStatus').textContent='Review all names and macros before saving.';return}const add=$('nzAddFood');if(!add){$('nzConvStatus').textContent='Nutrition logger unavailable.';return}busy=true;let count=0;for(const f of items){const day=$('nzDay');if(!day.value)day.value=today();$('nzName').value=f.name;$('nzMeal').value=f.meal;$('nzServings').value='1';for(const k of ['cal','protein','carbs','fat','fiber'])$('nz'+k[0].toUpperCase()+k.slice(1)).value=f[k]??'';$('nzSource').value='estimate';const before=(read().entries||[]).length;add.click();const after=(read().entries||[]).length;if(after!==before+1){$('nzConvStatus').textContent=`Saved ${count} of ${items.length}. Check your food log before retrying to avoid duplicates.`;busy=false;return}count++}draft=[];renderDraft();$('nzConvText').value='';$('nzConvStatus').textContent=`Logged ${count} food items. Automatic cloud sync will follow.`;busy=false;renderHistory();}
 function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel||$('nzConversational'))return;const section=document.createElement('section');section.id='nzConversational';section.innerHTML=`<strong style="font-size:19px">Describe what you ate</strong><p class="nzConvNote">Type a sentence, full meal, or recipe. NONZERO estimates each food; review before logging.</p><textarea id="nzConvText" placeholder="e.g. Dinner: taco casserole, 2 servings Doritos, and half my protein cookie dough recipe"></textarea><div class="nzConvLine"><button type="button" class="nzConvPrimary" id="nzConvAnalyze">Analyze meal</button><button type="button" id="nzConvClear">Clear</button></div><div id="nzConvStatus" role="status"></div><div id="nzConvResults"></div><button type="button" class="nzConvPrimary" id="nzConvSave" hidden>Log all reviewed foods</button><hr><div id="nzConvHistory"></div>`;const quick=$('nzNutritionPlus')||$('nzFoodIntelligence')||panel.querySelector('h3');(quick||panel.firstElementChild).before(section);$('nzConvAnalyze').onclick=analyze;$('nzConvClear').onclick=()=>{$('nzConvText').value='';draft=[];renderDraft();$('nzConvStatus').textContent='';};$('nzConvSave').onclick=saveAll;$('nzConvResults').addEventListener('input',e=>{const x=e.target,idx=Number(x.dataset.index),field=x.dataset.field;if(!draft[idx]||!field)return;draft[idx][field]=['cal','protein','carbs','fat','fiber'].includes(field)?(x.value===''?null:Number(x.value)):x.value});$('nzConvResults').addEventListener('change',e=>{const x=e.target;if(x.dataset.field==='meal'&&draft[Number(x.dataset.index)])draft[Number(x.dataset.index)].meal=x.value});$('nzConvResults').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){draft.splice(Number(b.dataset.remove),1);renderDraft()}});$('nzOpenNutrition')?.addEventListener('click',renderHistory);$('nzAddFood')?.addEventListener('click',()=>setTimeout(renderHistory,0));$('nzSaveTargets')?.addEventListener('click',renderHistory);window.addEventListener('nz-nutrition-cloud-rendered',renderHistory);window.addEventListener('nz-nutrition-local-saved',renderHistory);renderHistory();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+
+<!-- NONZERO 7.19.1: additive UI polish. Existing handlers, storage keys, and worker routes preserved. -->
+<style id="nzQuietUX">
+:root{--q-bg:#0b1b27;--q-card:#112838;--q-soft:#91a9b8;--q-line:rgba(170,203,214,.13);--q-lime:#9bd7bc;--q-amber:#ddc18c}
+#tabToday .todayLanding{max-width:740px;margin:auto}
+#tabToday .flowPlan{border-radius:22px!important;box-shadow:none!important}
+#tabToday .flowMotivation{opacity:.8;font-size:13px!important;letter-spacing:.02em}
+#tabToday #nzNutritionCard{border:1px solid var(--q-line)!important;border-radius:22px!important;background:var(--q-card)!important;padding:18px!important;margin:16px 0!important;box-shadow:none!important}
+#nzNutritionCard>.nzStats,#nzNutritionLast{display:none!important}
+.nzQHeader{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.nzQHeading{color:#c7d5dc;font-size:12px;letter-spacing:.10em;text-transform:uppercase;font-weight:750}
+.nzQAction{border:0!important;background:#d6ece2!important;color:#0c2b25!important;border-radius:999px!important;padding:10px 15px!important;white-space:nowrap}
+.nzQBig{font-size:clamp(28px,7vw,36px);line-height:1.05;letter-spacing:-.055em;font-weight:740;color:#f4f9fa;margin-top:16px}
+.nzQBig span{font-size:14px;font-weight:450;letter-spacing:0;color:var(--q-soft)}
+.nzQTrack{height:7px;background:#29404c;border-radius:99px;overflow:hidden;margin:12px 0 7px}
+.nzQFill{height:100%;background:#96d4b6;border-radius:99px;max-width:100%;transition:width .25s ease}
+.nzQFine{font-size:12px;color:#a5bac4;line-height:1.5}
+.nzQRow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px}
+.nzQMacro{flex:1;min-width:0}
+.nzQMacro b{display:block;font-size:16px;color:#f0f5f6;font-weight:690}.nzQMacro small{font-size:11px;color:#9eb4c1}
+.nzQMiniTrack{height:3px;border-radius:9px;background:#304452;overflow:hidden;margin-top:7px}.nzQMiniTrack i{display:block;height:100%;border-radius:9px;background:#8abacb}
+.nzQWeek{margin-top:17px;padding-top:12px;border-top:1px solid var(--q-line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.nzQWeek svg{max-width:135px;width:36%;height:30px}.nzQWeek span{font-size:12px;color:#b3c5ce}
+#nzNutritionModal{background:#091923!important}
+#nzNutritionModal .nzPanel{max-width:650px!important;padding:18px 17px 112px!important}
+#nzNutritionModal .nzPanel>.nzRow:first-child h2{font-size:21px!important;letter-spacing:-.035em}
+#nzNutritionModal .nzPanel>.nzRow:first-child{padding-bottom:4px!important}
+#nzNutritionModal #nzModalStats{display:none!important}
+#nzNutritionModal #nzConversational{background:#132b36!important;border:1px solid var(--q-line)!important;border-radius:20px!important;padding:16px!important}
+#nzNutritionModal #nzConversational textarea{border-radius:15px!important;min-height:92px!important}
+#nzNutritionModal #nzCloudPanel{margin:9px 0!important;padding:10px 12px!important;background:#102530!important;border:1px solid var(--q-line)!important}
+#nzNutritionModal .nzAdvancedTools{background:transparent!important;border:1px solid var(--q-line)!important;border-radius:14px!important}
+#nzNutritionModal .nzPanel>h3{font-size:14px!important;color:#d0dce0!important;letter-spacing:0!important;margin:16px 0 10px!important}
+.nzQModal{background:linear-gradient(135deg,#142e38,#102733);border:1px solid var(--q-line);border-radius:21px;padding:18px;margin:12px 0 16px}
+.nzQModal .nzQBig{margin-top:13px}.nzQModal .nzQWeek{margin-top:15px}
+#tabCoach #coachProgressDetails{border:1px solid var(--q-line)!important;border-radius:18px!important;box-shadow:none!important}
+#tabCoach #coachApp .card{box-shadow:none!important}
+.nzQHiddenAdvanced{opacity:.9}
+@media (max-width:440px){#nzNutritionModal .nzPanel{padding-left:14px!important;padding-right:14px!important}.nzQRow{gap:8px}}
+@media (prefers-reduced-motion:reduce){.nzQFill{transition:none}}
+</style>
+<script id="nzQuietUXScript">
+(()=>{'use strict';
+const key='nonzero.nutrition.v1',by=id=>document.getElementById(id),num=v=>Number(v)||0;
+const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}};
+const pct=(v,t)=>t>0?Math.max(0,Math.min(100,100*v/t)):0;
+const fmt=v=>Math.round(v).toLocaleString();
+const dayTotals=(entries,date)=>entries.filter(x=>x.day===date&&!x.deleted&&!x.deletedAt).reduce((a,x)=>{for(let k of ['cal','protein','carbs','fat'])a[k]+=num(x[k]);return a},{cal:0,protein:0,carbs:0,fat:0});
+function spark(entries){let vals=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let date=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;vals.push(dayTotals(entries,date).cal)}
+let m=Math.max(1,...vals),points=vals.map((v,i)=>`${i*20},${27-v/m*22}`).join(' ');return `<svg viewBox="0 0 120 30" role="img" aria-label="Past seven days calorie totals"><polyline points="${points}" fill="none" stroke="#97d5b7" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
+function renderInto(el,modal=false){if(!el)return;let d=read(),entries=Array.isArray(d.entries)?d.entries:[],v=dayTotals(entries,today()),t=d.targets||{},calTarget=num(t.calories),proteinTarget=num(t.protein),left=Math.max(0,calTarget-v.cal);
+let ratio=calTarget?`${fmt(left)} remaining of ${fmt(calTarget)} kcal target`:'Set a calorie target in Nutrition settings';
+const carbsTarget=num(t.carbs),fatTarget=num(t.fat);
+const mac=(label,v,target,color)=>`<div class="nzQMacro"><small>${label}</small><b>${fmt(v)}<small> g${target?' / '+fmt(target):''}</small></b><div class="nzQMiniTrack"><i style="width:${target?pct(v,target):Math.min(100,v/150*100)}%;background:${color}"></i></div></div>`;
+el.innerHTML=`${modal?'<div class="nzQHeading">TODAY AT A GLANCE</div>':''}<div class="nzQBig">${fmt(v.cal)} <span>kcal logged</span></div><div class="nzQTrack"><div class="nzQFill" style="width:${pct(v.cal,calTarget)}%"></div></div><div class="nzQFine">${ratio}${calTarget&&v.cal>calTarget?' · '+fmt(v.cal-calTarget)+' over target':''}</div><div class="nzQRow">${mac('PROTEIN',v.protein,proteinTarget,'#9bd7bc')}${mac('CARBS',v.carbs,carbsTarget,'#87b6ca')}${mac('FAT',v.fat,fatTarget,'#d4bd8d')}</div><div class="nzQWeek"><span>7-day intake trend${!entries.length?' · No meals yet':''}</span>${spark(entries)}</div>`}
+function init(){const card=by('nzNutritionCard');if(card&&!by('nzQToday')){let original=card.querySelector(':scope > div:first-child');if(original){original.style.display='none'}let h=document.createElement('div');h.className='nzQHeader';h.innerHTML='<span class="nzQHeading">Nutrition today</span><button type="button" class="nzQAction" id="nzQLog">+ Log food</button>';card.prepend(h);let v=document.createElement('div');v.id='nzQToday';h.after(v);by('nzQLog')?.addEventListener('click',()=>by('nzOpenNutrition')?.click())}
+const panel=by('nzNutritionModal')?.querySelector('.nzPanel');if(panel&&!by('nzQModal')){let v=document.createElement('section');v.id='nzQModal';v.className='nzQModal';let h=panel.querySelector(':scope > .nzRow:first-child');if(h)h.after(v);else panel.prepend(v)}
+render();}
+function render(){renderInto(by('nzQToday'));renderInto(by('nzQModal'),true)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+window.addEventListener('nz-nutrition-local-saved',render);window.addEventListener('nz-nutrition-cloud-rendered',render);window.addEventListener('storage',e=>{if(e.key===key)render()});
+window.addEventListener('focus',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+})();
+</script>
+<!-- NONZERO 7.19.2 — macro horizons; read-only, no migration or API changes -->
+<style id="nzMacroHorizonsStyle">
+#nzMacroHorizons{margin:12px 0 18px;color:#ebf5f5}
+.nzMHSection{background:#102734;border:1px solid rgba(167,203,211,.14);border-radius:20px;padding:17px;margin-bottom:11px}
+.nzMHHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.nzMHEyebrow{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:#a7c3cb;font-weight:700}
+.nzMHMetric{font-size:27px;font-weight:730;letter-spacing:-.045em;line-height:1.2}
+.nzMHMuted{font-size:12px;color:#abc0c9;line-height:1.55}
+.nzMHControls{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+#nzMacroHorizons .nzMHControls button{font-size:12px;padding:7px 10px;border:1px solid #365463;border-radius:999px;background:transparent;color:#d0e1e5;min-height:34px;font-weight:500}
+#nzMacroHorizons .nzMHControls button[aria-pressed="true"]{background:#d2ebe1;color:#14372e;border-color:#d2ebe1;font-weight:730}
+.nzMHChart{width:100%;display:block;margin:8px 0 10px;overflow:visible}
+.nzMHLegend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:11px;color:#adcad0}
+.nzMHDot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.nzMHTargetLine{stroke:#b7ced0;stroke-dasharray:4 4;opacity:.55}
+.nzMHRow{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.nzMHWeight{font-size:25px;font-weight:730;letter-spacing:-.05em}
+.nzMHStage{display:flex;align-items:center;gap:8px;margin-top:12px}
+.nzMHStage span{font-size:11px;color:#afc9d0;min-width:35px}
+.nzMHTrack{flex:1;border-radius:99px;background:#294450;height:6px;overflow:hidden}
+.nzMHTrack i{display:block;height:100%;background:#9cd9bc;border-radius:99px}
+.nzMHFoot{border-top:1px solid rgba(167,203,211,.13);padding-top:10px;margin-top:12px}
+.nzMHMissing{font-size:12px;line-height:1.5;color:#b4c7ce;padding:18px 0}
+#nzMacroHorizons button:focus-visible{outline:2px solid #d2ebe1;outline-offset:2px}
+@media(max-width:430px){.nzMHSection{padding:14px}.nzMHHead{align-items:flex-start;flex-wrap:wrap}.nzMHControls{width:100%}}
+</style>
+<script id="nzMacroHorizonsScript">
+(()=>{'use strict';
+const $=id=>document.getElementById(id),NUTRITION='nonzero.nutrition.v1',APP='hipPrehabV2';
+const safe=k=>{try{return JSON.parse(localStorage.getItem(k)||'{}')||{}}catch{return {}}};
+const number=v=>Number.isFinite(Number(v))?Number(v):0;
+const fmt=(v,d=0)=>Number(v).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+const localDate=(d=new Date())=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+const dateObj=str=>new Date(str+'T12:00:00');
+const shift=(date,days)=>{let d=dateObj(date);d.setDate(d.getDate()+days);return localDate(d)};
+const days=(a,b)=>(dateObj(b)-dateObj(a))/86400000;
+const totals=(items)=>items.reduce((o,x)=>{for(const k of ['cal','protein','carbs','fat'])o[k]+=number(x[k]);return o},{cal:0,protein:0,carbs:0,fat:0});
+const nutrition=()=>{const d=safe(NUTRITION);return {entries:(Array.isArray(d.entries)?d.entries:[]).filter(x=>x&&!x.deleted&&!x.deletedAt),targets:d.targets||{}}};
+const metrics={cal:{label:'Calories',unit:'kcal',target:'calories',color:'#9bd7bc'},protein:{label:'Protein',unit:'g',target:'protein',color:'#89bed3'},carbs:{label:'Carbs',unit:'g',target:'carbs',color:'#c7aadd'},fat:{label:'Fat',unit:'g',target:'fat',color:'#dec38f'}};
+let windowDays=7,metric='cal';
+const grouped=(entries,count)=>{let by=new Map();for(const x of entries){if(!/^\d{4}-\d{2}-\d{2}$/.test(x.day||''))continue;if(!by.has(x.day))by.set(x.day,[]);by.get(x.day).push(x)}let now=localDate();return Array.from({length:count},(_,i)=>{let date=shift(now,i-count+1),food=by.get(date)||[];return {date,logged:food.length>0,...totals(food)}})};
+function chart(rows,k,target){let v=rows.map(x=>x.logged?x[k]:null),known=v.filter(x=>x!==null),max=Math.max(1,target||0,...known)*1.14,wide=320,left=9,right=8,top=12,bottom=24,h=112;const X=i=>left+(wide-left-right)*(i/(rows.length-1||1)),Y=n=>top+(h-top)*(1-n/max);
+ let lines='',path='',points=[],dots='';v.forEach((val,i)=>{if(val===null){if(points.length>1)lines+=`<polyline points="${points.join(' ')}" fill="none" stroke="${metrics[k].color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;else if(points.length===1){const [x,y]=points[0].split(',');dots+=`<circle cx="${x}" cy="${y}" r="2.6" fill="${metrics[k].color}"/>`}points=[]}else points.push(`${X(i).toFixed(1)},${Y(val).toFixed(1)}`)});
+ if(points.length>1)lines+=`<polyline points="${points.join(' ')}" fill="none" stroke="${metrics[k].color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;else if(points.length===1){const [x,y]=points[0].split(',');dots+=`<circle cx="${x}" cy="${y}" r="2.6" fill="${metrics[k].color}"/>`}
+ const targetLine=target>0?`<line x1="${left}" x2="${wide-right}" y1="${Y(target)}" y2="${Y(target)}" class="nzMHTargetLine"/><text x="${wide-right}" y="${Math.max(9,Y(target)-5)}" text-anchor="end" fill="#b6ccd0" font-size="9">target ${fmt(target)}</text>`:'';
+ const mid=rows[Math.floor(rows.length/2)];return `<svg class="nzMHChart" viewBox="0 0 ${wide} 147" role="img" aria-label="${metrics[k].label} per day over ${rows.length} days. Missing days are not plotted as zero; dashed line is your configured target.">${targetLine}${lines}${dots}<text x="${left}" y="140" font-size="10" fill="#9eb8c0">${rows[0].date.slice(5)}</text><text x="${wide/2}" y="140" text-anchor="middle" font-size="10" fill="#9eb8c0">${mid.date.slice(5)}</text><text x="${wide-right}" y="140" text-anchor="end" font-size="10" fill="#9eb8c0">Today</text></svg>`}
+function weightRows(){let state=safe(APP);let collected=[];for(const r of state.bodyMeasurements||[]){const w=Number(r.weightLb);if(/^\d{4}-\d{2}-\d{2}$/.test(r.date||'')&&w>=50&&w<=700&&r.date<=localDate())collected.push({date:r.date,weight:w,stamp:Number(r.at)||0})}for(const r of state.pm5Analytics?.health||[]){if(r.type!=='HKQuantityTypeIdentifierBodyMass'||!Number.isFinite(r.at))continue;let w=r.unit==='kg'?r.value/0.45359237:r.unit==='lb'?r.value:null;if(w>=50&&w<=700){let date=localDate(new Date(r.at));if(date<=localDate())collected.push({date,weight:Number(w),stamp:r.at})}}
+ // Weight journey may have newer synced records cached separately.
+ const cache=safe('nz.weightJourney.v1');if(cache.state?.bodyMeasurements)for(const r of cache.state.bodyMeasurements){const w=Number(r.weightLb);if(/^\d{4}-\d{2}-\d{2}$/.test(r.date||'')&&w>=50&&w<=700&&r.date<=localDate())collected.push({date:r.date,weight:w,stamp:Number(r.at)||0})}
+ const by=new Map();collected.sort((a,b)=>a.stamp-b.stamp).forEach(r=>by.set(r.date,r));return [...by.values()].sort((a,b)=>a.date.localeCompare(b.date))}
+function weights(){let r=weightRows(),last=r.at(-1),today=localDate(),stages=[220,215,210,205,200,195,190,185];if(!last)return `<div class="nzMHMissing">Add a weight check-in to display your next stagegate. No weight prediction will be shown without enough readings.</div>`;
+ let next=stages.find(x=>x<last.weight);let recent=r.filter(x=>days(x.date,today)<=60),span=recent.length>1?days(recent[0].date,recent.at(-1).date):0,age=days(last.date,today),slope=null,forecast=null,valid=recent.length>=4&&span>=14&&age<=7;
+ if(valid){let xs=recent.map(x=>days(recent[0].date,x.date)),ys=recent.map(x=>x.weight),mx=xs.reduce((a,b)=>a+b,0)/xs.length,my=ys.reduce((a,b)=>a+b,0)/ys.length,den=xs.reduce((n,x)=>n+(x-mx)**2,0);slope=den?xs.reduce((n,x,i)=>n+(x-mx)*(ys[i]-my),0)/den*7:null;valid=slope!==null&&slope<-.15&&slope>=-1.5}
+ if(valid&&next){let weeks=(last.weight-next)/(-slope),eta=shift(last.date,Math.ceil(weeks*7));forecast={weeks,eta}}
+ let start=227.1,overall=Math.max(0,Math.min(100,(start-last.weight)/(start-185)*100)),stg=next||185;
+ let html=`<div class="nzMHRow"><div><div class="nzMHEyebrow">Latest check-in</div><div class="nzMHWeight">${fmt(last.weight,1)} <span style="font-size:13px;color:#b1c6cb">lb</span></div></div><div style="text-align:right"><div class="nzMHEyebrow">Next stagegate</div><div class="nzMHWeight">${next?fmt(next):'Reached'} <span style="font-size:13px;color:#b1c6cb">${next?'lb':'185 lb goal'}</span></div></div></div><div class="nzMHStage"><span>227.1</span><div class="nzMHTrack"><i style="width:${overall}%"></i></div><span>185</span></div><div class="nzMHMuted" style="margin-top:8px">${next?fmt(last.weight-next,1)+' lb to '+next+' lb':'Your long-term stagegate is met.'} · Check-in ${last.date}</div>`;
+ if(next){if(forecast){let surgery='2026-11-20',cross=forecast.eta>=surgery;html+=`<div class="nzMHFoot"><div class="nzMHEyebrow">Trend-only projection</div><div class="nzMHMetric">${fmt(forecast.weeks,1)} weeks <span style="font-size:13px;color:#b1c6cb">at ${fmt(-slope,1)} lb/week</span></div><div class="nzMHMuted">Illustrative arrival around ${forecast.eta}. Based on ${recent.length} check-ins across ${Math.round(span)} days; not an expected outcome or a calorie-to-weight conversion.${cross?' Surgery/recovery can change the trajectory; do not use this estimate as a recovery-phase target.':''}</div></div>`}else html+=`<div class="nzMHFoot"><div class="nzMHEyebrow">Projection not yet reliable</div><div class="nzMHMuted">A trend estimate needs at least four recent weigh-ins spanning 14 days, including one within the past week, and a plausible downward trend. Keep recording weights; incomplete data stay incomplete.</div></div>`
+ if(today<'2026-11-20'&&last.weight>219.9){let n=Math.max(1,days(today,'2026-11-20')),pace=(last.weight-219.9)*7/n;html+=`<div class="nzMHFoot"><div class="nzMHMuted">Pre-op milestone: below 220 lb by Nov 20 · mathematically requires ${fmt(pace,1)} lb/week from this reading. ${pace>1.5?'This is faster than a conservative pace; prioritize surgery readiness and ask your care team rather than forcing the target.':'This is a planning reference, not a prescription.'}</div></div>`}}
+ return html}
+function render(){let mount=$('nzMacroHorizons');if(!mount)return;let data=nutrition(),rows=grouped(data.entries,windowDays),found=rows.filter(x=>x.logged),m=metrics[metric],target=number(data.targets[m.target]),avg=found.length?found.reduce((n,r)=>n+r[metric],0)/found.length:null;let totalsText=found.length?`Average ${fmt(avg)} ${m.unit} across ${found.length} logged day${found.length===1?'':'s'}.`:'No logged days in this period.';let controls=['cal','protein','carbs','fat'].map(k=>`<button type="button" data-metric="${k}" aria-pressed="${metric===k}">${metrics[k].label}</button>`).join('');mount.innerHTML=`<section class="nzMHSection"><div class="nzMHHead"><span class="nzMHEyebrow">History · actual logged intake</span><div class="nzMHControls"><button data-range="7" aria-pressed="${windowDays===7}">7D</button><button data-range="30" aria-pressed="${windowDays===30}">30D</button></div></div><div class="nzMHControls" aria-label="Select macro trend">${controls}</div>${found.length?chart(rows,metric,target):'<div class="nzMHMissing">Log meals to begin your trend.</div>'}<div class="nzMHLegend"><span><i class="nzMHDot" style="background:${m.color}"></i>${m.label}</span>${target>0?'<span>Dashed line · '+fmt(target)+' '+m.unit+' target</span>':''}</div><p class="nzMHMuted">${totalsText} ${found.length<windowDays?'Missing days are excluded from the average and shown as gaps.':''} Numbers reflect logged foods, not confirmed full-day consumption.</p></section><section class="nzMHSection"><div class="nzMHHead"><span class="nzMHEyebrow">Weight · stagegate outlook</span><span class="nzMHMuted">Observed + projected</span></div>${weights()}</section>`}
+function init(){let panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel||$('nzMacroHorizons'))return;let host=document.createElement('section');host.id='nzMacroHorizons';let q=$('nzQModal');(q||panel.firstElementChild).after(host);host.addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.metric){metric=b.dataset.metric;render()}if(b.dataset.range){windowDays=Number(b.dataset.range);render()}});render()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+for(const e of ['nz-nutrition-local-saved','nz-nutrition-cloud-rendered'])window.addEventListener(e,render);
+window.addEventListener('storage',e=>{if([APP,NUTRITION,'nz.weightJourney.v1'].includes(e.key))render()});
+window.addEventListener('focus',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+// Refreshes while a nutrition view is actually opened, not on an energy-consuming timer.
+document.addEventListener('click',e=>{if(e.target.closest('#nzOpenNutrition,#nzNutritionNav,#homeProgress'))setTimeout(render,60)});
+})();
+</script>
+
+
+<!-- NONZERO v7.19.3: presentation-only progressive disclosure, preserving DOM controls and existing persistence -->
+<style id="nzSubtractionStyle">
+:root{--nz3-line:rgba(177,212,221,.14);--nz3-quiet:#a8bdc6}
+#nzQToday .nzQWeek,#nzQModal .nzQWeek{display:none!important}
+#nzNutritionModal .nzPanel{display:flex;flex-direction:column;gap:8px}
+#nzNutritionModal .nzPanel>.nzRow:first-child{order:-10}
+#nzNutritionModal #nzConversational{order:-8;margin:4px 0!important}
+#nzNutritionModal #nzQModal{order:-7;margin:2px 0 6px!important}
+#nzNutritionModal #nz3Trends{order:-6;margin:0 0 4px!important}
+#nzNutritionModal #nzSimplifiedSecondary{order:5}
+#nzNutritionModal #nzCloudWrapper{order:8}
+#nzNutritionModal #nzDay{max-width:190px}
+#nzMacroHorizons .nzMHSection{margin-bottom:8px;border-color:var(--nz3-line);background:#102733}
+#nzMacroHorizons .nzMHSection:nth-child(2){border-color:rgba(150,212,182,.22)}
+.nz3Disclosure{border:1px solid var(--nz3-line);border-radius:16px;background:#10232f;margin:8px 0;padding:0;overflow:hidden}
+.nz3Disclosure>summary{list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center;cursor:pointer;padding:14px 16px;color:#d3e2e6;font-size:13px;font-weight:650}
+.nz3Disclosure>summary::-webkit-details-marker{display:none}
+.nz3Disclosure>summary:after{content:"+";font-weight:400;font-size:21px;color:#91bcb7}
+.nz3Disclosure[open]>summary:after{content:"−"}
+.nz3Disclosure>summary small{font-size:11px;color:#9ab2be;font-weight:400}
+.nz3Disclosure>.nz3Content{padding:0 12px 15px}
+.nz3Disclosure .nzMHSection{border:0!important;padding:7px 2px 0!important;background:transparent!important}
+#nzNutritionModal #nzCloudPanel{margin:0!important}
+#tabCoach #nz3CoachFocus{margin:6px 0 10px;padding:19px;border-radius:20px;border:1px solid rgba(156,217,188,.22);background:linear-gradient(150deg,#17352e,#102432);color:#eaf6ef}
+#nz3CoachFocus .nz3Eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:11px;font-weight:750;color:#a9d4be}
+#nz3CoachFocus p{font-size:15px;line-height:1.5;margin:9px 0 0;color:#e7f0ed}
+#tabCoach .coach-app{padding-top:0}
+#tabCoach .coach-app>.cc-hero{background:none;border:0;padding:8px 4px;box-shadow:none;margin:0 0 8px}
+#tabCoach .coach-app>.cc-hero .cc-grid{display:none}
+#tabCoach .coach-app>.cc-hero .cc-note{display:none}
+#tabCoach #nz3CoachMore{margin:8px 0 16px}
+#tabCoach #nz3CoachMore .cc-card{margin:8px 0;border:1px solid var(--nz3-line)}
+#tabToday #nzNutritionCard{margin-top:12px!important}
+@media(max-width:430px){.nz3Disclosure>summary{padding:13px}.nz3Disclosure>.nz3Content{padding:0 10px 12px}}
+</style>
+<script id="nzSubtractionScript">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const details=(id,title,subtitle)=>{const d=document.createElement('details');d.id=id;d.className='nz3Disclosure';const t=document.createElement('summary');const a=document.createElement('span');a.textContent=title;t.append(a);if(subtitle){const b=document.createElement('small');b.textContent=subtitle;t.append(b)}d.append(t);const c=document.createElement('div');c.className='nz3Content';d.append(c);return [d,c]};
+function nutrition(){
+const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel||$('nzSimplifiedSecondary'))return;
+const h3=[...panel.children].filter(n=>n.tagName==='H3');
+const quick=h3.find(n=>n.textContent.trim()==='Quick add');
+const log=h3.find(n=>n.textContent.trim()==='Food log');
+const target=h3.find(n=>n.textContent.includes('Daily targets'));
+const portability=h3.find(n=>n.textContent.includes('Data portability'));
+if(quick&&$('nzMessage')){let [d,c]=details('nzSimplifiedSecondary','Manual entry & advanced tools','Optional');quick.before(d);
+let node=quick,stop=$('nzMessage'),nodes=[];
+while(node){let next=node.nextElementSibling;nodes.push(node);if(node===stop)break;node=next}
+nodes.forEach(n=>c.append(n));}
+if(log&&$('nzLog')){let [d,c]=details('nz3FoodHistory','Full food log','Edit or review entries');log.before(d);c.append(log,$('nzLog'));}
+if(target&&$('nzSaveTargets')){let [d,c]=details('nz3Targets','Nutrition targets','Adjust goals');target.before(d);let n=target,stop=$('nzSaveTargets'),a=[];while(n){let next=n.nextElementSibling;a.push(n);if(n===stop)break;n=next}a.forEach(x=>c.append(x));}
+if(portability){let [d,c]=details('nz3Backup','Data export & restore','Backups');portability.before(d);let n=portability,a=[];while(n){let next=n.nextElementSibling;a.push(n);n=next}a.forEach(x=>c.append(x));}
+const cloud=$('nzCloudPanel');if(cloud&&!$('nzCloudWrapper')){let [d,c]=details('nzCloudWrapper','Cloud synchronization','Connection & diagnostics');cloud.before(d);c.append(cloud);}
+const horizons=$('nzMacroHorizons');if(horizons&&!$('nz3Trends')){const [d,c]=details('nz3Trends','Macro history','7 / 30 days');horizons.before(d);c.append(horizons); /* Projection remains available in the same disclosed trends section. */}
+}
+function coach(){
+const host=$('coachApp');if(!host||!host.querySelector('.cc-hero')||host.querySelector('#nz3CoachMore'))return;
+const hero=host.querySelector('.cc-hero');
+const [more,content]=details('nz3CoachMore','Coaching details & controls','Habits, strength, planning');
+[...host.children].filter(n=>n!==hero && !n.classList.contains('cc-conflict')).forEach(n=>content.append(n));
+hero.after(more);
+const conflict=host.querySelector('.cc-conflict');if(conflict)host.prepend(conflict);
+}
+function init(){nutrition();coach()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+document.addEventListener('click',e=>{if(e.target.closest('[data-tab="Coach"],#nzNutritionNav,#nzOpenNutrition,#nzQLog,#nzMoreNav'))queueMicrotask(init)});
+window.addEventListener('focus',init);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)init()});
 })();
 </script>
 

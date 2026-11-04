@@ -1,96 +1,58 @@
-# NONZERO
+# NONZERO — Platform documentation
 
-**NONZERO** is a personal training system built around one idea: make the right workout easier to start, complete, and repeat.
+**Documentation baseline:** 2026-11-03 · **Latest generated release candidate:** Phone + Nutrition Worker **v7.19.0** · **Deployment status:** unverified.
 
-It has three coordinated surfaces:
+NONZERO is a personal fitness and nutrition system comprising a GitHub Pages phone web app, a Raspberry Pi Wall, and Cloudflare Worker/D1 services. It integrates workout telemetry, nutrition logging, food lookup, and experimental AI-assisted food interpretation. AutoPilot is a separate family logistics application; its integration with NONZERO is incomplete.
 
-- **Phone/PWA** — primary control surface for readiness, programming, workout execution, progress, surgery countdown, and setup.
-- **Cloudflare Worker + KV** — durable shared workout state, Roku pairing, BikeErg/ErgData automation, quote feed, and optional Concept2 reconciliation.
-- **Roku Wall** — persistent garage display with Ambient, Performance, Victory, Night, and Deep Panel Protect behavior.
+> **Status is not the same as deployment.** The v7.19.0 source package was generated and locally syntax-checked. The user has confirmed successful execution of the additive `nutrition_ai_usage` D1 migration, but has **not yet confirmed** deployment of the v7.19.0 Worker or Phone app, or successful live conversational logging. Earlier cross-device deletion issues are not conclusively resolved. Treat this as a release candidate.
 
-## Current development stack
+## Quick links
+- Phone app: https://luka731chris.github.io/NONZERO/
+- Phone repository: https://github.com/luka731chris/NONZERO
+- Nutrition Command Center: https://luka731chris.github.io/NONZERO-Nutrition/
 
-| Component | Current | Role |
-|---|---:|---|
-| Phone/PWA | **v3.9** | Prioritized mobile training UI |
-| Cloudflare Worker | **v4.3** | Pairing, cloud state, simple BikeErg automation, quote discovery |
-| Roku Wall | **v4.3.5** | Ambient/Performance/Victory/Night/Deep display |
-| Known-good Basecamp | **Phone v3.5 / Worker v4.1 / Roku v4.3.3** | Permanent rollback point |
+## Components and version baseline
+| Component | Latest known/generated | Confirmed deployment | Notes |
+|---|---|---|---|
+| Phone app | 7.19.0 candidate | Last explicitly confirmed 7.18.1.1; later uploads not independently verified | Single HTML web app hosted by GitHub Pages |
+| Nutrition Worker | 7.19.0 candidate | 7.18.0.0 previously verified; later versions not confirmed | Cloudflare Worker `nonzero-nutrition-api` |
+| Nutrition Command Center | 7.18.0.1 | Previously user-confirmed | Secondary laptop food-management interface |
+| Raspberry Pi Wall | 7.17.21 | Previously user-reported | Do not update as part of nutrition releases |
+| AutoPilot | Separate versioning | Not assessed | Separate app and Worker/D1 services |
 
-> Basecamp is immutable. New development moves forward from it; do not rewrite the Basecamp tag/release.
+## Features in the 7.19.0 candidate
+- Phone-first food logging with automatic sync while the page is active.
+- Conversational text-to-meal interpretation: multiple estimated foods, editable values, bulk log.
+- USDA FoodData Central and Open Food Facts lookup; smart ranked search with a personal catalog and cached external results.
+- Barcode lookup, camera scanning where browser-supported, and photo nutrition-label/meal analysis.
+- Daily and seven-day nutrition summaries, target-gap guidance.
+- Monthly *conversational* AI usage accounting and application threshold.
 
-## Product priorities
+## Not yet delivered or verified
+- Full 30/90-day predictive nutrition coaching and live AutoPilot meal-plan integration.
+- USDA verification for **each** AI-interpreted meal item (AI estimates are not independently grounded in this release).
+- One universal hard cap covering photo + text + all other OpenAI API usage.
+- Background synchronization when the iPhone browser/web app is suspended.
+- Complete end-to-end validation of delete propagation, offline edits, conflict handling, and no-resurrection behavior.
 
-The phone is a **training control surface**, not a Wall remote. Prime mobile real estate is reserved for:
+## Documentation index
+- [Architecture](docs/ARCHITECTURE.md)
+- [Deployment and rollback](docs/DEPLOYMENT.md)
+- [API reference](docs/API.md)
+- [D1 data model and migrations](docs/DATABASE.md)
+- [Security, privacy and cost controls](docs/SECURITY-AND-COST.md)
+- [Testing and release acceptance](docs/TESTING.md)
+- [Known issues and roadmap](docs/KNOWN-ISSUES-ROADMAP.md)
+- [Operations and troubleshooting](docs/OPERATIONS.md)
 
-1. progress and consistency,
-2. hip-surgery countdown / pre-op mission,
-3. pain + energy readiness,
-4. today's workout,
-5. workout timer and start/pause/reset/finish controls,
-6. BikeErg automatic workflow.
-
-Roku pairing, schedule, and display-management controls remain available in **Settings**.
-
-## BikeErg / ErgData operating model
-
-ErgData owns the PM5 Bluetooth connection. NONZERO owns orchestration, durable state, Wall mode, and post-workout reconciliation.
-
-Normal flow after one-time setup:
-
-`Wake PM5 → Open ErgData → NONZERO becomes ACTIVE → Roku Ambient → Performance → Train`
-
-Phone v3.9 + Worker v4.3 use a **one-link Shortcuts trigger**. The Shortcut no longer needs a POST method, custom header, or the private NONZERO sync key.
-
-Because iOS does not expose “PM5 connected inside ErgData” as a Shortcuts trigger, **ErgData Is Opened** is the supported automatic trigger.
-
-Do not create an ErgData “Is Closed” stop automation; switching apps during a workout must not terminate the session.
-
-## Hip surgery / pre-op mode
-
-Until a date is known, the phone displays **SURGERY DATE TBD**. Once entered, the date is stored in shared NONZERO state and drives a live countdown and pre-op phase.
-
-Current phases:
-
-- >84 days — BUILD BASE
-- 43–84 days — BUILD CAPACITY
-- 15–42 days — CONSISTENCY BLOCK
-- 4–14 days — ARRIVE READY
-- 1–3 days — FINAL APPROACH
-- 0 days — SURGERY DAY
-- after surgery — POST-OP / clinical-plan state
-
-The countdown changes motivational emphasis; it must not automatically prescribe unsafe increases in training intensity.
-
-## Wall behavior
-
-A live/paused workout overrides the normal Wall schedule and enters Performance. Completed work transitions through a Victory-oriented state and then returns to the scheduled display. Completed-day quote weighting favors accomplishment, consistency, momentum, recovery, and returning tomorrow.
-
-Default schedule:
-
-- Ambient — 06:00
-- Night — 20:30
-- Deep Panel Protect — 01:00
-
-Deep mode remains inside NONZERO so the scheduling heartbeat can return the Wall to Ambient in the morning. Roku/TV system screensavers and automatic power-off should be disabled on the garage display.
-
-## Security
-
-Never commit secrets. In particular:
-
-- `C2_API_TOKEN` belongs in Cloudflare secrets.
-- The NONZERO private sync key must not be committed.
-- Roku pairing uses a one-time six-digit code followed by a long-lived Wall token.
-- The BikeErg Shortcut uses a dedicated opaque automation URL rather than storing the private sync key in Shortcuts.
-
-## Documentation map
-
-- `ROADMAP.md` — priorities, backlog, decisions, and what is next.
-- `CHANGELOG.md` — release history.
-- `ARCHITECTURE.md` — current system design and invariants.
-- `BIKEERG-ERGDATA.md` — current one-time setup and Concept2 behavior.
-- `BASECAMP.md` — immutable rollback baseline.
-- `RELEASE-CHECKLIST.md` — validation before promoting a release.
-- `CONTRIBUTING.md` — development rules.
-- `SECURITY.md` — secret/authentication rules.
-
+## Repository layout recommendation
+```text
+NONZERO/
+  index.html                  # deployed Phone app
+  docs/                       # documentation in this package
+  releases/                   # optional archived release notes, not secrets
+  worker/                     # version-controlled Worker source (deploy separately)
+  migrations/                 # additive SQL migrations
+  tests/                      # local regression tests
+```
+The supplied documentation package does **not** overwrite your existing GitHub `index.html`, Worker, or D1 data. Copy the Markdown files into the repository; deploy code from the separately generated v7.19.0 release only after validation.
