@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.19.3 · Addition by Subtraction UX Candidate</title>
+    <title>NONZERO v7.19.4 · KPI Cockpit UX Candidate</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.19.2 UX</small></span>
+            <span class="flowBrand">NONZERO <small>v7.19.4</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -17331,6 +17331,118 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 document.addEventListener('click',e=>{if(e.target.closest('[data-tab="Coach"],#nzNutritionNav,#nzOpenNutrition,#nzQLog,#nzMoreNav'))queueMicrotask(init)});
 window.addEventListener('focus',init);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)init()});
+})();
+</script>
+
+
+<!-- NONZERO 7.19.4 · KPI cockpit: read-only view using existing app state, no data migrations -->
+<style id="nzKpiCockpitStyle">
+body[data-today-scene="home"] #tabToday .todayLanding{max-width:800px;margin:0 auto}
+body[data-today-scene="home"] #tabToday .todayLanding>.flowMotivation{margin:2px 3px 12px;font-size:12px;opacity:.70}
+#nzKpiDashboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;align-items:stretch;margin-bottom:14px}
+#nzKpiDashboard>*{min-width:0;box-sizing:border-box;margin:0!important;box-shadow:none!important;border-radius:19px!important;background:#102532!important;border:1px solid rgba(180,210,222,.14)!important;overflow:hidden}
+#nzKpiDashboard .flowPlan{padding:17px!important}
+#nzKpiDashboard .flowPlan h2{font-size:clamp(17px,4.5vw,24px);line-height:1.2;margin:10px 0 7px}
+#nzKpiDashboard .flowPlan #homeSessionReason,#nzKpiDashboard .flowPlan #homeOutline{display:none}
+#nzKpiDashboard .flowPlan #homeSessionMeta{font-size:11px;line-height:1.45;min-height:30px}
+#nzKpiDashboard .flowPlan #homeStart{width:100%;margin:12px 0 4px;min-height:38px;padding:8px;font-size:12px}
+#nzKpiDashboard .flowPlan #homeCustomize,#nzKpiDashboard .flowPlan #homeEditCompleted{font-size:11px;padding:4px 2px}
+#nzKpiDashboard #homeProgress{display:block;text-align:left;padding:16px!important;position:relative}
+#nzKpiDashboard #homeProgress #homeCountdown{font-size:11px;opacity:.75}
+#nzKpiDashboard #homeProgress .flowWeight{display:block;margin-top:11px}
+#nzKpiDashboard #homeProgress .flowWeight>div{display:flex;gap:5px;align-items:baseline;flex-wrap:wrap}
+#nzKpiDashboard #homeProgress .flowWeight b{font-size:clamp(20px,6vw,29px)}
+#nzKpiDashboard #homeProgress #homeSpark{width:100%;height:48px;margin-top:8px}
+#nzKpiDashboard #homeProgress #homeWeightChange{font-size:11px}
+#nzKpiDashboard #homeProgress #homeMilestone,#nzKpiDashboard #homeProgress #homeWeightDetail{font-size:11px;line-height:1.3}
+#nzKpiDashboard #homeProgress .flowLink{font-size:11px;opacity:.65}
+#nzKpiDashboard #nzNutritionCard{padding:15px!important}
+#nzKpiDashboard #nzNutritionCard>.nzQHeader .nzQAction{font-size:11px!important;padding:8px 11px!important}
+#nzKpiDashboard #nzNutritionCard .nzQBig{font-size:28px;margin-top:10px}
+#nzKpiDashboard #nzNutritionCard .nzQRow{gap:6px;margin-top:12px}
+#nzKpiDashboard #nzNutritionCard .nzQMacro b{font-size:13px}
+#nzKpiDashboard #nzNutritionCard .nzQMacro small{font-size:10px}
+#nzKpiDashboard #nzNutritionCard .nzQWeek{display:none!important}
+#nzKpiDashboard .nzKpiTile{padding:16px;display:flex;flex-direction:column;gap:6px;align-items:stretch;color:#f2f8f8}
+#nzKpiDashboard .nzKpiEyebrow{font-size:10px;color:#abc1c9;letter-spacing:.12em;font-weight:750;text-transform:uppercase}
+#nzKpiDashboard .nzKpiNumber{font-size:clamp(18px,5vw,27px);font-weight:720;letter-spacing:-.035em;line-height:1.16;overflow-wrap:anywhere}
+#nzKpiDashboard .nzKpiSub{font-size:11px;color:#a7bfca;line-height:1.4;min-height:29px}
+#nzKpiDashboard .nzKpiFoot{font-size:10px;color:#8eabb7;margin-top:auto}
+#nzKpiDashboard .nzKpiChart{width:100%;height:42px;display:block;margin:4px 0}
+#nzKpiDashboard .nzKpiChart polyline{fill:none;stroke:#8ac9b1;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#nzKpiDashboard .nzKpiChart .nzKpiTarget{stroke:#6c8494;stroke-dasharray:3 4;stroke-width:1}
+#nzKpiDashboard .nzKpiTrack{height:5px;border-radius:20px;background:#293f49;overflow:hidden;margin-top:3px}
+#nzKpiDashboard .nzKpiTrack>i{display:block;height:100%;background:#8ac9b1;border-radius:20px}
+#nzKpiDashboard .nzKpiFull{grid-column:1/-1}
+#nzKpiDashboard .nzKpiFull .nzKpiChart{height:54px}
+#nzKpiDashboard button.nzKpiTile{cursor:pointer;text-align:left;font:inherit}
+#nzKpiDashboard button.nzKpiTile:focus-visible{outline:2px solid #a8d9c8;outline-offset:2px}
+body[data-today-scene="home"] #tabToday .flowQuick{display:flex;gap:10px;margin:7px 0}
+body[data-today-scene="home"] #tabToday .flowQuick button{flex:1;font-size:12px;min-width:0}
+@media(max-width:360px){#nzKpiDashboard{gap:8px}#nzKpiDashboard .flowPlan,#nzKpiDashboard #homeProgress,#nzKpiDashboard .nzKpiTile{padding:12px!important}}
+@media(min-width:650px){#nzKpiDashboard{grid-template-columns:repeat(4,minmax(0,1fr))}#nzKpiDashboard .nzKpiFull{grid-column:span 2}}
+</style>
+<script id="nzKpiCockpitScript">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const safe=n=>Number.isFinite(+n)?+n:0;
+function localDay(offset=0){let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+offset);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+const fmt=n=>Math.round(n).toLocaleString();
+function spark(series,target){const measured=series.filter(v=>v!==null&&Number.isFinite(v));if(!measured.length)return '';
+const lo=Math.min(...measured,target??Infinity),hi=Math.max(...measured,target??-Infinity),range=Math.max(1,hi-lo),points=series.map((v,i)=>v==null?null:[5+(i/(series.length-1||1))*190,52-8-(v-lo)/range*36]);
+let out='',part=[];const commit=()=>{if(part.length>1)out+=`<polyline points="${part.join(' ')}"/>`;part=[]};
+for(const point of points){if(point)part.push(point.map(n=>n.toFixed(1)).join(','));else commit()}commit();
+if(target!=null){let y=(52-8-(target-lo)/range*36).toFixed(1);out=`<line class="nzKpiTarget" x1="5" x2="195" y1="${y}" y2="${y}"/>`+out}
+return `<svg class="nzKpiChart" viewBox="0 0 200 54" role="img" aria-label="Seven-day trend; missing dates are omitted">${out}</svg>`}
+function tile(id){return $(id)}
+function text(id,value){const e=$(id);if(e&&e.textContent!==String(value))e.textContent=String(value)}
+function nutrition(){let data={};try{data=JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')}catch{};
+const rows=Array.isArray(data.entries)?data.entries:[],active=rows.filter(x=>!x.deleted&&!x.deletedAt),calTarget=Number(data.targets?.calories)||null,proteinTarget=Number(data.targets?.protein)||null;
+const totals=(day)=>active.filter(x=>x.day===day).reduce((a,r)=>{a.cal+=safe(r.cal);a.protein+=safe(r.protein);return a},{cal:0,protein:0});
+const dates=Array.from({length:7},(_,i)=>localDay(i-6)),daily=dates.map(totals),today=daily[6],covered=dates.filter(d=>active.some(x=>x.day===d)).length;
+text('nzKpiProtein',`${fmt(today.protein)}g`);text('nzKpiProteinSub',proteinTarget?`${fmt(Math.max(0,proteinTarget-today.protein))}g to daily target`:'Set a protein target in Nutrition');
+const p=tile('nzKpiProteinTrack');if(p)p.style.width=proteinTarget?`${Math.min(100,today.protein/proteinTarget*100)}%`:'0%';
+text('nzKpiMacroDays',`${covered} / 7 days logged`);
+const chart=tile('nzKpiMacroSpark');if(chart)chart.innerHTML=spark(daily.map((v,i)=>active.some(x=>x.day===dates[i])?v.cal:null),calTarget);
+text('nzKpiMacroFoot',covered?`${fmt(daily.reduce((n,x,i)=>n+(active.some(a=>a.day===dates[i])?x.cal:0),0)/covered)} kcal / logged day`:'No logged meals in the past seven days');}
+function weight(){let records=[];try{records=Array.isArray(state?.bodyMeasurements)?state.bodyMeasurements:[]}catch{};
+const latest=new Map();records.forEach(x=>{if(/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')&&safe(x.weightLb)>0)latest.set(x.date,safe(x.weightLb))});
+const series=Array.from({length:7},(_,i)=>latest.get(localDay(i-6))??null),values=[...latest.entries()].sort((a,b)=>a[0].localeCompare(b[0])),last=values.at(-1);
+const m=tile('nzKpiWeightSpark');if(m)m.innerHTML=spark(series,null);
+text('nzKpiWeightFoot',last?`Last weigh-in ${last[0]}`:'No saved weigh-in');
+let stagegate=220;try{const configured=Number(state?.surgeryPlan?.targetWeightLb);if(configured>0)stagegate=configured}catch{}
+text('nzKpiWeightStage',last?`Next target: ${stagegate} lb · ${Math.max(0,last[1]-stagegate).toFixed(1)} lb gap`:'Log weight to see your stagegate');}
+function agenda(){let ag=null;try{ag=state?.autopilotAgenda}catch{};if(!ag?.days?.length&&!ag?.date){try{ag=JSON.parse(localStorage.getItem('autopilot.agenda.v325')||'null')}catch{}}
+const day=localDay(),today=(ag?.days||[]).find(d=>d.date===day)||(ag?.date===day?ag:null);
+let timeline=null;try{timeline=NonZeroSuite.timeline(ag,new Date(),false)}catch{}
+const next=timeline?.next;
+if(next){text('nzKpiAutopilotValue',next.title||'Next event');text('nzKpiAutopilotSub',`${next.time||next.start24||''}${next._date!==day?' · '+next._date:''}`)}
+else{ text('nzKpiAutopilotValue',today?'No more events':'No current agenda');text('nzKpiAutopilotSub',today?'Today’s scheduled events are complete':'Publish or sync your current AutoPilot schedule')}
+text('nzKpiAutopilotFoot',today?`${(today.items||[]).length} events on today’s plan · local snapshot`:'Schedule not verified current');}
+function workout(){let done=null;try{done=NonZeroSuite.currentRecord(state.sessions||[])}catch{};
+text('nzKpiWorkoutFoot',done?`${Math.round(safe(done.duration))} min logged today`:'Workout plan shown above');}
+function update(){if(document.body.dataset.todayScene!=='home')return;nutrition();weight();agenda();workout();}
+function make(){const landing=$('tabToday')?.querySelector('.todayLanding');if(!landing||$('nzKpiDashboard'))return;
+const grid=document.createElement('div');grid.id='nzKpiDashboard';grid.setAttribute('aria-label','NONZERO performance dashboard');
+const workoutCard=landing.querySelector('.flowPlan'),weightCard=$('homeProgress'),macroCard=$('nzNutritionCard');
+if(!workoutCard||!weightCard||!macroCard)return;
+const html=(tag,id,body)=>{let e=document.createElement(tag);e.id=id;e.className='nzKpiTile';e.innerHTML=body;return e};
+workoutCard.before(grid);grid.append(workoutCard,weightCard,macroCard);
+const protein=html('button','nzKpiProteinTile',`<span class="nzKpiEyebrow">Protein</span><span class="nzKpiNumber" id="nzKpiProtein">—</span><span class="nzKpiSub" id="nzKpiProteinSub">Daily target</span><span class="nzKpiTrack"><i id="nzKpiProteinTrack"></i></span><span class="nzKpiFoot">Tap to log food</span>`);
+protein.type='button';protein.addEventListener('click',()=>{$('nzOpenNutrition')?.click()});grid.append(protein);
+const macro=html('button','nzKpiMacroTile',`<span class="nzKpiEyebrow">Macro consistency · 7D</span><span class="nzKpiNumber" id="nzKpiMacroDays">—</span><span class="nzKpiSub">Calorie intake trend</span><span id="nzKpiMacroSpark"></span><span class="nzKpiFoot" id="nzKpiMacroFoot"></span>`);
+macro.type='button';macro.addEventListener('click',()=>{$('nzOpenNutrition')?.click()});grid.append(macro);
+const weight=html('button','nzKpiWeightTile',`<span class="nzKpiEyebrow">Weight trajectory</span><span class="nzKpiNumber" id="nzKpiWeightStage">—</span><span id="nzKpiWeightSpark"></span><span class="nzKpiFoot" id="nzKpiWeightFoot"></span>`);
+weight.type='button';weight.addEventListener('click',()=>{$('homeProgress')?.click()});grid.append(weight);
+const auto=html('button','nzKpiAutoTile',`<span class="nzKpiEyebrow">AutoPilot · next</span><span class="nzKpiNumber" id="nzKpiAutopilotValue">—</span><span class="nzKpiSub" id="nzKpiAutopilotSub"></span><span class="nzKpiFoot" id="nzKpiAutopilotFoot"></span>`);
+auto.type='button';auto.addEventListener('click',()=>{const b=$('suiteViewFamily');if(b)b.click();else window.open('https://luka731chris.github.io/AutoPilot/','_blank','noopener')});grid.append(auto);
+const last=html('div','nzKpiStatusTile',`<span class="nzKpiEyebrow">Activity · context</span><span class="nzKpiSub" id="nzKpiWorkoutFoot">—</span><span class="nzKpiFoot">D1 nutrition and AutoPilot schedule are separate sync sources</span>`);last.classList.add('nzKpiFull');grid.append(last);
+update();}
+function init(){make();update()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+window.addEventListener('focus',init);window.addEventListener('storage',init);document.addEventListener('visibilitychange',()=>{if(!document.hidden)init()});
+document.addEventListener('nz-nutrition-cloud-rendered',init);document.addEventListener('nz-nutrition-local-saved',init);document.addEventListener('suite-state-changed',init);
+setInterval(()=>{if(!document.hidden)init()},30000);
 })();
 </script>
 
