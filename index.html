@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.20.2 · Unified Experience</title>
+    <title>NONZERO v7.20.3 · LukaLab Visual System</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.20.2</small></span>
+            <span class="flowBrand">NONZERO <small>v7.20.3</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -17834,5 +17834,104 @@ function init(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+<style id="nzVisualSystem7203">
+/* NONZERO 7.20.3 · LukaLab brand and responsive metric type scale.
+   Purely presentational: no state, event handlers, data or navigation changes. */
+:root{
+ --nz-brand-yellow:#f4d35e;
+ --nz-metric-main:clamp(25px,7.5vw,36px);
+ --nz-metric-secondary:clamp(13px,3.55vw,16px);
+ --nz-metric-label:clamp(11px,2.95vw,13px);
+ --nz-metric-caption:clamp(11px,2.85vw,13px);
+}
+/* Existing Today header and other-tab section heading now share a single brand treatment. */
+body .todayHeader .flowBrand,
+body .sectionBrand{
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+ color:var(--nz-brand-yellow)!important;
+ font-size:clamp(18px,4.7vw,21px)!important;
+ font-weight:850!important;
+ letter-spacing:.105em!important;
+ line-height:1.2!important;
+ -webkit-font-smoothing:antialiased;
+ text-transform:uppercase;
+}
+body .todayHeader .flowBrand{display:inline-flex;align-items:baseline;gap:8px;white-space:nowrap}
+body .todayHeader .flowBrand small{font-size:11px!important;font-weight:600!important;letter-spacing:0!important;color:#a7b8c0!important;margin-left:0!important;text-transform:none}
+body .sectionBrand span{font-size:clamp(11px,3vw,13px)!important;font-weight:650!important;letter-spacing:.02em!important;color:#abbfc5!important;text-transform:none;white-space:normal}
+body .sectionBrand{min-height:35px;box-sizing:border-box;align-items:center;gap:7px;padding:7px 3px!important;margin:0 0 5px}
+body[data-page]:not([data-page="Today"]) .sectionBrand{display:flex!important}
+body.trainingFocus .sectionBrand{display:none!important}
+body.nz-nutrition-active .sectionBrand{
+ font-size:clamp(18px,4.7vw,21px)!important;
+ min-height:calc(58px + env(safe-area-inset-top))!important;
+ padding:env(safe-area-inset-top) max(16px,calc((100vw - 840px)/2)) 0!important;
+ margin:0!important;
+ color:var(--nz-brand-yellow)!important;
+}
+body.nz-nutrition-active #nzNutritionModal:not([hidden]){
+ top:calc(58px + env(safe-area-inset-top))!important;
+}
+/* Shared hierarchy across analytics and KPI tiles. */
+#nzKpiDashboard{gap:clamp(9px,2.65vw,15px)!important;align-items:stretch!important}
+#nzKpiDashboard .nzKpiTile{gap:8px!important;min-height:clamp(192px,48vw,230px)!important;padding:clamp(13px,3.75vw,20px)!important}
+#nzKpiDashboard .nzKpiEyebrow,
+#nzMacroRings .nzRingTitle,
+#nzNutritionModal #nzModalStats small{
+ font-size:var(--nz-metric-label)!important;
+ line-height:1.3!important;
+ font-weight:750!important;
+ letter-spacing:.055em!important;
+ color:#b6cbd1!important;
+}
+#nzKpiDashboard .nzKpiTile .nzKpiNumber{
+ font-size:var(--nz-metric-main)!important;
+ font-weight:790!important;
+ line-height:1.1!important;
+ letter-spacing:-.045em!important;
+ font-variant-numeric:tabular-nums;
+ overflow-wrap:normal!important;
+ word-break:normal;
+}
+#nzKpiDashboard .nzKpiSub,
+#nzKpiDashboard #homeProgress #homeWeightDetail{
+ font-size:var(--nz-metric-secondary)!important;
+ font-weight:560!important;
+ line-height:1.38!important;
+ color:#c1d2d8!important;
+}
+#nzKpiDashboard .nzKpiFoot{font-size:var(--nz-metric-caption)!important;line-height:1.35!important;color:#a5bdc7!important}
+#nzKpiDashboard .nzKpiChart{height:clamp(52px,13vw,70px)!important;overflow:visible;max-width:100%!important}
+#nzKpiDashboard .nzKpiChart polyline{stroke-width:2.8!important}
+#nzKpiDashboard .nzKpiFull .nzKpiChart{height:clamp(58px,15vw,86px)!important}
+#nzKpiDashboard .flowPlan h2{font-size:clamp(22px,6.3vw,32px)!important;line-height:1.14!important}
+#nzKpiDashboard #homeProgress .flowWeight b{font-size:clamp(25px,7.2vw,36px)!important;line-height:1.16!important;font-weight:800!important;letter-spacing:-.04em!important}
+#nzKpiDashboard #homeProgress #homeCountdown,
+#nzKpiDashboard .flowPlan #homeSessionMeta{font-size:clamp(12px,3.3vw,15px)!important;line-height:1.4!important}
+#nzKpiDashboard #nzNutritionCard .nzQMacro b{font-size:clamp(18px,4.9vw,23px)!important;font-weight:780!important;font-variant-numeric:tabular-nums}
+#nzKpiDashboard #nzNutritionCard .nzQMacro small{font-size:clamp(11px,2.95vw,13px)!important}
+#nzNutritionModal #nzModalStats b{font-size:clamp(23px,6.4vw,32px)!important;font-weight:790!important;font-variant-numeric:tabular-nums;line-height:1.14!important}
+#nzMacroRings .nzRingNumber,
+#nzMacroRings .nzRingValue,
+#nzMacroRings .nzRingAmount{font-size:clamp(16px,4.5vw,23px)!important;font-weight:780!important;font-variant-numeric:tabular-nums}
+/* Analytics labels and values use consistent contrast and type. */
+#nzMetrics :is(.mValue,.metricValue,.statValue),
+.coach-app :is(.cc-metric strong,.cc-stat strong){font-size:clamp(22px,5.9vw,32px)!important;font-weight:780!important;line-height:1.16!important;font-variant-numeric:tabular-nums}
+#nzMetrics :is(.mLabel,.metricLabel,.mMuted),
+.coach-app :is(.cc-metric small,.cc-stat small){font-size:var(--nz-metric-caption)!important;line-height:1.4!important}
+@media(max-width:359px){
+ :root{--nz-metric-main:clamp(23px,7.1vw,26px);--nz-metric-secondary:12px;--nz-metric-label:11px;--nz-metric-caption:11px}
+ body .todayHeader .flowBrand,body .sectionBrand,body.nz-nutrition-active .sectionBrand{font-size:17px!important}
+ #nzKpiDashboard .nzKpiTile{min-height:182px!important;padding:12px!important}
+ #nzKpiDashboard .nzKpiChart{height:47px!important}
+}
+@media(min-width:650px) and (orientation:landscape){
+ :root{--nz-metric-main:clamp(25px,3.2vw,36px);--nz-metric-secondary:clamp(12px,1.7vw,15px);--nz-metric-label:12px;--nz-metric-caption:12px}
+ #nzKpiDashboard .nzKpiTile{min-height:216px!important;padding:clamp(12px,1.8vw,18px)!important}
+ #nzKpiDashboard .nzKpiChart{height:clamp(46px,5.8vw,68px)!important}
+ body.nz-nutrition-active #nzNutritionModal:not([hidden]){top:calc(58px + env(safe-area-inset-top))!important}
+}
+@media(prefers-reduced-motion:reduce){#nzKpiDashboard *{scroll-behavior:auto!important}}
+</style>
 </body>
 </html>
