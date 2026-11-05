@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.20.3 · LukaLab Visual System</title>
+    <title>NONZERO v7.20.4 · Metric Harmony</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.20.3</small></span>
+            <span class="flowBrand">NONZERO <small>v7.20.4</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -17932,6 +17932,101 @@ body.nz-nutrition-active #nzNutritionModal:not([hidden]){
  body.nz-nutrition-active #nzNutritionModal:not([hidden]){top:calc(58px + env(safe-area-inset-top))!important}
 }
 @media(prefers-reduced-motion:reduce){#nzKpiDashboard *{scroll-behavior:auto!important}}
+</style>
+<style id="nzVisualRhythm7204">
+/* NONZERO 7.20.4: shared type tokens across the complete KPI and nutrition UI.
+   Visual-only rules: no modifications to actions, stored data, sync or analytics. */
+:root{
+ --nz-ui-number:32px;
+ --nz-ui-label:14px;
+ --nz-ui-support:14px;
+ --nz-ui-detail:13px;
+ --nz-ui-number-weight:790;
+}
+/* Match the calorie / protein treatment with every other metric. */
+#nzKpiDashboard .nzKpiTile .nzKpiNumber,
+#nzKpiDashboard :is(.nzKpiNumber,.nzQBig),
+#nzKpiDashboard #homeProgress .flowWeight b,
+#nzKpiDashboard #nzNutritionCard .nzQMacro b,
+#nzCoachPanel .nzCoachStat b,
+#nzPredictiveCard .stat b,
+#nzNutritionModal #nzModalStats b,
+#nzNutritionStats b,
+#nzMetrics :is(.mValue,.metricValue,.statValue),
+.coach-app :is(.cc-metric strong,.cc-stat strong){
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+ font-size:var(--nz-ui-number)!important;
+ font-weight:var(--nz-ui-number-weight)!important;
+ font-variant-numeric:tabular-nums!important;
+ line-height:1.13!important;
+ letter-spacing:-.04em!important;
+}
+/* Text values such as scheduled event names get the same hierarchy, but can wrap. */
+#nzKpiDashboard .nzKpiNumber{overflow-wrap:break-word!important;word-break:normal!important;white-space:normal!important}
+#nzKpiDashboard .nzQBig>span,#nzKpiDashboard #nzNutritionCard .nzQMacro b small{
+ font-size:var(--nz-ui-detail)!important;letter-spacing:0!important;font-weight:600!important;
+ line-height:1.35!important;display:inline!important;color:#bcd1d8!important
+}
+#nzKpiDashboard .nzKpiEyebrow,
+#nzKpiDashboard #nzNutritionCard .nzQMacro>small,
+#nzKpiDashboard #nzNutritionCard .nzQHeading,
+#nzMacroRings .nzRingCaption,
+#nzCoachPanel .nzCoachStat small,
+#nzPredictiveCard .stat small,
+#nzNutritionModal #nzModalStats>div,
+#nzNutritionStats>div,
+#nzMetrics :is(.mLabel,.metricLabel),
+.coach-app :is(.cc-metric small,.cc-stat small){
+ font-size:var(--nz-ui-label)!important;
+ font-weight:720!important;
+ line-height:1.35!important;
+ letter-spacing:.015em!important;
+ color:#c2d5dc!important;
+}
+#nzKpiDashboard .nzKpiSub,
+#nzKpiDashboard #homeProgress #homeWeightDetail,
+#nzCoachPanel #nzCoachMessage,
+#nzPredictiveCard p:not(.status){font-size:var(--nz-ui-support)!important;line-height:1.45!important}
+#nzKpiDashboard .nzKpiFoot,
+#nzKpiDashboard .nzQFine,
+#nzMacroRings .nzRingStatus,
+#nzMacroRings .nzRingFoot,
+#nzPredictiveCard .status{font-size:var(--nz-ui-detail)!important;line-height:1.4!important;color:#adcad2!important}
+/* Align metric blocks to the same top baseline; use breathing room, not tiny fonts. */
+#nzKpiDashboard .nzKpiTile{gap:10px!important;min-height:220px!important}
+#nzKpiDashboard .nzKpiEyebrow{min-height:2.7em;display:flex;align-items:flex-start}
+#nzKpiDashboard .nzKpiChart{margin-top:auto!important;flex-shrink:0}
+#nzKpiDashboard #nzNutritionCard .nzQRow{gap:12px!important;align-items:start}
+#nzKpiDashboard #nzNutritionCard .nzQMacro{min-width:0!important}
+#nzKpiDashboard #nzNutritionCard .nzQMacro b{display:block!important;overflow-wrap:break-word}
+#nzKpiDashboard #nzNutritionCard .nzQMacro>small{display:block!important;margin-bottom:5px}
+#nzKpiDashboard #homeProgress .flowWeight>div{align-items:baseline;gap:6px}
+/* Macro rings: each number should be as easy to scan as the KPI values. */
+#nzMacroRings .nzRingGrid{gap:10px!important}
+#nzMacroRings .nzRingUnit{gap:8px!important;padding:13px 7px!important;min-height:153px!important}
+#nzMacroRings .nzRingSvg{width:min(100%,104px)!important;max-width:104px!important}
+#nzMacroRings .nzRingNum{font-family:system-ui,-apple-system,sans-serif!important;font-size:24px!important;font-weight:790!important;letter-spacing:-.065em!important;font-variant-numeric:tabular-nums}
+#nzMacroRings .nzRingCaption{min-height:1.3em}
+#nzMacroRings h2,#nzPredictiveCard h2,#nzCoachPanel h2{font-size:19px!important;font-weight:780!important}
+/* On phones, 2 x 2 rings and a full-width macro summary avoid squeezing values. */
+@media(max-width:599px){
+ #nzKpiDashboard #nzNutritionCard{grid-column:1/-1!important}
+ #nzMacroRings .nzRingGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #nzMacroRings .nzRingUnit{min-height:168px!important}
+ #nzKpiDashboard #nzNutritionCard .nzQMacro b{white-space:normal!important}
+}
+@media(max-width:359px){
+ :root{--nz-ui-number:28px;--nz-ui-label:13px;--nz-ui-support:13px;--nz-ui-detail:12px}
+ #nzKpiDashboard .nzKpiTile{padding:12px!important;min-height:206px!important}
+ #nzKpiDashboard #nzNutritionCard .nzQRow{gap:8px!important}
+ #nzMacroRings .nzRingUnit{min-height:157px!important}
+}
+@media(min-width:600px) and (orientation:landscape){
+ :root{--nz-ui-number:32px;--nz-ui-label:14px;--nz-ui-support:14px;--nz-ui-detail:13px}
+ #nzKpiDashboard .nzKpiTile{min-height:220px!important}
+ #nzKpiDashboard #nzNutritionCard{grid-column:span 2!important}
+ #nzMacroRings .nzRingGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
 </style>
 </body>
 </html>
