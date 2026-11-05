@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.20.1 · Predictive Coaching</title>
+    <title>NONZERO v7.20.2 · Unified Experience</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3973,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.20.1</small></span>
+            <span class="flowBrand">NONZERO <small>v7.20.2</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -17447,7 +17447,7 @@ setInterval(()=>{if(!document.hidden)init()},30000);
 </script>
 
 
-<!-- NONZERO v7.20.1: full-source, offline-capable app shell, predictive coaching integration. -->
+<!-- NONZERO v7.20.2: full-source, offline-capable app shell, predictive coaching integration. -->
 <script id="nzStdADDON_BASE64">
 /* NONZERO premium Today enhancement, works with the existing v7.19.4 app. */
 (()=>{'use strict';
@@ -17744,6 +17744,95 @@ document.addEventListener('nz-nutrition-cloud-rendered',()=>{setTimeout(()=>refr
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});setInterval(()=>{if(!document.hidden)refresh()},300000);
 })();
 
+</script>
+<style id="nzUnifiedShell7202">
+/* 7.20.2: same app chrome on every primary view. Retain original Nutrition controls. */
+:root{--nz7202-edge:clamp(10px,3.4vw,20px);--nz7202-bottom:calc(76px + env(safe-area-inset-bottom));--nz7202-accent:#93e5bb}
+html,body{max-width:100%;overflow-x:clip}
+body .sectionBrand{font-weight:850;letter-spacing:.075em;color:#a0f4be}
+body .tabbar{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:clamp(2px,1vw,8px)!important;z-index:1000200!important;position:fixed!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;left:var(--nz7202-edge)!important;right:var(--nz7202-edge)!important;max-width:810px!important;width:auto!important;margin-inline:auto!important;border-radius:17px!important;box-shadow:0 14px 38px #0007,0 0 0 1px #38645e40;isolation:isolate}
+body .tabbar button{font-size:clamp(10px,2.6vw,13px)!important;padding:11px 2px!important;min-width:0;min-height:45px!important;line-height:1.2;letter-spacing:-.01em}
+body .tabbar button.active{background:#184437!important;outline:1px solid #6bbf99!important;color:#e9fff2!important}
+body.nz-nutrition-active{overflow:hidden!important}
+body.nz-nutrition-active .sectionBrand{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000201!important;display:flex!important;align-items:center!important;min-height:calc(48px + env(safe-area-inset-top))!important;padding:env(safe-area-inset-top) max(16px,calc((100vw - 840px)/2)) 0!important;box-sizing:border-box!important;background:rgba(8,24,30,.97)!important;backdrop-filter:blur(16px);border-bottom:1px solid #345852;color:#9bebbd!important;font-size:15px!important}
+body.nz-nutrition-active #nzNutritionModal:not([hidden]){position:fixed!important;inset:calc(48px + env(safe-area-inset-top)) 0 var(--nz7202-bottom) 0!important;z-index:1000180!important;padding:0!important;margin:0!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-gutter:stable;background:#071724!important;display:block!important}
+body.nz-nutrition-active #nzNutritionModal .nzPanel{max-width:840px!important;width:100%!important;margin:0 auto!important;box-sizing:border-box!important;padding:clamp(12px,3.8vw,26px) var(--nz7202-edge) 28px!important}
+#nzNutritionModal #nzNutritionBack{display:none!important}
+#nzNutritionModal .nzNutritionTitleBar h2{font-size:clamp(21px,4.9vw,28px)!important;letter-spacing:-.035em!important;line-height:1.14!important}
+#nzNutritionModal .nzPanel :is(h2,h3){overflow-wrap:break-word;line-height:1.22}
+#nzNutritionModal .nzPanel .nzRow{min-width:0;gap:clamp(6px,2vw,12px)}
+#nzNutritionModal .nzPanel :is(input,select,textarea,button){max-width:100%;box-sizing:border-box}
+/* KPI tiles: consistent rhythm, safe text wrapping, chart dimensions, and mobile spacing */
+#nzKpiDashboard{grid-auto-flow:row;align-items:stretch;gap:clamp(8px,2.7vw,14px)!important}
+#nzKpiDashboard>*{min-width:0!important;overflow:hidden!important;box-sizing:border-box!important}
+#nzKpiDashboard :is(.nzKpiTile,.flowPlan,#homeProgress){min-width:0!important;padding:clamp(12px,3.6vw,18px)!important}
+#nzKpiDashboard .nzKpiTile{height:100%!important;min-height:clamp(166px,39vw,202px)!important;gap:7px!important;justify-content:flex-start!important}
+#nzKpiDashboard .nzKpiTile .nzKpiNumber{font-size:clamp(19px,5.3vw,28px)!important;line-height:1.12!important;letter-spacing:-.035em!important;overflow-wrap:anywhere}
+#nzKpiDashboard .nzKpiEyebrow{font-size:clamp(10px,2.7vw,12px)!important;line-height:1.35;overflow-wrap:anywhere;letter-spacing:.08em}
+#nzKpiDashboard .nzKpiSub{font-size:clamp(11px,2.75vw,13px)!important;line-height:1.4!important;min-height:0!important;overflow-wrap:anywhere}
+#nzKpiDashboard .nzKpiFoot{font-size:clamp(10px,2.55vw,12px)!important;line-height:1.35!important;overflow-wrap:anywhere}
+#nzKpiDashboard .nzKpiChart{height:clamp(40px,11vw,56px)!important;max-width:100%;flex-shrink:0}
+#nzKpiDashboard .nzKpiFull{height:auto!important;min-height:0!important}
+#nzKpiDashboard button{touch-action:manipulation}
+#nzKpiDashboard .flowPlan h2{font-size:clamp(17px,4.55vw,25px)!important}
+#nzKpiDashboard #homeProgress .flowWeight b{font-size:clamp(19px,5.9vw,30px)!important}
+#nzNutritionModal #nzModalStats b{font-size:clamp(18px,4.4vw,23px)!important;overflow-wrap:anywhere}
+#nzMacroRings .nzRingGrid{gap:clamp(4px,1.7vw,9px)!important}
+#nzMacroRings .nzRingUnit{min-width:0!important;padding:9px 3px!important}
+#nzMacroRings .nzRingSvg{max-width:100%!important}
+/* Immediate, restrained acknowledgments; never imply a backend save succeeded. */
+button:not([disabled]), [role="button"]{ -webkit-tap-highlight-color:transparent;transition:transform .14s ease,filter .16s ease,box-shadow .18s ease,border-color .18s ease }
+button:active:not([disabled]), [role="button"]:active{transform:scale(.975);filter:brightness(1.13)}
+.nz7202-pressed{animation:nz7202Tap .29s ease-out!important;box-shadow:0 0 0 1px rgba(143,231,186,.6),0 0 0 4px rgba(143,231,186,.10)!important}
+@keyframes nz7202Tap{0%{filter:brightness(1.19);transform:scale(.975)}65%{filter:brightness(1.12)}100%{filter:brightness(1);transform:scale(1)}}
+#nz7202Acknowledge{position:fixed;bottom:calc(81px + env(safe-area-inset-bottom));left:50%;transform:translate(-50%,8px);z-index:1000300;background:rgba(15,43,49,.96);border:1px solid #5d927c;color:#e6fff1;border-radius:13px;padding:10px 15px;max-width:min(88vw,370px);box-shadow:0 9px 28px #0007;font-size:12px;font-weight:650;line-height:1.3;letter-spacing:.01em;text-align:center;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s}
+#nz7202Acknowledge.nz7202-show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:360px){#nzKpiDashboard{gap:7px!important}#nzKpiDashboard :is(.nzKpiTile,.flowPlan,#homeProgress){padding:11px!important}#nzKpiDashboard .nzKpiTile{min-height:158px!important}}
+@media(min-width:650px) and (orientation:landscape){body .wrap{max-width:1000px!important}#nzKpiDashboard{grid-template-columns:repeat(4,minmax(0,1fr))!important}#nzKpiDashboard .nzKpiTile{min-height:182px!important}#nzKpiDashboard .nzKpiNumber{font-size:clamp(20px,2.4vw,29px)!important}#nzNutritionModal .nzPanel{max-width:900px!important}body.nz-nutrition-active #nzNutritionModal:not([hidden]){inset:calc(48px + env(safe-area-inset-top)) 0 calc(74px + env(safe-area-inset-bottom)) 0!important}}
+@media(prefers-reduced-motion:reduce){.nz7202-pressed,button,[role="button"],#nz7202Acknowledge{animation:none!important;transition:none!important}}
+</style>
+<script id="nzUnifiedShell7202Script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+function init(){
+ const modal=$('nzNutritionModal'),nav=$('nzNutritionNav'),tabbar=document.querySelector('.tabbar');
+ if(!modal||!nav||!tabbar)return;
+ modal.setAttribute('role','region');modal.setAttribute('aria-modal','false');modal.setAttribute('aria-label','Nutrition');
+ const heading=modal.querySelector('.nzNutritionTitleBar h2');if(heading&&heading.textContent.trim()==='NONZERO Nutrition')heading.textContent='Nutrition';
+ let nutritionLast=false;
+ const updateShell=()=>{
+  const active=!modal.hidden;
+  document.body.classList.toggle('nz-nutrition-active',active);
+  if(active){tabbar.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===nav));}
+  else if(nutritionLast&&nav.classList.contains('active')){
+   nav.classList.remove('active');const selected=document.querySelector('.tabbar button[data-tab].active');if(!selected)document.querySelector('.tabbar button[data-tab="Today"]')?.classList.add('active');
+  }
+  nutritionLast=active;
+ };
+ new MutationObserver(updateShell).observe(modal,{attributes:true,attributeFilter:['hidden','style','class']});
+ updateShell();
+ // Preserve original tab actions; Nutrition is simply an additional persistent destination.
+ tabbar.addEventListener('click',e=>{if(e.target.closest('button')&&!e.target.closest('#nzNutritionNav'))requestAnimationFrame(updateShell)});
+ const toast=document.createElement('div');toast.id='nz7202Acknowledge';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');document.body.append(toast);
+ let toastTimer=0;
+ function acknowledge(message){window.clearTimeout(toastTimer);toast.textContent=message;toast.classList.add('nz7202-show');toastTimer=window.setTimeout(()=>toast.classList.remove('nz7202-show'),1350)}
+ function intentMessage(button){if(button.disabled)return '';
+  const txt=(button.getAttribute('aria-label')||button.textContent||'').trim().replace(/\s+/g,' ').toLowerCase();
+  if(button.closest('.tabbar'))return ''; // native selected-state transition is enough
+  if(button.matches('#nzCloseNutrition,#nzNutritionBack'))return '';
+  if(/^(save|add food|log meal|log favorite|log food|add to food log|sync now|connect now|refresh outlook|publish|finalize|use pm5 data|end workout|delete)/.test(txt))return /delete/.test(txt)?'Action received · confirm any changes':'Working on it…';
+  if(/^(scan barcode|analyze|search foods|start camera)/.test(txt))return 'Opening tool…';
+  return '';
+ }
+ // Capture-time feedback works even when old handlers perform expensive synchronous work.
+ document.addEventListener('click',e=>{const button=e.target.closest('button,[role="button"]');if(!button||button.disabled)return;
+  button.classList.remove('nz7202-pressed');void button.offsetWidth;button.classList.add('nz7202-pressed');window.setTimeout(()=>button.classList.remove('nz7202-pressed'),300);
+  const msg=intentMessage(button);if(msg)acknowledge(msg);
+ },true);
+ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('button,[role="button"]')&&!e.target.disabled){e.target.classList.add('nz7202-pressed');window.setTimeout(()=>e.target.classList.remove('nz7202-pressed'),290)}},true);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
 </script>
 </body>
 </html>
