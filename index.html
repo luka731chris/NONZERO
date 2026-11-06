@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.20.6 · Nutrition Harmony</title>
+    <title>NONZERO v7.20.8 · Nutrition Clarity</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3979,7 +3979,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.20.6</small></span>
+            <span class="flowBrand">NONZERO <small>v7.20.7</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -18085,7 +18085,7 @@ function organize(){
  grid.append(more);}
  const area=$('nzTodayInsightGrid');
  if(!area)return;
- for(const id of ['nzMacroRings','nzCoachPanel','nzPredictiveCard','nzKpiMacroTile','nzKpiWeightTile','nzKpiStatusTile','nzTodayNutrition','nzAutoPilotToday','nzPOverview']){
+ for(const id of ['nzCoachPanel','nzPredictiveCard','nzKpiMacroTile','nzKpiWeightTile','nzKpiStatusTile','nzTodayNutrition','nzAutoPilotToday','nzPOverview']){
   const el=$(id);if(el&&el.parentElement!==area)area.append(el);
  }
  const quick=landing.querySelector('.flowQuick');if(quick&&quick.parentElement!==area)area.append(quick);
@@ -18107,77 +18107,159 @@ setTimeout(schedule,1100);
 })();
 </script>
 
-<style id="nzNutritionHarmony7206Style">
-/* Design discipline: one nutrition dashboard on Today, deeper rings in Nutrition.
-   Hidden legacy KPI nodes are preserved for existing app update/binding logic. */
-#nzKpiDashboard #nzKpiProteinTile{display:none!important}
-#nzKpiDashboard #nzNutritionCard{grid-column:1/-1!important}
-#nzKpiDashboard #nzNutritionCard .nzQRow{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
-#nzKpiDashboard #nzNutritionCard .nzQMacro{min-width:0!important}
-#nzKpiDashboard #nzNutritionCard .nzQMacro b{font-variant-numeric:tabular-nums;line-height:1.1!important}
-#nzKpiDashboard #nzNutritionCard .nzQBig{font-variant-numeric:tabular-nums}
-/* Nutrition is a real destination, with full-width health-style progress visualization. */
-#nzNutritionModal #nzMacroRings{order:-9;display:block!important;margin:0 0 11px!important;grid-column:auto!important;width:100%;background:linear-gradient(150deg,#173542,#102733)!important;border:1px solid rgba(189,218,222,.2)!important;border-radius:22px!important;padding:16px!important}
-#nzNutritionModal #nzQModal{display:none!important} /* totals duplicated inside the ring summary */
-#nzNutritionModal #nzMacroRings .nzRingHeader{margin-bottom:6px}
-#nzNutritionModal #nzMacroRings .nzRingHeader h2{font-size:18px!important;letter-spacing:-.025em}
-#nzNutritionModal #nzMacroRings .nzConcentricLayout{display:grid;grid-template-columns:minmax(0,1fr);gap:13px;justify-items:center;margin-top:5px}
-#nzNutritionModal #nzMacroRings .nzConcentricViz{width:min(100%,260px);aspect-ratio:1;display:block;overflow:visible}
-#nzNutritionModal #nzMacroRings .nzCTrack{stroke:#2c4754;stroke-width:10;fill:none}
-#nzNutritionModal #nzMacroRings .nzCProgress{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .45s ease-out}
-#nzNutritionModal #nzMacroRings .nzCMain{font:800 26px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;fill:#f4f8f8;text-anchor:middle;font-variant-numeric:tabular-nums}
-#nzNutritionModal #nzMacroRings .nzCSmall{font:650 11px/1 system-ui,-apple-system,sans-serif;letter-spacing:.08em;fill:#b7cfd4;text-anchor:middle}
-#nzNutritionModal #nzMacroRings .nzCLegend{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-#nzNutritionModal #nzMacroRings .nzRingGrid{display:contents!important}
-#nzNutritionModal #nzMacroRings .nzRingUnit{min-height:86px!important;padding:12px!important;align-items:flex-start!important;justify-content:center!important;gap:3px!important;text-align:left!important;border-radius:14px!important;background:#0d2531b0!important;border-color:#35525d!important}
-#nzNutritionModal #nzMacroRings .nzRingUnit .nzRingSvg{display:none!important}
-#nzNutritionModal #nzMacroRings .nzRingCaption{font-size:13px!important;text-align:left!important;letter-spacing:0!important;min-height:0!important;color:#bdd2d7!important}
-#nzNutritionModal #nzMacroRings .nzRingStatus{font-size:13px!important;text-align:left!important;line-height:1.35!important;color:#e7f2f1!important}
-#nzNutritionModal #nzMacroRings .nzRingUnit:before{content:'';width:25px;height:4px;border-radius:9px;background:var(--nz-ring-tone,#f4d35e);display:block;margin-bottom:4px}
-#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="cal"]{--nz-ring-tone:#f4d35e}
-#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="protein"]{--nz-ring-tone:#8bd9bc}
-#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="carbs"]{--nz-ring-tone:#88bdf3}
-#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="fat"]{--nz-ring-tone:#cbadee}
-#nzNutritionModal #nzMacroRings .nzRingFoot{font-size:12px!important;line-height:1.45!important;margin-top:10px!important;color:#b8cbd3!important}
-#nzNutritionModal #nzMacroRings .nzRingActions{margin-top:11px!important}
-#nzNutritionModal #nzMacroRings .nzRingActions button{font-size:13px!important;font-weight:700!important}
-@media(min-width:610px){#nzNutritionModal #nzMacroRings .nzConcentricLayout{grid-template-columns:minmax(200px,245px) 1fr;align-items:center;justify-items:stretch;gap:16px}#nzNutritionModal #nzMacroRings .nzConcentricViz{width:100%}}
-@media(max-width:359px){#nzNutritionModal #nzMacroRings{padding:11px!important}#nzNutritionModal #nzMacroRings .nzConcentricViz{width:205px}#nzNutritionModal #nzMacroRings .nzRingUnit{padding:10px!important}#nzKpiDashboard #nzNutritionCard .nzQRow{gap:5px!important}}
-@media(prefers-reduced-motion:reduce){#nzNutritionModal #nzMacroRings .nzCProgress{transition:none!important}}
+
+<style id="nzNutritionClarity7207Style">
+/* v7.20.7 — one deliberate visualization per level, original handlers retained. */
+#nzKpiDashboard #nzKpiProteinTile {display:none!important}
+#nzKpiDashboard #nzNutritionCard {grid-column:1/-1!important; padding:17px!important; min-width:0;}
+#nzKpiDashboard #nzNutritionCard .nzStats,
+#nzKpiDashboard #nzNutritionCard .nzQBig,
+#nzKpiDashboard #nzNutritionCard .nzQTrack,
+#nzKpiDashboard #nzNutritionCard .nzQFine,
+#nzKpiDashboard #nzNutritionCard .nzQRow,
+#nzKpiDashboard #nzNutritionCard .nzQWeek,
+#nzKpiDashboard #nzNutritionCard #nzNutritionLast {display:none!important}
+#nzTodayMacroSummary{display:flex;flex-direction:column;gap:14px;margin-top:15px}
+#nzTodayMacroSummary .nzTodayMacroHeading{font-size:12px;line-height:1.45;color:#bdd0d6}
+#nzTodayMacroSummary .nzTodayMacroMiniGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+#nzTodayMacroSummary .nzTodayMacroMini{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;border-radius:15px;background:#0e2633;border:1px solid rgba(176,210,220,.15);padding:11px 3px 10px;color:#f2f8f9;cursor:pointer;min-height:142px;box-sizing:border-box}
+#nzTodayMacroSummary .nzTodayMacroMini:focus-visible{outline:2px solid #f4d35e;outline-offset:2px}
+#nzTodayMacroSummary .nzTodayMacroSvg{display:block;width:min(100%,86px);height:86px;overflow:visible}
+#nzTodayMacroSummary .nzTodayMacroTrack{fill:none;stroke:#2c4552;stroke-width:8}
+#nzTodayMacroSummary .nzTodayMacroFill{fill:none;stroke-width:8;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .35s ease-out}
+#nzTodayMacroSummary .nzTodayMacroPct{font:760 19px system-ui,-apple-system,sans-serif;text-anchor:middle;fill:#f6f9fa;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+#nzTodayMacroSummary .nzTodayMacroName{font-size:13px;line-height:1.1;font-weight:750}
+#nzTodayMacroSummary .nzTodayMacroValue{font-size:12px;line-height:1.25;color:#c1d3d8;font-variant-numeric:tabular-nums;text-align:center}
+#nzTodayMacroSummary .nzCalorieThermo{width:100%;display:flex;flex-direction:column;gap:9px;border-top:1px solid rgba(188,215,223,.13);padding-top:13px}
+#nzTodayMacroSummary .nzCalorieRow{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#nzTodayMacroSummary .nzCalorieLabel{font-size:14px;font-weight:760;color:#f4d35e}
+#nzTodayMacroSummary .nzCalorieValues{font-size:15px;font-weight:720;color:#f7f9f9;font-variant-numeric:tabular-nums;white-space:nowrap}
+#nzTodayMacroSummary .nzCalorieValues small{color:#b6c8d1;font-weight:500;font-size:12px}
+#nzTodayMacroSummary .nzCalorieRail{position:relative;background:#2b4654;border-radius:99px;width:100%;height:14px;overflow:hidden}
+#nzTodayMacroSummary .nzCalorieFill{position:absolute;inset:0 auto 0 0;width:0;border-radius:99px;background:linear-gradient(90deg,#b9a34f,#f4d35e);transition:width .35s ease-out}
+#nzTodayMacroSummary .nzCalorieFill[data-over="yes"]{background:linear-gradient(90deg,#f4d35e,#f09d78)}
+#nzTodayMacroSummary .nzCalorieNote{font-size:12px;color:#bed0d6;line-height:1.35}
+/* Full Nutrition destination: restore four labeled, individual KPI ring cards. */
+#nzNutritionModal #nzMacroRings{display:block!important;width:100%;margin:0 0 12px!important;border-radius:21px!important;padding:16px!important;background:linear-gradient(150deg,#173441,#102733)!important;border:1px solid rgba(183,214,220,.18)!important;box-sizing:border-box}
+#nzNutritionModal #nzMacroRings .nzRingHeader{margin-bottom:13px!important}
+#nzNutritionModal #nzMacroRings h2{font-size:19px!important;line-height:1.2!important}
+#nzNutritionModal #nzMacroRings .nzRingTag{font-size:11px!important}
+#nzNutritionModal #nzMacroRings .nzRingGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}
+#nzNutritionModal #nzMacroRings .nzRingUnit{min-height:190px!important;background:#0c2430!important;border:1px solid #34515d!important;border-radius:18px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;padding:15px 8px 12px!important}
+#nzNutritionModal #nzMacroRings .nzRingSvg{display:block!important;width:112px!important;height:112px!important;flex:none!important;overflow:visible!important}
+#nzNutritionModal #nzMacroRings .nzRingNum{font-size:19px!important;font-weight:800!important;letter-spacing:-.06em!important}
+#nzNutritionModal #nzMacroRings .nzRingCaption{font-size:14px!important;font-weight:750!important;line-height:1.2!important;color:#e7f1f2!important}
+#nzNutritionModal #nzMacroRings .nzRingStatus{font-size:13px!important;font-weight:550!important;color:#bcd1d7!important;line-height:1.35!important;white-space:normal!important}
+#nzNutritionModal #nzMacroRings .nzRingStatus{display:none!important}
+#nzNutritionModal #nzMacroRings .nzRingGoalLine{font-size:13px;font-weight:650;color:#c6d9de;line-height:1.3;text-align:center;font-variant-numeric:tabular-nums}
+#nzNutritionModal #nzMacroRings .nzRingFoot{font-size:12px!important;min-height:0!important}
+#nzNutritionModal #nzMacroRings .nzRingActions button{font-size:13px!important;min-height:43px!important}
+#nzNutritionModal #nzQModal{display:none!important}
+#nzNutritionModal #nzMacroRings .nzCProgress,
+#nzNutritionModal #nzMacroRings .nzConcentricLayout{display:none!important}
+/* Don't promote duplicate calorie and protein charts above daily actions. */
+#nzTodayInsightGrid #nzTodayNutrition {display:none!important}
+@media(min-width:690px){#nzNutritionModal #nzMacroRings .nzRingGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#nzNutritionModal #nzMacroRings .nzRingUnit{min-height:175px!important} }
+@media(max-width:355px){#nzTodayMacroSummary .nzTodayMacroMiniGrid{gap:6px}#nzTodayMacroSummary .nzTodayMacroMini{padding:9px 2px;min-height:135px}#nzTodayMacroSummary .nzTodayMacroSvg{height:75px;width:75px}#nzTodayMacroSummary .nzTodayMacroValue{font-size:11px}#nzNutritionModal #nzMacroRings .nzRingUnit{min-height:176px!important;padding:11px 4px!important}#nzNutritionModal #nzMacroRings .nzRingSvg{width:94px!important;height:94px!important}}
+@media(prefers-reduced-motion:reduce){#nzTodayMacroSummary .nzTodayMacroFill,#nzTodayMacroSummary .nzCalorieFill{transition:none!important}}
 </style>
-<script id="nzNutritionHarmony7206Script">
+<script id="nzNutritionClarity7207Script">
 (()=>{'use strict';
-const $=id=>document.getElementById(id);
-const spec=[{key:'cal',target:'calories',name:'Calories',color:'#f4d35e',r:105},{key:'protein',target:'protein',name:'Protein',color:'#8bd9bc',r:86},{key:'carbs',target:'carbs',name:'Carbs',color:'#88bdf3',r:67},{key:'fat',target:'fat',name:'Fat',color:'#cbadee',r:48}];
-const num=v=>Number.isFinite(Number(v))&&Number(v)>=0?Number(v):0;
-const day=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
-function current(){let x={};try{x=JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')||{}}catch{};const entries=(Array.isArray(x.entries)?x.entries:[]).filter(e=>e.day===day()&&!e.deleted&&!e.deletedAt);const totals={cal:0,protein:0,carbs:0,fat:0};for(const e of entries)for(const k of Object.keys(totals))totals[k]+=num(e[k]);return {totals,targets:x.targets||{},count:entries.length}}
-function create(){const rings=$('nzMacroRings'),panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!rings||!panel)return false;
- // The existing four buttons and their trend handlers remain the actionable legend.
- const pivot=$('nzQModal');if(rings.parentElement!==panel){if(pivot&&pivot.parentElement===panel)pivot.after(rings);else panel.prepend(rings)}
- const protein=$('nzKpiProteinTile');if(protein){protein.tabIndex=-1;protein.setAttribute('aria-hidden','true')}
- if(rings.dataset.concentricReady==='1')return true;
- const host=document.createElement('div');host.className='nzConcentricLayout';host.id='nzConcentricLayout';
- const circles=spec.map(m=>{const length=2*Math.PI*m.r;return `<circle class="nzCTrack" cx="130" cy="130" r="${m.r}"/><circle data-concentric="${m.key}" class="nzCProgress" cx="130" cy="130" r="${m.r}" stroke="${m.color}" stroke-dasharray="${length.toFixed(3)}" stroke-dashoffset="${length.toFixed(3)}" transform="rotate(-90 130 130)"/>`}).join('');
- host.innerHTML=`<svg class="nzConcentricViz" viewBox="0 0 260 260" role="img" aria-label="Today's calorie and macro target progress"><title>Nutrition goal progress</title>${circles}<text class="nzCMain" x="130" y="128" id="nzConcentricCount">0</text><text class="nzCSmall" x="130" y="146">FOODS LOGGED</text></svg><div class="nzCLegend"></div>`;
- const grid=rings.querySelector('.nzRingGrid');if(!grid)return false;
- const legend=host.querySelector('.nzCLegend');legend.append(grid);rings.querySelector('.nzRingHeader')?.after(host);
- // The old individual-ring SVGs are hidden visually but retained for original metric scripts.
- rings.dataset.concentricReady='1';
- const log=$('nzRingLog');if(log)log.onclick=()=>{const field=$('nzName');if(field){field.scrollIntoView({block:'center',behavior:'smooth'});field.focus()}else $('nzOpenNutrition')?.click()};
- return true;
+const $=id=>document.getElementById(id), N=v=>Number.isFinite(Number(v))&&Number(v)>=0?Number(v):0;
+const specs=[{key:'protein',label:'Protein',color:'#8bd9bc'},{key:'carbs',label:'Carbs',color:'#88bdf3'},{key:'fat',label:'Fat',color:'#cbadee'}];
+const localDay=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+function state(){let data={};try{data=JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')||{}}catch{}const entries=(Array.isArray(data.entries)?data.entries:[]).filter(e=>e&&e.day===localDay()&&!e.deleted&&!e.deletedAt);const sums={cal:0,protein:0,carbs:0,fat:0};for(const e of entries)for(const k in sums)sums[k]+=N(e[k]);return {sums,targets:data.targets||{},count:entries.length};}
+function make(){const card=$('nzNutritionCard');if(!card)return false;
+let mini=$('nzTodayMacroSummary');if(!mini){mini=document.createElement('div');mini.id='nzTodayMacroSummary';mini.setAttribute('aria-label','Today nutrition progress');
+mini.innerHTML='<div class="nzTodayMacroHeading">Daily macro progress · select a ring to explore Nutrition</div><div class="nzTodayMacroMiniGrid">'+specs.map(m=>`<button type="button" class="nzTodayMacroMini" data-macro="${m.key}" aria-label="View ${m.label} progress"><svg viewBox="0 0 88 88" class="nzTodayMacroSvg" aria-hidden="true"><circle class="nzTodayMacroTrack" cx="44" cy="44" r="32"/><circle class="nzTodayMacroFill" data-fill="${m.key}" cx="44" cy="44" r="32" stroke="${m.color}"/><text class="nzTodayMacroPct" data-pct="${m.key}" x="44" y="50">—</text></svg><span class="nzTodayMacroName">${m.label}</span><span class="nzTodayMacroValue" data-value="${m.key}">Set a target</span></button>`).join('')+'</div><div class="nzCalorieThermo" role="group" aria-label="Daily calorie progress"><div class="nzCalorieRow"><span class="nzCalorieLabel">Calories</span><span class="nzCalorieValues" id="nzThermoValue">—</span></div><div class="nzCalorieRail" role="progressbar" aria-label="Calorie target progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="nzCalorieFill" id="nzThermoFill"></div></div><div class="nzCalorieNote" id="nzThermoNote">Set a calorie target to track progress.</div></div>';
+card.appendChild(mini);
+mini.querySelectorAll('[data-macro]').forEach(btn=>btn.addEventListener('click',()=>{$('nzOpenNutrition')?.click();setTimeout(()=>{$('nzMacroRings')?.scrollIntoView({block:'start',behavior:'smooth'})},100)}));
 }
-function refresh(){const rings=$('nzMacroRings');if(!rings||rings.dataset.concentricReady!=='1')return;const {totals,targets,count}=current();const main=$('nzConcentricCount');if(main)main.textContent=String(count);
- for(const m of spec){const goal=num(targets[m.target]),actual=totals[m.key],line=rings.querySelector(`[data-concentric="${m.key}"]`);if(!line)continue;const length=2*Math.PI*m.r;const fraction=goal>0?Math.max(0,Math.min(1,actual/goal)):0;line.setAttribute('stroke-dashoffset',(length*(1-fraction)).toFixed(3));line.setAttribute('aria-label',`${m.name}: ${Math.round(actual)}${goal?' of '+Math.round(goal):''}`)}
- const img=rings.querySelector('.nzConcentricViz');if(img)img.setAttribute('aria-label',spec.map(m=>`${m.name} ${Math.round(totals[m.key])}${num(targets[m.target])?' of '+Math.round(num(targets[m.target])):' with no goal'}`).join(', '));
+const rings=$('nzMacroRings'),panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(rings&&panel&&rings!==panel.firstElementChild){panel.prepend(rings)}
+const prot=$('nzKpiProteinTile');if(prot){prot.setAttribute('aria-hidden','true');prot.tabIndex=-1}
+return !!mini;
 }
-let pending=false;
-function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;if(create())refresh()})}
-function init(){schedule();const modal=$('nzNutritionModal');if(modal)new MutationObserver(schedule).observe(modal,{attributes:true,attributeFilter:['hidden']});}
+function render(){const mini=$('nzTodayMacroSummary');if(!mini)return;const {sums,targets,count}=state();const radius=32,circ=2*Math.PI*radius;
+for(const m of specs){const value=sums[m.key],goal=N(targets[m.key]),fraction=goal>0?value/goal:0;const fill=mini.querySelector(`[data-fill="${m.key}"]`),pct=mini.querySelector(`[data-pct="${m.key}"]`),txt=mini.querySelector(`[data-value="${m.key}"]`),btn=mini.querySelector(`[data-macro="${m.key}"]`);if(!fill)continue;fill.style.strokeDasharray=String(circ);fill.style.strokeDashoffset=String(circ*(1-Math.min(1,Math.max(0,fraction))));pct.textContent=goal>0?Math.round(fraction*100)+'%':'—';txt.textContent=goal>0?`${Math.round(value)} / ${Math.round(goal)}g`:`${Math.round(value)}g · set goal`;btn.setAttribute('aria-label',`${m.label} ${Math.round(value)} grams of ${goal?Math.round(goal)+' gram goal':'no target set'}. Open Nutrition`)}
+const actual=sums.cal,target=N(targets.calories),value=$('nzThermoValue'),fill=$('nzThermoFill'),note=$('nzThermoNote'),rail=mini.querySelector('.nzCalorieRail');const display=Math.round(actual).toLocaleString();value.innerHTML=target?`${display} <small>/ ${Math.round(target).toLocaleString()} kcal</small>`:`${display} <small>kcal · target not set</small>`;fill.style.width=(target?Math.min(100,actual/target*100):0)+'%';fill.dataset.over=target&&actual>target?'yes':'no';rail.setAttribute('aria-valuenow',String(target?Math.min(100,Math.round(actual/target*100)):0));rail.setAttribute('aria-valuetext',target?`${Math.round(actual)} of ${Math.round(target)} kilocalories`:'No calorie goal set');note.textContent=target?(actual<=target?`${Math.round(target-actual).toLocaleString()} kcal remaining · ${count} ${count===1?'food':'foods'} logged`:`${Math.round(actual-target).toLocaleString()} kcal above target · ${count} ${count===1?'food':'foods'} logged`):'Set a calorie goal in Nutrition to see your daily allowance.';
+const rings=$('nzMacroRings');if(rings){const h=rings.querySelector('.nzRingHeader h2');if(h)h.textContent='Daily nutrition · goals';const tags=rings.querySelectorAll('.nzRingUnit');for(const tag of tags){const key=tag.getAttribute('data-ring');if(!key)continue;const label=key==='cal'?'Calories':key[0].toUpperCase()+key.slice(1);const unit=key==='cal'?'kcal':'g';const goal=N(targets[key==='cal'?'calories':key]);const val=sums[key];const caption=tag.querySelector('.nzRingCaption');if(caption)caption.textContent=label;const status=tag.querySelector('.nzRingStatus');if(status)status.textContent=goal?`${Math.round(val)} / ${Math.round(goal)} ${unit}`:`${Math.round(val)} ${unit} · set goal`;let goalLine=tag.querySelector('.nzRingGoalLine');if(!goalLine){goalLine=document.createElement('span');goalLine.className='nzRingGoalLine';tag.append(goalLine)}goalLine.textContent=goal?`${Math.round(val)} / ${Math.round(goal)} ${unit}`:`${Math.round(val)} ${unit} · Set goal`;tag.setAttribute('aria-label',`${label} ${Math.round(val)} of ${goal?Math.round(goal):'unset'} ${unit}. View 14-day trend`);}}
+}
+let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;if(make())render()})}
+function init(){schedule();const card=$('nzNutritionCard');if(card){new MutationObserver(()=>{if(!$('nzTodayMacroSummary'))schedule()}).observe(card,{childList:true});}const modal=$('nzNutritionModal');if(modal)new MutationObserver(schedule).observe(modal,{attributes:true,attributeFilter:['hidden']});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-for(const event of ['nz-nutrition-local-saved','nz-nutrition-cloud-rendered','nz-nutrition-cloud-updated','suite-state-changed'])window.addEventListener(event,schedule);
+for(const ev of ['nz-nutrition-local-saved','nz-nutrition-cloud-rendered','nz-nutrition-cloud-updated','suite-state-changed','storage'])window.addEventListener(ev,schedule);
 window.addEventListener('focus',schedule);document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
-setTimeout(schedule,900);setTimeout(schedule,2200);
+setTimeout(schedule,1000);setTimeout(schedule,2400);
+})();
+</script>
+<!-- NONZERO v7.20.8 · Weight Center: original workout/weight/cloud logic retained -->
+<style id="nzWeightCenterStyle">
+#nzWeightCenter{background:linear-gradient(165deg,#182f3b,#0c1926);border:1px solid #466372;border-radius:20px;padding:clamp(16px,4vw,22px);margin:12px 0 22px;color:#edf5f5;box-shadow:0 8px 28px #0002}
+#nzWeightCenter .nzw-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#nzWeightCenter .nzw-eyebrow{font-size:12px;color:#f4d35e;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+#nzWeightCenter h2{font-size:clamp(22px,6vw,28px);margin:4px 0;letter-spacing:-.03em;color:#f5f9fc}
+#nzWeightCenter .nzw-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#nzWeightCenter .nzw-stat{background:#132b3a;border:1px solid #314957;padding:13px;border-radius:15px;min-width:0}
+#nzWeightCenter .nzw-stat>span{display:block;font-size:13px;color:#bbd0d9;font-weight:650;margin-bottom:6px}
+#nzWeightCenter .nzw-stat>strong{display:block;font-size:clamp(24px,7vw,34px);font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.035em;overflow-wrap:anywhere}
+#nzWeightCenter .nzw-stat>small{font-size:12px;color:#bbcbd3;display:block;margin-top:6px;line-height:1.4}
+#nzWeightCenter .nzw-hero{margin:14px 0;border:1px solid #54746f;border-radius:14px;background:#13352f;padding:13px}
+#nzWeightCenter .nzw-hero strong{display:block;font-size:15px;color:#effcf5}
+#nzWeightCenter .nzw-hero p{margin:6px 0 0;color:#bfd8d5;font-size:13px;line-height:1.45}
+#nzWeightCenter .nzw-entry{border-top:1px solid #345360;padding-top:14px;margin-top:14px}
+#nzWeightCenter .nzw-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+#nzWeightCenter label{display:block;font-size:13px;font-weight:650;color:#c4d5dc}
+#nzWeightCenter input{display:block;width:100%;box-sizing:border-box;min-width:0;font-size:18px;font-weight:750;color:#f7fafc;background:#102638;border:1px solid #526a7a;border-radius:12px;padding:13px 10px;margin-top:7px;min-height:48px;font-variant-numeric:tabular-nums}
+#nzWeightCenter button,#nzWeightCenter .nzw-shortcut{border:1px solid #527580;border-radius:12px;background:#223f50;color:#eaf4f6;font:700 14px system-ui,-apple-system,sans-serif;min-height:47px;padding:11px 12px;cursor:pointer;transition:transform .12s ease,filter .12s ease}
+#nzWeightCenter button:active,#nzWeightCenter .nzw-shortcut:active{transform:scale(.98)}
+#nzWeightCenter #nzwSave{background:#f4d35e;color:#18232c;border-color:#f4d35e;width:100%;margin-top:11px;font-size:15px}
+#nzWeightCenter .nzw-actionrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+#nzWeightCenter .nzw-shortcut{text-align:center;display:flex;align-items:center;justify-content:center;text-decoration:none}
+#nzWeightCenter .nzw-status{font-size:13px;color:#c1d4d8;margin:9px 0;line-height:1.5}
+#nzWeightCenter #nzwReceipt{min-height:21px;font-weight:650;color:#b7ecd4}
+#nzWeightCenter #nzwReceipt[data-error="true"]{color:#ffc2ad}
+#nzWeightCenter details{border-top:1px solid #344e60;margin-top:14px;padding-top:12px;font-size:13px;color:#c3d5dc}
+#nzWeightCenter summary{color:#f4d35e;font-weight:750;cursor:pointer}
+#nzWeightCenter .nzw-history{list-style:none;margin:10px 0 0;padding:0}
+#nzWeightCenter .nzw-history li{display:flex;gap:8px;justify-content:space-between;padding:8px 0;border-bottom:1px solid #273f4d}
+@media(max-width:350px){#nzWeightCenter .nzw-fields{grid-template-columns:1fr}#nzWeightCenter .nzw-stat>strong{font-size:26px}}
+@media(orientation:landscape) and (max-height:500px){#nzWeightCenter .nzw-stat>strong{font-size:30px}#nzWeightCenter .nzw-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){#nzWeightCenter button{transition:none!important}}
+</style>
+<script id="nzWeightCenterScript">
+(()=>{'use strict';
+const $=s=>document.getElementById(s),KEY='hipPrehabV2';let lastCheck=0,checkBusy=false;
+function read(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
+function day(){let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function rows(){return (read().bodyMeasurements||[]).filter(r=>r&&/^\d{4}-\d{2}-\d{2}$/.test(r.date||'')&&Number(r.weightLb)>=50&&Number(r.weightLb)<=700&&r.date<=day()).slice().sort((a,b)=>a.date.localeCompare(b.date)||Number(a.at||0)-Number(b.at||0))}
+function fmtDate(s){if(!s)return '—';const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}
+function source(x){if(!x)return 'No reading';return x.source==='apple-health'?'Apple Health'+(x.sourceName&&x.sourceName!=='Apple Health'?' · '+x.sourceName:''):x.source==='manual'?'Manual entry':x.source==='withings-reported'?'Previously reported':'Other source'}
+function stamp(t){let n=Number(t);return n>0&&Number.isFinite(n)?new Date(n).toLocaleString():'Not yet received'}
+function init(){if($('nzWeightCenter'))return;let target=$('tabHistory');if(!target)return;const hub=document.createElement('section');hub.id='nzWeightCenter';hub.setAttribute('aria-label','Weight center');hub.innerHTML=`<div class="nzw-head"><div><div class="nzw-eyebrow">NONZERO · WEIGHT</div><h2>Weight center</h2></div><span style="color:#c5d5d9;font-size:12px">One reading. One clear status.</span></div>
+<div class="nzw-grid"><div class="nzw-stat"><span>Latest reading</span><strong id="nzwLatest">—</strong><small id="nzwLatestSource">No saved reading</small></div><div class="nzw-stat"><span>7-day average</span><strong id="nzwAverage">—</strong><small id="nzwCount">Not enough readings</small></div></div>
+<div class="nzw-hero" role="status" aria-live="polite"><strong id="nzwCurrent">Checking saved weight</strong><p id="nzwCloud">—</p></div>
+<div class="nzw-entry"><div class="nzw-eyebrow">Save a measurement</div><div class="nzw-fields"><label>Weight · lb<input id="nzwInput" type="number" min="50" max="700" step="0.1" inputmode="decimal" placeholder="e.g. 224.6"></label><label>Measurement date<input id="nzwDate" type="date"></label></div><button id="nzwSave" type="button">Save weight</button><p id="nzwReceipt" class="nzw-status" role="status" aria-live="polite"></p></div>
+<div class="nzw-actionrow"><button type="button" id="nzwCheck">Check NONZERO cloud</button><a class="nzw-shortcut" href="shortcuts://run-shortcut?name=NONZERO%20Weight%20Sync" id="nzwShortcut">Run iPhone Shortcut</a></div>
+<p class="nzw-status" id="nzwHealth">Checking imported readings…</p><p class="nzw-status">The Shortcut sends Apple Health weight to NONZERO. “Check cloud” only checks for a reading already delivered; it cannot make Apple Health or Withings send one.</p>
+<details><summary>Recent readings and sync help</summary><ul class="nzw-history" id="nzwHistory"></ul><p id="nzwShortcutNote">If the Shortcut hasn't delivered a newer Health reading, check that Withings has written the weight to Apple Health, then run the Shortcut while your iPhone is unlocked.</p><button type="button" id="nzwSettings">Weight Shortcut settings</button></details>`;
+target.prepend(hub);$('nzwDate').value=day();$('nzwDate').max=day();$('nzwSave').addEventListener('click',saveWeight);$('nzwCheck').addEventListener('click',checkCloud);$('nzwSettings').addEventListener('click',()=>{$('openWeightSettings')?.click()});$('nzwShortcut').addEventListener('click',()=>{receipt('Opening your iPhone Shortcut. Return to NONZERO and tap Check NONZERO cloud to confirm delivery.',false)});render();}
+function receipt(msg,error){let e=$('nzwReceipt');if(e){e.textContent=msg;e.dataset.error=error?'true':'false'}}
+function render(){if(!$('nzWeightCenter'))return;let data=read(),a=rows(),latest=a.at(-1),today=day(), recent=a.filter(x=>{let t=new Date(x.date+'T12:00:00').getTime();return Number.isFinite(t)&&(new Date(today+'T12:00:00').getTime()-t)<7*86400000}),onePerDay=new Map();for(let x of recent)onePerDay.set(x.date,x);let daily=[...onePerDay.values()],avg=daily.length?daily.reduce((n,x)=>n+Number(x.weightLb),0)/daily.length:null;
+$('nzwLatest').textContent=latest?Number(latest.weightLb).toFixed(1)+' lb':'—';$('nzwLatestSource').textContent=latest?fmtDate(latest.date)+' · '+source(latest):'No measurement saved';$('nzwAverage').textContent=avg!=null?avg.toFixed(1)+' lb':'—';$('nzwCount').textContent=daily.length+' days with readings';
+let localPending=localStorage.getItem('nonzero.suite.pending')==='1';let connected=typeof cloudReady==='function'&&cloudReady();let todaySaved=!!latest&&latest.date===today;
+$('nzwCurrent').textContent=todaySaved?'Today’s reading is saved':'Latest saved weight · '+(latest?fmtDate(latest.date):'none');$('nzwCloud').textContent=localPending?(connected?'Saved on this phone · NONZERO cloud upload pending':'Saved on this phone · cloud not connected'):connected?'No pending local changes · cloud synchronization status is shown in Settings':'Local records available · cloud not connected';
+let imports=a.filter(x=>x.source==='apple-health'),lastImport=imports.at(-1);let checked=data.weightSync?.lastImportedAt;
+$('nzwHealth').textContent=lastImport?'Latest Apple Health reading: '+Number(lastImport.weightLb).toFixed(1)+' lb · '+fmtDate(lastImport.date)+'. Last newly received: '+stamp(checked||lastImport.importedAt)+'.':'No Apple Health weight has been received by this app. A manual entry does not confirm the Shortcut is working.';
+let hist=$('nzwHistory');hist.replaceChildren();for(let x of a.slice(-6).reverse()){let li=document.createElement('li');let left=document.createElement('span');left.textContent=fmtDate(x.date)+' · '+source(x);let right=document.createElement('strong');right.textContent=Number(x.weightLb).toFixed(1)+' lb';li.append(left,right);hist.append(li)}if(!a.length){let li=document.createElement('li');li.textContent='No saved readings';hist.append(li)}
+}
+function saveWeight(){let input=$('nzwInput'),date=$('nzwDate').value,w=Number(input.value);if(!input.value||!Number.isFinite(w)||w<50||w>700||!/^\d{4}-\d{2}-\d{2}$/.test(date)||date>day()||!Number.isFinite(Date.parse(date+'T12:00:00'))){receipt('Enter a weight from 50–700 lb and a valid date no later than today.',true);return}let existing=rows().find(x=>x.id==='manual-weight-'+date);if(existing&&Math.abs(existing.weightLb-w)>.049){if(!window.confirm('Replace your previous manual weight of '+Number(existing.weightLb).toFixed(1)+' lb on '+fmtDate(date)+'?'))return}
+const legacyInput=$('readinessWeightInput'),legacyDate=$('readinessWeightDate'),legacySave=$('saveReadinessWeight');if(!legacyInput||!legacyDate||!legacySave){receipt('Weight storage is unavailable. No changes were made.',true);return}
+legacyInput.value=w.toFixed(1);legacyDate.value=date;legacySave.click();let r=rows().find(x=>x.id==='manual-weight-'+date);if(!r||Math.abs(Number(r.weightLb)-w)>.05){receipt('Save could not be verified on this phone. Please retry; no cloud confirmation is available.',true);return}
+receipt('Saved '+w.toFixed(1)+' lb for '+fmtDate(date)+' on this phone.'+(localStorage.getItem('nonzero.suite.pending')==='1'?(typeof cloudReady==='function'&&cloudReady()?' Cloud sync pending.':' Cloud not connected; sync when configured.'):' Check Settings for cloud status.'),false);input.value='';render();}
+async function checkCloud(){if(checkBusy)return;let btn=$('nzwCheck');if(typeof cloudReady!=='function'||!cloudReady()){receipt('NONZERO cloud is not connected. Your local weight is still available. Configure sync in Settings.',true);return}checkBusy=true;btn.disabled=true;btn.textContent='Checking…';receipt('Checking NONZERO cloud for an already imported weight…',false);try{let ok=await pullCloudState({force:true});if(ok){receipt('Cloud check completed. Compare the Apple Health date below with the reading in Apple Health.',false)}else{receipt('Cloud check could not finish. Local measurements were not deleted.',true)}}catch(e){receipt('Could not check the cloud. Local measurements remain saved.',true)}finally{checkBusy=false;btn.disabled=false;btn.textContent='Check NONZERO cloud';render()}}
+function navigate(){document.querySelector('[data-tab="History"]')?.click();setTimeout(()=>{$('nzWeightCenter')?.scrollIntoView({behavior:'smooth',block:'start'});render()},80)}
+document.addEventListener('click',e=>{let card=e.target.closest?.('#nzKpiWeightTile,#homeProgress');if(card&&$('nzWeightCenter')){e.preventDefault();e.stopImmediatePropagation();navigate()}},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();window.addEventListener('suite-state-changed',render);window.addEventListener('storage',e=>{if([KEY,'nonzero.suite.pending'].includes(e.key))render()});window.addEventListener('focus',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});document.addEventListener('click',e=>{if(e.target.closest?.('[data-tab="History"]'))setTimeout(render,50)});
 })();
 </script>
 </body>
