@@ -1,11 +1,17 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- iOS Home Screen launch: app-style window; Safari chrome remains under iOS control. -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="NONZERO">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name" content="NONZERO">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.20.4 · Metric Harmony</title>
+    <title>NONZERO v7.20.6 · Nutrition Harmony</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3973,7 +3979,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.20.4</small></span>
+            <span class="flowBrand">NONZERO <small>v7.20.6</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16465,7 +16471,15 @@ document.getElementById('focusRestBtn').onclick = () => {
   host.hidden = true;
   host.innerHTML =
     '<h3>Recorded PM5 workout</h3><p id="pm5ReviewSummary"></p><p id="pm5ReviewReason" class="small"></p><label>Replace saved workout<select id="pm5ReplaceTarget"></select></label><div class="rrRow"><button id="pm5ReplaceNow" type="button">Use PM5 data · finalize workout</button><button id="pm5KeepMixed" type="button">Keep with planned workout</button><button id="pm5UndoReplace" type="button">Undo PM5 replacement</button></div><p id="pm5ReviewStatus" role="status"></p>';
-  document.querySelector('.todayLanding .flowPlan').after(host);
+  // PM5 review is a workout-history workflow, not a Today dashboard card.
+  const pm5Archive = document.createElement('details');
+  pm5Archive.id = 'nzPm5Archive';
+  pm5Archive.className = 'card';
+  pm5Archive.innerHTML = '<summary>PM5 recordings · review and reconcile</summary>';
+  const historyAnchor = document.querySelector('#tabHistory #recentSessions')?.closest('section.card');
+  if (historyAnchor) historyAnchor.after(pm5Archive);
+  else document.querySelector('#tabHistory')?.append(pm5Archive);
+  pm5Archive.append(host);
   if (JSON.stringify(state.weeklyTemplate) !== JSON.stringify(PROGRAM)) {
     state.weeklyTemplate = JSON.parse(JSON.stringify(PROGRAM));
     save();
@@ -18028,5 +18042,143 @@ body.nz-nutrition-active #nzNutritionModal:not([hidden]){
  #nzMacroRings .nzRingGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 }
 </style>
+
+<style id="nzFocusedToday7205">
+/* NONZERO v7.20.5: progressive disclosure of secondary analytics. Keep core KPIs
+   and their original IDs, event handlers, state, and nutrition sync unchanged. */
+#nzKpiDashboard #nzTodayInsights {grid-column:1 / -1!important;min-width:0;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:1px 0 8px!important;overflow:visible!important}
+#nzTodayInsights>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;min-height:49px;padding:12px 15px;border:1px solid rgba(185,211,214,.2);border-radius:15px;background:#102532;color:#f4d35e;font:750 14px/1.3 system-ui,-apple-system,sans-serif;letter-spacing:.015em}
+#nzTodayInsights>summary::-webkit-details-marker{display:none}
+#nzTodayInsights>summary:after{content:'＋';font-size:20px;font-weight:400;line-height:1;color:#dfebea}
+#nzTodayInsights[open]>summary:after{content:'−'}
+#nzTodayInsights>summary:focus-visible{outline:2px solid #f4d35e;outline-offset:3px}
+#nzTodayInsights .nzInsightHint{display:block;margin-top:2px;color:#a9c2cd;font-size:12px;font-weight:550;letter-spacing:0}
+#nzTodayInsightGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:12px 0 0;align-items:stretch}
+#nzTodayInsightGrid>*{min-width:0;margin:0!important;box-sizing:border-box}
+/* Avoid an orphan half-width weight card below the full-width workout card. */
+@media(max-width:599px){#nzKpiDashboard>#homeProgress{grid-column:1/-1!important;min-height:185px!important}}
+#nzTodayInsightGrid>.nzKpiTile,#nzTodayInsightGrid>#nzPredictiveCard,#nzTodayInsightGrid>#nzMacroRings,#nzTodayInsightGrid>#nzCoachPanel,#nzTodayInsightGrid>.flowPlan{background:#102532!important;border:1px solid rgba(180,210,222,.14)!important;border-radius:18px!important;box-shadow:none!important;overflow:hidden}
+#nzTodayInsightGrid>#nzPredictiveCard,#nzTodayInsightGrid>#nzMacroRings,#nzTodayInsightGrid>#nzCoachPanel,#nzTodayInsightGrid>#nzKpiStatusTile,#nzTodayInsightGrid>#nzAutoPilotToday,#nzTodayInsightGrid>#nzTodayNutrition,#nzTodayInsightGrid>.flowQuick,#nzTodayInsightGrid>#nzPOverview{grid-column:1/-1!important}
+#nzTodayInsightGrid>#nzPredictiveCard{padding:14px!important}
+#nzTodayInsightGrid>#nzMacroRings{padding:14px!important}
+#nzTodayInsightGrid>#nzTodayNutrition,#nzTodayInsightGrid>#nzAutoPilotToday{border-radius:16px;padding:13px;border:1px solid rgba(180,210,222,.12);background:#102532}
+#nzTodayInsightGrid>#nzPOverview{color:#b2cad1;font-size:13px}
+#nzPm5Archive{margin:14px 0;padding:14px;border:1px solid rgba(180,210,222,.18);border-radius:18px}
+#nzPm5Archive:has(#pm5WorkoutReview[hidden]){display:none!important}
+#nzPm5Archive>summary{cursor:pointer;color:#f4d35e;font-weight:750;font-size:15px;min-height:34px}
+#nzPm5Archive #pm5WorkoutReview{margin-top:10px;padding:13px!important}
+#nzPm5Archive .rrRow button{font-size:14px}
+@media(max-width:599px){#nzTodayInsightGrid>#nzKpiMacroTile,#nzTodayInsightGrid>#nzKpiWeightTile{grid-column:1/-1!important}#nzTodayInsightGrid{gap:10px}#nzTodayInsights>summary{padding:13px}}
+@media(max-width:359px){#nzTodayInsightGrid{grid-template-columns:1fr}}
+@media(min-width:600px) and (orientation:landscape){#nzTodayInsightGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script id="nzFocusedTodayScript7205">
+(()=>{'use strict';
+let scheduled=false;
+const $=id=>document.getElementById(id);
+function organize(){
+ const grid=$('nzKpiDashboard'),landing=document.querySelector('#tabToday .todayLanding');
+ if(!grid||!landing)return;
+ let more=$('nzTodayInsights');
+ if(!more){more=document.createElement('details');more.id='nzTodayInsights';
+ more.innerHTML='<summary><span>Insights &amp; trends<span class="nzInsightHint">Detailed analytics, coaching and review</span></span></summary><div id="nzTodayInsightGrid"></div>';
+ grid.append(more);}
+ const area=$('nzTodayInsightGrid');
+ if(!area)return;
+ for(const id of ['nzMacroRings','nzCoachPanel','nzPredictiveCard','nzKpiMacroTile','nzKpiWeightTile','nzKpiStatusTile','nzTodayNutrition','nzAutoPilotToday','nzPOverview']){
+  const el=$(id);if(el&&el.parentElement!==area)area.append(el);
+ }
+ const quick=landing.querySelector('.flowQuick');if(quick&&quick.parentElement!==area)area.append(quick);
+ // Keep the most useful quick-log actions visible above the secondary material.
+ const actions=$('nzPremiumActions');if(actions&&actions.parentElement===landing&&actions.nextElementSibling!==grid){
+  // No reparenting required: existing premium actions remain in the main Today flow.
+ }
+}
+function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;organize()})}
+function init(){organize();
+ const grid=$('nzKpiDashboard');if(grid){const observer=new MutationObserver(schedule);observer.observe(grid,{childList:true});}
+ const landing=document.querySelector('#tabToday .todayLanding');if(landing){const observer=new MutationObserver(schedule);observer.observe(landing,{childList:true});}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+window.addEventListener('focus',schedule);
+document.addEventListener('suite-state-changed',schedule);
+document.addEventListener('nz-nutrition-local-saved',schedule);
+setTimeout(schedule,1100);
+})();
+</script>
+
+<style id="nzNutritionHarmony7206Style">
+/* Design discipline: one nutrition dashboard on Today, deeper rings in Nutrition.
+   Hidden legacy KPI nodes are preserved for existing app update/binding logic. */
+#nzKpiDashboard #nzKpiProteinTile{display:none!important}
+#nzKpiDashboard #nzNutritionCard{grid-column:1/-1!important}
+#nzKpiDashboard #nzNutritionCard .nzQRow{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+#nzKpiDashboard #nzNutritionCard .nzQMacro{min-width:0!important}
+#nzKpiDashboard #nzNutritionCard .nzQMacro b{font-variant-numeric:tabular-nums;line-height:1.1!important}
+#nzKpiDashboard #nzNutritionCard .nzQBig{font-variant-numeric:tabular-nums}
+/* Nutrition is a real destination, with full-width health-style progress visualization. */
+#nzNutritionModal #nzMacroRings{order:-9;display:block!important;margin:0 0 11px!important;grid-column:auto!important;width:100%;background:linear-gradient(150deg,#173542,#102733)!important;border:1px solid rgba(189,218,222,.2)!important;border-radius:22px!important;padding:16px!important}
+#nzNutritionModal #nzQModal{display:none!important} /* totals duplicated inside the ring summary */
+#nzNutritionModal #nzMacroRings .nzRingHeader{margin-bottom:6px}
+#nzNutritionModal #nzMacroRings .nzRingHeader h2{font-size:18px!important;letter-spacing:-.025em}
+#nzNutritionModal #nzMacroRings .nzConcentricLayout{display:grid;grid-template-columns:minmax(0,1fr);gap:13px;justify-items:center;margin-top:5px}
+#nzNutritionModal #nzMacroRings .nzConcentricViz{width:min(100%,260px);aspect-ratio:1;display:block;overflow:visible}
+#nzNutritionModal #nzMacroRings .nzCTrack{stroke:#2c4754;stroke-width:10;fill:none}
+#nzNutritionModal #nzMacroRings .nzCProgress{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .45s ease-out}
+#nzNutritionModal #nzMacroRings .nzCMain{font:800 26px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;fill:#f4f8f8;text-anchor:middle;font-variant-numeric:tabular-nums}
+#nzNutritionModal #nzMacroRings .nzCSmall{font:650 11px/1 system-ui,-apple-system,sans-serif;letter-spacing:.08em;fill:#b7cfd4;text-anchor:middle}
+#nzNutritionModal #nzMacroRings .nzCLegend{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#nzNutritionModal #nzMacroRings .nzRingGrid{display:contents!important}
+#nzNutritionModal #nzMacroRings .nzRingUnit{min-height:86px!important;padding:12px!important;align-items:flex-start!important;justify-content:center!important;gap:3px!important;text-align:left!important;border-radius:14px!important;background:#0d2531b0!important;border-color:#35525d!important}
+#nzNutritionModal #nzMacroRings .nzRingUnit .nzRingSvg{display:none!important}
+#nzNutritionModal #nzMacroRings .nzRingCaption{font-size:13px!important;text-align:left!important;letter-spacing:0!important;min-height:0!important;color:#bdd2d7!important}
+#nzNutritionModal #nzMacroRings .nzRingStatus{font-size:13px!important;text-align:left!important;line-height:1.35!important;color:#e7f2f1!important}
+#nzNutritionModal #nzMacroRings .nzRingUnit:before{content:'';width:25px;height:4px;border-radius:9px;background:var(--nz-ring-tone,#f4d35e);display:block;margin-bottom:4px}
+#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="cal"]{--nz-ring-tone:#f4d35e}
+#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="protein"]{--nz-ring-tone:#8bd9bc}
+#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="carbs"]{--nz-ring-tone:#88bdf3}
+#nzNutritionModal #nzMacroRings .nzRingUnit[data-ring="fat"]{--nz-ring-tone:#cbadee}
+#nzNutritionModal #nzMacroRings .nzRingFoot{font-size:12px!important;line-height:1.45!important;margin-top:10px!important;color:#b8cbd3!important}
+#nzNutritionModal #nzMacroRings .nzRingActions{margin-top:11px!important}
+#nzNutritionModal #nzMacroRings .nzRingActions button{font-size:13px!important;font-weight:700!important}
+@media(min-width:610px){#nzNutritionModal #nzMacroRings .nzConcentricLayout{grid-template-columns:minmax(200px,245px) 1fr;align-items:center;justify-items:stretch;gap:16px}#nzNutritionModal #nzMacroRings .nzConcentricViz{width:100%}}
+@media(max-width:359px){#nzNutritionModal #nzMacroRings{padding:11px!important}#nzNutritionModal #nzMacroRings .nzConcentricViz{width:205px}#nzNutritionModal #nzMacroRings .nzRingUnit{padding:10px!important}#nzKpiDashboard #nzNutritionCard .nzQRow{gap:5px!important}}
+@media(prefers-reduced-motion:reduce){#nzNutritionModal #nzMacroRings .nzCProgress{transition:none!important}}
+</style>
+<script id="nzNutritionHarmony7206Script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const spec=[{key:'cal',target:'calories',name:'Calories',color:'#f4d35e',r:105},{key:'protein',target:'protein',name:'Protein',color:'#8bd9bc',r:86},{key:'carbs',target:'carbs',name:'Carbs',color:'#88bdf3',r:67},{key:'fat',target:'fat',name:'Fat',color:'#cbadee',r:48}];
+const num=v=>Number.isFinite(Number(v))&&Number(v)>=0?Number(v):0;
+const day=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+function current(){let x={};try{x=JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')||{}}catch{};const entries=(Array.isArray(x.entries)?x.entries:[]).filter(e=>e.day===day()&&!e.deleted&&!e.deletedAt);const totals={cal:0,protein:0,carbs:0,fat:0};for(const e of entries)for(const k of Object.keys(totals))totals[k]+=num(e[k]);return {totals,targets:x.targets||{},count:entries.length}}
+function create(){const rings=$('nzMacroRings'),panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!rings||!panel)return false;
+ // The existing four buttons and their trend handlers remain the actionable legend.
+ const pivot=$('nzQModal');if(rings.parentElement!==panel){if(pivot&&pivot.parentElement===panel)pivot.after(rings);else panel.prepend(rings)}
+ const protein=$('nzKpiProteinTile');if(protein){protein.tabIndex=-1;protein.setAttribute('aria-hidden','true')}
+ if(rings.dataset.concentricReady==='1')return true;
+ const host=document.createElement('div');host.className='nzConcentricLayout';host.id='nzConcentricLayout';
+ const circles=spec.map(m=>{const length=2*Math.PI*m.r;return `<circle class="nzCTrack" cx="130" cy="130" r="${m.r}"/><circle data-concentric="${m.key}" class="nzCProgress" cx="130" cy="130" r="${m.r}" stroke="${m.color}" stroke-dasharray="${length.toFixed(3)}" stroke-dashoffset="${length.toFixed(3)}" transform="rotate(-90 130 130)"/>`}).join('');
+ host.innerHTML=`<svg class="nzConcentricViz" viewBox="0 0 260 260" role="img" aria-label="Today's calorie and macro target progress"><title>Nutrition goal progress</title>${circles}<text class="nzCMain" x="130" y="128" id="nzConcentricCount">0</text><text class="nzCSmall" x="130" y="146">FOODS LOGGED</text></svg><div class="nzCLegend"></div>`;
+ const grid=rings.querySelector('.nzRingGrid');if(!grid)return false;
+ const legend=host.querySelector('.nzCLegend');legend.append(grid);rings.querySelector('.nzRingHeader')?.after(host);
+ // The old individual-ring SVGs are hidden visually but retained for original metric scripts.
+ rings.dataset.concentricReady='1';
+ const log=$('nzRingLog');if(log)log.onclick=()=>{const field=$('nzName');if(field){field.scrollIntoView({block:'center',behavior:'smooth'});field.focus()}else $('nzOpenNutrition')?.click()};
+ return true;
+}
+function refresh(){const rings=$('nzMacroRings');if(!rings||rings.dataset.concentricReady!=='1')return;const {totals,targets,count}=current();const main=$('nzConcentricCount');if(main)main.textContent=String(count);
+ for(const m of spec){const goal=num(targets[m.target]),actual=totals[m.key],line=rings.querySelector(`[data-concentric="${m.key}"]`);if(!line)continue;const length=2*Math.PI*m.r;const fraction=goal>0?Math.max(0,Math.min(1,actual/goal)):0;line.setAttribute('stroke-dashoffset',(length*(1-fraction)).toFixed(3));line.setAttribute('aria-label',`${m.name}: ${Math.round(actual)}${goal?' of '+Math.round(goal):''}`)}
+ const img=rings.querySelector('.nzConcentricViz');if(img)img.setAttribute('aria-label',spec.map(m=>`${m.name} ${Math.round(totals[m.key])}${num(targets[m.target])?' of '+Math.round(num(targets[m.target])):' with no goal'}`).join(', '));
+}
+let pending=false;
+function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;if(create())refresh()})}
+function init(){schedule();const modal=$('nzNutritionModal');if(modal)new MutationObserver(schedule).observe(modal,{attributes:true,attributeFilter:['hidden']});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+for(const event of ['nz-nutrition-local-saved','nz-nutrition-cloud-rendered','nz-nutrition-cloud-updated','suite-state-changed'])window.addEventListener(event,schedule);
+window.addEventListener('focus',schedule);document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
+setTimeout(schedule,900);setTimeout(schedule,2200);
+})();
+</script>
 </body>
 </html>
