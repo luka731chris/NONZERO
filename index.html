@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.21.1 · Reliability & Cohesion</title>
+    <title>NONZERO v7.22.0 · Food Flow & Coaching</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -18521,6 +18521,134 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 for(const delay of [150,700,1900])setTimeout(init,delay);
 document.addEventListener('click',e=>{if(e.target.closest?.('#nzNutritionNav,#nzOpenNutrition'))setTimeout(init,50)});
 })();
+</script>
+<style id="nz7212Style">/* NONZERO 7.21.2 premium single-entry composer and visible daily coaching */
+#nz7212Composer[hidden],#nz7212BrandedNote[hidden]{display:none!important}
+#nz7212Composer{position:fixed;inset:0;z-index:10009000;color:#eef6f6;font-family:inherit}
+#nz7212Composer .nz7212Shade{position:absolute;inset:0;background:rgba(2,11,17,.76);backdrop-filter:blur(10px)}
+#nz7212Composer .nz7212Sheet{position:absolute;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 9px);bottom:calc(env(safe-area-inset-bottom) + 8px);width:min(100% - 20px,720px);border-radius:22px;background:#0b202b;border:1px solid #46616a;overflow:auto;overscroll-behavior:contain;box-shadow:0 24px 65px #000a;padding:17px;box-sizing:border-box}
+body.nz7212-open{overflow:hidden!important}
+.nz7212Head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.nz7212Head h2{margin:3px 0!important;color:#eef8f5;font-size:27px!important;font-weight:790;letter-spacing:-.035em}.nz7212Head p{font-size:13px!important;margin:0;color:#b2c9cf}.nz7212Eyebrow{font-size:12px;letter-spacing:.11em;color:#f4d35e;font-weight:750}#nz7212Close{width:44px;height:44px;flex-shrink:0;border-radius:13px;background:#1d3945;color:#edf6f6;border:1px solid #50646f;font-size:20px}
+#nz7212Tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:10px 0 14px}#nz7212Tabs button{min-width:0;min-height:48px;padding:8px 4px;background:#183541;color:#dce8e9;border:1px solid #49616c;border-radius:11px;font-size:clamp(11px,2.8vw,13px);font-weight:730}#nz7212Tabs button[aria-pressed="true"]{background:#f4d35e;color:#10222e;border-color:#f4d35e}
+#nz7212Slot #nzConversational,#nz7212Slot #nzFoodIntelligence{margin:0!important;background:#102a35!important;border:1px solid #3d5b68!important;border-radius:17px!important;padding:15px!important}#nz7212Slot #nzConvText{min-height:132px!important;font-size:17px!important;line-height:1.5!important;border-radius:13px!important}#nz7212Slot #nzConvAnalyze,#nz7212Slot #nzConvSave{background:#f4d35e!important;color:#10222e!important;min-height:48px;font-size:15px;font-weight:790}#nz7212Slot button{min-height:44px!important}#nz7212Slot #nzConvResults label{font-size:13px!important}#nz7212Slot #nzConvHistory{display:none!important}#nz7212Slot #nzConversational>hr{display:none}#nz7212Slot #nzFoodIntelligence>strong{display:none}
+#nz7212BrandedNote{font-size:13px;color:#f9e2a6;background:#3a311e;border:1px solid #806f43;border-radius:10px;padding:11px 12px;margin:10px 0;line-height:1.45}
+.nz7212Bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}.nz7212Bottom p{font-size:12px;color:#b9d0d6;line-height:1.45;margin:0}.nz7212Bottom button{min-height:44px;min-width:128px;border-radius:11px;border:1px solid #49606b;background:#1c3846;color:#e9f3f2;font-size:13px;font-weight:690}
+#nz7212Coach{width:100%;box-sizing:border-box;background:#102532;border:1px solid rgba(180,210,222,.16);border-radius:19px;padding:18px;margin:12px 0 14px;grid-column:1/-1;box-shadow:none;color:#edf4f5}#nz7212Coach .nz7212CoachTop{display:flex;align-items:start;justify-content:space-between;gap:12px}#nz7212Coach .nz7212CoachTop span:first-child{font-size:12px;font-weight:800;color:#f4d35e;letter-spacing:.08em}#nz7212Coach h2{font-size:21px;margin:4px 0 0;letter-spacing:-.03em;color:#f1f6f7}#nz7212CoachBadge{font-size:11px;color:#c8d9dc;border:1px solid #49626a;border-radius:999px;padding:7px 9px;white-space:nowrap}#nz7212CoachMessage{font-size:16px;line-height:1.5;margin:12px 0 14px;color:#e7f2f1}#nz7212Coach .nz7212CoachFoot{display:flex;align-items:center;justify-content:space-between;gap:12px}#nz7212CoachContext{font-size:12px;color:#b3c6cc;line-height:1.35}#nz7212Coach .nz7212CoachFoot>div{display:flex;gap:7px}#nz7212Coach button{min-height:44px;white-space:nowrap;padding:9px 11px;font-size:13px;border:1px solid #45626c;border-radius:11px;background:#1d3a46;color:#e9f4f4}#nz7212CoachLog{background:#f4d35e!important;border-color:#f4d35e!important;color:#172633!important;font-weight:780!important}
+@media(max-width:360px){#nz7212Composer .nz7212Sheet{width:calc(100% - 8px);padding:11px;border-radius:17px}#nz7212Coach .nz7212CoachFoot{flex-wrap:wrap}#nz7212Coach .nz7212CoachFoot>div{width:100%;justify-content:flex-end}#nz7212Tabs{gap:3px}#nz7212Tabs button{font-size:11px}}
+@media(orientation:landscape) and (max-height:480px){#nz7212Composer .nz7212Sheet{top:3px;bottom:3px;padding:12px}#nz7212Slot #nzConvText{min-height:95px!important}}
+@media(prefers-reduced-motion:reduce){#nz7212Composer *,#nz7212Coach *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Keep the first Today action reachable on short landscape screens after a natural scroll. */
+@media (orientation:landscape) and (max-height:480px){body #tabToday{padding-bottom:120px!important}#nzQLog,#nzTodayAddFood{scroll-margin-bottom:110px}}
+</style>
+<script id="nz7212Script">/* NONZERO 7.21.2 – single food composer + visible coaching. Phone presentation only. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id), FOCUS_IDS=new Set(['nzQLog','nzTodayAddFood','nzRingLog','nzCoachQuick','nzPQuick','nzTodayAddFood','nz7210Manual']);
+let active=false, mode='describe', origin=null, moved=null, previousFocus=null;
+function nutrition(){const modal=$('nzNutritionModal');if(modal?.hidden){$('nzNutritionNav')?.click();if(modal.hidden)$('nzOpenNutrition')?.click()}return modal}
+function place(node,holder){if(!node)return false;const marker=document.createComment('nonzero-composer-return');node.before(marker);holder.append(node);moved={node,marker};return true}
+function restore(){if(moved){moved.marker.replaceWith(moved.node);moved=null}}
+function message(t){const el=$('nz7212Status');if(el)el.textContent=t}
+function selectMode(next){const slot=$('nz7212Slot');if(!slot)return;restore();slot.replaceChildren();mode=next;const tabs=$('nz7212Tabs');if(tabs)for(const b of tabs.querySelectorAll('button')){const on=b.dataset.mode===next;b.setAttribute('aria-pressed',String(on))}
+ const node= next==='describe'?$('nzConversational'): $('nzFoodIntelligence');if(!node){message('The '+next+' tool is unavailable. You can use manual entry.');return}place(node,slot);node.hidden=false;
+ if(next==='describe'){message('Describe a meal or item. AI estimates are editable and must be reviewed.');$('nzConvText')?.focus({preventScroll:true})}
+ else {const id=next==='barcode'?'nfiBarcodeMode':next==='photo'?'nfiMealMode':'nfiSearchMode';$(id)?.click();message(next==='barcode'?'Scan a barcode for the product’s label information.':next==='photo'?'Photographs give estimates, not exact serving measurements.':'Search a brand or food and choose the correct product.');(next==='search'?'nfiQuery':next==='barcode'?'nfiCode':null)&&$(next==='search'?'nfiQuery':'nfiCode')?.focus({preventScroll:true})}
+}
+function close(){if(!active)return;active=false;restore();const p=$('nz7212Composer');if(p)p.hidden=true;document.body.classList.remove('nz7212-open');if(origin==='today')document.querySelector('[data-tab="Today"]')?.click();else previousFocus?.focus?.({preventScroll:true});previousFocus=null;origin=null}
+function open(next='describe'){origin=(document.querySelector('[data-tab="Today"]')?.classList.contains('active')?'today':null);nutrition();const p=$('nz7212Composer');if(!p)return;previousFocus=document.activeElement;active=true;document.body.classList.add('nz7212-open');p.hidden=false;selectMode(next);if(next==='describe')$('nzConvText')?.focus({preventScroll:true});}
+function manual(){origin=null;close();nutrition();const el=$('nzName');if(!el)return;for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;el.scrollIntoView({block:'center'});el.focus();}
+function make(){if($('nz7212Composer'))return;const overlay=document.createElement('section');overlay.id='nz7212Composer';overlay.hidden=true;overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','nz7212Heading');overlay.innerHTML=`<div class="nz7212Shade" data-close="1"></div><div class="nz7212Sheet"><div class="nz7212Head"><div><div class="nz7212Eyebrow">NONZERO · NUTRITION</div><h2 id="nz7212Heading">Log food</h2><p>Describe it first. Review before saving.</p></div><button type="button" id="nz7212Close" aria-label="Close food logging">✕</button></div><div class="nz7212Mode" id="nz7212Tabs" role="group" aria-label="Choose food logging method"><button type="button" data-mode="describe">Describe meal</button><button type="button" data-mode="barcode">Barcode</button><button type="button" data-mode="search">Search food</button><button type="button" data-mode="photo">Photo</button></div><div id="nz7212Slot"></div><div class="nz7212Bottom"><p role="status" aria-live="polite" id="nz7212Status">Describe your meal to begin.</p><button type="button" id="nz7212Manual">Enter nutrition manually</button></div></div>`;document.body.append(overlay);
+ $('nz7212Close').addEventListener('click',close);overlay.querySelector('[data-close]').addEventListener('click',close);$('nz7212Manual').addEventListener('click',manual);overlay.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));
+ overlay.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close();return}if(e.key==='Tab'){const vis=[...overlay.querySelectorAll('button,input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled&&x.getClientRects().length);if(!vis.length)return;let first=vis[0],last=vis[vis.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+ // A catalog selection fills the original form, so reveal it instead of hiding it underneath the composer.
+ overlay.addEventListener('click',e=>{if(e.target.closest('#nfiUse'))setTimeout(()=>{if(active)manual()},75)});
+}
+// Capture phase deliberately consolidates earlier generations of competing handlers.
+document.addEventListener('click',e=>{const btn=e.target.closest?.('button');if(!btn)return;const id=btn.id;if(FOCUS_IDS.has(id)||btn.matches('[data-nz-log-food]')){if(id==='nz7210Manual')return;e.preventDefault();e.stopImmediatePropagation();open('describe');}},true);
+function coaching(){const dashboard=$('nzKpiDashboard');if(!dashboard||!$('nzNutritionCard')||!$('homeProgress'))return;let card=$('nz7212Coach');if(!card){card=document.createElement('section');card.id='nz7212Coach';card.innerHTML=`<div class="nz7212CoachTop"><div><span>YOUR COACH</span><h2>Today's focus</h2></div><span id="nz7212CoachBadge">Daily guidance</span></div><p id="nz7212CoachMessage">Your nutrition outlook will appear here.</p><div class="nz7212CoachFoot"><small id="nz7212CoachContext">Based on today's logged intake</small><div><button type="button" id="nz7212CoachLog">Log food</button><button type="button" id="nz7212CoachMore">Details</button></div></div>`;dashboard.after(card);$('nz7212CoachLog').addEventListener('click',()=>open('describe'));$('nz7212CoachMore').addEventListener('click',()=>{const insights=$('nzTodayInsights'),predict=$('nzPredictiveCard');if(insights){insights.open=true;insights.scrollIntoView({behavior:'smooth',block:'start'});}if(predict)setTimeout(()=>predict.scrollIntoView({behavior:'smooth',block:'center'}),90)});}
+ const msg=$('nzCoachMessage')?.textContent?.trim(),forecast=$('nzForecastMessage')?.textContent?.trim(),value=$('nzForecastValue')?.textContent?.trim(),cloud=$('nzPredictiveStatus')?.textContent||'',enabled=!!forecast&&!/Building a reliable picture|Connect Nutrition Cloud|Loading/i.test(forecast);
+ $('nz7212CoachMessage').textContent=(enabled?forecast:msg)||'Log your first meal to see useful calorie and protein guidance.';
+ $('nz7212CoachBadge').textContent=enabled&&value&&!/Learning|—/.test(value)?'Outlook available':'Daily guidance';
+ $('nz7212CoachContext').textContent=enabled?'Prediction based on recorded food history':/Cloud unavailable|Waiting/.test(cloud)?'Local guidance · Cloud outlook not available':'Personalized from your daily goals';
+}
+function brandedGuard(){const text=$('nzConvText'),warning=$('nz7212BrandedNote');if(!text||!warning)return;const branded=/\b(?:bar|shake|powder|packaged|brand|quest|barebells|built|rxbar|clif|kind|one|ready nutrition)\b/i.test(text.value);warning.hidden=!branded;}
+function hookGuard(){const area=$('nzConversational');if(!area||area.dataset.nz7212Guard)return;area.dataset.nz7212Guard='1';const note=document.createElement('div');note.id='nz7212BrandedNote';note.hidden=true;note.setAttribute('role','note');note.textContent='Packaged or branded food? AI can guess the wrong product. For accurate values, scan its barcode or search the exact label, then verify serving size. AI estimates are not label-verified.';const input=$('nzConvText');input?.after(note);input?.addEventListener('input',brandedGuard);}
+function setup(){make();hookGuard();coaching();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();for(const t of [300,1100,2300])setTimeout(setup,t);
+window.addEventListener('nz-nutrition-local-saved',()=>{if(active)message('Saved on this phone. NONZERO cloud sync is separate.');setTimeout(coaching,100)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)coaching()});
+setInterval(()=>{if(!document.hidden)coaching()},30000);
+const attachCoachObservers=()=>{for(const id of ['nzCoachMessage','nzForecastMessage','nzForecastValue','nzPredictiveStatus']){const el=$(id);if(el&&!el.dataset.nz7212Observed){el.dataset.nz7212Observed='1';new MutationObserver(()=>coaching()).observe(el,{childList:true,characterData:true,subtree:true});}}};
+setTimeout(attachCoachObservers,2400);window.addEventListener('nz-nutrition-cloud-updated',coaching);window.addEventListener('focus',coaching);
+})();
+</script>
+<script id="nzAdaptiveNutritionV722">
+/* NONZERO 7.22.0: conservative adaptive goals, client-side, no new endpoint or migration.
+   This module never penalizes an isolated high-intake day. Retains all original records.
+   Adjustment requires data coverage, weight trend, >=7-day spacing, and no perioperative hold. */
+(()=>{'use strict';
+const FOOD='nonzero.nutrition.v1',STATE='hipPrehabV2',AUDIT='nonzero.adaptive.goals.v1',BACKUP='nonzero.coach.macro-targets.v1';
+const STAGE={day:'2026-11-20',weight:220},SURGERY='2026-11-20';
+const $=id=>document.getElementById(id);
+function read(k,fallback={}){try{return JSON.parse(localStorage.getItem(k)||'null')??fallback}catch{return fallback}}
+function store(k,v){localStorage.setItem(k,JSON.stringify(v))}
+const day=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const days=(a,b)=>(Date.parse(a+'T12:00:00Z')-Date.parse(b+'T12:00:00Z'))/86400000;
+const round=(v,step=1)=>Math.round(v/step)*step;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const finite=v=>Number.isFinite(Number(v))?Number(v):null;
+function median(arr){const a=arr.filter(Number.isFinite).sort((x,y)=>x-y);return !a.length?null:a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2}
+const targetFrom=d=>{const t=d.targets||{};return {calories:finite(t.calories)||2200,protein:finite(t.protein)||170,carbs:finite(t.carbs)||225,fat:finite(t.fat)||70}};
+function meals(){const d=read(FOOD),by=new Map();for(const x of d.entries||[]){if(x?.deleted||x?.deletedAt||!/^\d{4}-\d\d-\d\d$/.test(x.day||'')||days(day(),x.day)<1||days(day(),x.day)>28)continue;let v=by.get(x.day)||{day:x.day,cal:0,protein:0,carbs:0,fat:0,count:0,mealTypes:new Set()};if(Number.isFinite(Number(x.cal))&&Number(x.cal)>=0){v.cal+=Number(x.cal);v.protein+=Number(x.protein)||0;v.carbs+=Number(x.carbs)||0;v.fat+=Number(x.fat)||0;v.count++;if(x.meal)v.mealTypes.add(String(x.meal).toLowerCase());}by.set(x.day,v)}return [...by.values()].map(v=>({...v,mealTypes:v.mealTypes.size,complete:v.count>=4&&v.cal>=1000&&v.mealTypes.size>=2})).sort((a,b)=>a.day.localeCompare(b.day))}
+function weights(){const s=read(STATE),rows=Array.isArray(s.bodyMeasurements)?s.bodyMeasurements:[],by=new Map();for(const r of rows){const d=(r.date||'').slice(0,10),val=finite(r.weightLb);if(!/^\d{4}-\d\d-\d\d$/.test(d)||!val||val<80||val>500||days(day(),d)<0||days(day(),d)>90)continue;const old=by.get(d);if(!old||Number(r.at||0)>Number(old.at||0))by.set(d,{date:d,value:val,at:r.at})}return [...by.values()].sort((a,b)=>a.date.localeCompare(b.date))}
+function trend(ws){if(ws.length<5||days(ws.at(-1).date,ws[0].date)<14)return null;const last=ws.at(-1).date,first=ws.filter(w=>days(last,w.date)>=14&&days(last,w.date)<=35);const recent=ws.filter(w=>days(last,w.date)<=7);if(first.length<2||recent.length<2)return null;const a=median(first.map(w=>w.value)),b=median(recent.map(w=>w.value));const midFirst=first[Math.floor(first.length/2)].date,midLast=recent[Math.floor(recent.length/2)].date;const span=days(midLast,midFirst);if(span<10)return null;return {weekly:round((a-b)*7/span,.1),latest:b,readings:ws.length,span:days(ws.at(-1).date,ws[0].date)} }
+function compute(){const today=day(),food=read(FOOD),prior=read(AUDIT,{enabled:true,history:[]}),current=targetFrom(food),rows=meals(),valid=rows.filter(x=>x.complete&&days(today,x.day)<=21),ws=weights(),tw=trend(ws),surgeryDays=days(today,SURGERY),onHold=surgeryDays>=-21&&surgeryDays<=42;
+const avg14=valid.filter(x=>days(today,x.day)<=14),calories14=avg14.length>=7?round(avg14.reduce((a,x)=>a+x.cal,0)/avg14.length):null;
+const reasons=[];if(onHold)reasons.push('Perioperative nutrition hold');if(valid.length<10)reasons.push('Need 10 adequately logged days in the last 21');if(!tw)reasons.push('Need at least 5 weight readings spanning 14+ days');if(!calories14)reasons.push('Need 7 complete food-log days in the last 14');if(prior.enabled===false)reasons.push('Automatic adjustments turned off');const custom=read(BACKUP);if(custom.mode==='custom'&&custom.updatedAt&&Date.now()-Date.parse(custom.updatedAt)<14*86400000)reasons.push('Recent manual goal adjustment protected for 14 days');
+const sufficient=valid.length>=10&&tw&&calories14!=null;
+let next=null,loss=null;
+if(sufficient){ // Approximate energy-balance inference, never claim metabolic measurement.
+const maintenance=clamp(calories14+tw.weekly*500,1900,3900);
+const proposed=clamp(round(maintenance-625,25),1900,3000);
+const last=prior.lastAppliedDay,elapsed=last?days(today,last):999;
+const delta=clamp(proposed-current.calories,-100,100);
+// No auto-restriction after an isolated high-intake event. A stable multiweek weight trend is required.
+const proposedCalories=round(clamp(current.calories+delta,1900,3000),25);
+const protein=clamp(round(Math.max(current.protein,160),5),160,230);
+const fat=clamp(round(clamp(proposedCalories*.27/9,55,100),5),55,100);
+const carbs=clamp(round((proposedCalories-protein*4-fat*9)/4),80,550);
+next={calories:proposedCalories,protein,carbs,fat,maintenanceEstimate:round(maintenance,25),reason:'14-day intake and multiweek weight trend',weeklyObserved:tw.weekly,elapsed};
+loss=tw.weekly;
+if(elapsed<7)reasons.push('Weekly review already completed');
+}
+return {today,stage:STAGE,surgeryDays,onHold,prior,current,rows,validCount:valid.length,calories14,weightTrend:tw,weightReadings:ws.length,next,loss,reasons,eligible:!!next&&!reasons.length};}
+function adjust(){const s=compute();if(!s.eligible)return false;const t=s.next;if(Math.abs(t.calories-s.current.calories)<25)return false;
+const recent=read(AUDIT,{enabled:true,history:[]});
+const food=read(FOOD);const before=targetFrom(food);const updated={calories:t.calories,protein:t.protein,carbs:t.carbs,fat:t.fat};
+// In case another writer changed data while calculating, require values to be unchanged.
+if(JSON.stringify(before)!==JSON.stringify(s.current))return false;
+const current=read(FOOD);current.targets={...(current.targets||{}),...updated};try{
+ store(FOOD,current);store(BACKUP,{...updated,mode:'adaptive',updatedAt:new Date().toISOString()});store(AUDIT,{...recent,enabled:true,lastAppliedDay:s.today,history:[...(recent.history||[]).slice(-35),{date:s.today,previous:before,next:updated,why:t.reason,avg14:s.calories14,observedLoss:t.weeklyObserved}]});
+ document.dispatchEvent(new Event('nz-nutrition-local-saved'));window.dispatchEvent(new Event('nz-nutrition-local-saved'));return true;
+}catch{return false}}
+const STYLE=`#nzAdaptivePanel{padding:15px;background:linear-gradient(140deg,#172e38,#0e202a);border:1px solid #39515e;border-radius:18px;margin:12px 0 16px;color:#e9f3f3}#nzAdaptivePanel .nzAdaptiveHeader{display:flex;align-items:center;justify-content:space-between;gap:10px}#nzAdaptivePanel h3{margin:0;font-size:16px;letter-spacing:-.012em;color:#f4d35e}#nzAdaptivePanel .nzAdaptiveStatus{font-size:11px;font-weight:700;color:#c7d6dc}#nzAdaptivePanel p{color:#c7d6dc;font-size:13px;line-height:1.5;margin:8px 0}#nzAdaptivePanel .nzAdaptiveMetrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}#nzAdaptivePanel .nzAdaptiveMetric{background:#0c2430;border-radius:12px;border:1px solid #2e4b58;padding:10px}#nzAdaptivePanel .nzAdaptiveMetric b{display:block;font-size:24px;font-variant-numeric:tabular-nums}#nzAdaptivePanel .nzAdaptiveMetric span{font-size:12px;color:#c7d6dc}#nzAdaptivePanel button{min-height:44px;padding:9px 12px;border-radius:10px;background:#243f4b;color:#f4d35e;font-weight:750;border:1px solid #4a616b}#nzAdaptiveDetail{margin-top:10px}#nzAdaptiveDetail[hidden]{display:none}#nzAdaptivePanel .nzAdaptiveActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}#nzAdaptivePanel .nzAdaptiveFine{font-size:12px;color:#b9cbd2}`;
+let latestHash='';
+function mount(){const parent=$('nzCoachPanel')||$('nzMacroRings');if(!parent)return;if(!$('nzAdaptiveStyle')){const st=document.createElement('style');st.id='nzAdaptiveStyle';st.textContent=STYLE;document.head.append(st)}let panel=$('nzAdaptivePanel');if(!panel){panel=document.createElement('section');panel.id='nzAdaptivePanel';panel.setAttribute('aria-label','Adaptive nutrition goals');panel.innerHTML='<div class="nzAdaptiveHeader"><h3>Goal intelligence</h3><span id="nzAdaptiveStatus" class="nzAdaptiveStatus">Learning</span></div><p id="nzAdaptiveSummary"></p><div class="nzAdaptiveMetrics"><div class="nzAdaptiveMetric"><b id="nzAdaptiveCal">—</b><span>Daily calorie guide</span></div><div class="nzAdaptiveMetric"><b id="nzAdaptiveTrend">—</b><span>Observed weight trend</span></div></div><div class="nzAdaptiveActions"><button type="button" id="nzAdaptiveMore" aria-expanded="false" aria-controls="nzAdaptiveDetail">How targets adapt</button><button type="button" id="nzAdaptiveSwitch">Pause adjustments</button></div><div id="nzAdaptiveDetail" hidden><p id="nzAdaptiveBasis" class="nzAdaptiveFine"></p><p class="nzAdaptiveFine">A high-calorie day never creates a stricter next-day target. Targets are reviewed at most weekly, using sufficient logging and weight-trend data. Estimates are uncertain and should not replace medical advice.</p></div>';
+parent.insertAdjacentElement('afterend',panel);$('nzAdaptiveMore').addEventListener('click',()=>{const detail=$('nzAdaptiveDetail');detail.hidden=!detail.hidden;$('nzAdaptiveMore').setAttribute('aria-expanded',String(!detail.hidden))});$('nzAdaptiveSwitch').addEventListener('click',()=>{const curr=read(AUDIT,{enabled:true,history:[]});curr.enabled=curr.enabled===false;store(AUDIT,curr);render(true)});}
+render();}
+function stageText(s){if(days(s.today,STAGE.day)<=0){const latest=s.weightTrend?.latest;const remaining=days(STAGE.day,s.today);const required=latest&&remaining>0?Math.max(0,(latest-STAGE.weight)*7/remaining):null;return 'Next stagegate: '+STAGE.weight+' lb by '+STAGE.day+'. '+(required!=null?'At the latest smoothed weight, this would require '+required.toFixed(1)+' lb/week; that does not authorize an aggressive calorie cut.':'More weight readings are needed to estimate the pace.')+' Surgery recovery takes priority.'}return 'Long-term stagegate: 185 lb. Resume gradual target review only after the recovery hold and with adequate data.'}
+function render(force=false){const panel=$('nzAdaptivePanel');if(!panel)return;const s=compute(),hash=JSON.stringify([s.current,s.calories14,s.validCount,s.weightTrend,s.onHold,s.prior.enabled,s.prior.lastAppliedDay]);if(!force&&hash===latestHash)return;latestHash=hash;
+$('nzAdaptiveCal').textContent=Math.round(s.current.calories).toLocaleString();$('nzAdaptiveTrend').textContent=s.weightTrend?(s.weightTrend.weekly>=0?'−':'+')+Math.abs(s.weightTrend.weekly).toFixed(1)+' lb/wk':'Learning';
+$('nzAdaptiveSwitch').textContent=s.prior.enabled===false?'Resume adjustments':'Pause adjustments';
+if(s.onHold){$('nzAdaptiveStatus').textContent='RECOVERY HOLD';$('nzAdaptiveSummary').textContent='Your targets stay stable around your November 20 surgery. Adequate nutrition and your surgical team’s guidance come first.'}
+else if(s.prior.enabled===false){$('nzAdaptiveStatus').textContent='PAUSED';$('nzAdaptiveSummary').textContent='Automatic changes are paused. Your saved calorie and macro goals remain active.'}
+else if(!s.next||s.validCount<10){$('nzAdaptiveStatus').textContent='LEARNING';$('nzAdaptiveSummary').textContent='Current goals are starting estimates. I need sufficiently complete food logs and reliable weight trends before recommending a change.'}
+else {$('nzAdaptiveStatus').textContent='WEEKLY REVIEW';$('nzAdaptiveSummary').textContent='Your recent eating pattern and weight trend inform a gradual, capped weekly adjustment. No next-day calorie penalties.'}
+$('nzAdaptiveBasis').textContent=(s.calories14?'14-day average intake: '+s.calories14.toLocaleString()+' kcal. ':'Insufficient 14-day intake history. ')+(s.weightTrend?'Observed trend: '+s.weightTrend.weekly.toFixed(1)+' lb/week. ':'Weight trend not yet reliable. ')+(s.next?'Model-estimated maintenance: '+s.next.maintenanceEstimate+' kcal (approximate). ':'')+'Completed-log proxy: '+s.validCount+'/10 days. '+stageText(s)+' '+s.reasons.join('; ')+'.';}
+function tick(){try{mount();const s=compute();if(s.eligible)adjust();render(true)}catch(e){const p=$('nzAdaptiveSummary');if(p)p.textContent='Goal intelligence is unavailable; your existing targets have been preserved.'}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();window.addEventListener('nz-nutrition-local-saved',()=>setTimeout(()=>render(true),0));window.addEventListener('focus',tick);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setTimeout(tick,1400);setTimeout(tick,3200);setInterval(()=>{if(!document.hidden)tick()},300000);
+})();
+
 </script>
 </body>
 </html>
