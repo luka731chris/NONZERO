@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.23.0 · Connected Action Coach</title>
+    <title>NONZERO v7.23.1 · Connected Action Coach</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3979,7 +3979,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.21.0</small></span>
+            <span class="flowBrand">NONZERO <small>v7.23.1</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -18891,6 +18891,62 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 window.NONZERO_CONNECTED_COACH_TEST={refresh,paint,init};
 })();
 
+</script>
+
+<!-- NONZERO v7.23.1: reliable Nutrition cloud settings access and visible build identity. -->
+<script id="nzCloudAccessPatch">
+(function(){'use strict';
+  const $=id=>document.getElementById(id);
+  function openNutritionCloud(){
+    const modal=$('nzNutritionModal');
+    if(!modal) return false;
+    const section=$('nzCloudPanel');
+    // Nutrition controls may initialize asynchronously as the Nutrition panel opens.
+    if(!section){ window.setTimeout(openNutritionCloud,80); return false; }
+    modal.hidden=false;
+    const wrapper=$('nzCloudWrapper');
+    if(wrapper) wrapper.open=true;
+    const inner=$('nzCloudDetails');
+    if(inner) inner.open=true;
+    section.scrollIntoView({block:'center',behavior:'smooth'});
+    const url=$('nzCloudUrl'); if(url) url.focus({preventScroll:true});
+    return true;
+  }
+  function init(){
+    const panel=$('nzNutritionModal')?.querySelector('.nzPanel');
+    const cloud=$('nzCloudPanel');
+    if(!panel || !cloud) return;
+    if(!$('nzCloudOpenDirect')){
+      const button=document.createElement('button');
+      button.type='button'; button.id='nzCloudOpenDirect';
+      button.textContent='Cloud connection settings';
+      button.setAttribute('aria-label','Open Nutrition cloud connection settings');
+      button.style.cssText='display:block;width:100%;min-height:44px;border:1px solid #42617b;border-radius:12px;margin:10px 0;padding:10px;background:#123049;color:#eff7ff;font-weight:700;cursor:pointer';
+      const head=panel.firstElementChild;
+      if(head) head.insertAdjacentElement('afterend',button);
+      else panel.prepend(button);
+      button.addEventListener('click',openNutritionCloud);
+    }
+    // Repeated clicks are safe even after previous UI reorganizations.
+    if(!$('nzCloudAccessStatus')){
+      const text=document.createElement('p'); text.id='nzCloudAccessStatus';
+      text.style.cssText='font-size:11px;opacity:.76;margin:0 0 8px';
+      text.textContent='Nutrition Cloud · tap above to show connection settings';
+      $('nzCloudOpenDirect').insertAdjacentElement('afterend',text);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',init);
+  window.addEventListener('focus',init);
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#nzOpenCloudSettings')){
+      e.preventDefault();e.stopImmediatePropagation();openNutritionCloud();
+    }
+    if(e.target?.closest?.('#nzNutritionNav,#nzOpenNutrition,#nzQLog,[data-tab="Nutrition"]'))
+      queueMicrotask(init);
+  },true);
+  if(document.readyState!=='loading')init();
+  window.NONZERO_PHONE_BUILD='7.23.1';
+})();
 </script>
 </body>
 </html>
