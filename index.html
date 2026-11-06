@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.23.1 · Connected Action Coach</title>
+    <title>NONZERO v7.23.2 · Connected Action Coach</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3979,7 +3979,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.23.1</small></span>
+            <span class="flowBrand">NONZERO <small>v7.23.2</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -17048,7 +17048,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script id="nzUx21821Script">
 (()=>{'use strict';const $=id=>document.getElementById(id);
 function init(){const box=$('nzFoodIntelligence'),modal=$('nzNutritionModal'),settings=$('tabSettings');if(!box||!modal||!settings)return;
- const cloud=$('nzCloudPanel');if(cloud){let section=$('nzSettingsNutrition');if(!section){section=document.createElement('details');section.id='nzSettingsNutrition';section.innerHTML='<summary><strong>Nutrition cloud &amp; connectivity</strong></summary>';settings.append(section)}section.append(cloud);cloud.style.display='block';}
+ /* v7.23.2: Nutrition Cloud stays in Nutrition. Do not relocate it into Settings. */
  const h=box.querySelector('strong');if(h)h.textContent='Find and log food';const intro=box.querySelector('.nfi-note');if(intro)intro.textContent='Type a food or brand. Select a result, adjust the portion, then add it to your log.';
  const grid=box.querySelector('.nfi-grid');if(grid){$('nfiSearchMode').textContent='Search';$('nfiBarcodeMode').textContent='Barcode';$('nfiMealMode').textContent='Meal photo';$('nfiLabelMode').textContent='Label photo';}
  const search=$('nfiSearch'),query=$('nfiQuery'),find=$('nfiFind'),results=$('nfiResults'),status=$('nfiStatus');if(!search||!query)return;
@@ -18945,7 +18945,62 @@ window.NONZERO_CONNECTED_COACH_TEST={refresh,paint,init};
       queueMicrotask(init);
   },true);
   if(document.readyState!=='loading')init();
-  window.NONZERO_PHONE_BUILD='7.23.1';
+  window.NONZERO_PHONE_BUILD='7.23.2';
+})();
+</script>
+
+<!-- NONZERO 7.23.2: resolve older Settings migration conflicting with Nutrition Cloud access -->
+<style id="nz7232NutritionCloudStyle">
+/* The legacy 7.18 Settings migration hides this panel in Nutrition. Re-home it there. */
+#nzNutritionModal #nzCloudPanel { display:block!important; }
+#nzNutritionModal #nzCloudWrapper { order:8; display:block!important; }
+#nzNutritionModal #nzCloudWrapper>.nz3Content { padding:0 12px 12px; }
+#nzNutritionModal #nzCloudDetails { display:block; }
+</style>
+<script id="nz7232NutritionCloudRepair">
+(function(){'use strict';
+  const $=id=>document.getElementById(id);
+  function repair(){
+    const panel=$('nzNutritionModal')?.querySelector('.nzPanel');
+    const cloud=$('nzCloudPanel');
+    if(!panel||!cloud)return false;
+    let wrapper=$('nzCloudWrapper');
+    if(!wrapper){
+      wrapper=document.createElement('details');wrapper.id='nzCloudWrapper';
+      wrapper.className='nz3Disclosure';
+      const summary=document.createElement('summary');summary.textContent='Cloud synchronization';
+      const content=document.createElement('div');content.className='nz3Content';
+      wrapper.append(summary,content);content.append(cloud);
+    }else if(!wrapper.contains(cloud)){
+      let content=wrapper.querySelector('.nz3Content');
+      if(!content){content=document.createElement('div');content.className='nz3Content';wrapper.append(content);}
+      content.append(cloud);
+    }
+    // Earlier code relocated the entire wrapper to Settings, then hid the original panel.
+    // Keep one canonical section in Nutrition, not competing copies in two screens.
+    if(wrapper.parentElement!==panel)panel.append(wrapper);
+    const oldSettings=$('nzSettingsNutrition');
+    if(oldSettings&&!oldSettings.querySelector('#nzCloudPanel'))oldSettings.remove();
+    const oldDirect=$('nzCloudOpenDirect');if(oldDirect)oldDirect.remove();
+    const oldHint=$('nzCloudAccessStatus');if(oldHint)oldHint.remove();
+    cloud.style.removeProperty('display');
+    const inside=$('nzCloudDetails');
+    if(inside)inside.open=true;
+    const summary=wrapper.querySelector(':scope > summary');
+    if(summary){
+      summary.setAttribute('aria-label','Cloud synchronization: expand connection settings');
+      summary.querySelector('small')?.replaceChildren(document.createTextNode('Connection & diagnostics'));
+    }
+    if(!wrapper.dataset.nz7232Bound){
+      wrapper.dataset.nz7232Bound='1';
+      wrapper.addEventListener('toggle',()=>{if(wrapper.open&&inside)inside.open=true;});
+    }
+    return true;
+  }
+  const start=()=>{if(repair())return;setTimeout(repair,80);};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(start,0));
+  else setTimeout(start,0);
+  window.NONZERO_NUTRITION_CLOUD_REPAIR=repair;
 })();
 </script>
 </body>
