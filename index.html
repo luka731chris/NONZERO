@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.22.0 · Food Flow & Coaching</title>
+    <title>NONZERO v7.23.0 · Connected Action Coach</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -18203,74 +18203,90 @@ window.addEventListener('focus',schedule);document.addEventListener('visibilityc
 setTimeout(schedule,1000);setTimeout(schedule,2400);
 })();
 </script>
-<!-- NONZERO v7.20.8 · Weight Center: original workout/weight/cloud logic retained -->
+<!-- NONZERO v7.22.2 Weight Clarity: unified timeline, milestones and explicit provenance -->
 <style id="nzWeightCenterStyle">
-#nzWeightCenter{background:linear-gradient(165deg,#182f3b,#0c1926);border:1px solid #466372;border-radius:20px;padding:clamp(16px,4vw,22px);margin:12px 0 22px;color:#edf5f5;box-shadow:0 8px 28px #0002}
-#nzWeightCenter .nzw-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-#nzWeightCenter .nzw-eyebrow{font-size:12px;color:#f4d35e;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
-#nzWeightCenter h2{font-size:clamp(22px,6vw,28px);margin:4px 0;letter-spacing:-.03em;color:#f5f9fc}
-#nzWeightCenter .nzw-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-#nzWeightCenter .nzw-stat{background:#132b3a;border:1px solid #314957;padding:13px;border-radius:15px;min-width:0}
-#nzWeightCenter .nzw-stat>span{display:block;font-size:13px;color:#bbd0d9;font-weight:650;margin-bottom:6px}
-#nzWeightCenter .nzw-stat>strong{display:block;font-size:clamp(24px,7vw,34px);font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.035em;overflow-wrap:anywhere}
-#nzWeightCenter .nzw-stat>small{font-size:12px;color:#bbcbd3;display:block;margin-top:6px;line-height:1.4}
-#nzWeightCenter .nzw-hero{margin:14px 0;border:1px solid #54746f;border-radius:14px;background:#13352f;padding:13px}
-#nzWeightCenter .nzw-hero strong{display:block;font-size:15px;color:#effcf5}
-#nzWeightCenter .nzw-hero p{margin:6px 0 0;color:#bfd8d5;font-size:13px;line-height:1.45}
-#nzWeightCenter .nzw-entry{border-top:1px solid #345360;padding-top:14px;margin-top:14px}
-#nzWeightCenter .nzw-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
-#nzWeightCenter label{display:block;font-size:13px;font-weight:650;color:#c4d5dc}
-#nzWeightCenter input{display:block;width:100%;box-sizing:border-box;min-width:0;font-size:18px;font-weight:750;color:#f7fafc;background:#102638;border:1px solid #526a7a;border-radius:12px;padding:13px 10px;margin-top:7px;min-height:48px;font-variant-numeric:tabular-nums}
-#nzWeightCenter button,#nzWeightCenter .nzw-shortcut{border:1px solid #527580;border-radius:12px;background:#223f50;color:#eaf4f6;font:700 14px system-ui,-apple-system,sans-serif;min-height:47px;padding:11px 12px;cursor:pointer;transition:transform .12s ease,filter .12s ease}
-#nzWeightCenter button:active,#nzWeightCenter .nzw-shortcut:active{transform:scale(.98)}
-#nzWeightCenter #nzwSave{background:#f4d35e;color:#18232c;border-color:#f4d35e;width:100%;margin-top:11px;font-size:15px}
-#nzWeightCenter .nzw-actionrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
-#nzWeightCenter .nzw-shortcut{text-align:center;display:flex;align-items:center;justify-content:center;text-decoration:none}
-#nzWeightCenter .nzw-status{font-size:13px;color:#c1d4d8;margin:9px 0;line-height:1.5}
-#nzWeightCenter #nzwReceipt{min-height:21px;font-weight:650;color:#b7ecd4}
-#nzWeightCenter #nzwReceipt[data-error="true"]{color:#ffc2ad}
-#nzWeightCenter details{border-top:1px solid #344e60;margin-top:14px;padding-top:12px;font-size:13px;color:#c3d5dc}
-#nzWeightCenter summary{color:#f4d35e;font-weight:750;cursor:pointer}
-#nzWeightCenter .nzw-history{list-style:none;margin:10px 0 0;padding:0}
-#nzWeightCenter .nzw-history li{display:flex;gap:8px;justify-content:space-between;padding:8px 0;border-bottom:1px solid #273f4d}
-@media(max-width:350px){#nzWeightCenter .nzw-fields{grid-template-columns:1fr}#nzWeightCenter .nzw-stat>strong{font-size:26px}}
-@media(orientation:landscape) and (max-height:500px){#nzWeightCenter .nzw-stat>strong{font-size:30px}#nzWeightCenter .nzw-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(prefers-reduced-motion:reduce){#nzWeightCenter button{transition:none!important}}
+#nzWeightCenter{background:linear-gradient(160deg,#142e39,#0c202c);border:1px solid #3c5865;border-radius:21px;padding:clamp(15px,4vw,22px);margin:10px 0 20px;color:#eef6f5;scroll-margin-top:80px}
+#nzWeightCenter *{box-sizing:border-box}
+#nzWeightCenter .wc-label{font:750 12px/1.4 system-ui;letter-spacing:.10em;color:#f4d35e;text-transform:uppercase}
+#nzWeightCenter h2{font:780 clamp(24px,6.6vw,30px)/1.12 system-ui;letter-spacing:-.035em;margin:4px 0 5px}
+#nzWeightCenter .wc-muted{font-size:13px;line-height:1.5;color:#b9cbd2}
+#nzWeightCenter .wc-top{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:17px}
+#nzWeightCenter .wc-last{font:800 clamp(34px,10vw,46px)/1 system-ui;letter-spacing:-.045em;font-variant-numeric:tabular-nums;color:#fff}
+#nzWeightCenter .wc-last small{font-size:15px;font-weight:600;color:#c7d5d8;letter-spacing:0}
+#nzWeightCenter .wc-mark{display:inline-flex;align-items:center;font-size:12px;color:#c9ddd8;background:#163e3b;border:1px solid #38615c;border-radius:999px;padding:6px 9px}
+#nzWeightCenter .wc-chartbox{border:1px solid #3b5260;border-radius:17px;background:#0b212d;padding:14px 12px 8px;margin:14px 0}
+#nzWeightCenter .wc-charthead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+#nzWeightCenter .wc-charthead b{font-size:15px}
+#nzWeightCenter .wc-range{display:flex;gap:5px}
+#nzWeightCenter button{min-height:44px;border-radius:12px;padding:9px 13px;font:700 14px system-ui;background:#203e4d;color:#eff7f4;border:1px solid #45636c;cursor:pointer}
+#nzWeightCenter .wc-range button{min-height:36px;padding:6px 13px;font-size:12px}
+#nzWeightCenter .wc-range button[aria-pressed="true"],#nzWeightCenter #wcSave{color:#18252b;background:#f4d35e;border-color:#f4d35e}
+#nzWeightCenter .wc-chart{display:block;width:100%;height:auto;min-height:160px;max-height:230px;overflow:visible}
+#nzWeightCenter .wc-chart text{fill:#b6c9d0;font:11px system-ui}
+#nzWeightCenter .wc-chart .wc-target{stroke:#f4d35e;stroke-dasharray:5 5;stroke-width:1.7}
+#nzWeightCenter .wc-chart .wc-line{fill:none;stroke:#88d7c6;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+#nzWeightCenter .wc-chart .wc-point{fill:#c8f4e9;stroke:#10313b;stroke-width:2}
+#nzWeightCenter .wc-legend{display:flex;align-items:center;gap:13px;flex-wrap:wrap;color:#b7cbd1;font-size:12px;margin:6px 0}
+#nzWeightCenter .wc-legend b{color:#eef5f4}
+#nzWeightCenter .wc-next{border:1px solid #415964;background:#132c38;border-radius:16px;padding:15px;margin:12px 0}
+#nzWeightCenter .wc-milestone{font:790 clamp(28px,7.5vw,35px)/1.15 system-ui;color:#fff;font-variant-numeric:tabular-nums;margin:5px 0 7px}
+#nzWeightCenter .wc-progress{height:10px;background:#2b4451;border-radius:999px;overflow:hidden;margin:11px 0 7px}
+#nzWeightCenter .wc-progress>div{height:100%;background:#f4d35e;border-radius:999px;transition:width .2s}
+#nzWeightCenter .wc-steps{display:flex;gap:7px;overflow-x:auto;padding:7px 0 2px;scrollbar-width:none}#nzWeightCenter .wc-step{white-space:nowrap;flex:0 0 auto;border-radius:9px;border:1px solid #3d5965;background:#102733;color:#b9cbd1;font-size:12px;font-weight:680;padding:7px 10px}#nzWeightCenter .wc-step.next{border-color:#f4d35e;color:#f4d35e}#nzWeightCenter .wc-step.done{color:#91d8c2}#nzWeightCenter .wc-pace{font-size:13px;line-height:1.55;color:#c4d4d9;margin:10px 0 0}
+#nzWeightCenter .wc-foot{font-size:12px;color:#aec3ca;line-height:1.5;margin:10px 0 0}
+#nzWeightCenter .wc-actions{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0 2px}
+#nzWeightCenter .wc-actions button{flex:1;min-width:120px}
+#nzWeightCenter #wcReceipt{font-size:13px;line-height:1.5;color:#b8f1d8;min-height:1px;margin:9px 0 0}
+#nzWeightCenter #wcReceipt[data-error="true"]{color:#ffd1c1}
+#nzWeightCenter details{border-top:1px solid #35515c;padding:13px 0 2px;margin:9px 0}
+#nzWeightCenter summary{font:750 14px system-ui;cursor:pointer;color:#f4d35e;min-height:44px;display:flex;align-items:center}
+#nzWeightCenter .wc-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 12px}
+#nzWeightCenter label{font:650 13px system-ui;color:#c8d8de}
+#nzWeightCenter input{display:block;min-width:0;width:100%;background:#102733;color:#f1f7f6;border:1px solid #58717c;border-radius:11px;padding:12px;margin-top:7px;font:700 18px system-ui;min-height:48px}
+#nzWeightCenter .wc-list{list-style:none;padding:0;margin:0}
+#nzWeightCenter .wc-list li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #2d4551;padding:9px 0;font-size:13px}
+#nzWeightCenter .wc-list span{color:#b9ccd1}
+#nzwOtherProgress{margin-top:16px;border:1px solid #34525d;border-radius:16px;padding:0 12px;color:#d6e6e7}
+#nzwOtherProgress summary{display:flex;align-items:center;min-height:48px;font-weight:750;color:#f4d35e;cursor:pointer}
+#nzwOtherProgress>.grid3,#nzwOtherProgress>.card{margin:12px 0}
+@media(max-width:350px){#nzWeightCenter .wc-fields{grid-template-columns:1fr}#nzWeightCenter .wc-last{font-size:35px}}
+@media(prefers-reduced-motion:reduce){#nzWeightCenter *{animation:none!important;transition:none!important}}
 </style>
 <script id="nzWeightCenterScript">
 (()=>{'use strict';
-const $=s=>document.getElementById(s),KEY='hipPrehabV2';let lastCheck=0,checkBusy=false;
-function read(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
-function day(){if(window.NonZeroSuite?.dateKey)return window.NonZeroSuite.dateKey();let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
-function rows(){return (read().bodyMeasurements||[]).filter(r=>r&&/^\d{4}-\d{2}-\d{2}$/.test(r.date||'')&&Number(r.weightLb)>=50&&Number(r.weightLb)<=700&&r.date<=day()).slice().sort((a,b)=>a.date.localeCompare(b.date)||Number(a.at||0)-Number(b.at||0))}
-function fmtDate(s){if(!s)return '—';const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}
-function source(x){if(!x)return 'No reading';return x.source==='apple-health'?'Apple Health'+(x.sourceName&&x.sourceName!=='Apple Health'?' · '+x.sourceName:''):x.source==='manual'?'Manual entry':x.source==='withings-reported'?'Previously reported':'Other source'}
-function stamp(t){let n=Number(t);return n>0&&Number.isFinite(n)?new Date(n).toLocaleString():'Not yet received'}
-function init(){if($('nzWeightCenter'))return;let target=$('tabHistory');if(!target)return;const hub=document.createElement('section');hub.id='nzWeightCenter';hub.setAttribute('aria-label','Weight center');hub.innerHTML=`<div class="nzw-head"><div><div class="nzw-eyebrow">NONZERO · WEIGHT</div><h2>Weight center</h2></div><span style="color:#c5d5d9;font-size:12px">One reading. One clear status.</span></div>
-<div class="nzw-grid"><div class="nzw-stat"><span>Latest reading</span><strong id="nzwLatest">—</strong><small id="nzwLatestSource">No saved reading</small></div><div class="nzw-stat"><span>7-day average</span><strong id="nzwAverage">—</strong><small id="nzwCount">Not enough readings</small></div></div>
-<div class="nzw-hero" role="status" aria-live="polite"><strong id="nzwCurrent">Checking saved weight</strong><p id="nzwCloud">—</p></div>
-<div class="nzw-entry"><div class="nzw-eyebrow">Save a measurement</div><div class="nzw-fields"><label>Weight · lb<input id="nzwInput" type="number" min="50" max="700" step="0.1" inputmode="decimal" placeholder="e.g. 224.6"></label><label>Measurement date<input id="nzwDate" type="date"></label></div><button id="nzwSave" type="button">Save weight</button><p id="nzwReceipt" class="nzw-status" role="status" aria-live="polite"></p></div>
-<div class="nzw-actionrow"><button type="button" id="nzwCheck">Check NONZERO cloud</button><a class="nzw-shortcut" href="shortcuts://run-shortcut?name=NONZERO%20Weight%20Sync" id="nzwShortcut">Run iPhone Shortcut</a></div>
-<p class="nzw-status" id="nzwHealth">Checking imported readings…</p><p class="nzw-status">The Shortcut sends Apple Health weight to NONZERO. “Check cloud” only checks for a reading already delivered; it cannot make Apple Health or Withings send one.</p>
-<details><summary>Recent readings and sync help</summary><ul class="nzw-history" id="nzwHistory"></ul><p id="nzwShortcutNote">If the Shortcut hasn't delivered a newer Health reading, check that Withings has written the weight to Apple Health, then run the Shortcut while your iPhone is unlocked.</p><button type="button" id="nzwSettings">Weight Shortcut settings</button></details>`;
-target.prepend(hub);$('nzwDate').value=day();$('nzwDate').max=day();$('nzwSave').addEventListener('click',saveWeight);$('nzwCheck').addEventListener('click',checkCloud);$('nzwSettings').addEventListener('click',()=>{$('openWeightSettings')?.click()});$('nzwShortcut').addEventListener('click',()=>{receipt('Opening your iPhone Shortcut. Return to NONZERO and tap Check NONZERO cloud to confirm delivery.',false)});render();}
-function receipt(msg,error){let e=$('nzwReceipt');if(e){e.textContent=msg;e.dataset.error=error?'true':'false'}}
-function render(){if(!$('nzWeightCenter'))return;let data=read(),a=rows(),latest=a.at(-1),today=day(), recent=a.filter(x=>{let t=new Date(x.date+'T12:00:00').getTime();return Number.isFinite(t)&&(new Date(today+'T12:00:00').getTime()-t)<7*86400000}),onePerDay=new Map();for(let x of recent)onePerDay.set(x.date,x);let daily=[...onePerDay.values()],avg=daily.length?daily.reduce((n,x)=>n+Number(x.weightLb),0)/daily.length:null;
-$('nzwLatest').textContent=latest?Number(latest.weightLb).toFixed(1)+' lb':'—';$('nzwLatestSource').textContent=latest?fmtDate(latest.date)+' · '+source(latest):'No measurement saved';$('nzwAverage').textContent=avg!=null?avg.toFixed(1)+' lb':'—';$('nzwCount').textContent=daily.length+' days with readings';
-let localPending=localStorage.getItem('nonzero.suite.pending')==='1';let connected=typeof cloudReady==='function'&&cloudReady();let todaySaved=!!latest&&latest.date===today;
-$('nzwCurrent').textContent=todaySaved?'Today’s reading is saved':'Latest saved weight · '+(latest?fmtDate(latest.date):'none');$('nzwCloud').textContent=localPending?(connected?'Saved on this phone · NONZERO cloud upload pending':'Saved on this phone · cloud not connected'):connected?'No pending local changes · cloud synchronization status is shown in Settings':'Local records available · cloud not connected';
-let imports=a.filter(x=>x.source==='apple-health'),lastImport=imports.at(-1);let checked=data.weightSync?.lastImportedAt;
-$('nzwHealth').textContent=lastImport?'Latest Apple Health reading: '+Number(lastImport.weightLb).toFixed(1)+' lb · '+fmtDate(lastImport.date)+'. Last newly received: '+stamp(checked||lastImport.importedAt)+'.':'No Apple Health weight has been received by this app. A manual entry does not confirm the Shortcut is working.';
-let hist=$('nzwHistory');hist.replaceChildren();for(let x of a.slice(-6).reverse()){let li=document.createElement('li');let left=document.createElement('span');left.textContent=fmtDate(x.date)+' · '+source(x);let right=document.createElement('strong');right.textContent=Number(x.weightLb).toFixed(1)+' lb';li.append(left,right);hist.append(li)}if(!a.length){let li=document.createElement('li');li.textContent='No saved readings';hist.append(li)}
-}
-function saveWeight(){let input=$('nzwInput'),date=$('nzwDate').value,w=Number(input.value);if(!input.value||!Number.isFinite(w)||w<50||w>700||!/^\d{4}-\d{2}-\d{2}$/.test(date)||date>day()||!Number.isFinite(Date.parse(date+'T12:00:00'))){receipt('Enter a weight from 50–700 lb and a valid date no later than today.',true);return}let existing=rows().find(x=>x.id==='manual-weight-'+date);if(existing&&Math.abs(existing.weightLb-w)>.049){if(!window.confirm('Replace your previous manual weight of '+Number(existing.weightLb).toFixed(1)+' lb on '+fmtDate(date)+'?'))return}
-const legacyInput=$('readinessWeightInput'),legacyDate=$('readinessWeightDate'),legacySave=$('saveReadinessWeight');if(!legacyInput||!legacyDate||!legacySave){receipt('Weight storage is unavailable. No changes were made.',true);return}
-legacyInput.value=w.toFixed(1);legacyDate.value=date;legacySave.click();let r=rows().find(x=>x.id==='manual-weight-'+date);if(!r||Math.abs(Number(r.weightLb)-w)>.05){receipt('Save could not be verified on this phone. Please retry; no cloud confirmation is available.',true);return}
-receipt('Saved '+w.toFixed(1)+' lb for '+fmtDate(date)+' on this phone.'+(localStorage.getItem('nonzero.suite.pending')==='1'?(typeof cloudReady==='function'&&cloudReady()?' Cloud sync pending.':' Cloud not connected; sync when configured.'):' Check Settings for cloud status.'),false);input.value='';render();}
-async function checkCloud(){if(checkBusy)return;let btn=$('nzwCheck');if(typeof cloudReady!=='function'||!cloudReady()){receipt('NONZERO cloud is not connected. Your local weight is still available. Configure sync in Settings.',true);return}checkBusy=true;btn.disabled=true;btn.textContent='Checking…';receipt('Checking NONZERO cloud for an already imported weight…',false);try{let ok=await pullCloudState({force:true});if(ok){receipt('Cloud check completed. Compare the Apple Health date below with the reading in Apple Health.',false)}else{receipt('Cloud check could not finish. Local measurements were not deleted.',true)}}catch(e){receipt('Could not check the cloud. Local measurements remain saved.',true)}finally{checkBusy=false;btn.disabled=false;btn.textContent='Check NONZERO cloud';render()}}
-function navigate(){document.querySelector('[data-tab="History"]')?.click();setTimeout(()=>{$('nzWeightCenter')?.scrollIntoView({behavior:'smooth',block:'start'});render()},80)}
-document.addEventListener('click',e=>{let card=e.target.closest?.('#nzKpiWeightTile,#homeProgress');if(card&&$('nzWeightCenter')){e.preventDefault();e.stopImmediatePropagation();navigate()}},true);
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();window.addEventListener('suite-state-changed',render);window.addEventListener('storage',e=>{if([KEY,'nonzero.suite.pending'].includes(e.key))render()});window.addEventListener('focus',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});document.addEventListener('click',e=>{if(e.target.closest?.('[data-tab="History"]'))setTimeout(render,50)});
+const $=id=>document.getElementById(id), KEY='hipPrehabV2';let period=30,checking=false;
+const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch{return {}}};
+const dateKey=()=>{if(window.NonZeroSuite?.dateKey)return window.NonZeroSuite.dateKey();const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const timestamp=d=>new Date(d+'T12:00:00').getTime();
+const fmtDate=s=>{if(!/^\d{4}-\d\d-\d\d$/.test(s||''))return '—';return new Date(s+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})};
+function history(){const now=dateKey();return (read().bodyMeasurements||[]).filter(x=>x&&/^\d{4}-\d\d-\d\d$/.test(x.date||'')&&Number.isFinite(Number(x.weightLb))&&Number(x.weightLb)>=50&&Number(x.weightLb)<=700&&x.date<=now).slice().sort((a,b)=>timestamp(a.date)-timestamp(b.date)||Number(a.at||0)-Number(b.at||0))}
+const origin=x=>x?.source==='apple-health'?'Apple Health'+(x.sourceName&&x.sourceName!=='Apple Health'?' · '+x.sourceName:''):x?.source==='manual'?'Manual entry':x?.source==='withings-reported'?'Reported weight':'Other source';
+function daily(){let map=new Map();for(const r of history()){const old=map.get(r.date);const newScore=r.source==='apple-health'?3:r.source==='manual'?2:1,oldScore=old?.source==='apple-health'?3:old?.source==='manual'?2:1;if(!old||newScore>oldScore||(newScore===oldScore&&Number(r.at||0)>Number(old.at||0)))map.set(r.date,r)}return [...map.values()].sort((a,b)=>a.date.localeCompare(b.date))}
+function milestones(value,state){const long=Number(state?.weightJourney?.goalWeightLb)||185;let goal=Math.floor((value-0.001)/5)*5;goal=Math.max(long,goal);if(value<=long)goal=long;return {goal,long};}
+function build(){if($('nzWeightCenter'))return;const host=$('tabHistory');if(!host)return;
+const section=document.createElement('section');section.id='nzWeightCenter';section.setAttribute('aria-label','Weight center');section.innerHTML=`<div class="wc-top"><div><div class="wc-label">NONZERO · Weight</div><h2>Weight journey</h2><span id="wcSource" class="wc-muted">Checking measurements…</span></div><div><div id="wcLatest" class="wc-last">—</div><div id="wcCloudBadge" class="wc-mark">Saved readings</div></div></div>
+<div class="wc-chartbox"><div class="wc-charthead"><b>Your weight trend</b><div class="wc-range"><button type="button" id="wc30" aria-pressed="true">30 days</button><button type="button" id="wc90" aria-pressed="false">90 days</button></div></div><svg id="wcChart" class="wc-chart" role="img" viewBox="0 0 350 195" preserveAspectRatio="xMidYMid meet" aria-label="Weight trend chart"><text x="18" y="92">Add a reading to see your trend</text></svg><div class="wc-legend"><span>— <b style="color:#88d7c6">Actual weight</b></span><span>┄ <b style="color:#f4d35e">Next goal</b></span></div><p id="wcTrendCaption" class="wc-muted">Daily readings become a trend over time.</p></div>
+<div class="wc-next"><div class="wc-label">Next milestone</div><div id="wcGoal" class="wc-milestone">—</div><div id="wcGoalDetail" class="wc-muted">Your next 5-lb step</div><div class="wc-progress"><div id="wcProgressFill" style="width:0%"></div></div><div id="wcSteps" class="wc-steps" aria-label="Upcoming weight milestones"></div><div id="wcPace" class="wc-pace"></div><p id="wcSafety" class="wc-foot"></p></div>
+<div class="wc-actions"><button type="button" id="wcAdd">+ Add weight</button><button type="button" id="wcSync">Check sync</button></div><p id="wcReceipt" role="status" aria-live="polite"></p>
+<details id="wcEntry"><summary>Manual weight entry</summary><div class="wc-fields"><label>Weight (lb)<input id="wcValue" type="number" min="50" max="700" step="0.1" inputmode="decimal" placeholder="e.g. 224.6"></label><label>Measured on<input id="wcDate" type="date"></label></div><button id="wcSave">Save reading</button></details>
+<details id="wcDetails"><summary>Reading sources & sync details</summary><p id="wcHealth" class="wc-muted"></p><p id="wcCloud" class="wc-muted"></p><button id="wcSettings">Connection settings</button><ul id="wcHistory" class="wc-list"></ul></details>`;
+host.prepend(section);
+const more=document.createElement('details');more.id='nzwOtherProgress';more.innerHTML='<summary>Workout history & additional analytics</summary>';section.after(more);for(const child of [...host.children])if(child!==section&&child!==more)more.append(child);
+$('wcDate').value=dateKey();$('wcDate').max=dateKey();$('wc30').onclick=()=>{period=30;render()};$('wc90').onclick=()=>{period=90;render()};$('wcAdd').onclick=()=>{const e=$('wcEntry');e.open=true;e.scrollIntoView({block:'nearest'});$('wcValue').focus()};$('wcSave').onclick=save;$('wcSync').onclick=sync;$('wcSettings').onclick=()=>{$('openWeightSettings')?.click();};render();}
+function receipt(msg,error=false){const e=$('wcReceipt');if(e){e.textContent=msg;e.dataset.error=String(!!error)}}
+function graph(list,target){const svg=$('wcChart');if(!svg)return;const today=timestamp(dateKey()),start=today-(period-1)*86400000,pts=list.filter(r=>timestamp(r.date)>=start&&timestamp(r.date)<=today);const values=pts.map(r=>Number(r.weightLb));if(target&&Number.isFinite(target))values.push(target);svg.replaceChildren();svg.setAttribute('aria-label',`${period}-day weight trend, ${pts.length} days with readings, next milestone ${target||'unset'} pounds`);const ns='http://www.w3.org/2000/svg',E=(name,attrs={},txt)=>{const n=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(txt!==undefined)n.textContent=txt;svg.append(n);return n};if(!pts.length){E('text',{x:16,y:95,fill:'#b7cbd0'},'No readings in this range');return}
+const hi=Math.max(...values)+2,lo=Math.min(...values)-2,left=44,right=326,top=19,bottom=156,Y=v=>top+(hi-v)/(hi-lo)*(bottom-top),X=d=>left+(Math.max(start,Math.min(today,timestamp(d)))-start)/(Math.max(1,today-start))*(right-left);for(let i=0;i<3;i++){const val=lo+(hi-lo)*(i/2),y=Y(val);E('line',{x1:left,x2:right,y1:y,y2:y,stroke:'#294652','stroke-width':1});E('text',{x:3,y:y+4},val.toFixed(0))}if(Number.isFinite(target)){let y=Y(target);E('line',{x1:left,x2:right,y1:y,y2:y,class:'wc-target'});E('text',{x:right,y:y-6,'text-anchor':'end',fill:'#f4d35e'},`${target} lb goal`)}E('text',{x:left,y:181},fmtDate([new Date(start).getFullYear(),String(new Date(start).getMonth()+1).padStart(2,'0'),String(new Date(start).getDate()).padStart(2,'0')].join('-')));E('text',{x:right,y:181,'text-anchor':'end'},fmtDate(dateKey()));
+let path=pts.map((r,i)=>`${i?'L':'M'}${X(r.date).toFixed(1)},${Y(Number(r.weightLb)).toFixed(1)}`).join(' ');E('path',{d:path,class:'wc-line'});pts.forEach((r,i)=>{if(i===pts.length-1||pts.length<=8)E('circle',{cx:X(r.date),cy:Y(Number(r.weightLb)),r:i===pts.length-1?5:3,class:'wc-point'})});}
+function render(){if(!$('nzWeightCenter'))return;const state=read(),all=daily(),latest=all.at(-1),allRaw=history(),lastImported=allRaw.filter(r=>r.source==='apple-health').at(-1);$('wcLatest').innerHTML=latest?`${Number(latest.weightLb).toFixed(1)} <small>lb</small>`:'—';$('wcSource').textContent=latest?`${fmtDate(latest.date)} · ${origin(latest)}`:'No weight logged yet';$('wcCloudBadge').textContent=lastImported?'Health import received':'No Health import confirmed';$('wcCloudBadge').style.borderColor=lastImported?'#4f8475':'#536778';$('wc30').setAttribute('aria-pressed',String(period===30));$('wc90').setAttribute('aria-pressed',String(period===90));$('wcCloud').textContent=localStorage.getItem('nonzero.suite.pending')==='1'?'Local changes pending cloud upload.':'Cloud check is separate from your Apple Health Shortcut.';$('wcHealth').textContent=lastImported?`Latest Apple Health import: ${Number(lastImported.weightLb).toFixed(1)} lb on ${fmtDate(lastImported.date)}. When a manual reading and Health import share a date, the trend prefers Health while preserving both records.`:'No Apple Health-sourced reading is present in this phone’s loaded records. A successful Shortcut upload alone does not prove phone cloud sync.';
+let hist=$('wcHistory');hist.replaceChildren();for(const r of allRaw.slice(-8).reverse()){let li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('b');a.textContent=`${fmtDate(r.date)} · ${origin(r)}`;b.textContent=Number(r.weightLb).toFixed(1)+' lb';li.append(a,b);hist.append(li)}
+if(!latest){$('wcGoal').textContent='Set your starting weight';$('wcGoalDetail').textContent='Your next milestone will appear here.';$('wcPace').textContent='Add a reading to begin.';$('wcSafety').textContent='Goal guidance uses trends, not one-day fluctuations.';$('wcProgressFill').style.width='0%';$('wcSteps').replaceChildren();$('wcTrendCaption').textContent='No valid weight readings stored on this device.';graph(all,null);return}
+const {goal,long}=milestones(Number(latest.weightLb),state);let remaining=Math.max(0,Number(latest.weightLb)-goal),prev=goal+5,progress=Math.min(100,Math.max(0,(prev-Number(latest.weightLb))/5*100));$('wcGoal').textContent=goal.toFixed(0)+' lb';$('wcGoalDetail').textContent=remaining>0?`${remaining.toFixed(1)} lb to next 5-lb milestone · long-term ${long} lb`:`Milestone reached · long-term ${long} lb`;$('wcProgressFill').style.width=progress+'%';const steps=$('wcSteps');steps.replaceChildren();for(let g=Math.min(goal+5,Math.ceil(Number(latest.weightLb)/5)*5);g>=Math.max(long,goal-10);g-=5){const chip=document.createElement('span');chip.className='wc-step'+(g===goal?' next':g>Number(latest.weightLb)?' done':'');chip.textContent=g+' lb'+(g===goal?' · next':g>Number(latest.weightLb)?' · passed':'');steps.append(chip)}let range=all.filter(r=>timestamp(r.date)>=timestamp(dateKey())-30*86400000),unique=range.length,trend=unique>=2?Number(range.at(-1).weightLb)-Number(range[0].weightLb):null;$('wcTrendCaption').textContent=trend===null?'Add another weigh-in to see your trend.':`${trend>0?'+':''}${trend.toFixed(1)} lb from first to latest logged day in this 30-day period · ${unique} days logged`;
+const eventDate='2026-11-20',hold=timestamp(dateKey())<=timestamp('2027-01-15')&&timestamp(dateKey())>=timestamp('2026-11-06');const guidance=hold?'Surgery and recovery take priority. NONZERO will not prescribe a compensatory calorie deficit during this period.':`For context, 0.5–1 lb/week usually corresponds to roughly a 250–500 kcal/day average energy gap. Actual needs must be calibrated using intake and multiweek weight trends.`;$('wcPace').textContent=remaining>0?`At a gradual 0.5–1 lb/week, this step could take roughly ${Math.ceil(remaining)}–${Math.ceil(remaining*2)} weeks. This is a planning range, not a deadline.`:'The next goal will update as new readings arrive.';$('wcSafety').textContent=guidance;graph(all,goal);}
+function save(){const e=$('wcValue'),date=$('wcDate').value,w=Number(e.value);if(!e.value||!Number.isFinite(w)||w<50||w>700||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)||date>dateKey()){receipt('Enter a valid weight in lb and a date no later than today.',true);return}const old=history().find(x=>x.id==='manual-weight-'+date);if(old&&Math.abs(Number(old.weightLb)-w)>.049&&!window.confirm('Replace the manual weight recorded for '+fmtDate(date)+'?'))return;const input=$('readinessWeightInput'),dt=$('readinessWeightDate'),submit=$('saveReadinessWeight');if(!input||!dt||!submit){receipt('Weight storage unavailable. Nothing was saved.',true);return}input.value=w.toFixed(1);dt.value=date;submit.click();const now=history().find(x=>x.id==='manual-weight-'+date);if(!now||Math.abs(Number(now.weightLb)-w)>.05){receipt('Could not verify this save on your phone. Please retry.',true);return}receipt('Saved '+w.toFixed(1)+' lb for '+fmtDate(date)+' on this phone. Cloud status is separate.');e.value='';$('wcEntry').open=false;render()}
+async function sync(){const b=$('wcSync');if(checking)return;if(typeof cloudReady!=='function'||!cloudReady()){receipt('Cloud is not connected. Your local weight history is unchanged.',true);return}checking=true;b.disabled=true;b.textContent='Checking…';receipt('Checking NONZERO cloud for existing readings…');try{const ok=await pullCloudState({force:true});receipt(ok?'Cloud check finished. Confirm the Apple Health source above.':'Cloud check did not finish. Local history is preserved.',!ok)}catch{receipt('Could not connect. Local weight history is preserved.',true)}finally{checking=false;b.disabled=false;b.textContent='Check sync';render()}}
+function navigate(){document.querySelector('[data-tab="History"]')?.click();setTimeout(()=>{$('nzWeightCenter')?.scrollIntoView({block:'start',behavior:'smooth'});render()},100)}
+document.addEventListener('click',e=>{if(e.target.closest?.('#nzKpiWeightTile,#homeProgress')&&$('nzWeightCenter')){e.preventDefault();e.stopImmediatePropagation();navigate()}},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();for(const ev of ['suite-state-changed','focus'])window.addEventListener(ev,render);window.addEventListener('storage',e=>{if([KEY,'nonzero.suite.pending'].includes(e.key))render()});document.addEventListener('click',e=>{if(e.target.closest?.('[data-tab="History"]'))setTimeout(render,75)});
 })();
 </script>
 
@@ -18565,7 +18581,7 @@ function make(){if($('nz7212Composer'))return;const overlay=document.createEleme
 }
 // Capture phase deliberately consolidates earlier generations of competing handlers.
 document.addEventListener('click',e=>{const btn=e.target.closest?.('button');if(!btn)return;const id=btn.id;if(FOCUS_IDS.has(id)||btn.matches('[data-nz-log-food]')){if(id==='nz7210Manual')return;e.preventDefault();e.stopImmediatePropagation();open('describe');}},true);
-function coaching(){const dashboard=$('nzKpiDashboard');if(!dashboard||!$('nzNutritionCard')||!$('homeProgress'))return;let card=$('nz7212Coach');if(!card){card=document.createElement('section');card.id='nz7212Coach';card.innerHTML=`<div class="nz7212CoachTop"><div><span>YOUR COACH</span><h2>Today's focus</h2></div><span id="nz7212CoachBadge">Daily guidance</span></div><p id="nz7212CoachMessage">Your nutrition outlook will appear here.</p><div class="nz7212CoachFoot"><small id="nz7212CoachContext">Based on today's logged intake</small><div><button type="button" id="nz7212CoachLog">Log food</button><button type="button" id="nz7212CoachMore">Details</button></div></div>`;dashboard.after(card);$('nz7212CoachLog').addEventListener('click',()=>open('describe'));$('nz7212CoachMore').addEventListener('click',()=>{const insights=$('nzTodayInsights'),predict=$('nzPredictiveCard');if(insights){insights.open=true;insights.scrollIntoView({behavior:'smooth',block:'start'});}if(predict)setTimeout(()=>predict.scrollIntoView({behavior:'smooth',block:'center'}),90)});}
+function coaching(){if($('nz7212Coach')?.classList.contains('nzActionCoach'))return;const dashboard=$('nzKpiDashboard');if(!dashboard||!$('nzNutritionCard')||!$('homeProgress'))return;let card=$('nz7212Coach');if(!card){card=document.createElement('section');card.id='nz7212Coach';card.innerHTML=`<div class="nz7212CoachTop"><div><span>YOUR COACH</span><h2>Today's focus</h2></div><span id="nz7212CoachBadge">Daily guidance</span></div><p id="nz7212CoachMessage">Your nutrition outlook will appear here.</p><div class="nz7212CoachFoot"><small id="nz7212CoachContext">Based on today's logged intake</small><div><button type="button" id="nz7212CoachLog">Log food</button><button type="button" id="nz7212CoachMore">Details</button></div></div>`;dashboard.after(card);$('nz7212CoachLog').addEventListener('click',()=>open('describe'));$('nz7212CoachMore').addEventListener('click',()=>{const insights=$('nzTodayInsights'),predict=$('nzPredictiveCard');if(insights){insights.open=true;insights.scrollIntoView({behavior:'smooth',block:'start'});}if(predict)setTimeout(()=>predict.scrollIntoView({behavior:'smooth',block:'center'}),90)});}
  const msg=$('nzCoachMessage')?.textContent?.trim(),forecast=$('nzForecastMessage')?.textContent?.trim(),value=$('nzForecastValue')?.textContent?.trim(),cloud=$('nzPredictiveStatus')?.textContent||'',enabled=!!forecast&&!/Building a reliable picture|Connect Nutrition Cloud|Loading/i.test(forecast);
  $('nz7212CoachMessage').textContent=(enabled?forecast:msg)||'Log your first meal to see useful calorie and protein guidance.';
  $('nz7212CoachBadge').textContent=enabled&&value&&!/Learning|—/.test(value)?'Outlook available':'Daily guidance';
@@ -18647,6 +18663,232 @@ else {$('nzAdaptiveStatus').textContent='WEEKLY REVIEW';$('nzAdaptiveSummary').t
 $('nzAdaptiveBasis').textContent=(s.calories14?'14-day average intake: '+s.calories14.toLocaleString()+' kcal. ':'Insufficient 14-day intake history. ')+(s.weightTrend?'Observed trend: '+s.weightTrend.weekly.toFixed(1)+' lb/week. ':'Weight trend not yet reliable. ')+(s.next?'Model-estimated maintenance: '+s.next.maintenanceEstimate+' kcal (approximate). ':'')+'Completed-log proxy: '+s.validCount+'/10 days. '+stageText(s)+' '+s.reasons.join('; ')+'.';}
 function tick(){try{mount();const s=compute();if(s.eligible)adjust();render(true)}catch(e){const p=$('nzAdaptiveSummary');if(p)p.textContent='Goal intelligence is unavailable; your existing targets have been preserved.'}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tick);else tick();window.addEventListener('nz-nutrition-local-saved',()=>setTimeout(()=>render(true),0));window.addEventListener('focus',tick);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setTimeout(tick,1400);setTimeout(tick,3200);setInterval(()=>{if(!document.hidden)tick()},300000);
+})();
+
+</script>
+<script id="nzActionCoachV7222">
+/* NONZERO 7.22.2 Action Coach: additive, local-first, no new network contract.
+   Uses existing NONZERO nutrition, weight, and saved meal records.
+   No compensatory calorie restriction; no training prescriptions during perioperative hold. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id),FOOD='nonzero.nutrition.v1',WEIGHT='hipPrehabV2',MEALS='nonzero.saved.composite.meals.v1',FEEDBACK='nonzero.action.coach.feedback.v1',STATE='nonzero.action.coach.state.v1',LONG_GOAL=185;
+const parse=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(key)||'null');return v??fallback}catch{return fallback}};
+const save=(key,data)=>{try{localStorage.setItem(key,JSON.stringify(data));return true}catch{return false}};
+const numeric=v=>Number.isFinite(Number(v))?Number(v):0;
+const format=(v,d=0)=>Number(v).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+const day=(date=new Date())=>[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
+const localHour=()=>new Date().getHours();
+const dtime=d=>new Date(d+'T12:00:00').getTime();
+const ageDays=d=>(dtime(day())-dtime(d))/86400000;
+const limit=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function weightHistory(){const rows=parse(WEIGHT,{}).bodyMeasurements||[];const by=new Map();for(const r of rows){const d=String(r.date||'').slice(0,10),v=Number(r.weightLb);if(!/^\d{4}-\d\d-\d\d$/.test(d)||v<50||v>700||!Number.isFinite(v)||ageDays(d)<0||ageDays(d)>120)continue;const p=by.get(d),score=x=>x.source==='apple-health'?3:x.source==='manual'?2:1;if(!p||score(r)>score(p)||(score(r)===score(p)&&numeric(r.at)>numeric(p.at)))by.set(d,r);}return [...by.values()].sort((a,b)=>a.date.localeCompare(b.date));}
+function weightTrend(rows){const recent=rows.filter(r=>ageDays(r.date)<=9),older=rows.filter(r=>ageDays(r.date)>=16&&ageDays(r.date)<=34);if(recent.length<2||older.length<2)return null;const avg=x=>x.reduce((sum,r)=>sum+Number(r.weightLb),0)/x.length;const interval=(dtime(recent.at(-1).date)-dtime(older[0].date))/86400000;if(interval<14)return null;return {lbPerWeek:limit((avg(older)-avg(recent))*7/interval,-5,5),confidence:rows.length>=8?'medium':'low'};}
+function foodHistory(){const entries=parse(FOOD,{}).entries||[],valid=[];for(const r of entries){const d=String(r?.day||'');if(!/^\d{4}-\d\d-\d\d$/.test(d)||ageDays(d)<0||ageDays(d)>28||r.deleted||r.deletedAt)continue;const c=Number(r.cal);if(!Number.isFinite(c)||c<0||c>12000)continue;valid.push({...r,cal:c});}return valid;}
+function daySummary(entries){const by=new Map();for(const r of entries){let x=by.get(r.day)||{day:r.day,cal:0,protein:0,counts:0,late:0,mealNames:new Set(),timed:0};x.cal+=r.cal;x.protein+=Math.max(0,numeric(r.protein));x.counts++;if(r.meal)x.mealNames.add(String(r.meal).toLowerCase());const timestamp=r.eatenAt||r.loggedAt||r.createdAt||r.at;const t=timestamp?new Date(timestamp):null;const hour=t&&Number.isFinite(t.getTime())?t.getHours():null;if(hour!==null){x.timed++;if(hour>=19)x.late+=r.cal;}by.set(r.day,x)}return [...by.values()].map(x=>({...x,mealCount:x.mealNames.size,likelyComplete:x.counts>=4&&x.cal>=1000&&x.mealNames.size>=2})).sort((a,b)=>a.day.localeCompare(b.day));}
+function savedMeals(){const result=parse(MEALS,[]);return (Array.isArray(result)?result:[]).filter(x=>x?.name&&Array.isArray(x.items)&&x.items.length).map(x=>({id:String(x.id),name:String(x.name).slice(0,100),category:String(x.category||'Snack'),cal:x.items.reduce((s,y)=>s+numeric(y.cal)*numeric(y.qty||1),0),protein:x.items.reduce((s,y)=>s+numeric(y.protein)*numeric(y.qty||1),0)}));}
+function stagegate(weight){if(!Number.isFinite(weight))return null;const config=parse(WEIGHT,{}).weightJourney||{},long=limit(numeric(config.goalWeightLb)||LONG_GOAL,80,weight);const next=Math.max(long,Math.floor((weight-.001)/5)*5);return {weight:next,long,remaining:Math.max(0,weight-next)};}
+function isHold(date=day()){return date>='2026-11-06'&&date<='2027-01-15';}
+const activeFeedback=()=>parse(FEEDBACK,[]).filter(x=>x&&typeof x==='object').slice(-120);
+function feedbackCount(type,outcome){return activeFeedback().filter(x=>x.type===type&&x.outcome===outcome&&ageDays(x.day)>=0&&ageDays(x.day)<=14).length}
+function compute(ctx={}){const date=ctx.date||day(),hour=ctx.hour??localHour(),weight=weightHistory(),last=weight.at(-1),stage=stagegate(last?Number(last.weightLb):NaN),trend=weightTrend(weight),food=foodHistory(),sums=daySummary(food),today=sums.find(s=>s.day===date)||{cal:0,protein:0,counts:0},complete=sums.filter(s=>s.likelyComplete&&ageDays(s.day)<=21&&s.day!==date),recent=complete.filter(s=>ageDays(s.day)<=14),goals=parse(FOOD,{}).targets||{},calTarget=limit(numeric(goals.calories)||2200,1200,4500),proteinTarget=limit(numeric(goals.protein)||170,40,300),highDay=complete.filter(s=>s.cal>calTarget+300).length,lateWithData=sums.filter(x=>x.day!==date&&ageDays(x.day)<=21&&x.timed>=2),latePattern=lateWithData.length>=5&&lateWithData.filter(x=>x.late>400).length>=Math.ceil(lateWithData.length*.6),meals=savedMeals(),hold=ctx.hold??isHold(date),dataReliable=recent.length>=7&&!!trend;
+const recovered=hold,pace=trend?.lbPerWeek??null;
+let eta=null;if(stage&&pace!==null&&pace>.15&&!hold)eta=Math.ceil(stage.remaining/pace*7);
+let kind='establish',headline='Build a reliable picture',explanation='Log meals and weigh in consistently so NONZERO can learn your true pace. No guesses about habits before the data supports them.',primary='Log a meal',secondary='See your weight trend',action='log',altAction='weight';
+const skipType=type=>feedbackCount(type,'dismissed')>=2;
+if(hold){kind='recovery';headline='Protect recovery and consistency';explanation='Your upcoming hip procedure and recovery take priority. Follow your surgical team’s activity and nutrition guidance; there is no calorie catch-up requirement.';const prefs=parse(WEIGHT,{}).suitePreferences?.familyRhythm||{regularTakeoutDays:['Fri','Sat']};if((prefs.regularTakeoutDays||[]).includes(new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'})))explanation+=' If takeout is likely tonight, choose a nourishing dinner you enjoy before the evening gets busy.';primary='Plan a balanced meal';action='meals';secondary='View weight journey';altAction='weight'}
+else if(hour>=15&&hour<21&&!skipType('takeout')&&(()=>{const settings=parse(WEIGHT,{}),rhythm=settings.suitePreferences?.familyRhythm||{regularTakeoutDays:['Fri','Sat']},weekday=new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}),planned=(settings.autopilotAgenda?.days||[]).find(x=>x.date===date)?.dinner;return (rhythm.regularTakeoutDays||['Fri','Sat']).includes(weekday)||/take.?out|pickup|restaurant/i.test(String(planned?.name||planned?.title||''));})()){
+ const settings=parse(WEIGHT,{}),planned=(settings.autopilotAgenda?.days||[]).find(x=>x.date===date)?.dinner;kind='takeout';headline='Decide on dinner before it decides for you';explanation=(planned?.name?'AutoPilot has dinner planned: '+String(planned.name).slice(0,70)+'. ':'Your family rhythm suggests takeout may be likely tonight. ')+'Choose something satisfying that supports your protein goal. No calorie payback tomorrow.';primary='Choose a saved meal';action='meals';secondary='Log dinner';altAction='log';}
+ else if(hour>=19&&today.cal>calTarget+150&&!skipType('evening')){kind='evening';headline='Close the day without compensation';explanation='Today’s logged intake is above your calorie guide. Return to regular meals tomorrow; there is no need to restrict food or add punishment workouts.';primary='Plan tomorrow’s meals';action='meals';secondary='Review my macros';altAction='nutrition'}
+else if(hour>=15&&latePattern&&skipType('snack')){kind='checkin';headline='Keep the next choice simple';explanation='You have dismissed similar afternoon prompts. NONZERO will reduce them and keep your milestone visible without repeating the same advice.';primary='Log a meal';action='log';secondary='View weight journey';altAction='weight'}
+else if(hour>=15&&latePattern&&!skipType('snack')){kind='snack';headline='Plan your afternoon food choice';explanation='On several sufficiently timestamped days, evening intake exceeded 400 kcal. A planned satisfying snack can make the next choice easier. This is a pattern, not a diagnosis.';primary='Choose a saved snack';action='meals';secondary='Log what I ate';altAction='log'}
+else if(hour>=17&&today.cal>0&&!skipType('dinner')){kind='dinner';headline='Make dinner easier';explanation='You have '+format(Math.max(0,calTarget-today.cal))+' kcal remaining against your daily guide. Choose a saved meal that supports your protein target; the target is guidance, not a restriction.';primary='Find a saved meal';action='meals';secondary='Log dinner';altAction='log'}
+else if(today.cal===0){kind='start';headline='Start with one useful entry';explanation='Record your first meal. Missing logs are not treated as zero-calorie days and will not tighten your targets.';primary='Describe a meal';action='log';secondary='My goal trajectory';altAction='weight'}
+else if(hour<15&&recent.length>=7&&trend&&!skipType('movement')){kind='movement';headline='Choose a sustainable session';const sessions=parse(WEIGHT,{}).sessions||[],recentTypes=sessions.filter(x=>x&&((x.day&&ageDays(x.day)<=7&&ageDays(x.day)>=0)||(x.startedAt&&Date.now()-Number(x.startedAt)<=7*86400000))).map(x=>String(x.type||x.mode||'').toLowerCase());const manyAerobic=recentTypes.filter(x=>/bike|row|cardio|aerobic|erg/.test(x)).length>=2;const suggestion=manyAerobic?'a manageable upper-body or strength session':'an easy BikeErg aerobic session';const plan=parse(WEIGHT,{}).autopilotAgenda||{},windowInfo=(typeof NonZeroSuite!=='undefined'&&NonZeroSuite.opportunity)?NonZeroSuite.opportunity(plan):null,short=windowInfo?.mode==='minimum',length=short?'10–15 minutes':'20–35 minutes';explanation='If cleared for activity, consider '+length+' of '+suggestion+'. '+(windowInfo?.label?'AutoPilot window: '+String(windowInfo.label).slice(0,80)+'. ':'')+'Choose an easy sustainable effort and follow your existing training targets; never add exercise to repay food intake.';primary='View training plan';action='workout';secondary='Choose a meal';altAction='meals'}
+else if(today.protein<proteinTarget*.6){kind='protein';headline='Plan your next protein source';explanation='You’ve logged '+format(today.protein)+' g protein against your '+format(proteinTarget)+' g daily target. Consider a familiar protein-rich meal or snack.';primary='Choose a saved meal';action='meals';secondary='Log food';altAction='log'}
+const dismissed=feedbackCount(kind,'dismissed');if(dismissed>=2&&kind!=='recovery'){kind='checkin';headline='Stay consistent at your pace';explanation='You’ve dismissed similar prompts recently. I’ll keep this brief: your next milestone is reached through repeatable choices, not perfect days.';primary='Log a meal';action='log';secondary='View weight journey';altAction='weight'}
+const avgIntake=recent.length?recent.reduce((sum,x)=>sum+x.cal,0)/recent.length:null;
+const reason=(stage?'Next '+format(stage.weight)+' lb stagegate · '+format(stage.remaining,1)+' lb to go. ':'Add weight readings to activate stagegate pacing. ')+(hold?'Nutrition target changes paused for recovery. ':'Daily calorie guide: '+format(calTarget)+' kcal. ');
+const projection=hold?'On hold for recovery':!stage?'Awaiting weight readings':!trend?'Learning from weight trends':trend.lbPerWeek<=.15?'Trend insufficient for a reliable arrival date':(eta!==null?'If your recent pace persists: roughly '+Math.round(eta/7)+' weeks (uncertain)':'Learning');
+return {kind,headline,explanation,primary,secondary,action,altAction,reason,projection,weight:last?Number(last.weightLb):null,stage,calTarget,proteinTarget,today,daysOfHistory:recent.length,trend,latePattern,lateDays:lateWithData.length,highDay,meals,hold,avgIntake,dataReliable,coachingModel:'action-v1.0',noCompensation:true};}
+function logFeedback(c,outcome){const result=activeFeedback();result.push({id:(crypto.randomUUID?.()||String(Date.now())),day:day(),at:new Date().toISOString(),type:c.kind,outcome,action:c.action,stage:c.stage?.weight??null,model:'action-v1.0'});return save(FEEDBACK,result.slice(-120));}
+function openMealPicker(){const all=parse(MEALS,[]).filter(m=>m&&m.name&&Array.isArray(m.items)&&m.items.length);
+if(!all.length){const note=$('nzActionStatus');if(note)note.textContent='No saved meals yet. Opening the meal composer so you can log food or build a favorite.';$('nzQLog')?.click();return !!$('nzQLog');}
+let overlay=$('nzActionMealSheet');if(!overlay){overlay=document.createElement('div');overlay.id='nzActionMealSheet';overlay.className='nzActionMealSheet';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Choose a saved meal');overlay.innerHTML='<div class="nzActionMealInner"><div class="nzActionMealHead"><h2>Choose a saved meal</h2><button type="button" id="nzActionMealClose" aria-label="Close saved meals">Close</button></div><p>One tap logs the original ingredient quantities. You can review the entry in Nutrition.</p><div id="nzActionMealOptions"></div><p id="nzActionMealStatus" aria-live="polite"></p></div>';document.body.append(overlay);overlay.querySelector('#nzActionMealClose').onclick=()=>overlay.hidden=true;overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.hidden=true});overlay.addEventListener('keydown',e=>{if(e.key==='Escape')overlay.hidden=true});}
+const options=$('nzActionMealOptions');options.replaceChildren();for(const m of all.slice(0,30)){const button=document.createElement('button'),total=m.items.reduce((s,x)=>s+numeric(x.cal)*numeric(x.qty||1),0),prot=m.items.reduce((s,x)=>s+numeric(x.protein)*numeric(x.qty||1),0);button.type='button';button.textContent=String(m.name).slice(0,90)+' · '+Math.round(total)+' kcal · '+Math.round(prot)+'g protein';button.addEventListener('click',()=>{const data=parse(FOOD,{}),entries=Array.isArray(data.entries)?data.entries:[],batch='action-'+Date.now()+'-'+Math.random().toString(36).slice(2);if(!m.items.every(x=>x&&x.name&&Number.isFinite(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=50&&['cal','protein','carbs','fat'].every(k=>Number.isFinite(Number(x[k]))&&Number(x[k])>=0))){$('nzActionMealStatus').textContent='This saved meal has incomplete nutrition values. Open Nutrition to review it.';return;}
+const fresh=m.items.map((x,i)=>{const row={id:batch+'-'+i,day:day(),eatenAt:new Date().toISOString(),meal:m.category||'Snack',name:String(x.name),source:'saved-meal',savedMealName:m.name,savedMealBatch:batch,portions:Number(x.qty)};for(const k of ['cal','protein','carbs','fat','fiber'])row[k]=Math.round(numeric(x[k])*Number(x.qty)*10)/10;return row;});const updated={...data,entries:[...entries,...fresh]};if(!save(FOOD,updated)){$('nzActionMealStatus').textContent='Unable to save meal. Existing records are unchanged.';return;}const verified=parse(FOOD,{}).entries||[];if(!fresh.every(row=>verified.some(x=>x.id===row.id))){$('nzActionMealStatus').textContent='Save could not be verified. Check your journal.';return;}overlay.hidden=true;window.dispatchEvent(new Event('nz-nutrition-local-saved'));window.nzNutritionReloadFromCloud?.();$('nzActionStatus').textContent='Saved '+m.name+' on this device. Cloud sync is separate.';logFeedback(compute(),'acted');render(true);});options.append(button);}
+overlay.hidden=false;options.querySelector('button')?.focus({preventScroll:true});return true;}
+
+function activate(kind,context){let b=null;switch(kind){case 'log': b=$('nzQLog')||$('nzTodayAddFood')||$('nzOpenNutrition');break;case 'meals':return openMealPicker();case 'nutrition':b=$('nzNutritionNav')||$('nzOpenNutrition');break;case 'weight':b=document.querySelector('[data-tab="History"]');break;case 'workout':b=document.querySelector('[data-tab="Plan"]')||$('homeStart');break;}
+if(!b){const s=$('nzActionStatus');if(s)s.textContent='This action is unavailable right now. Your data has not changed.';return false;}
+if(kind==='log'&&b.id==='nzQLog'){b.click();return true}
+if(kind==='weight'&&b){b.click();setTimeout(()=>$('nzWeightCenter')?.scrollIntoView({block:'start',behavior:'smooth'}),140);return true}
+if(kind==='meals'&&b){b.click();return true}
+b.click();return true;}
+const CSS=`
+#nzActionMealSheet{position:fixed;inset:0;background:#031019ee;z-index:100600;display:flex;justify-content:center;align-items:center;padding:16px;box-sizing:border-box}
+#nzActionMealSheet[hidden]{display:none!important}
+#nzActionMealSheet .nzActionMealInner{background:#142d39;border:1px solid #4a6570;border-radius:20px;max-width:440px;width:100%;max-height:86dvh;overflow:auto;padding:18px;color:#eaf4f4}
+#nzActionMealSheet .nzActionMealHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#nzActionMealSheet h2{font-size:22px;margin:0;color:#f4d35e}
+#nzActionMealSheet p{font-size:13px;line-height:1.5;color:#c4d8dc}
+#nzActionMealSheet button{border:1px solid #48636f;border-radius:12px;background:#203c4a;color:#f2f7f5;min-height:46px;padding:10px 12px;font:700 14px system-ui}
+#nzActionMealOptions{display:grid;gap:9px}
+#nzActionMealOptions button{text-align:left}
+
+#nz7212Coach.nzActionCoach{min-height:0!important;height:auto!important;background:linear-gradient(145deg,#182f38,#0d222d)!important;border:1px solid #445b64!important;border-radius:20px!important;padding:17px!important;color:#edf5f5!important;box-shadow:none!important}
+#nz7212Coach .nzActionHeader{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#nz7212Coach .nzActionEyebrow{font-size:12px;font-weight:800;letter-spacing:.09em;color:#f4d35e}
+#nz7212Coach .nzActionStage{font-size:12px;font-weight:650;color:#bdd1d6;text-align:right}
+#nz7212Coach .nzActionTitle{font:780 clamp(20px,5.2vw,25px)/1.19 system-ui;margin:12px 0 8px;letter-spacing:-.025em}
+#nz7212Coach .nzActionReason{font-size:13px;line-height:1.5;color:#c8dadd;margin:0 0 13px}
+#nz7212Coach .nzActionBar{display:flex;flex-wrap:wrap;gap:8px}
+#nz7212Coach .nzActionBar button{min-height:46px;border-radius:12px;padding:9px 13px;font:760 14px system-ui;flex:1;min-width:128px;white-space:normal!important;overflow:visible!important;overflow-wrap:break-word!important;line-height:1.28!important;text-align:center;border:1px solid #52707a;background:#1b3846;color:#f3f7f6}
+#nz7212Coach #nzActionPrimary{background:#f4d35e;color:#142632;border-color:#f4d35e}
+#nz7212Coach .nzActionMeta{font-size:12px;color:#b4cbd2;margin:11px 0 0;line-height:1.45}
+#nz7212Coach .nzActionMore{border-top:1px solid #35505b;margin-top:12px;padding-top:11px}
+#nz7212Coach .nzActionMore summary{font-size:13px;cursor:pointer;color:#f4d35e;font-weight:720;min-height:40px;display:flex;align-items:center}
+#nz7212Coach .nzActionMore p{font-size:13px;color:#bdd0d6;line-height:1.52}
+#nz7212Coach .nzActionFeedback{display:flex;gap:8px;flex-wrap:wrap}
+#nz7212Coach .nzActionFeedback button{background:transparent;border:1px solid #45616c;color:#bbced5;padding:7px 10px;border-radius:9px;min-height:42px;font:650 12px system-ui}
+#nz7212Coach #nzActionStatus{font-size:12px;min-height:14px;color:#b8e5cd}
+@media(max-width:359px){#nz7212Coach .nzActionBar button{min-width:100%;}}
+@media(prefers-reduced-motion:reduce){#nz7212Coach *{transition:none!important;animation:none!important}}
+`;
+let mounted=false,lastSignature='';
+function make(){const old=$('nz7212Coach'),grid=$('nzKpiDashboard');if(!old||!grid)return null;if(!$('nzActionCoachCSS')){const st=document.createElement('style');st.id='nzActionCoachCSS';st.textContent=CSS;document.head.append(st)}
+if(!old.classList.contains('nzActionCoach')){old.classList.add('nzActionCoach');old.setAttribute('aria-label','NONZERO Action Coach');old.innerHTML=`<div class="nzActionHeader"><span class="nzActionEyebrow">YOUR COACH</span><span id="nzActionMilestone" class="nzActionStage"></span></div><h2 id="nzActionHeadline" class="nzActionTitle"></h2><p id="nzActionMessage" class="nzActionReason"></p><div class="nzActionBar"><button id="nzActionPrimary" type="button"></button><button id="nzActionSecondary" type="button"></button></div><p id="nzActionProjection" class="nzActionMeta"></p><details class="nzActionMore" id="nzActionDetails"><summary>Why this recommendation?</summary><p id="nzActionWhy"></p><div class="nzActionFeedback"><button type="button" id="nzActionHelpful">Helpful</button><button type="button" id="nzActionDismiss">Not useful</button></div></details><p id="nzActionStatus" role="status" aria-live="polite"></p><div hidden aria-hidden="true"><span id="nz7212CoachMessage"></span><span id="nz7212CoachBadge"></span><span id="nz7212CoachContext"></span></div>`;
+$('nzActionPrimary').addEventListener('click',()=>{const c=compute();if(activate(c.action,c)){$('nzActionStatus').textContent=c.action==='meals'?'Choose a saved meal to log. Your history is unchanged until you select one.':'Opened '+c.primary.toLowerCase()+'. Your records are unchanged until you save.';}});
+$('nzActionSecondary').addEventListener('click',()=>{const c=compute();if(activate(c.altAction,c))$('nzActionStatus').textContent='Opened '+c.secondary.toLowerCase()+'.';});
+$('nzActionHelpful').addEventListener('click',()=>{const c=compute();if(logFeedback(c,'helpful'))$('nzActionStatus').textContent='Thanks. NONZERO will keep this feedback on this device.';else $('nzActionStatus').textContent='Feedback could not be saved.'});
+$('nzActionDismiss').addEventListener('click',()=>{const c=compute();if(logFeedback(c,'dismissed')){$('nzActionStatus').textContent='Got it. Similar prompts will appear less often.';render(true)}else $('nzActionStatus').textContent='Feedback could not be saved.'});
+}
+if(old.previousElementSibling!==grid&&old.parentElement===grid.parentElement)grid.after(old);return old;}
+function render(force=false){const host=make();if(!host)return;const c=compute(),sig=JSON.stringify([c.kind,c.headline,c.reason,c.explanation,c.projection,c.today.cal,c.stage?.weight,c.hold]);if(!force&&sig===lastSignature)return;lastSignature=sig;
+$('nzActionMilestone').textContent=c.stage?'NEXT · '+format(c.stage.weight)+' LB':'BUILDING YOUR BASELINE';
+$('nzActionHeadline').textContent=c.headline;$('nzActionMessage').textContent=c.explanation;$('nzActionPrimary').textContent=c.primary;$('nzActionSecondary').textContent=c.secondary;
+$('nzActionProjection').textContent=c.reason+' '+c.projection;
+$('nzActionWhy').textContent=(c.hold?'Perioperative recovery hold is active. ':c.latePattern?'Historical late-food timing appears in '+c.lateDays+' timestamped days. ':'No reliable late-eating pattern inferred. ')+c.daysOfHistory+' adequately logged days support recent averages. '+(c.avgIntake?'Observed average logged intake: '+format(c.avgIntake)+' kcal/day; incomplete days excluded. ':'')+(c.trend?'Measured weight trend: '+format(c.trend.lbPerWeek,1)+' lb/week ('+c.trend.confidence+' confidence). ':'More weight readings needed. ')+'Predictions are approximate. Feedback is stored only on this device; cloud feedback synchronization has not been verified.';
+}
+function tick(){try{render()}catch(e){const a=$('nzActionStatus');if(a)a.textContent='Coach unavailable. Your saved data is preserved.'}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{for(const t of [50,400,1600,3500])setTimeout(tick,t)},{once:true});else for(const t of [0,400,1600])setTimeout(tick,t);
+for(const ev of ['nz-nutrition-local-saved','nz-nutrition-cloud-updated','suite-state-changed','storage','focus'])window.addEventListener(ev,()=>setTimeout(()=>render(true),100));
+document.addEventListener('click',e=>{if(e.target.closest?.('[data-tab="Today"]'))setTimeout(tick,100)});
+setInterval(()=>{if(!document.hidden)tick()},60000);
+window.NONZERO_ACTION_COACH_TEST={compute,weightTrend,daySummary,savedMeals,stagegate,isHold,logFeedback,activate,openMealPicker};
+})();
+
+</script>
+<script id="nzFamilyRhythmV7223">
+/* NONZERO Family Rhythm - shared state through existing phone cloud sync.
+ * Never modifies nutrition goals, creates calorie debt, or bypasses the Worker.
+ */
+(()=>{'use strict';
+ const $=id=>document.getElementById(id),KEY='nonzero.family.rhythm.v1';
+ const fallback={regularTakeoutDays:['Fri','Sat'],flexTakeoutNights:2,workoutPreference:'flexible'};
+ const saved=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')||fallback}catch{return fallback}};
+ const current=()=>{try{return (typeof state!=='undefined'&&state?.suitePreferences?.familyRhythm)||saved()}catch{return saved()}};
+ function render(){const more=$('nzActionDetails');if(!more||$('nzFamilyRhythm'))return;
+ const card=document.createElement('details');card.id='nzFamilyRhythm';card.style.cssText='margin:13px 0 0;padding:12px;border:1px solid #345461;border-radius:13px;background:#102934;color:#eaf4f3';
+ card.innerHTML=`<summary style="cursor:pointer;min-height:40px;color:#f4d35e;font-size:13px;font-weight:750">Family rhythm · workouts & takeout</summary>
+ <p style="font-size:12px;color:#b9ced5;line-height:1.5">Plan around family dinner patterns. Takeout is a meal choice, not a calorie penalty.</p>
+ <label style="display:block;font-size:13px">Likely takeout days</label><div id="nzFamilyDays" style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px"></div>
+ <label for="nzFamilyFlex" style="font-size:13px">Other flexible takeout nights each week</label>
+ <select id="nzFamilyFlex" style="min-height:44px;width:100%;background:#173a46;border:1px solid #476671;border-radius:10px;color:#fff;padding:8px;margin:7px 0 11px"><option value="1">1 night</option><option value="2">2 nights</option><option value="3">3 nights</option></select>
+ <label for="nzFamilyWorkout" style="font-size:13px">Workout windows</label>
+ <select id="nzFamilyWorkout" style="min-height:44px;width:100%;background:#173a46;border:1px solid #476671;border-radius:10px;color:#fff;padding:8px;margin:7px 0 11px"><option value="flexible">Adapt to AutoPilot</option><option value="morning">Prefer mornings</option><option value="afternoon">Prefer afternoons</option><option value="evening">Prefer evenings</option></select>
+ <button id="nzFamilySave" type="button" style="min-height:46px;width:100%;border:0;border-radius:11px;background:#f4d35e;color:#142632;font:750 14px system-ui">Save family rhythm</button><p id="nzFamilyStatus" role="status" style="font-size:12px;color:#b8d6d7"></p>`;
+ more.append(card);const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],prefs=current();
+ for(const d of days){const label=document.createElement('label');label.style.cssText='font-size:12px;min-height:40px;display:flex;align-items:center;gap:3px;padding:6px 8px;border-radius:9px;background:#1d3946';const input=document.createElement('input');input.type='checkbox';input.value=d;input.checked=(prefs.regularTakeoutDays||fallback.regularTakeoutDays).includes(d);label.append(input,document.createTextNode(d));$('nzFamilyDays').append(label);}
+ $('nzFamilyFlex').value=String(prefs.flexTakeoutNights||2);$('nzFamilyWorkout').value=prefs.workoutPreference||'flexible';
+ $('nzFamilySave').onclick=()=>{const days=[...$('nzFamilyDays').querySelectorAll('input:checked')].map(x=>x.value),next={regularTakeoutDays:days,flexTakeoutNights:Number($('nzFamilyFlex').value),workoutPreference:$('nzFamilyWorkout').value,updatedAt:Date.now()};
+ try{localStorage.setItem(KEY,JSON.stringify(next));if(typeof state!=='undefined'&&typeof save==='function'){state.suitePreferences={...(state.suitePreferences||{}),familyRhythm:next};save();$('nzFamilyStatus').textContent='Saved on this phone · NONZERO cloud sync will carry preferences to Wall when connected.';}else{$('nzFamilyStatus').textContent='Saved on this browser only · shared sync unavailable.';}window.dispatchEvent(new Event('suite-state-changed'));}catch(e){$('nzFamilyStatus').textContent='Unable to save. No other records changed.';}};
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{for(const delay of [120,700,1700])setTimeout(render,delay)});else for(const delay of [0,500,1700])setTimeout(render,delay);
+ document.addEventListener('click',e=>{if(e.target.closest?.('[data-tab="Today"],#nzActionDetails'))setTimeout(render,80)});
+})();
+
+</script>
+<script id="nzConnectedActionCoachV723">
+/* NONZERO v7.23 | Connected Action Coach overlay. No alternate nutrition writer.
+   Does not promise remote persistence for actions until the Worker acknowledges them. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id),CONFIG='nonzero.nutrition.cloud.config';
+let timer=0,inFlight=false,lastFetch=0,connected=null,ready=false;
+function config(){try{let c=JSON.parse(localStorage.getItem(CONFIG)||'{}');return {url:String(c.url||'').trim().replace(/\/$/,''),token:String(c.token||'').trim()}}catch{return {url:'',token:''}}}
+function setText(node,text){if(node)node.textContent=String(text||'')}
+function init(){const host=$('nz7212Coach');if(!host||!host.classList.contains('nzActionCoach'))return false;
+if($('nzConnectedCoachPanel'))return true;
+const st=document.createElement('style');st.id='nzConnectedCoachStyle';st.textContent=`
+#nzConnectedCoachPanel{border-radius:13px;border:1px solid #3b5963;background:#0d2733;padding:13px;margin:10px 0;display:grid;gap:9px;color:#edf7f6}
+#nzConnectedCoachPanel[hidden]{display:none!important}
+#nzConnectedCoachPanel .nc23-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font:700 11px system-ui;letter-spacing:.06em;color:#d8c36f}
+#nzConnectedCoachPanel h3{font:780 clamp(19px,5vw,24px)/1.23 system-ui;margin:0;color:#eef5f6;letter-spacing:-.025em}
+#nzConnectedCoachPanel p{font:500 13px/1.5 system-ui;margin:0;color:#c3d6d7}
+#nzConnectedCoachPanel button{border:0;border-radius:12px;background:#f4d35e;color:#112936;padding:11px 13px;min-height:46px;max-width:100%;font:760 14px system-ui;text-align:center;white-space:normal}
+#nzConnectedCoachPanel .nc23-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+#nzConnectedCoachPanel .nc23-actions button+button{background:#234352;color:#e5f2f2;border:1px solid #4d6970}
+#nzConnectedCoachPanel .nc23-note{font:500 11px/1.4 system-ui;color:#a8c1c7}
+#nzConnectedCoachPanel details{font:500 12px/1.5 system-ui;color:#c6d5d6}
+#nzConnectedCoachPanel summary{color:#f4d35e;cursor:pointer;min-height:34px;padding:7px 0}
+#nz7212Coach[data-nc23-connected="yes"] > #nzActionHeadline,
+#nz7212Coach[data-nc23-connected="yes"] > #nzActionMessage,
+#nz7212Coach[data-nc23-connected="yes"] > .nzActionBar,
+#nz7212Coach[data-nc23-connected="yes"] > #nzActionProjection,
+#nz7212Coach[data-nc23-connected="yes"] > #nzActionDetails{display:none!important}
+@media(max-width:340px){#nzConnectedCoachPanel .nc23-actions{grid-template-columns:1fr}}
+`;document.head.append(st);
+const panel=document.createElement('section');panel.id='nzConnectedCoachPanel';panel.hidden=true;panel.innerHTML=`
+<div class="nc23-top"><span>CONNECTED ACTION COACH</span><span id="nc23Source">CLOUD</span></div>
+<h3 id="nc23Headline"></h3><p id="nc23Message"></p>
+<div class="nc23-actions"><button type="button" id="nc23Do"></button><button type="button" id="nc23Review">Review goals</button></div>
+<div class="nc23-note" id="nc23Context"></div><details><summary>Why this recommendation?</summary><p id="nc23Why"></p><div class="nc23-actions"><button type="button" id="nc23Helpful">Helpful</button><button type="button" id="nc23NotUseful">Not useful</button></div></details>
+<div id="nc23Receipt" role="status" aria-live="polite" class="nc23-note"></div>`;
+const bar=host.querySelector('.nzActionHeader');(bar||host).after(panel);
+$('nc23Do').addEventListener('click',async()=>{if(!connected)return;const type=connected.recommendation?.primary?.action;
+let dest=null;
+if(type==='open_food')dest=$('nzQLog')||$('nzTodayAddFood');
+else if(type==='saved_meals'){
+ // Existing Action Coach owns the single-tap saved-meal picker; only borrow its action
+ // when it is already configured for the same purpose. Otherwise open Nutrition.
+ const api=window.NONZERO_ACTION_COACH_TEST;
+ if(typeof api?.openMealPicker==='function'){
+   if(api.openMealPicker()){
+     setText($('nc23Receipt'),'Opened saved meals. Nothing has been logged yet.');
+     await record('opened');
+   }else setText($('nc23Receipt'),'Saved meals are unavailable. Your records are unchanged.');
+   return;
+ }
+ dest=$('nzNutritionNav')||$('nzOpenNutrition');
+}else if(type==='open_training')dest=document.querySelector('[data-tab="Plan"]')||$('homeStart');
+if(!dest){setText($('nc23Receipt'),'Action unavailable; no changes were made.');return;}
+dest.click();setText($('nc23Receipt'),'Opened '+(connected.recommendation?.primary?.label||'your next action')+'. Nothing was marked completed.');await record('opened');});
+$('nc23Review').addEventListener('click',()=>{const el=$('nzAdaptivePanel')||$('nzWeightCenter')||$('nzPredictiveCard');if(el){el.closest('details')?.setAttribute('open','');el.scrollIntoView({block:'start',behavior:'smooth'});}else{document.querySelector('[data-tab="History"]')?.click();}});
+$('nc23Helpful').addEventListener('click',()=>record('useful'));
+$('nc23NotUseful').addEventListener('click',()=>{record('not_useful');setText($('nc23Receipt'),'Feedback noted; similar suggestions can be reduced.');});
+return true;}
+async function api(path,method='GET',data){const c=config();if(!/^https:\/\//.test(c.url)||!c.token)throw Error('Nutrition Cloud not configured');
+const r=await fetch(c.url+path,{method,headers:{Authorization:'Bearer '+c.token,Accept:'application/json',...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined,cache:'no-store',signal:AbortSignal.timeout(6500)});
+const x=await r.json().catch(()=>({}));if(!r.ok)throw Error(x.error||('HTTP '+r.status));return x;}
+async function record(outcome){const r=connected?.recommendation;if(!r)return;
+const id=(typeof crypto.randomUUID==='function'?crypto.randomUUID():('nc23_'+Date.now()+'_'+Math.random().toString(36).slice(2))),recommendationId=('nc23_'+connected.day+'_'+r.kind).replace(/[^a-zA-Z0-9_-]/g,'_');
+try{const x=await api('/v1/coaching/actions','POST',{id,recommendationId,action:r.primary?.action,outcome,source:'phone'});setText($('nc23Receipt'),x.recorded?'Your feedback was saved to NONZERO Cloud.':'Already recorded.');}
+catch(e){setText($('nc23Receipt'),'Cloud feedback not confirmed. Your original records are unchanged.');}}
+function paint(x){const host=$('nz7212Coach'),panel=$('nzConnectedCoachPanel');if(!panel||!host)return;
+const valid=x?.connected?.status==='connected'&&x?.recommendation&&x?.ok;
+if(!valid){host.dataset.nc23Connected='no';panel.hidden=true;return;}
+connected=x;panel.hidden=false;host.dataset.nc23Connected='yes';setText($('nc23Source'),x.recoveryHold?'RECOVERY':'SYNCED');
+setText($('nc23Headline'),x.recommendation.headline);setText($('nc23Message'),x.recommendation.message);
+setText($('nc23Do'),x.recommendation.primary.label);setText($('nc23Why'),x.recommendation.why||'Available historical records; no unsupported behavior claims.');
+const milestone=x.stagegate?.nextWeightLb?x.stagegate.nextWeightLb+' lb stagegate':'milestone learning';
+setText($('nc23Context'),milestone+' · '+(x.rhythm?.dinnerPlanned?'AutoPilot dinner available':'Family rhythm considered')+' · '+(x.calorie?.confidence||'learning')+' nutrition confidence');
+}
+async function refresh(force=false){if(inFlight||(!force&&Date.now()-lastFetch<240000))return;
+if(!init())return;const c=config();if(!c.url||!c.token){paint(null);return;}inFlight=true;lastFetch=Date.now();
+try{paint(await api('/v1/coaching/connected'));}catch(e){paint(null);}finally{inFlight=false;}}
+function start(){init();refresh();if(!ready){ready=true;for(const ev of ['focus','suite-state-changed','nz-nutrition-local-saved','nz-nutrition-cloud-updated'])window.addEventListener(ev,()=>refresh(true));window.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});timer=setInterval(()=>{if(!document.hidden)refresh()},300000);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{for(const t of [50,600,2200])setTimeout(start,t)});else for(const t of [50,600,2200])setTimeout(start,t);
+window.NONZERO_CONNECTED_COACH_TEST={refresh,paint,init};
 })();
 
 </script>
