@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.20.9 · Cohesive Experience</title>
+    <title>NONZERO v7.21.1 · Reliability & Cohesion</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3979,7 +3979,7 @@ body.trainingFocus .focusToolbar span {
       <main id="tabToday">
         <header class="todayHeader">
           <div>
-            <span class="flowBrand">NONZERO <small>v7.20.7</small></span>
+            <span class="flowBrand">NONZERO <small>v7.21.0</small></span>
             <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
@@ -16762,25 +16762,36 @@ document.getElementById('focusRestBtn').onclick = () => {
 const KEY='nonzero.nutrition.v1';const $=id=>document.getElementById(id);const ids=['Cal','Protein','Carbs','Fat','Fiber'];const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
 let data;try{data=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){data={}};
 if(!data||typeof data!=='object')data={};data.entries=Array.isArray(data.entries)?data.entries:[];data.favorites=Array.isArray(data.favorites)?data.favorites:[];data.targets=data.targets||{};
-window.nzNutritionReloadFromCloud=()=>{try{const next=JSON.parse(localStorage.getItem(KEY)||'{}');data={entries:Array.isArray(next.entries)?next.entries:[],favorites:Array.isArray(next.favorites)?next.favorites:[],targets:next.targets||{}};render();$('nzTargetCalories').value=data.targets.calories??'';$('nzTargetProtein').value=data.targets.protein??'';window.dispatchEvent(new Event('nz-nutrition-cloud-rendered'));}catch(e){console.warn('Nutrition refresh failed',e)}};
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(data));window.dispatchEvent(new Event('nz-nutrition-local-saved'));return true}catch(e){msg('Storage failed. Export a backup or free space.',true);return false}};
+window.nzNutritionReloadFromCloud=()=>{try{const next=JSON.parse(localStorage.getItem(KEY)||'{}');data={...next,entries:Array.isArray(next.entries)?next.entries:[],favorites:Array.isArray(next.favorites)?next.favorites:[],targets:next.targets||{}};render();if($('nzNutritionModal')?.hidden){$('nzTargetCalories').value=data.targets.calories??'';$('nzTargetProtein').value=data.targets.protein??'';}window.dispatchEvent(new Event('nz-nutrition-cloud-rendered'));}catch(e){console.warn('Nutrition refresh failed',e)}};
+const save=(opts={})=>{try{
+// Canonical write: retain the newest goals and cloud metadata while saving the edited food/favorite arrays.
+// Older UI modules must never silently overwrite goals set by the newer shared goal editor.
+let latest={};try{latest=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch{}
+const merged={...latest,entries:data.entries,favorites:data.favorites,targets:opts.replaceTargets?{...(data.targets||{})}:{...(data.targets||{}),...(latest.targets||{})}};
+localStorage.setItem(KEY,JSON.stringify(merged));data=merged;
+window.dispatchEvent(new Event('nz-nutrition-local-saved'));return true
+}catch(e){msg('Could not save on this phone. Export a backup or free space.',true);return false}};
 const msg=(t,bad=false)=>{const e=$('nzMessage');if(e){e.textContent=t;e.className=bad?'nzError':'nzHint'}};
 const fmt=n=>Math.round((Number(n)||0)*10)/10;const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function totals(day){let v={cal:0,protein:0,carbs:0,fat:0,fiber:0};for(const x of data.entries.filter(x=>x.day===day))for(const k in v)v[k]+=Number(x[k])||0;return v}
 function stats(){const day=$('nzDay').value||today(),v=totals(day),t=data.targets;const cells=[['Calories',v.cal,t.calories,''],['Protein',v.protein,t.protein,'g'],['Carbs',v.carbs,null,'g'],['Fat',v.fat,null,'g']];const html=cells.map(([name,n,target,u])=>'<div><b>'+fmt(n)+u+'</b>'+name+(target?' / '+target+u:'')+'</div>').join('');$('nzNutritionStats').innerHTML=html;$('nzModalStats').innerHTML=html;const last=data.entries.filter(x=>x.day===today()).at(-1);$('nzNutritionLast').textContent=(data.entries.filter(x=>x.day===today()).length)+' foods logged'+(last?' · Latest: '+last.name:'')+' · Fiber '+fmt(totals(today()).fiber)+'g'}
 function render(){stats();const day=$('nzDay').value;const items=data.entries.filter(x=>x.day===day).slice().reverse();$('nzLog').innerHTML=items.length?items.map(x=>'<div class="nzItem"><div><b>'+esc(x.name)+'</b><div class="nzHint">'+esc(x.meal)+' · '+fmt(x.cal)+' kcal · P '+fmt(x.protein)+'g · C '+fmt(x.carbs)+'g · F '+fmt(x.fat)+'g · '+esc(x.source)+'</div></div><button type="button" data-delete="'+esc(x.id)+'" aria-label="Delete '+esc(x.name)+'">Delete</button></div>').join(''):'<p class="nzHint">No food logged for this day.</p>';$('nzFavorites').innerHTML='<option value="">Select saved meal...</option>'+data.favorites.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('')}
 function readForm(){const name=$('nzName').value.trim(),servings=Number($('nzServings').value);if(!name||!(servings>0&&servings<=100)){msg('Enter a name and a valid number of servings.',true);return null}const v={name,meal:$('nzMeal').value,source:$('nzSource').value};for(const id of ids){const el=$('nz'+id),raw=el.value.trim();if(raw===''&&id!=='Fiber'){msg('Enter calories, protein, carbs, and fat; use 0 only when confirmed.',true);return null}if(raw!==''&&(!Number.isFinite(Number(raw))||Number(raw)<0)){msg('Nutrition values cannot be negative.',true);return null}v[id.toLowerCase()]=raw===''?null:Number(raw)}return {v,servings}}
-function add(v,servings=1){const x={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),day:$('nzDay').value,...v};for(const k of ['cal','protein','carbs','fat','fiber'])x[k]=v[k]==null?null:fmt(v[k]*servings);data.entries.push(x);if(save()){render();msg('Food added.')}else data.entries.pop()}
+function add(v,servings=1){const x={id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),day:$('nzDay').value,...v};for(const k of ['cal','protein','carbs','fat','fiber'])x[k]=v[k]==null?null:fmt(v[k]*servings);data.entries.push(x);if(save()){render();msg('Food saved on this phone. Cloud sync is separate.')}else data.entries.pop()}
 function download(name,content,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 $('nzOpenNutrition').onclick=()=>{$('nzNutritionModal').hidden=false;$('nzDay').value=today();render()};$('nzCloseNutrition').onclick=()=>$('nzNutritionModal').hidden=true;$('nzDay').onchange=render;
 $('nzAddFood').onclick=()=>{const f=readForm();if(f)add(f.v,f.servings)};
-$('nzSaveFavorite').onclick=()=>{const f=readForm();if(!f)return;data.favorites=data.favorites.filter(x=>x.name.toLowerCase()!==f.v.name.toLowerCase());data.favorites.push({id:String(Date.now()),...f.v});if(save()){render();msg('Saved favorite.')}};
+$('nzSaveFavorite').onclick=()=>{const f=readForm();if(!f)return;data.favorites=data.favorites.filter(x=>x.name.toLowerCase()!==f.v.name.toLowerCase());data.favorites.push({id:String(Date.now()),...f.v});if(save()){render();msg('Favorite saved on this phone. Cloud sync is separate.')}};
 $('nzUseFavorite').onclick=()=>{const f=data.favorites.find(x=>x.id===$('nzFavorites').value);if(!f){msg('Choose a favorite first.',true);return}add({...f,meal:$('nzMeal').value},1)};
 $('nzLog').onclick=e=>{const b=e.target.closest('[data-delete]');if(!b)return;if(!confirm('Delete this food entry?'))return;data.entries=data.entries.filter(x=>x.id!==b.dataset.delete);save();render()};
-$('nzSaveTargets').onclick=()=>{const c=$('nzTargetCalories').value,p=$('nzTargetProtein').value;data.targets={calories:c?Number(c):null,protein:p?Number(p):null};save();render();msg('Targets saved.')};
+$('nzSaveTargets').onclick=()=>{const c=$('nzTargetCalories').value.trim(),p=$('nzTargetProtein').value.trim();
+if(!c||!p||!Number.isFinite(Number(c))||!Number.isFinite(Number(p))||Number(c)<800||Number(c)>7000||Number(p)<20||Number(p)>450){msg('Enter valid calorie and protein goals, or use Adjust nutrition goals for all four macros.',true);return}
+let newest={};try{newest=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch{}
+data.targets={...(newest.targets||{}),calories:Number(c),protein:Number(p)};
+if(save({replaceTargets:true})){render();msg('Nutrition goals saved on this phone. Cloud confirmation is separate.')}};
 $('nzExport').onclick=()=>download('nonzero-nutrition-backup-'+today()+'.json',JSON.stringify(data,null,2),'application/json');
 $('nzExportCsv').onclick=()=>{const keys=['day','meal','name','cal','protein','carbs','fat','fiber','source'];const quote=x=>'"'+String(x??'').replace(/"/g,'""')+'"';download('nonzero-nutrition-'+today()+'.csv',[keys.join(','),...data.entries.map(x=>keys.map(k=>quote(x[k])).join(','))].join('\r\n'),'text/csv')};
-$('nzImport').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.entries)||!Array.isArray(x.favorites))throw Error('Invalid backup');if(!confirm('Replace this browser nutrition log with the imported backup?'))return;data={entries:x.entries,favorites:x.favorites,targets:x.targets||{}};save();render();msg('Backup restored.')}catch(err){msg('Could not import: '+err.message,true)}e.target.value=''};
+$('nzImport').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.entries)||!Array.isArray(x.favorites))throw Error('Invalid backup');if(!confirm('Replace this browser nutrition log with the imported backup?'))return;data={...x,entries:x.entries,favorites:x.favorites,targets:x.targets||data.targets||{}};save({replaceTargets:true});render();msg('Backup restored on this phone. Verify cloud status before assuming it synced.')}catch(err){msg('Could not import: '+err.message,true)}e.target.value=''};
 $('nzTargetCalories').value=data.targets.calories||'';$('nzTargetProtein').value=data.targets.protein||'';$('nzDay').value=today();
 if(!data.favorites.some(x=>x.name==='Protein oats with blueberries')){data.favorites.push({id:'starter-protein-oats',name:'Protein oats with blueberries',meal:'Lunch',source:'estimate',cal:400,protein:38,carbs:50,fat:6.5,fiber:8});save()}
 render();
@@ -17431,7 +17442,7 @@ const day=localDay(),today=(ag?.days||[]).find(d=>d.date===day)||(ag?.date===day
 let timeline=null;try{timeline=NonZeroSuite.timeline(ag,new Date(),false)}catch{}
 const next=timeline?.next;
 if(next){text('nzKpiAutopilotValue',next.title||'Next event');text('nzKpiAutopilotSub',`${next.time||next.start24||''}${next._date!==day?' · '+next._date:''}`)}
-else{ text('nzKpiAutopilotValue',today?'No more events':'No current agenda');text('nzKpiAutopilotSub',today?'Today’s scheduled events are complete':'Publish or sync your current AutoPilot schedule')}
+else{ text('nzKpiAutopilotValue',today?'No more events':'No current agenda');text('nzKpiAutopilotSub',today?'Today’s scheduled events are complete':'Tap to open AutoPilot and publish your schedule')}
 text('nzKpiAutopilotFoot',today?`${(today.items||[]).length} events on today’s plan · local snapshot`:'Schedule not verified current');}
 function workout(){let done=null;try{done=NonZeroSuite.currentRecord(state.sessions||[])}catch{};
 text('nzKpiWorkoutFoot',done?`${Math.round(safe(done.duration))} min logged today`:'Workout plan shown above');}
@@ -18230,7 +18241,7 @@ setTimeout(schedule,1000);setTimeout(schedule,2400);
 (()=>{'use strict';
 const $=s=>document.getElementById(s),KEY='hipPrehabV2';let lastCheck=0,checkBusy=false;
 function read(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
-function day(){let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function day(){if(window.NonZeroSuite?.dateKey)return window.NonZeroSuite.dateKey();let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function rows(){return (read().bodyMeasurements||[]).filter(r=>r&&/^\d{4}-\d{2}-\d{2}$/.test(r.date||'')&&Number(r.weightLb)>=50&&Number(r.weightLb)<=700&&r.date<=day()).slice().sort((a,b)=>a.date.localeCompare(b.date)||Number(a.at||0)-Number(b.at||0))}
 function fmtDate(s){if(!s)return '—';const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}
 function source(x){if(!x)return 'No reading';return x.source==='apple-health'?'Apple Health'+(x.sourceName&&x.sourceName!=='Apple Health'?' · '+x.sourceName:''):x.source==='manual'?'Manual entry':x.source==='withings-reported'?'Previously reported':'Other source'}
@@ -18359,6 +18370,156 @@ onReady(()=>{
  window.addEventListener('pageshow',scheduleNav);
  navState();
 });
+})();
+</script>
+<style id="nz7210FocusedFlowStyle">
+:root{--nz7210-gold:#f4d35e;--nz7210-ink:#f2f7f7;--nz7210-muted:#c2d3d9}
+/* Four intentionally ordered, full-width Today summaries. */
+body[data-today-scene="home"] #nzKpiDashboard{display:flex!important;flex-direction:column!important;gap:13px!important;max-width:780px;margin-inline:auto}
+body[data-today-scene="home"] #nzKpiDashboard>#nzNutritionCard,
+body[data-today-scene="home"] #nzKpiDashboard>#nzKpiAutoTile,
+body[data-today-scene="home"] #nzKpiDashboard>.flowPlan,
+body[data-today-scene="home"] #nzKpiDashboard>#homeProgress{order:initial;width:100%!important;grid-column:1/-1!important;min-height:0!important;display:block!important;box-sizing:border-box}
+body[data-today-scene="home"] #nzKpiDashboard>#nzNutritionCard{order:1!important}
+body[data-today-scene="home"] #nzKpiDashboard>#nzKpiAutoTile{order:2!important}
+body[data-today-scene="home"] #nzKpiDashboard>.flowPlan{order:3!important}
+body[data-today-scene="home"] #nzKpiDashboard>#homeProgress{order:4!important}
+body[data-today-scene="home"] #nzKpiDashboard>:is(#nzKpiProteinTile,#nzKpiMacroTile,#nzKpiWeightTile,#nzKpiStatusTile){display:none!important}
+body[data-today-scene="home"] #nzKpiDashboard>#nzKpiAutoTile{text-align:left!important;padding:18px!important}
+body[data-today-scene="home"] #nzKpiDashboard>#nzKpiAutoTile .nzKpiNumber{font-size:clamp(23px,6.5vw,32px)!important;line-height:1.12!important;overflow-wrap:break-word}
+body[data-today-scene="home"] #nzKpiDashboard>#nzKpiAutoTile .nzKpiSub,
+body[data-today-scene="home"] #nzKpiDashboard>#nzKpiAutoTile .nzKpiFoot{font-size:13px!important;min-height:0!important;line-height:1.4}
+body[data-today-scene="home"] #nzKpiDashboard .nzKpiEyebrow,
+body[data-today-scene="home"] #nzKpiDashboard #nzNutritionCard .nzQLabel{font-size:13px!important;letter-spacing:.055em!important}
+body[data-today-scene="home"] #nzKpiDashboard .flowPlan{padding:19px!important}
+body[data-today-scene="home"] #nzKpiDashboard .flowPlan #homeSessionMeta{font-size:13px!important;min-height:0!important}
+body[data-today-scene="home"] #nzKpiDashboard .flowPlan #homeStart{font-size:15px!important;min-height:46px!important}
+body[data-today-scene="home"] #nzKpiDashboard #homeProgress{padding:19px!important}
+body[data-today-scene="home"] #nzKpiDashboard #homeProgress .flowWeight b{font-size:clamp(28px,7vw,34px)!important}
+body[data-today-scene="home"] #nzTodayMacroSummary .nzTodayMacroHeading{display:none}
+body[data-today-scene="home"] #nzTodayMacroSummary .nzTodayMacroValue{font-size:13px!important}
+/* One authoritative interpretation of each Nutrition ring: consumed amount, then target. */
+#nzNutritionModal #nzMacroRings .nzRingNum{font-size:19px!important;font-weight:800!important}
+#nzNutritionModal #nzMacroRings .nzRingCaption{font-size:15px!important;font-weight:770!important}
+#nzNutritionModal #nzMacroRings .nzRingGoalLine{font-size:13px!important;line-height:1.45!important;color:#d4e1e4!important;font-variant-numeric:tabular-nums}
+#nzNutritionModal #nzMacroRings .nzRingStatus{display:none!important}
+#nzNutritionModal #nzMacroRings .nzRingFoot{display:none!important}
+/* A compact single path into existing food-search, saved and manual handlers. */
+#nz7210FoodHub{border-radius:19px;background:#112b38;border:1px solid #355563;padding:17px;margin:13px 0 17px;color:var(--nz7210-ink)}
+#nz7210FoodHub h3{font-size:19px;margin:0 0 4px;letter-spacing:-.02em;color:var(--nz7210-ink)}
+#nz7210FoodHub p{font-size:13px;line-height:1.42;margin:0 0 13px;color:var(--nz7210-muted)}
+#nz7210FoodHub .nz7210Row{display:flex;gap:8px;align-items:center}
+#nz7210FoodHub input{flex:1;min-width:0;min-height:47px;font-size:16px;color:#f7f9f9;background:#0c2430;border:1px solid #56717a;border-radius:11px;padding:10px 12px;box-sizing:border-box}
+#nz7210FoodHub .nz7210Row button{flex:none;min-height:47px;padding:10px 16px;border:1px solid #e2c45e;border-radius:11px;background:#f4d35e;color:#14252c;font-size:14px;font-weight:800}
+#nz7210FoodHub .nz7210Actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+#nz7210FoodHub .nz7210Actions button{min-width:0;min-height:45px;border:1px solid #466672;border-radius:11px;background:#1c3b48;color:#ebf5f4;font-size:13px;font-weight:670;padding:9px 4px}
+#nz7210FoodHub .nz7210Actions button:focus-visible,#nz7210FoodHub button:focus-visible{outline:2px solid #f4d35e;outline-offset:2px}
+#nz7210FoodHub .nz7210Message{min-height:17px;font-size:12px;margin:9px 0 0;color:#c2d5dc}
+#nz7210FoodHub .nz7210Info{margin:10px 0 0;border-top:1px solid #385462;padding-top:10px}
+#nz7210FoodHub .nz7210Info summary{font-size:13px;color:#e6eef0;cursor:pointer}
+#nz7210FoodHub .nz7210Info .nz7210Help{font-size:12px;color:#bfd1d6;padding-top:8px}
+#nzNutritionModal #nzSimplifiedSecondary{scroll-margin-top:105px}
+#nzNutritionModal #nfiQuery{scroll-margin-top:130px}
+#nzWeightCenter #nzwShortcut{display:none!important}
+#nzWeightCenter #nzwCheck{width:100%!important}
+#nzWeightCenter .nzw-actionrow{display:block!important}
+@media(max-width:355px){#nz7210FoodHub{padding:13px}#nz7210FoodHub .nz7210Actions{gap:5px}#nz7210FoodHub .nz7210Actions button{font-size:12px;padding:8px 2px}}
+@media(prefers-reduced-motion:reduce){#nz7210FoodHub *{scroll-behavior:auto!important}}
+</style>
+<script id="nz7210FocusedFlowScript">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const day=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+function nutritionState(){let d={};try{d=JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')||{}}catch{}const sums={cal:0,protein:0,carbs:0,fat:0};const entries=(Array.isArray(d.entries)?d.entries:[]).filter(e=>e&&e.day===day()&&!e.deleted&&!e.deletedAt);for(const row of entries)for(const k in sums){const n=Number(row[k]);if(Number.isFinite(n)&&n>=0)sums[k]+=n}return {sums,goals:d.targets||{}}}
+function ringLabels(){const root=$('nzMacroRings');if(!root)return;const {sums,goals}=nutritionState();const specs={cal:['Calories','calories','kcal'],protein:['Protein','protein','g'],carbs:['Carbs','carbs','g'],fat:['Fat','fat','g']};for(const unit of root.querySelectorAll('[data-ring]')){const key=unit.getAttribute('data-ring');const spec=specs[key];if(!spec)continue;const [label,goalKey,suffix]=spec;const val=Math.round(sums[key]);const goal=Number(goals[goalKey]);const valid=Number.isFinite(goal)&&goal>0;const center=unit.querySelector('.nzRingNum');const name=unit.querySelector('.nzRingCaption');const line=unit.querySelector('.nzRingGoalLine')||document.createElement('span');if(!line.classList.contains('nzRingGoalLine'))line.className='nzRingGoalLine';if(!line.parentElement)unit.append(line);const numberText=String(val), targetText=valid?`${val.toLocaleString()} of ${Math.round(goal).toLocaleString()} ${suffix} target`:`${val.toLocaleString()} ${suffix} · Set a target`;if(center&&center.textContent!==numberText)center.textContent=numberText;if(name&&name.textContent!==label)name.textContent=label;if(line.textContent!==targetText)line.textContent=targetText;unit.setAttribute('aria-label',valid?`${label}: ${val} of ${Math.round(goal)} ${suffix} consumed. Tap for trends.`:`${label}: ${val} ${suffix} consumed; no target set.`);const fill=unit.querySelector('.nzRingFill');if(fill&&valid){const r=Number(fill.getAttribute('r'))||32;const c=2*Math.PI*r;fill.style.strokeDasharray=String(c);fill.style.strokeDashoffset=String(c*(1-Math.min(1,val/goal)));}}}
+function rearrangeToday(){const grid=$('nzKpiDashboard');if(!grid)return;const insights=$('nzTodayInsights');if(insights&&insights.parentElement===grid)grid.after(insights);const nutrition=$('nzNutritionCard'),auto=$('nzKpiAutoTile'),workout=grid.querySelector('.flowPlan'),weight=$('homeProgress');if(!nutrition||!auto||!workout||!weight)return;const order=[nutrition,auto,workout,weight];for(const e of order){if(e.parentElement!==grid)grid.append(e)}order.forEach(e=>grid.append(e));}
+function showParent(node){let p=node?.parentElement;while(p){if(p.tagName==='DETAILS')p.open=true;p=p.parentElement;}}
+function feedback(text){const el=$('nz7210FoodStatus');if(el)el.textContent=text;}
+function openNutrition(){const modal=$('nzNutritionModal');if(modal?.hidden)$('nzNutritionNav')?.click();}
+function makeFoodHub(){const modal=$('nzNutritionModal'),panel=modal?.querySelector('.nzPanel'),rings=$('nzMacroRings');if(!panel||!rings)return;const existing=$('nz7210FoodHub');if(existing){if(rings.parentElement===panel && existing.previousElementSibling!==rings)rings.after(existing);else if(existing.parentElement!==panel)panel.prepend(existing);return;}const host=document.createElement('section');host.id='nz7210FoodHub';host.innerHTML=`<h3>Find or log food</h3><p>One starting point for food search, previously saved meals and manual entry.</p><div class="nz7210Row"><input id="nz7210Query" placeholder="Search foods or brands" aria-label="Search foods and brands" autocomplete="off"><button id="nz7210Search" type="button">Search</button></div><div class="nz7210Actions"><button type="button" id="nz7210Saved">Saved foods</button><button type="button" id="nz7210Scan">Scan / photo</button><button type="button" id="nz7210Manual">Add manually</button></div><p id="nz7210FoodStatus" class="nz7210Message" role="status" aria-live="polite">Choose an action to start.</p><details class="nz7210Info"><summary>Where do my foods come from?</summary><div class="nz7210Help">Search uses the configured Nutrition Cloud catalog. Saved foods are available in the existing Favorites menu. Manual entry works even when cloud search is offline.</div></details>`;
+panel.prepend(host);if(rings.parentElement===panel)rings.after(host);
+const input=$('nz7210Query');const search=()=>{const q=input.value.trim();if(q.length<2){feedback('Enter at least two characters.');input.focus();return;}const real=$('nfiQuery'),mode=$('nfiSearchMode'),find=$('nfiFind');if(!real||!mode||!find){feedback('Search is unavailable; try manual entry.');return;}showParent(mode);mode.click();real.value=q;real.dispatchEvent(new Event('input',{bubbles:true}));find.click();feedback('Searching foods… Results are shown below.');real.scrollIntoView({block:'center',behavior:'smooth'});};
+$('nz7210Search').addEventListener('click',search);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();search();}});
+$('nz7210Saved').addEventListener('click',()=>{const favorites=$('nzFavorites')||$('nzCompositeMealsList');if(!favorites){feedback('Saved-food list is unavailable.');return;}showParent(favorites);favorites.scrollIntoView({block:'center',behavior:'smooth'});favorites.focus?.();feedback('Choose a saved food, then use its existing Log button.');});
+$('nz7210Scan').addEventListener('click',()=>{const scan=$('nfiBarcodeMode');if(!scan){feedback('Camera tools are unavailable.');return;}showParent(scan);scan.click();scan.scrollIntoView({block:'center',behavior:'smooth'});feedback('Barcode and photo options are available below.');});
+$('nz7210Manual').addEventListener('click',()=>{const name=$('nzName');if(!name){feedback('Manual food entry unavailable.');return;}showParent(name);name.scrollIntoView({block:'center',behavior:'smooth'});name.focus();feedback('Enter food details and tap Add to food log.');});
+}
+function shortcutSafety(){const link=$('nzwShortcut');if(link){link.hidden=true;link.setAttribute('aria-hidden','true');link.tabIndex=-1;}const row=$('nzwHealth');let message=$('nz7210WeightNotice');const weight=$('nzWeightCenter');if(weight&&!message){message=document.createElement('p');message.id='nz7210WeightNotice';message.className='nzw-status';message.textContent='Automatic import requires a verified iPhone Shortcut. “Check NONZERO cloud” only retrieves readings already sent; it cannot run Apple Health. Do not assume “Get Current Weight” uploads anything until its actions and destination have been checked.';weight.querySelector('.nzw-actionrow')?.after(message);const copy=[...weight.querySelectorAll('p')].find(p=>p!==message&&p.textContent.includes('The Shortcut sends Apple Health weight'));if(copy)copy.textContent='Cloud check can only retrieve data that was previously delivered. Manual weight entry remains available even if the iPhone Shortcut is not connected.';} }
+function refresh(){rearrangeToday();ringLabels();makeFoodHub();shortcutSafety();}
+function init(){refresh();setTimeout(refresh,600);setTimeout(refresh,2200);const root=$('nzMacroRings');if(root){let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;ringLabels();});}).observe(root,{subtree:true,childList:true,characterData:true});}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+for(const e of ['nz-nutrition-local-saved','nz-nutrition-cloud-rendered','nz-nutrition-cloud-updated','suite-state-changed','storage'])window.addEventListener(e,()=>requestAnimationFrame(refresh));
+document.addEventListener('click',e=>{if(e.target.closest?.('#nzNutritionNav,#nzOpenNutrition,[data-tab="Today"],#nzWeightCenter'))setTimeout(refresh,60)});
+window.addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+setInterval(()=>{if(!document.hidden)refresh()},20000);
+})();
+</script>
+<style id="nz7211ReliabilityUX">
+:root{--nz-brand:#f4d35e;--nz-touch:44px}
+#nz7210FoodHub{margin:10px 0 18px!important;order:-9!important}
+#nzNutritionModal .nzPanel #nzMacroRings{order:-10!important}
+#nzNutritionModal .nzPanel #nz3Trends{order:3!important}
+#nzNutritionModal .nzPanel button{min-width:44px!important}
+#tabHistory input,#tabHistory select,#tabHistory button{min-height:44px!important}
+#nz7211SearchTools:not([open]) > #nzFoodIntelligence,#nz7211DescribeTools:not([open]) > #nzConversational{display:none!important}
+#nz7210FoodHub .nz7210Actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#nz7210FoodHub button{min-height:var(--nz-touch)!important;font-size:14px!important}
+#nz7210FoodHub #nz7210Search{min-height:48px!important;background:#f4d35e!important;color:#172533!important;font-weight:800!important}
+#nz7210FoodHub #nz7210Query{min-height:48px!important;font-size:16px!important;min-width:0!important}
+#nz7210FoodHub .nz7211ToolGroup{margin:12px 0;border:1px solid #35505b;border-radius:14px;background:#112936;overflow:hidden}
+#nz7210FoodHub .nz7211ToolGroup>summary{padding:14px 16px;min-height:44px;box-sizing:border-box;cursor:pointer;font-size:14px;font-weight:720;color:#e7f2f1;list-style-position:inside}
+#nz7210FoodHub .nz7211ToolGroup[open]>summary{color:#f4d35e;border-bottom:1px solid #35505b}
+#nz7210FoodHub .nz7211ToolGroup > section{padding:10px 12px}
+#nz7210FoodHub #nz7211SavedPanel{padding:12px}
+#nz7210FoodHub .nz7211SavedRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #2d4350}
+#nz7210FoodHub .nz7211SavedRow:last-child{border:0}
+#nz7210FoodHub .nz7211SavedRow button{flex-shrink:0;min-width:84px}
+#nz7210FoodHub .nz7211SavedRow strong{font-size:14px}
+#nz7210FoodHub .nz7211SavedRow small{display:block;font-size:12px;color:#b7cbd0}
+#nz7210FoodHub .nz7211Status{padding:10px 12px;margin:10px 0 0;border-radius:10px;background:#17313d;color:#cce7e3;font-size:13px;line-height:1.45}
+#nz7210FoodHub #nz7210FoodStatus{font-size:13px!important;min-height:20px}
+#nzNutritionModal .nzPanel .nz3Disclosure button,#nzNutritionModal .nzPanel .nzAdvancedTools button,
+#nzNutritionModal .nzPanel button,#nzWeightCenter button,#tabHistory button{min-height:44px!important;touch-action:manipulation}
+#nzNutritionModal .nzPanel button:focus-visible,#nzWeightCenter button:focus-visible,button:focus-visible{outline:2px solid #f4d35e!important;outline-offset:3px}
+#nzNutritionModal .nzPanel input,#nzNutritionModal .nzPanel select{min-height:44px;font-size:16px}
+#nz7211RecoveryToggle{font-size:13px;border:1px solid #44616b;border-radius:11px;background:#172e3a;color:#f2f5f5;padding:12px 14px;min-height:44px}
+#nz7211RecoveryCopy{font-size:13px;line-height:1.5;color:#b9ccd4}
+@media(max-width:350px){#nz7210FoodHub .nz7210Actions{grid-template-columns:1fr 1fr}#nzNutritionModal .nzRingGoalLine{font-size:12px!important}}
+@media(min-width:650px) and (orientation:landscape){#nz7210FoodHub .nz7210Actions{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){#nz7210FoodHub *,#nzNutritionModal button{transition:none!important;animation:none!important}}
+</style>
+<script id="nz7211ReliabilityUXScript">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let ready=false;
+function status(t,err=false){const el=$('nz7210FoodStatus');if(!el)return;el.textContent=t;el.setAttribute('role','status');el.setAttribute('aria-live','polite');el.style.color=err?'#ffcabd':'#cce7e3';}
+function reveal(id){const el=$(id);if(!el)return null;for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;return el}
+function build(){if(ready)return;const hub=$('nz7210FoodHub'),search=$('nzFoodIntelligence'),convo=$('nzConversational');if(!hub||!search||!convo)return;ready=true;
+// One entry point; retain old search and photo handlers within expandable trays.
+if(search){const tray=document.createElement('details');tray.id='nz7211SearchTools';tray.className='nz7211ToolGroup';tray.innerHTML='<summary>Search results, barcode & photo</summary>';search.before(tray);tray.append(search);hub.append(tray);tray.open=false}
+if(convo){const tray=document.createElement('details');tray.id='nz7211DescribeTools';tray.className='nz7211ToolGroup';tray.innerHTML='<summary>Describe a complete meal (optional)</summary>';convo.before(tray);tray.append(convo);hub.append(tray);tray.open=false}
+const saved=document.createElement('details');saved.id='nz7211SavedTools';saved.className='nz7211ToolGroup';saved.innerHTML='<summary>Saved foods & meals</summary><div id="nz7211SavedPanel"></div>';hub.append(saved);
+const rec=$('nz7210FoodStatus');if(rec){rec.textContent='Search a food, select a saved meal, or add manually.'}
+// Replace the old generic navigation behavior: direct people to the right in-page tool.
+const q=$('nz7210Query'),searchBtn=$('nz7210Search'),savedBtn=$('nz7210Saved'),scanBtn=$('nz7210Scan'),manualBtn=$('nz7210Manual');
+if(searchBtn){const clean=searchBtn.cloneNode(true);searchBtn.replaceWith(clean);const run=()=>{const term=(q?.value||'').trim();if(term.length<2){status('Enter at least two characters to search.',true);q?.focus();return}const pane=reveal('nz7211SearchTools'),mode=reveal('nfiSearchMode'),find=$('nfiFind'),real=$('nfiQuery');if(!pane||!mode||!find||!real){status('Search is unavailable. Manual entry still works.',true);return}pane.open=true;mode.click();real.value=term;real.dispatchEvent(new Event('input',{bubbles:true}));find.click();status('Searching for “'+term+'”. Results appear below.');};clean.addEventListener('click',run);q?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();run()}})}
+if(savedBtn){const clean=savedBtn.cloneNode(true);savedBtn.replaceWith(clean);clean.addEventListener('click',()=>{const pane=reveal('nz7211SavedTools');if(pane){pane.open=true;renderFavorites();pane.scrollIntoView({block:'nearest'});status('Choose a saved food to log.')}})}
+if(scanBtn){const clean=scanBtn.cloneNode(true);scanBtn.replaceWith(clean);clean.addEventListener('click',()=>{const pane=reveal('nz7211SearchTools');if(!pane){status('Scanning is unavailable.',true);return}pane.open=true;const mode=reveal('nfiBarcodeMode');if(mode)mode.click();status('Barcode and photo tools are shown below.');pane.scrollIntoView({block:'nearest'});})}
+if(manualBtn){const clean=manualBtn.cloneNode(true);manualBtn.replaceWith(clean);clean.addEventListener('click',()=>{const target=reveal('nzName');if(!target){status('Manual entry is unavailable.',true);return}target.scrollIntoView({block:'center'});target.focus();status('Enter your food and tap Add to food log.');})}
+const old=$('nz7210FoodHub')?.querySelector('.nz7210Info');if(old)old.hidden=true;const alternate=$('nzSaveTargets')?.closest('details');if(alternate)alternate.hidden=true;
+renderFavorites();
+}
+function read(){try{return JSON.parse(localStorage.getItem('nonzero.nutrition.v1')||'{}')||{}}catch{return {}}}
+function renderFavorites(){const el=$('nz7211SavedPanel');if(!el)return;const favorites=(read().favorites||[]).filter(x=>x&&x.id);if(!favorites.length){el.innerHTML='<p class="nz7211Status">No saved foods yet. Log a food and save it as a favorite to add it here.</p>';return}
+el.replaceChildren();for(const f of favorites.slice(0,60)){const row=document.createElement('div');row.className='nz7211SavedRow';const words=document.createElement('div');const name=document.createElement('strong');name.textContent=f.name||'Saved food';const detail=document.createElement('small');detail.textContent=(Number(f.cal)||0)+' kcal · '+(Number(f.protein)||0)+'g protein';words.append(name,detail);const use=document.createElement('button');use.type='button';use.textContent='Log food';use.setAttribute('aria-label','Log '+(f.name||'saved food'));use.addEventListener('click',()=>{const picker=$('nzFavorites'),log=$('nzUseFavorite');if(!picker||!log){status('Saved-food logging is unavailable.',true);return}const beforeCount=(read().entries||[]).length;picker.value=String(f.id);if(picker.value!==String(f.id)){status('This saved food needs to be refreshed. Open Nutrition again.',true);return}log.click();const current=read();if((current.entries||[]).length>beforeCount){status('Food added on this phone. Check cloud status for synchronization.')}else status('Please check your food log to confirm the entry.',true);});row.append(words,use);el.append(row)}}
+function recovery(){const host=$('nzTodayInsights')||$('tabMore');if(!host||$('nz7211RecoveryToggle'))return;const box=document.createElement('section');box.id='nz7211RecoveryPanel';box.style.cssText='border:1px solid #34505d;border-radius:15px;padding:14px;margin:14px 0;background:#102633';box.innerHTML='<p style="margin:0 0 8px;font-weight:750;color:#f4d35e">Training context</p><button type="button" id="nz7211RecoveryToggle" aria-pressed="false">Recovery mode: Off</button><p id="nz7211RecoveryCopy">Recovery context adds a reminder to prioritize safe rehabilitation. It does not change workouts, targets or records.</p>';host.append(box);
+const btn=$('nz7211RecoveryToggle');function draw(){const on=localStorage.getItem('nonzero.ui.recovery.v1')==='true';btn.textContent='Recovery mode: '+(on?'On':'Off');btn.setAttribute('aria-pressed',String(on));$('nz7211RecoveryCopy').textContent=on?'Recovery context enabled. Prioritize your prescribed rehabilitation and adequate nutrition. Existing goals, plans and records are unchanged.':'Recovery context adds a reminder to prioritize safe rehabilitation. It does not change workouts, targets or records.'}btn.addEventListener('click',()=>{localStorage.setItem('nonzero.ui.recovery.v1',String(btn.getAttribute('aria-pressed')!=='true'));draw()});draw()}
+// No invented cloud successes. A local food receipt always remains explicitly local.
+window.addEventListener('nz-nutrition-local-saved',()=>{renderFavorites();const m=$('nzMessage');if(m&&m.textContent&&/Food saved|Favorite saved/.test(m.textContent))status(m.textContent)});
+window.addEventListener('nz-nutrition-cloud-updated',()=>{renderFavorites()});
+function init(){build();recovery()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+for(const delay of [150,700,1900])setTimeout(init,delay);
+document.addEventListener('click',e=>{if(e.target.closest?.('#nzNutritionNav,#nzOpenNutrition'))setTimeout(init,50)});
 })();
 </script>
 </body>
