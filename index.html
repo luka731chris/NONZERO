@@ -19156,5 +19156,314 @@ window.NONZERO_UX_ANALYTICS_TEST={rows,sum,dateLocal,target,open,render,close};
 })();
 
 </script>
+<script id="nzRhythmInsightsV1">
+/* NONZERO Phone — Eating Rhythms v1. Additive, read-only analytics; no schema changes.
+   Existing nutrition Cloud remains responsible for syncing records. No silent background push. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const FOOD='nonzero.nutrition.v1',MEALS='nonzero.saved.composite.meals.v1',PREF='nonzero.rhythm.prefs.v1';
+const num=x=>Number.isFinite(Number(x))?Math.max(0,Number(x)):0;
+const read=(k,fallback)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??fallback}catch{return fallback}};
+const day=(dt=new Date())=>[dt.getFullYear(),String(dt.getMonth()+1).padStart(2,'0'),String(dt.getDate()).padStart(2,'0')].join('-');
+const dateAt=(s)=>{if(typeof s!=='string'||!/\d{4}-\d{2}-\d{2}/.test(s))return null;const d=new Date(s);return Number.isFinite(d.getTime())?d:null};
+const slotNames=['Early morning','Late morning','Midday','Afternoon','Evening','Late night'];
+const hourSlot=h=>h<9?0:h<12?1:h<15?2:h<18?3:h<21?4:5;
+const timeLabel=h=>new Date(2000,0,1,h).toLocaleTimeString(undefined,{hour:'numeric'});
+const fmt=(n,u='')=>Math.round(n).toLocaleString()+(u?' '+u:'');
+const median=a=>{if(!a.length)return null;const x=[...a].sort((p,q)=>p-q),m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
+const roundHr=n=>Math.round(n*10)/10;
+const escape=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
+const sourceTime=r=>{
+ // Explicit meal time wins. `loggedAt` is not necessarily when food was eaten.
+ for(const k of ['eatenAt','consumedAt']){const d=dateAt(r[k]);if(d)return {d,quality:'eaten'}}
+ for(const k of ['loggedAt','createdAt','at']){const d=dateAt(r[k]);if(d)return {d,quality:'logged'}}
+ return null;
+};
+function records(today=new Date(),windowDays=30){
+ const start=new Date(today);start.setHours(0,0,0,0);start.setDate(start.getDate()-(windowDays-1));
+ const end=new Date(today);end.setHours(23,59,59,999);
+ const raw=read(FOOD,{}).entries;return (Array.isArray(raw)?raw:[]).filter(r=>r&&!r.deleted&&!r.deletedAt&&/^\d{4}-\d{2}-\d{2}$/.test(r.day||'')&&r.day>=day(start)&&r.day<=day(end)).map(r=>{
+  const t=sourceTime(r);const match=t&&day(t.d)===r.day;
+  // Mismatched calendar day is not a trustworthy meal-time observation.
+  return {...r,_time:match?t.d:null,_timeQuality:match?t.quality:'none',_cal:num(r.cal),_protein:num(r.protein),_fiber:num(r.fiber)};
+ });
+}
+function data(now=new Date(),windowDays=30){
+ const rec=records(now,windowDays),timed=rec.filter(x=>x._time),explicit=timed.filter(x=>x._timeQuality==='eaten');
+ const timedDay=new Set(timed.map(x=>x.day));const loggedDay=new Set(rec.map(x=>x.day));
+ const total=rec.reduce((a,r)=>a+r._cal,0);
+ const bins=slotNames.map((name,i)=>({name,cal:0,protein:0,count:0,days:new Set(),events:new Map(),foods:new Map(),i}));
+ for(const r of timed){const b=bins[hourSlot(r._time.getHours())];b.cal+=r._cal;b.protein+=r._protein;b.count++;b.days.add(r.day);
+   const eventKey=r.savedMealBatch?('batch:'+r.savedMealBatch):String(r.id||r._time.getTime());
+   if(!b.events.has(eventKey))b.events.set(eventKey,{day:r.day,at:r._time,quality:r._timeQuality,cal:0,protein:0,meal:r.meal||'',names:[]});
+   const e=b.events.get(eventKey);if(r._timeQuality==='eaten')e.quality='eaten';e.cal+=r._cal;e.protein+=r._protein;e.names.push(String(r.name||'Food'));
+   const k=String(r.name||'Unlabeled food').trim();const prev=b.foods.get(k)||{name:k,cal:0,protein:0,count:0};prev.cal+=r._cal;prev.protein+=r._protein;prev.count++;b.foods.set(k,prev);
+ }
+ const events=[...bins.flatMap(b=>[...b.events.values()])].sort((a,b)=>a.at-b.at);
+ const perDay=new Map();for(const e of events){if(!perDay.has(e.day))perDay.set(e.day,[]);perDay.get(e.day).push(e)}
+ const gaps=[];for(const list of perDay.values()){list.sort((a,b)=>a.at-b.at);for(let i=1;i<list.length;i++){const gap=(list[i].at-list[i-1].at)/3600000;if(gap>0.25&&gap<12)gaps.push(gap)}}
+ const late=timed.filter(r=>r._time.getHours()>=20).reduce((a,r)=>a+r._cal,0);
+ const samples=timed.length,coverage=rec.length?samples/rec.length:0;
+ // At least five distinct days with actual eating timestamps: enough to describe, not predict.
+ const confidence=explicit.length>=12&&new Set(explicit.map(r=>r.day)).size>=7&&explicit.length/timed.length>=.75?'moderate':timedDay.size>=5&&coverage>=.5?'limited':'insufficient';
+ const byHour=Array.from({length:24},(_,hour)=>({hour,cal:0,count:0}));for(const r of timed){const h=byHour[r._time.getHours()];h.cal+=r._cal;h.count++}
+ const eventsToday=events.filter(e=>e.day===day(now)).sort((a,b)=>a.at-b.at);
+ const last=eventsToday.filter(e=>e.quality==='eaten').at(-1)||null;
+ const snackEvents=events.filter(e=>String(e.meal).toLowerCase()==='snack'&&e.quality==='eaten');
+ const snackDays=new Set(snackEvents.map(e=>e.day)).size;const snackHour=snackDays>=5?median(snackEvents.map(e=>e.at.getHours()+e.at.getMinutes()/60)):null;
+ return {rec,timed,explicit,bins,events,eventsToday,byHour,gaps,medianGap:median(gaps),last,loggedDays:loggedDay.size,timedDays:timedDay.size,coverage,confidence,late,total,windowDays,now,snackHour,snackDays};
+}
+function mealOptions(d){const raw=read(MEALS,[]),foods=Array.isArray(raw)?raw:[];
+ const options=foods.filter(m=>m&&m.name&&Array.isArray(m.items)&&m.items.length).map(m=>({id:m.id,name:String(m.name),category:m.category||'Snack',cal:m.items.reduce((s,x)=>s+num(x.cal)*num(x.qty||1),0),protein:m.items.reduce((s,x)=>s+num(x.protein)*num(x.qty||1),0),fiber:m.items.reduce((s,x)=>s+num(x.fiber)*num(x.qty||1),0)}));
+ // No assumption that a calorie target is mandatory or accurate. It is a soft guide.
+ const targets=read(FOOD,{}).targets||{};const budget=Number(targets.calories)>0?Math.max(0,Number(targets.calories)-d.rec.filter(r=>r.day===day(d.now)).reduce((s,r)=>s+r._cal,0)):null;
+ return options.filter(x=>x.cal>=70&&x.cal<=550).sort((a,b)=>{
+  const score=x=>x.protein/Math.max(70,x.cal)*100+Math.min(8,x.fiber)*2+(budget!==null&&x.cal>budget&&budget>0?-15:0);
+  return score(b)-score(a);
+ }).slice(0,3);
+}
+function suggestion(d,prefs=read(PREF,{})){
+ const now=d.now,h=now.getHours(),today=day(now),options=mealOptions(d);
+ const meal=options[0];const snack=meal?`${meal.name} (${fmt(meal.protein,'g')} protein, ${fmt(meal.cal,'kcal')})`:'a familiar protein-rich snack, such as Greek yogurt with berries or cottage cheese';
+ const dated=prefs.snoozeDay===today;
+ if(dated)return {state:'snoozed',title:'Snack prompts paused today',message:'Your schedule and food log remain available. Suggestions resume tomorrow.',detail:'Paused by you; no eating records changed.'};
+ if(d.rec.filter(r=>r.day===today).length===0)return {state:'unknown',title:'Log a meal to personalize timing',message:'There is no food recorded today. NONZERO cannot infer when you last ate.',detail:'No reminder scheduled; food logs may be incomplete.'};
+ if(!d.last)return {state:'unknown',title:'Meal timing is still learning',message:'Today’s foods have no usable meal-time stamps. Log the time you ate to enable sensible snack-window suggestions.',detail:'Food logging time is not assumed to equal eating time.'};
+ const hours=(now-d.last.at)/3600000;
+ if(hours<0)return {state:'unknown',title:'Check the latest meal time',message:'The most recent recorded time is ahead of the current clock. No suggestion generated.',detail:'Possible clock or time-zone mismatch.'};
+ if(hours<2)return {state:'recent',title:'You logged food recently',message:'No snack prompt needed right now. Check in with your hunger later.',detail:`Last timed entry ${d.last.at.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}.`};
+ if(h<8||h>=22)return {state:'quiet',title:'Quiet hours',message:'No timed snack suggestion during overnight hours.',detail:'Notifications and prompts are limited to daytime app use.'};
+ if(hours<3)return {state:'soon',title:'Next check-in: when hungry',message:'You may want a snack later if hunger rises. No need to eat just because a timer has elapsed.',detail:`Last timed food ${roundHr(hours)} hours ago.`};
+ const likely=d.medianGap!==null&&d.timedDays>=5?`Your recorded between-meal gap is typically about ${roundHr(d.medianGap)} hours. `:'';
+ const pattern=d.snackHour!==null?`Your median recorded snack time is around ${new Date(2000,0,1,Math.floor(d.snackHour),Math.round((d.snackHour%1)*60)).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}. `:'';
+ return {state:'optional',title:'Optional snack check-in',message:`It has been about ${roundHr(hours)} hours since your last timed food entry. If you're hungry, consider ${snack}.`,detail:likely+pattern+'Timing is based on recorded entries, not a physiological hunger prediction. No compensatory restriction is recommended.'};
+}
+function make(tag,cls,text,parent){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;if(parent)parent.append(e);return e}
+function btn(label,parent,fn,pressed){const b=make('button',null,label,parent);b.type='button';if(pressed!==undefined)b.setAttribute('aria-pressed',String(pressed));b.addEventListener('click',fn);return b}
+let viewDays=30,viewMode='slots',selectedSlot=3,origin=null,refreshTimer=null,lastPrompt='';
+function style(){if($('nzRhythmStyles'))return;const s=make('style',null,null,document.head);s.id='nzRhythmStyles';s.textContent=`
+#nzRhythmHome{border:1px solid #416d70;border-radius:17px;background:linear-gradient(140deg,#14323a,#102834);padding:14px;margin:12px 0;color:#eafaf5;grid-column:1/-1}
+#nzRhythmHome .rhrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}#nzRhythmHome b{font-size:16px}#nzRhythmHome p{font-size:13px;line-height:1.45;margin:9px 0;color:#c5dadb}#nzRhythmHome small{font-size:11px;color:#a6c8ce}
+#nzRhythmHome button,#nzRhythmOverlay button{border:1px solid #638985;border-radius:11px;background:#1a514e;color:#f2fff9;min-height:42px;padding:8px 12px;font-size:13px;font-weight:690;cursor:pointer}#nzRhythmHome button:focus-visible,#nzRhythmOverlay button:focus-visible{outline:3px solid #f2cf72;outline-offset:2px}
+#nzRhythmOverlay[hidden]{display:none!important}#nzRhythmOverlay{position:fixed;inset:0;z-index:1300000;overflow:auto;overscroll-behavior:contain;background:#06131ceb;padding:calc(10px + env(safe-area-inset-top)) 12px calc(24px + env(safe-area-inset-bottom));color:#f1fcfa}
+#nzRhythmOverlay .shell{max-width:850px;margin:0 auto;border-radius:20px;background:#102a36;border:1px solid #476970;padding:16px;min-height:70vh}#nzRhythmOverlay .header{display:flex;justify-content:space-between;align-items:start;gap:9px}#nzRhythmOverlay h2{font-size:clamp(19px,3vw,27px);margin:0}#nzRhythmOverlay h3{font-size:17px;margin:19px 0 7px}
+#nzRhythmOverlay .muted{font-size:12px;line-height:1.55;color:#bad2d4}#nzRhythmOverlay .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}#nzRhythmOverlay button[aria-pressed=true]{background:#c0e5cf;color:#123327}
+#nzRhythmOverlay .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#nzRhythmOverlay .stat{padding:12px;background:#163843;border:1px solid #35555b;border-radius:12px;min-width:0}#nzRhythmOverlay .stat b{font-size:clamp(18px,3.2vw,27px);display:block;overflow-wrap:anywhere}#nzRhythmOverlay .stat small{font-size:11px;color:#b1c9cb}
+#nzRhythmOverlay .rhChart{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;min-height:180px;padding:12px 0;border-bottom:1px solid #385860}#nzRhythmOverlay .rhBarBtn{min-width:0;padding:5px 2px!important;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:6px;background:#153340!important}
+#nzRhythmOverlay .rhBarFill{width:clamp(11px,65%,44px);min-height:2px;border-radius:5px 5px 0 0;background:#a3ddbf;display:block}#nzRhythmOverlay .rhBarBtn[aria-pressed=true] .rhBarFill{background:#f2d284}
+#nzRhythmOverlay .rhBarLabel{font-size:clamp(9px,1.9vw,12px);line-height:1.3;text-align:center;overflow-wrap:anywhere;color:#e0eff0}#nzRhythmOverlay .detailRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:10px 0;border-bottom:1px solid #34545d;align-items:center;font-size:13px}#nzRhythmOverlay .detailRow span:last-child{text-align:right;color:#c1d7d8}
+#nzRhythmOverlay .hourChart{display:grid;grid-template-columns:repeat(24,minmax(12px,1fr));align-items:end;gap:3px;min-height:154px;overflow-x:auto;border-bottom:1px solid #4c7073;padding-bottom:9px}
+#nzRhythmOverlay .hourItem{display:flex;align-items:end;justify-content:center;min-width:0;background:none!important;border:0!important;padding:0!important;min-height:124px}
+#nzRhythmOverlay .hourFill{display:block;width:100%;max-width:22px;background:#a3ddbf;border-radius:4px 4px 0 0;min-height:2px}#nzRhythmOverlay .hourLabel{display:block;font-size:10px;color:#b7d0d1;text-align:center;padding:6px 0}
+#nzRhythmOverlay .callout{background:#183f46;border:1px solid #457974;border-radius:12px;padding:12px;margin:12px 0}#nzRhythmOverlay .callout p{font-size:13px;line-height:1.5;margin:8px 0}
+#nzRhythmOverlay .rhSummary{cursor:pointer;font-size:15px;font-weight:750;min-height:43px;display:flex;align-items:center}#nzRhythmOverlay input[type=date],#nzRhythmOverlay input[type=time]{background:#173b46;color:#f7ffff;border:1px solid #62838a;border-radius:10px;padding:9px;min-height:44px;max-width:100%}#nzRhythmOverlay .rhTimeEdit{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:9px}#nzRhythmOverlay .rhTimeEdit p{width:100%}#nzRhythmOverlay button{touch-action:manipulation}body.nzRhythmOpen{overflow:hidden!important}
+#nzUxOverlay .nzUxChart{overflow-x:auto;scrollbar-width:thin;min-height:180px;align-items:end;padding-bottom:28px;position:relative}#nzUxOverlay .nzUxBar{flex:1 0 10px!important;max-width:none}#nzUxOverlay .nzUxBar .rhTick{position:absolute;top:100%;left:0;right:0;white-space:nowrap;transform:rotate(-35deg);transform-origin:left top;font-size:9px;color:#c4d8d8;text-align:left;pointer-events:none}
+@media(max-width:370px){#nzRhythmOverlay .shell{padding:11px}#nzRhythmOverlay .rhChart{gap:3px}#nzRhythmOverlay .rhBarLabel{font-size:9px}#nzRhythmOverlay .stats{grid-template-columns:1fr 1fr}}
+@media(orientation:landscape) and (max-height:600px){#nzUxOverlay .nzUxPage,#nzRhythmOverlay .shell{max-width:1100px;min-height:0;padding:12px 20px}#nzUxOverlay .nzUxStats,#nzRhythmOverlay .stats{grid-template-columns:repeat(4,minmax(0,1fr))}#nzUxOverlay .nzUxStat b{font-size:clamp(16px,3vw,23px)}#nzUxOverlay .nzUxChart{height:125px;min-height:125px}#nzUxOverlay .nzUxBar{flex-basis:16px!important}#nzRhythmOverlay .rhChart{min-height:140px}#nzRhythmOverlay .rhBarLabel{font-size:12px}#nzRhythmOverlay .hourChart{min-height:110px}#nzRhythmOverlay .hourItem{min-height:88px}#nzRhythmHome{display:grid;grid-template-columns:minmax(170px,1fr) minmax(240px,2fr);align-items:center;gap:10px}}
+@media(prefers-reduced-motion:reduce){#nzRhythmOverlay *,#nzRhythmHome *{transition:none!important;animation:none!important}}
+`;}
+function overlay(){let v=$('nzRhythmOverlay');if(v)return v;v=make('section',null,null,document.body);v.id='nzRhythmOverlay';v.hidden=true;v.setAttribute('role','dialog');v.setAttribute('aria-modal','true');v.setAttribute('aria-label','Eating rhythms and snack insights');
+ const shell=make('div','shell',null,v);const hdr=make('div','header',null,shell);make('h2',null,'Eating rhythms',hdr);btn('Close ✕',hdr,close).id='nzRhythmClose';make('div',null,null,shell).id='nzRhythmBody';
+ v.addEventListener('click',e=>{if(e.target===v)close()});v.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}if(e.key!=='Tab')return;const active=[...v.querySelectorAll('button')].filter(b=>!b.disabled&&b.getClientRects().length);if(!active.length)return;if(e.shiftKey&&document.activeElement===active[0]){e.preventDefault();active.at(-1).focus()}else if(!e.shiftKey&&document.activeElement===active.at(-1)){e.preventDefault();active[0].focus()}});return v;
+}
+function open(){origin=document.activeElement;const v=overlay();v.hidden=false;document.body.classList.add('nzRhythmOpen');render();$('nzRhythmClose')?.focus({preventScroll:true})}
+function close(){const v=$('nzRhythmOverlay');if(v)v.hidden=true;document.body.classList.remove('nzRhythmOpen');origin?.focus?.({preventScroll:true});origin=null}
+function showStat(parent,label,value){const s=make('div','stat',null,parent);make('small',null,label,s);make('b',null,value,s)}
+function render(){const body=$('nzRhythmBody');if(!body)return;body.replaceChildren();const d=data(new Date(),viewDays),sg=suggestion(d),timing=d.timed.length,known=d.explicit.length;
+ const subt=make('p','muted',null,body);subt.textContent=`${viewDays}-day window · ${d.loggedDays} days with foods · ${d.timedDays} days with recorded times · confidence: ${d.confidence}`;
+ const ctrl=make('div','tabs',null,body);for(const v of [7,30,90])btn(v+' days',ctrl,()=>{viewDays=v;render()},viewDays===v);
+ const stats=make('div','stats',null,body);showStat(stats,'Timed entries',`${timing} / ${d.rec.length}`);showStat(stats,'Explicit eating times',`${known}`);showStat(stats,'Typical recorded gap',d.medianGap===null?'Not enough data':roundHr(d.medianGap)+' h');showStat(stats,'After 8 PM · timed entries',timing?fmt(d.late,'kcal'):'Unknown');
+ const warn=make('p','muted',null,body);warn.textContent='Only timestamped records appear in time charts. Older records without a meal time are excluded. “Logged at” estimates are not treated as confirmed eating times. Missing food logs do not mean you skipped a meal.';
+ make('h3',null,'When calories were logged',body);const tabs=make('div','tabs',null,body);btn('Day parts',tabs,()=>{viewMode='slots';render()},viewMode==='slots');btn('By hour',tabs,()=>{viewMode='hours';render()},viewMode==='hours');
+ if(viewMode==='slots'){const chart=make('div','rhChart',null,body),max=Math.max(1,...d.bins.map(x=>x.cal));for(const b of d.bins){const item=btn('',chart,()=>{selectedSlot=b.i;render()},selectedSlot===b.i);item.className='rhBarBtn';item.setAttribute('aria-label',`${b.name}: ${fmt(b.cal,'kcal')} in ${b.count} timed food entries`);const fill=make('span','rhBarFill',null,item);fill.style.height=Math.max(2,b.cal/max*105)+'px';make('span','rhBarLabel',b.name,item)}
+ const sel=d.bins[selectedSlot]||d.bins[3];make('h3',null,sel.name+' · '+fmt(sel.cal,'kcal'),body);
+ make('p','muted',`${sel.days.size} contributing dates · ${sel.count} entries · ${fmt(sel.protein,'g')} protein. This is total recorded intake, not a per-day recommendation.`,body);
+ const foods=[...sel.foods.values()].sort((a,b)=>b.count-a.count||b.cal-a.cal).slice(0,8);if(!foods.length)make('p','muted','No timed foods recorded in this window.',body);
+ for(const x of foods){const row=make('div','detailRow',null,body);make('span',null,x.name,row);make('span',null,`${x.count}× · ${fmt(x.cal,'kcal')} · ${fmt(x.protein,'g')} P`,row)}
+ }else{const chart=make('div','hourChart',null,body);const max=Math.max(1,...d.byHour.map(x=>x.cal));for(const item of d.byHour){const b=btn('',chart,()=>{selectedSlot=hourSlot(item.hour);viewMode='slots';render()});b.className='hourItem';b.title=timeLabel(item.hour)+' · '+fmt(item.cal,'kcal');b.setAttribute('aria-label',b.title);const fill=make('span','hourFill',null,b);fill.style.height=Math.max(2,100*item.cal/max)+'px'}const label=make('p','muted','Hourly distribution from recorded timestamps. Tap an hour to explore the corresponding day-part foods.',body);}
+ make('h3',null,'What the timing reveals',body);const findings=[];
+ if(d.confidence==='insufficient')findings.push('Not enough reliably timed entries to characterize your routine. Record actual eating times for several days.');
+ else{const strongest=[...d.bins].sort((a,b)=>b.cal-a.cal)[0];findings.push(`${strongest.name} contains the largest share of timestamped calories (${Math.round(strongest.cal/Math.max(1,d.timed.reduce((s,x)=>s+x._cal,0))*100)}%).`);
+ if(d.medianGap!==null)findings.push(`Median interval between separately logged eating events: ${roundHr(d.medianGap)} hours. This is observational, not a required eating schedule.`);
+ if(d.snackHour!==null)findings.push(`Across ${d.snackDays} dates with explicitly timed snacks, the median snack time was ${new Date(2000,0,1,Math.floor(d.snackHour),Math.round((d.snackHour%1)*60)).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}.`);
+ }
+ const weekday=d.timed.filter(x=>{const w=x._time.getDay();return w>0&&w<6}),weekend=d.timed.filter(x=>{const w=x._time.getDay();return w===0||w===6});
+ const datesOf=x=>new Set(x.map(r=>r.day)).size;
+ if(d.confidence!=='insufficient'&&datesOf(weekday)>=3&&datesOf(weekend)>=2){const metric=x=>x.reduce((s,r)=>s+r._cal,0)/datesOf(x);findings.push(`Recorded calories per timed day: weekdays ${fmt(metric(weekday),'kcal')} vs weekends ${fmt(metric(weekend),'kcal')}. These may undercount days with missing timestamps.`)}
+ const pattern=make('div','callout',null,body);for(const line of findings)make('p',null,line,pattern);
+ make('h3',null,'Coach · next snack opportunity',body);const prompt=make('div','callout',null,body);make('b',null,sg.title,prompt);make('p',null,sg.message,prompt);make('p','muted',sg.detail,prompt);
+ const actions=make('div','tabs',null,prompt);btn('Saved meals',actions,()=>{close();const lib=window.NONZERO_SAVED_LIBRARY_TEST;if(lib?.opening)lib.opening();else $('nzUxSaved')?.click()});btn('Log food',actions,()=>{close();($('nzUxLog')||$('nzTodayAddFood')||$('nzQLog')||$('nzOpenNutrition'))?.click()});btn('Quiet today',actions,()=>{try{localStorage.setItem(PREF,JSON.stringify({...read(PREF,{}),snoozeDay:day()}));renderHome();render()}catch{} });
+ timeEditor(body);
+ make('p','muted','Suggestions are optional, generated while the app is open, and based on records available on this device after Nutrition Cloud sync. No iOS push notification, server-side polling, glucose prediction, or automated goal change is implied.',body);
+}
+
+let editDay=day();
+function timeEditor(parent){
+ const details=make('details',null,null,parent);const summary=make('summary',null,'Correct eating times',details);summary.className='rhSummary';
+ make('p','muted','If a food was logged after you ate it, correct the actual eating time here. Only your chosen entry changes; Nutrition Cloud will synchronize it separately when connected.',details);
+ const dateInput=make('input',null,null,details);dateInput.type='date';dateInput.value=editDay;dateInput.max=day();dateInput.min=day(new Date(Date.now()-89*86400000));dateInput.setAttribute('aria-label','Choose food log date');
+ const lines=make('div',null,null,details);const status=make('p','muted',null,details);status.setAttribute('role','status');
+ function draw(){lines.replaceChildren();const raw=read(FOOD,{});const entries=(Array.isArray(raw.entries)?raw.entries:[]).filter(x=>x&&x.day===editDay&&!x.deleted&&!x.deletedAt);
+  if(!entries.length){make('p','muted','No active foods on this date.',lines);return}
+  for(const r of entries.slice(0,80)){
+   const row=make('div','detailRow',null,lines);const left=make('div',null,null,row);make('strong',null,String(r.name||'Food'),left);
+   const t=sourceTime(r);make('p','muted',t?`${t.d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})} · ${t.quality==='eaten'?'eating time':'logged time (estimate)'}`:'Eating time missing',left);
+   const b=btn('Edit time',row,()=>{
+    const control=make('div','rhTimeEdit',null,left);const time=make('input',null,null,control);time.type='time';time.setAttribute('aria-label','Actual eating time for '+String(r.name||'Food'));
+    if(t&&day(t.d)===editDay)time.value=String(t.d.getHours()).padStart(2,'0')+':'+String(t.d.getMinutes()).padStart(2,'0');
+    else time.value='12:00';
+    const receipt=make('p','muted',null,control);
+    btn('Save actual time',control,()=>{const ts=new Date(editDay+'T'+time.value+':00');const now=new Date();
+     if(!/^\d{2}:\d{2}$/.test(time.value)||!Number.isFinite(ts.getTime())||ts.getTime()>now.getTime()+60000||day(ts)!==editDay){receipt.textContent='Choose a valid eating time on this food’s recorded date, not in the future.';return}
+     const latest=read(FOOD,{});const all=Array.isArray(latest.entries)?latest.entries:[],idx=all.findIndex(x=>String(x.id)===String(r.id)&&x.day===editDay&&!x.deleted&&!x.deletedAt);
+     if(idx<0||r.id===undefined||r.id===null){receipt.textContent='Food record changed; refresh before editing.';return}
+     const prior=all[idx];all[idx]={...prior,eatenAt:ts.toISOString()};
+     try{localStorage.setItem(FOOD,JSON.stringify(latest));window.dispatchEvent(new Event('nz-nutrition-local-saved'));window.nzNutritionReloadFromCloud?.();status.textContent='Eating time updated on this device. Cloud sync is separate.';draw();renderHome()}
+     catch(e){receipt.textContent='Save failed; no changes confirmed.'}
+    });btn('Cancel',control,()=>control.remove());b.disabled=true;
+   });
+  }
+ }
+ dateInput.addEventListener('change',()=>{editDay=dateInput.value;draw()});draw();
+}
+
+function enhanceExistingChart(){const v=$('nzUxOverlay');if(!v||v.hidden)return;const nav=v.querySelector('.nzUxTabs');if(nav&&!nav.querySelector('#nzRhythmLink')){const b=btn('Eating times',nav,()=>open());b.id='nzRhythmLink'}
+ const chart=v.querySelector('.nzUxChart');if(chart){const bars=[...chart.querySelectorAll('.nzUxBar')];const stride=bars.length<=7?1:bars.length<=30?5:15;bars.forEach((b,i)=>{if(i%stride===0&&!b.querySelector('.rhTick')){const span=make('span','rhTick',null,b);const match=(b.getAttribute('aria-label')||'').match(/\d{4}-\d{2}-\d{2}/);span.textContent=match?match[0].slice(5):String(i+1)}})}
+}
+function renderHome(){let card=$('nzRhythmHome');const grid=$('nzKpiDashboard'),landing=$('tabToday')?.querySelector('.todayLanding');if(!grid||!landing)return;
+ if(!card){card=make('section',null,null,landing);card.id='nzRhythmHome';card.setAttribute('aria-label','Eating rhythm coach');const row=make('div','rhrow',null,card);make('b',null,'Coach · Eating rhythms',row);btn('Explore timing',row,open);make('p',null,'',card).id='nzRhythmMessage';make('small',null,'',card).id='nzRhythmEvidence';const anchor=$('nzUxCoachLink')||$('nzTodayInsights');if(anchor)anchor.before(card);else grid.after(card)}
+ const d=data(new Date(),30),s=suggestion(d);$('nzRhythmMessage').textContent=s.title+' — '+s.message;$('nzRhythmEvidence').textContent=`${d.timedDays} days with timed food · ${Math.round(d.coverage*100)}% timestamp coverage · ${d.confidence} confidence · View detailed timing`;}
+let refreshing=false;function init(){try{style();renderHome();enhanceExistingChart()}catch(err){console.warn('NONZERO eating rhythm insights unavailable; existing food logging preserved',err)}}
+function onUpdate(){if(refreshing)return;refreshing=true;setTimeout(()=>{refreshing=false;init();if($('nzRhythmOverlay')&&!$('nzRhythmOverlay').hidden)render()},80)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();for(const ms of [300,1200,2800])setTimeout(init,ms);
+for(const e of ['nz-nutrition-local-saved','nz-nutrition-cloud-rendered','nz-nutrition-cloud-updated'])document.addEventListener(e,onUpdate);
+window.addEventListener('focus',onUpdate);window.addEventListener('storage',e=>{if(e.key===FOOD||e.key===MEALS||e.key===PREF)onUpdate()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)onUpdate()});
+// Foreground-only refresh; no claims of background monitoring.
+setInterval(()=>{if(!document.hidden)onUpdate()},5*60*1000);
+window.NONZERO_RHYTHM_TEST={records,data,suggestion,mealOptions,open,close,render,init,sourceTime,hourSlot};
+})();
+
+</script>
+<script id="nzQA3Navigation">
+/* NONZERO QA3 · Mobile navigation / Safari viewport / contextual controls.
+   Additive only: existing routes, storage, cloud sync and PM5 handlers stay canonical. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id), q=s=>document.querySelector(s);
+const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||!!navigator.standalone;
+const css=`
+:root{--nz3-nav-h:62px;--nz3-chrome-gap:38px}
+@media(display-mode:standalone){:root{--nz3-chrome-gap:0px}}
+html,body{overflow-x:clip!important}
+body{padding-bottom:calc(var(--nz3-nav-h) + env(safe-area-inset-bottom,0px) + var(--nz3-chrome-gap) + 22px)!important}
+.tabbar{position:fixed!important;bottom:calc(8px + env(safe-area-inset-bottom,0px) + var(--nz3-chrome-gap))!important;left:max(9px,env(safe-area-inset-left,0px))!important;right:max(9px,env(safe-area-inset-right,0px))!important;width:auto!important;max-width:720px!important;margin-inline:auto!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding:6px!important;min-height:var(--nz3-nav-h)!important;z-index:1000200!important;box-sizing:border-box!important}
+.tabbar button{min-width:0!important;width:100%!important;min-height:48px!important;padding:8px 2px!important;white-space:normal!important;font-size:clamp(10px,2.6vw,13px)!important;line-height:1.22!important;word-break:normal!important;letter-spacing:-.015em!important}
+.tabbar #nzMoreNav,.tabbar [data-tab="History"],.tabbar [data-tab="Coach"],.tabbar [data-tab="Settings"]{display:none!important}
+.tabbar #nz3InsightsNav,.tabbar #nz3CoachNav{display:block!important}
+html body #nzNutritionModal > .nzPanel{padding-bottom:160px!important;scroll-padding-bottom:130px!important}
+#nzNutritionModal{scroll-padding-bottom:130px!important}
+#nzKpiAutoTile{min-width:0;overflow:hidden}
+#nzKpiAutoTile #nzKpiAutopilotValue{display:block!important;overflow-wrap:anywhere;line-height:1.24!important;max-width:100%}
+#nzKpiAutoTile #nzKpiAutopilotSub{display:block!important;overflow-wrap:anywhere;line-height:1.4!important;margin-top:5px!important;max-width:100%}
+#nzKpiAutoTile #nzKpiAutopilotFoot{display:block!important;line-height:1.4!important;margin-top:6px!important}
+body.nz3Keyboard .tabbar{display:none!important}
+body.nz3Keyboard{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))!important}
+#tabToday .todayHeader{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-height:47px!important;margin:0 0 9px!important;padding:4px 0!important}
+#tabToday .todayHeader .flowBrand{font-size:clamp(15px,4.3vw,19px)!important;line-height:1.15!important;letter-spacing:.03em!important}
+#tabToday .todayHeader #homeDate{margin:3px 0 0!important;font-size:clamp(11px,2.8vw,13px)!important;line-height:1.25!important;letter-spacing:0!important}
+#tabToday .todayHeader #homeConnections,#tabToday .todayHeader .nzWallInlineButton{display:none!important}
+#nz3HeadTools{display:flex;align-items:center;gap:7px;flex-shrink:0}
+#nz3Cloud{display:inline-flex;align-items:center;justify-content:center;min-width:23px;font-size:15px;line-height:1;color:#96cfbc}
+#nz3MenuBtn,#nz3FloatingMenu{font-size:20px;line-height:1;min-width:45px;min-height:44px;padding:5px 10px;border-radius:12px;border:1px solid #436573;background:#193741;color:#e7f8f3}
+#nz3FloatingMenu[hidden]{display:none!important}
+#nz3FloatingMenu{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:calc(13px + env(safe-area-inset-right,0px));z-index:4000000;background:#173945;color:#f0f9f5;border:1px solid #4b6973;border-radius:12px;min-width:45px;min-height:44px;padding:8px 10px}
+#nz3Menu[hidden]{display:none!important}
+#nz3Menu{position:fixed;inset:0;z-index:4000001;background:#06121ad9;display:flex;justify-content:flex-end;align-items:flex-start;padding:calc(8px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) calc(15px + env(safe-area-inset-bottom));box-sizing:border-box}
+#nz3Menu .nz3Panel{width:min(355px,100%);max-height:calc(100dvh - 20px);overflow:auto;border:1px solid #56747b;background:#102a36;border-radius:20px;box-shadow:0 16px 55px #0009;padding:17px;color:#ebfaf8}
+#nz3Menu .nz3Top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+#nz3Menu h2{margin:0;font-size:19px}
+#nz3Menu button{display:block;width:100%;padding:12px;text-align:left;margin:7px 0;min-height:48px;font-size:14px;font-weight:680;color:#edf9f6;background:#1b3c48;border:1px solid #496b74;border-radius:12px}
+#nz3Menu #nz3MenuClose{width:auto;margin:0;padding:8px 12px;min-width:46px}
+#nz3Menu small{display:block;color:#b8d2d3;line-height:1.45;margin:12px 0}
+#nz3ContextWall[hidden]{display:none!important}
+#nz3ContextWall{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid #597f76;border-radius:12px;background:#112e31;padding:10px;margin:8px 0}
+#nz3ContextWall button{border-radius:9px;background:#265a51;border:1px solid #629688;color:#fff;min-height:43px;padding:9px 12px}
+#nzUxOverlay,#nzRhythmOverlay,#nzPremiumSheet,#nzNutritionModal,#nz3Menu{max-width:100vw;max-height:100dvh;box-sizing:border-box}
+#nzNutritionModal .nzPanel,#nzPremiumSheet .nzPremiumInner,#nzUxOverlay .nzUxPage,#nzRhythmOverlay .shell{max-width:100%;min-width:0;box-sizing:border-box}
+#nzUxOverlay .nzUxChart,#nzRhythmOverlay .rhChart{overflow-x:auto;overscroll-behavior-x:contain;max-width:100%;min-width:0}
+#nzUxOverlay .nzUxStats,#nzRhythmOverlay .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#nzUxOverlay .nzUxStat,#nzRhythmOverlay .stat{min-width:0;overflow-wrap:anywhere}
+#nzUxOverlay .nzUxStat b{font-size:clamp(17px,4.5vw,27px)!important;line-height:1.2!important}
+#nzUxOverlay .nzUxTabs{display:flex;overflow-x:auto;gap:7px;max-width:100%;scrollbar-width:thin;white-space:nowrap}
+#nzUxOverlay .nzUxTabs button{flex-shrink:0}
+#nzUxOverlay .nzUxBar{min-width:14px!important}
+#nzUxOverlay :is(.nzUxRow,.nzUxStat){overflow-wrap:anywhere}
+#nzNutritionModal button,#nzPremiumSheet button,#nz3Menu button{touch-action:manipulation}
+@media(orientation:landscape) and (max-height:580px){
+ :root{--nz3-nav-h:54px;--nz3-chrome-gap:30px}
+ .tabbar{min-height:54px!important;padding:4px!important;max-width:660px!important}
+ .tabbar button{min-height:42px!important;font-size:11px!important;padding:5px 2px!important}
+ #tabToday .todayHeader{min-height:38px!important}
+ #nzUxOverlay .nzUxPage,#nzRhythmOverlay .shell{max-width:1100px!important;padding:11px 15px!important}
+ #nzUxOverlay .nzUxStats,#nzRhythmOverlay .stats{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+ #nz3Menu .nz3Panel{max-height:calc(100dvh - 12px)}
+}
+@media(max-width:359px){.tabbar button{font-size:10px!important;letter-spacing:-.03em!important}.tabbar{left:4px!important;right:4px!important}#nz3Menu .nz3Panel{padding:11px}}
+@media(prefers-reduced-motion:reduce){#nz3Menu *{transition:none!important;animation:none!important}}
+`;
+let active='Today',lastFocus=null, menuOpen=false;
+function btn(label,fn,where,id){const b=document.createElement('button');b.type='button';b.textContent=label;if(id)b.id=id;b.addEventListener('click',fn);where.append(b);return b}
+function navActive(kind){active=kind;for(const b of document.querySelectorAll('.tabbar button')){const is=(kind==='Today'&&b.dataset.tab==='Today')||(kind==='Train'&&b.dataset.tab==='Plan')||(kind==='Food'&&b.id==='nzNutritionNav')||(kind==='Insights'&&b.id==='nz3InsightsNav')||(kind==='Coach'&&b.id==='nz3CoachNav');b.classList.toggle('active',is);if(['nz3InsightsNav','nz3CoachNav','nzNutritionNav'].includes(b.id)||['Today','Plan'].includes(b.dataset.tab))b.setAttribute('aria-current',is?'page':'false')}}
+function analytics(kind){const t=window.NONZERO_UX_ANALYTICS_TEST;if(t?.open){t.open(kind);return true}return false}
+function food(){const b=$('nzNutritionNav');if(b){b.click();navActive('Food')} }
+function coach(){q('[data-tab="Today"]')?.click();if(!analytics('coach'))q('[data-tab="Coach"]')?.click();navActive('Coach')}
+function insights(){q('[data-tab="Today"]')?.click();if(!analytics('cal'))q('[data-tab="History"]')?.click();navActive('Insights')}
+function closeMenu(){const m=$('nz3Menu');if(m)m.hidden=true;menuOpen=false;lastFocus?.focus?.({preventScroll:true});lastFocus=null}
+function openMenu(){const m=$('nz3Menu');if(!m)return;lastFocus=document.activeElement;m.hidden=false;menuOpen=true;$('nz3MenuClose')?.focus({preventScroll:true})}
+function menuRoute(fn){closeMenu();fn()}
+function buildMenu(){if($('nz3Menu'))return;const m=document.createElement('div');m.id='nz3Menu';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-label','NONZERO tools and settings');m.innerHTML='<div class="nz3Panel"><div class="nz3Top"><h2>Tools & settings</h2><button id="nz3MenuClose" type="button">Close ✕</button></div><div id="nz3MenuItems"></div><small>Connections and Wall controls stay here when not needed. Your records, cloud keys, and workout settings are unchanged.</small></div>';document.body.append(m);
+ $('nz3MenuClose').addEventListener('click',closeMenu);m.addEventListener('click',e=>{if(e.target===m)closeMenu()});
+ const v=$('nz3MenuItems');
+ btn('Connections & cloud',()=>menuRoute(()=>{$('homeConnections')?.click()}),v,'nz3Connections');
+ btn('Wall remote',()=>menuRoute(()=>{const b=q('#tabToday .todayHeader .nzWallInlineButton')||q('.nzWallInlineButton')||$('wallModeBtn');b?.click()}),v,'nz3WallRemote');
+ btn('Progress & workout history',()=>menuRoute(()=>q('[data-tab="History"]')?.click()),v,'nz3History');
+ btn('AutoPilot family schedule',()=>menuRoute(()=>{const b=$('suiteViewFamily');if(b)b.click();else window.open('https://luka731chris.github.io/AutoPilot/','_blank','noopener')}),v,'nz3Family');
+ btn('Advanced settings',()=>menuRoute(()=>q('[data-tab="Settings"]')?.click()),v,'nz3Settings');
+ btn('More diagnostics',()=>menuRoute(()=>$('nzMoreNav')?.click()),v,'nz3More');
+}
+function updateGlobalMenu(){const button=$('nz3FloatingMenu');if(!button)return;const onToday=!$('tabToday')?.classList.contains('hidden')&&(!$('nzNutritionModal')||$('nzNutritionModal').hidden);button.hidden=onToday;}
+function shell(){const hd=q('#tabToday .todayHeader');if(!hd||$('nz3HeadTools'))return;
+ const st=document.createElement('style');st.id='nz3Style';st.textContent=css;document.head.append(st);
+ const tools=document.createElement('div');tools.id='nz3HeadTools';const status=document.createElement('span');status.id='nz3Cloud';status.setAttribute('aria-label','Cloud status available in Connections');status.title='Cloud status: open Connections for live verification';status.textContent='◌';tools.append(status);btn('⋯',openMenu,tools,'nz3MenuBtn').setAttribute('aria-label','Tools and settings');hd.append(tools);
+ buildMenu();
+ if(!$('nz3FloatingMenu')){const global=btn('⋯',openMenu,document.body,'nz3FloatingMenu');global.setAttribute('aria-label','Tools and settings');global.hidden=true;}
+ const todayTab=$('tabToday');if(todayTab&&!todayTab.dataset.nz3MenuObserve){todayTab.dataset.nz3MenuObserve='1';new MutationObserver(updateGlobalMenu).observe(todayTab,{attributes:true,attributeFilter:['class']})}
+ const modalTab=$('nzNutritionModal');if(modalTab&&!modalTab.dataset.nz3MenuObserve){modalTab.dataset.nz3MenuObserve='1';new MutationObserver(updateGlobalMenu).observe(modalTab,{attributes:true,attributeFilter:['hidden']})}
+ updateGlobalMenu();
+ const version=hd.querySelector('.flowBrand small');if(version&&!version.dataset.nz3Qa){version.dataset.nz3Qa='1';version.textContent=version.textContent.trim()+' · QA3'}
+ const nav=q('.tabbar');if(nav){const history=nav.querySelector('[data-tab="History"]');const more=$('nzMoreNav');if(history)history.setAttribute('aria-hidden','true');if(more)more.setAttribute('aria-hidden','true');
+ if(!$('nz3InsightsNav'))btn('Insights',insights,nav,'nz3InsightsNav');
+ if(!$('nz3CoachNav'))btn('Coach',coach,nav,'nz3CoachNav');
+ const all=nav.querySelectorAll('button');for(const b of all){if(['Today','Plan'].includes(b.dataset.tab))b.addEventListener('click',()=>navActive(b.dataset.tab==='Today'?'Today':'Train'));if(b.id==='nzNutritionNav')b.addEventListener('click',()=>navActive('Food'))}
+ navActive('Today');}
+ const workout=q('#tabToday .flowPlan');if(workout&&!$('nz3ContextWall')){const e=document.createElement('div');e.id='nz3ContextWall';e.hidden=true;e.innerHTML='<span>Workout controls</span><button type="button" id="nz3WorkoutWall">Wall remote</button>';workout.append(e);$('nz3WorkoutWall').onclick=()=>{(q('#tabToday .todayHeader .nzWallInlineButton')||q('.nzWallInlineButton')||$('wallModeBtn'))?.click()}}
+ $('nzNutritionModal')?.querySelector('.nzPanel')?.style.setProperty('padding-bottom','160px','important');
+ updateContext();updateViewport();
+}
+function updateContext(){const box=$('nz3ContextWall');if(!box)return;const mode=(document.body.dataset.todayScene||'').toLowerCase();const workoutMode=/(workout|performance|ride|active|session)/.test(mode);const text=($('homeStart')?.textContent||'').toLowerCase();const session=!!q('#rideRemote:not([hidden])');box.hidden=!(workoutMode||session||(/end workout|pause workout|resume workout/.test(text)))}
+function updateViewport(){document.documentElement.style.setProperty('--nz3-chrome-gap',isStandalone()?'0px':(matchMedia('(orientation: landscape)').matches?'30px':'38px'));
+ const activeElement=document.activeElement;const editing=activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(activeElement.tagName);const vv=window.visualViewport;const cramped=!!(vv&&vv.height<window.innerHeight*0.73);document.body.classList.toggle('nz3Keyboard',!!(editing&&cramped));
+}
+function init(){shell();updateContext();updateViewport();updateGlobalMenu()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();for(const ms of [400,1500,3000])setTimeout(init,ms);
+window.addEventListener('resize',updateViewport);window.addEventListener('orientationchange',()=>setTimeout(updateViewport,200));window.visualViewport?.addEventListener('resize',updateViewport);document.addEventListener('focusin',()=>setTimeout(updateViewport,50));document.addEventListener('focusout',()=>setTimeout(updateViewport,180));document.addEventListener('visibilitychange',()=>{if(!document.hidden)init()});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen){e.preventDefault();closeMenu()}if(e.key==='Tab'&&menuOpen){const b=[...$('nz3Menu').querySelectorAll('button')].filter(x=>x.offsetParent!==null);const first=b[0],last=b.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+function bindAnalyticsClose(){const m=$('nzUxOverlay');if(!m||m.dataset.nz3Observe)return;m.dataset.nz3Observe='1';new MutationObserver(()=>{if(m.hidden&&['Coach','Insights'].includes(active))navActive('Today')}).observe(m,{attributes:true,attributeFilter:['hidden']})}
+for(const ms of [600,1700,3200])setTimeout(bindAnalyticsClose,ms);
+const watcher=new MutationObserver(()=>{if(document.hidden)return;updateContext()});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>watcher.observe(document.body,{attributes:true,attributeFilter:['data-today-scene'],subtree:false}));else watcher.observe(document.body,{attributes:true,attributeFilter:['data-today-scene'],subtree:false});
+window.NONZERO_QA3_TEST={init,openMenu,closeMenu,navActive,insights,coach,food,updateContext,updateViewport};
+})();
+
+</script>
 </body>
 </html>
