@@ -16797,6 +16797,53 @@ if(!data.favorites.some(x=>x.name==='Protein oats with blueberries')){data.favor
 render();
 })();
 </script>
+<style id="nzDailyReviewStyle">
+#nzDailyReview{margin:12px 0 18px;font:inherit}#nzDailyReview button{min-height:40px}#nzDailyReview .nzdr-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}#nzDailyReview .nzdr-card{padding:12px;border:1px solid #526579;border-radius:12px;margin:8px 0;background:rgba(85,112,140,.09)}#nzDailyReview .nzdr-mini{font-size:12px;opacity:.8}#nzDailyReview .nzdr-macros{font-size:13px;margin:5px 0}#nzDailyReview .nzdr-btn{background:#254e64;color:#fff;border:1px solid #63869a;border-radius:9px;padding:8px 12px}#nzDailyReview .nzdr-primary{background:#137d6c}#nzDailyReview .nzdr-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;text-align:center;margin:10px 0}#nzDailyReview .nzdr-summary>div{background:rgba(93,118,143,.17);padding:8px 2px;border-radius:9px;font-size:12px}#nzDailyReview .nzdr-summary b{display:block;font-size:17px}#nzDailyReview input,#nzDailyReview select{max-width:100%;min-width:0}#nzDailyReview .nzdr-edit{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}#nzDailyReview .nzdr-edit label{font-size:12px}#nzDailyReview .nzdr-edit input,#nzDailyReview .nzdr-edit select{width:100%;margin-top:3px}#nzDailyReview .nzdr-edit .wide{grid-column:1/-1}#nzDailyReview .nzdr-status{font-size:12px;opacity:.8}#nzDailyReview .nzdr-closed{color:#8ce1b9}#nzNutritionModal .nzPanel{max-width:680px}#nzDailyReview .nzdr-list{max-height:none}
+</style>
+<script id="nzDailyReviewScript">
+(()=>{'use strict';
+const KEY='nonzero.nutrition.v1',CLOSE='nonzero.nutrition.dayClosures.v1', $=id=>document.getElementById(id);
+const dayLocal=(d=new Date())=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+const parseDay=s=>new Date(s+'T12:00:00');const shift=(s,n)=>{let d=parseDay(s);d.setDate(d.getDate()+n);return dayLocal(d)};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=x=>Number(x)||0,fmt=x=>Math.round(num(x)*10)/10;
+function read(){try{let v=JSON.parse(localStorage.getItem(KEY)||'{}');return v&&typeof v==='object'?v:{}}catch{return {}}}
+function closures(){try{return JSON.parse(localStorage.getItem(CLOSE)||'{}')||{}}catch{return {}}}
+function writeClosures(v){localStorage.setItem(CLOSE,JSON.stringify(v));window.dispatchEvent(new Event('nz-nutrition-day-changed'))}
+function totals(rows){return rows.reduce((a,x)=>{for(let k of ['cal','protein','carbs','fat','fiber'])a[k]+=num(x[k]);return a},{cal:0,protein:0,carbs:0,fat:0,fiber:0})}
+function closePrevious(){let v=closures(),d=dayLocal(),changed=false;let days=new Set((read().entries||[]).map(x=>x.day).filter(x=>/^\d{4}-\d\d-\d\d$/.test(x)&&x<d));for(let x of days)if(!v[x]){v[x]={closedAt:x+'T23:59:59',automatic:true};changed=true}if(changed)writeClosures(v)}
+function persist(mutator){let v=read();if(!Array.isArray(v.entries))v.entries=[];if(!mutator(v))return false;try{localStorage.setItem(KEY,JSON.stringify(v));window.nzNutritionReloadFromCloud?.();window.dispatchEvent(new Event('nz-nutrition-local-saved'));draw();return true}catch(e){alert('Unable to save changes. Please export a backup.');return false}}
+let editing=null;
+function selected(){return $('nzDay')?.value||dayLocal()}
+function trend(day,rows,t){let v=read(),prev=(v.entries||[]).filter(x=>x.day===shift(day,-1)),p=totals(prev),target=v.targets||{},lines=[];
+if(prev.length)lines.push('Versus yesterday: '+(t.cal-p.cal>=0?'+':'')+fmt(t.cal-p.cal)+' kcal, '+(t.protein-p.protein>=0?'+':'')+fmt(t.protein-p.protein)+'g protein.');
+if(target.protein)lines.push('Protein goal: '+fmt(t.protein/num(target.protein)*100)+'% reached.');
+if(target.calories)lines.push('Calories: '+fmt(t.cal-num(target.calories))+' kcal relative to target.');
+if(!rows.length)lines.push('No foods recorded for this date.');
+return lines.join(' ')}
+function draw(){const root=$('nzDailyReview');if(!root)return;closePrevious();let day=selected(),v=read(),all=v.entries||[],rows=all.filter(x=>x.day===day),t=totals(rows),closed=closures()[day],today=dayLocal();
+root.innerHTML='<div class="nzdr-row"><button class="nzdr-btn" data-act="prev" aria-label="Previous day">← Previous</button><strong>'+esc(day===today?'Today':day)+'</strong><button class="nzdr-btn" data-act="next" '+(day>=today?'disabled':'')+'>Next →</button></div>'+
+'<div class="nzdr-summary">'+[['Calories',t.cal],['Protein',t.protein+'g'],['Carbs',t.carbs+'g'],['Fat',t.fat+'g']].map(([k,x])=>'<div><b>'+esc(x)+'</b>'+k+'</div>').join('')+'</div>'+
+'<div class="nzdr-row"><strong>'+rows.length+' food'+(rows.length===1?'':'s')+' logged</strong><span class="nzdr-status '+(closed?'nzdr-closed':'')+'">'+(closed?(closed.automatic?'Auto-closed at midnight':'Day finished'):'Day open')+'</span></div>'+
+'<div class="nzdr-list">'+(rows.length?rows.slice().reverse().map(x=>'<div class="nzdr-card"><div class="nzdr-row"><strong>'+esc(x.name)+'</strong><button class="nzdr-btn" data-act="edit" data-id="'+esc(x.id)+'">Edit</button></div><div class="nzdr-mini">'+esc(x.meal||'Food')+' · '+esc(x.eatenAt?new Date(x.eatenAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):(x.loggedAt?new Date(x.loggedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Time not recorded'))+'</div><div class="nzdr-macros">'+fmt(x.cal)+' kcal · P '+fmt(x.protein)+'g · C '+fmt(x.carbs)+'g · F '+fmt(x.fat)+'g</div>'+(editing===String(x.id)?editor(x):'')+'</div>').join(''):'<p class="nzdr-mini">Nothing logged yet. Add a food below.</p>')+'</div>'+
+'<div class="nzdr-card"><div class="nzdr-row"><strong>Daily recap</strong><button class="nzdr-btn '+(!closed?'nzdr-primary':'')+'" data-act="finish">'+(closed?'Reopen day':'Finish day')+'</button></div><p class="nzdr-mini">'+esc(trend(day,rows,t))+'</p><p class="nzdr-mini">'+(closed?'Recap saved for this date. You can still correct entries.':'Finish to mark the day complete. Past days close automatically when the app is next opened after midnight.')+'</p></div>';
+}
+function editor(x){let time=x.eatenAt||x.loggedAt||'',hh='';if(time&&!isNaN(Date.parse(time))){let d=new Date(time);hh=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+return '<form class="nzdr-edit" data-edit-form="'+esc(x.id)+'"><label class="wide">Food name<input name="name" required value="'+esc(x.name)+'"></label><label>Meal<select name="meal">'+['Breakfast','Lunch','Dinner','Snack'].map(y=>'<option '+(x.meal===y?'selected':'')+'>'+y+'</option>').join('')+'</select></label><label>Time eaten<input name="time" type="time" value="'+esc(hh)+'"></label>'+[['cal','Calories'],['protein','Protein (g)'],['carbs','Carbs (g)'],['fat','Fat (g)'],['fiber','Fiber (g)']].map(([k,l])=>'<label>'+l+'<input type="number" name="'+k+'" min="0" step="any" value="'+esc(x[k]??'')+'"></label>').join('')+'<div class="wide nzdr-row"><button type="submit" class="nzdr-btn nzdr-primary">Save changes</button><button type="button" class="nzdr-btn" data-act="cancel">Cancel</button><button type="button" class="nzdr-btn" data-act="delete" data-id="'+esc(x.id)+'">Delete</button></div></form>'}
+function setDay(d){$('nzDay').value=d;editing=null;$('nzDay').dispatchEvent(new Event('change',{bubbles:true}));draw()}
+const root=document.createElement('section');root.id='nzDailyReview';root.setAttribute('aria-label','Daily food review');
+const modal=$('nzNutritionModal'),panel=modal?.querySelector('.nzPanel');if(!panel||!$('nzDay'))return;
+$('nzDay').parentElement.insertAdjacentElement('afterend',root);
+// Move the long advanced-entry form into a collapsed disclosure; keep existing controls and event handlers intact.
+const first=panel.querySelector('h3');if(first){const advanced=document.createElement('details');advanced.id='nzDailyAdvanced';const summary=document.createElement('summary');summary.textContent='Advanced food entry, targets and backup';summary.style.cssText='cursor:pointer;padding:12px 4px;font-weight:600';advanced.appendChild(summary);let node=first;while(node){let next=node.nextSibling;advanced.appendChild(node);node=next}panel.appendChild(advanced)}
+root.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act,day=selected();if(act==='prev')setDay(shift(day,-1));if(act==='next'&&day<dayLocal())setDay(shift(day,1));if(act==='edit'){editing=b.dataset.id;draw()}if(act==='cancel'){editing=null;draw()}if(act==='delete'){if(!confirm('Delete this logged food?'))return;persist(v=>{const before=v.entries.length;v.entries=v.entries.filter(x=>String(x.id)!==b.dataset.id);return before!==v.entries.length});editing=null;draw()}if(act==='finish'){let c=closures();if(c[day])delete c[day];else c[day]={closedAt:new Date().toISOString(),automatic:false};writeClosures(c);draw()}});
+root.addEventListener('submit',e=>{let f=e.target.closest('[data-edit-form]');if(!f)return;e.preventDefault();let id=f.dataset.editForm,fd=new FormData(f),day=selected(),name=String(fd.get('name')||'').trim();if(!name)return;let values={};for(let k of ['cal','protein','carbs','fat','fiber']){let raw=String(fd.get(k)||'').trim();if(raw!==''&&(!Number.isFinite(Number(raw))||Number(raw)<0)){alert('Enter nonnegative nutrition values.');return}values[k]=raw===''?null:Number(raw)}let time=String(fd.get('time')||'');let stamp=time?new Date(day+'T'+time+':00').toISOString():null;
+if(persist(v=>{let x=v.entries.find(x=>String(x.id)===id);if(!x)return false;Object.assign(x,{name,meal:String(fd.get('meal')),eatenAt:stamp,...values,updatedAt:new Date().toISOString()});return true})){editing=null;draw()}});
+$('nzDay').addEventListener('change',()=>{editing=null;draw()});
+window.addEventListener('nz-nutrition-cloud-rendered',draw);window.addEventListener('nz-nutrition-local-saved',draw);document.addEventListener('visibilitychange',()=>{if(!document.hidden)draw()});
+setInterval(()=>{if(!document.hidden)draw()},60000);draw();
+})();
+</script>
 
 <style id="nzNutritionPlusStyles">
 #nzNutritionPlus{border:1px solid #35566a;background:#0d2434;border-radius:14px;padding:12px;margin:10px 0;color:#f1f6fb}#nzNutritionPlus input{width:100%;padding:12px;background:#152f42;color:white;border:1px solid #58718a;border-radius:9px;font-size:16px;box-sizing:border-box}#nzNutritionPlus button{border:1px solid #49677b;background:#24475d;color:white;padding:10px;border-radius:9px;font-weight:650;cursor:pointer}#nzNutritionPlus .nzPlusRow{display:flex;gap:7px;align-items:center;margin:8px 0}#nzNutritionPlus .nzPlusRow>*{min-width:0}#nzNutritionPlus .nzPlusResults{max-height:245px;overflow:auto}#nzNutritionPlus .nzPlusResults button{display:block;text-align:left;width:100%;margin:5px 0}#nzNutritionPlus .nzPlusMuted{font-size:12px;color:#b9ccda}#nzNutritionPlus .nzPlusBar{height:8px;border-radius:12px;background:#294358;overflow:hidden;margin:5px 0 10px}#nzNutritionPlus .nzPlusFill{height:100%;background:#51a992;max-width:100%}#nzNutritionPlus .nzPlusGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}#nzNutritionPlus .nzPlusTile{padding:9px;background:#193448;border-radius:10px}#nzNutritionPlus .nzPlusTile b{font-size:19px}#nzNutritionPlus .nzPlusQuick{display:flex;overflow-x:auto;gap:7px;padding-bottom:5px}#nzNutritionPlus .nzPlusQuick button{white-space:nowrap;flex-shrink:0}#nzNutritionPlus .nzPlusChart{display:flex;gap:4px;align-items:end;height:75px;border-bottom:1px solid #4a6072}#nzNutritionPlus .nzPlusChart>div{flex:1;min-width:0;background:#4a9f8d;border-radius:4px 4px 0 0}#nzNutritionPlus .nzPlusWeek{display:flex;justify-content:space-between;font-size:10px;color:#b9ccda}#nzNutritionPlus details{margin-top:10px}#nzNutritionPlus summary{cursor:pointer;font-weight:600}#nzNutritionPlus .nzPlusAlert{color:#ffd69a;font-size:12px}
@@ -16833,7 +16880,7 @@ async function lookup(barcode=false){const query=(barcode?$('nzBarcode'):$('nzFo
  else{const url='https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(query)+'&search_simple=1&action=process&json=1&page_size=12&fields=code,product_name,product_name_en,brands,serving_size,serving_quantity,nutriments';const r=await fetch(url,{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Search unavailable');products=(await r.json()).products||[];}
  candidates=products.map(normalize).filter(Boolean).slice(0,10);status(candidates.length?candidates.length+' foods found. Tap the correct product.':'No complete nutrition record found. Use manual entry below.');for(const [i,p] of candidates.entries()){const b=document.createElement('button');b.type='button';b.innerHTML='<b>'+esc(p.name)+'</b><br><span class="nzPlusMuted">'+esc(p.serving)+' · '+Math.round(p.hasServing?p.perServing.cal:p.per100.cal)+' kcal</span>';b.onclick=()=>choose(i);$('nzFoodResults').append(b)}
  }catch(e){status('Could not retrieve food data ('+e.message+'). Use favorites or manual entry.')}}
-function addEntry(v){const d=read();d.entries=Array.isArray(d.entries)?d.entries:[];d.entries.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),day:$('nzDay').value||now(),meal:$('nzMeal').value||'Snack',...v});try{localStorage.setItem(KEY,JSON.stringify(d));window.dispatchEvent(new StorageEvent('storage',{key:KEY}));$('nzDay').dispatchEvent(new Event('change'));status('Logged '+v.name+' ✓');render()}catch(e){status('Could not save: '+e.message)}}
+function addEntry(v){const d=read();d.entries=Array.isArray(d.entries)?d.entries:[];d.entries.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),day:$('nzDay').value||now(),meal:$('nzMeal').value||'Snack',...v});try{localStorage.setItem(KEY,JSON.stringify(d));window.dispatchEvent(new StorageEvent('storage',{key:KEY}));$('nzDay').dispatchEvent(new Event('change'));status('Logged '+v.name+' locally · syncing to D1');render()}catch(e){status('Could not save: '+e.message)}}
 $('nzFoodFind').onclick=()=>lookup(false);$('nzBarcodeFind').onclick=()=>lookup(true);$('nzFoodSearch').onkeydown=e=>{if(e.key==='Enter')lookup(false)};$('nzBarcode').onkeydown=e=>{if(e.key==='Enter')lookup(true)};$('nzFoodQty').oninput=preview;$('nzFoodUnit').onchange=preview;
 $('nzFoodLog').onclick=()=>{if(!selected)return;const qty=n($('nzFoodQty').value),base=$('nzFoodUnit').value==='serving'?selected.perServing:selected.per100;if(!(qty>0&&qty<=100))return status('Enter a valid quantity.');if(['cal','protein','carbs','fat'].some(k=>base[k]==null))return status('This product is missing required nutrients.');const v={name:selected.name,source:selected.source,serving:($('nzFoodUnit').value==='serving'?selected.serving:'100g')+' × '+qty};for(const k of ['cal','protein','carbs','fat','fiber'])v[k]=base[k]==null?null:fmt(base[k]*qty);addEntry(v);$('nzFoodPick').hidden=true;};
 function sum(entries){const z={cal:0,protein:0,carbs:0,fat:0,fiber:0};for(const x of entries)for(const k of Object.keys(z))z[k]+=n(x[k]);return z}
@@ -16849,18 +16896,18 @@ $('nzDay').addEventListener('change',render);$('nzAddFood').addEventListener('cl
 <script id="nzCloudBridge">
 /* NONZERO Nutrition 7.18.2.0: cloud tombstones win by ID; preserve unrelated local-only records. */
 (()=>{'use strict';
-const KEY='nonzero.nutrition.v1',CFG='nonzero.nutrition.cloud.config',SHADOW='nonzero.nutrition.cloud.shadow',PENDING='nonzero.nutrition.cloud.pending',QUARANTINE='nonzero.nutrition.cloud.legacy_review.v71813';
-const $=id=>document.getElementById(id),managed=new Set(['food','favorite','target']);
+const KEY='nonzero.nutrition.v1',CLOSE='nonzero.nutrition.dayClosures.v1',CFG='nonzero.nutrition.cloud.config',SHADOW='nonzero.nutrition.cloud.shadow',PENDING='nonzero.nutrition.cloud.pending',QUARANTINE='nonzero.nutrition.cloud.legacy_review.v71813';
+const $=id=>document.getElementById(id),managed=new Set(['food','favorite','target','day_status']);
 const get=(k,fallback={})=>{try{return JSON.parse(localStorage.getItem(k)||'null')??fallback}catch{return fallback}};
-const cfg=()=>get(CFG),read=()=>get(KEY),shadow=()=>get(SHADOW),queue=()=>get(PENDING);
+const cfg=()=>get(CFG),read=()=>get(KEY),closures=()=>get(CLOSE),shadow=()=>get(SHADOW),queue=()=>get(PENDING);
 const put=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),key=r=>r.kind+':'+r.id;
-let busy=false,timer,lastSnapshot=JSON.stringify(read()),initialized=false,retryTimer=null,retryDelay=5000,syncAgain=false;
+let busy=false,timer,lastSnapshot=JSON.stringify([read(),closures()]),initialized=false,retryTimer=null,retryDelay=5000,syncAgain=false;
 const status=t=>{const el=$('nzCloudStatus');if(el)el.textContent=t};
 function recs(d){const a=[];for(const e of d.entries||[])if(e.id)a.push({kind:'food',id:String(e.id),payload:{...e,cal:e.cal??null,protein:e.protein??null,carbs:e.carbs??null,fat:e.fat??null}});
 for(const f of d.favorites||[])if(f.id)a.push({kind:'favorite',id:String(f.id).replace(/[^\w-]/g,'_'),payload:f});
 if(d.targets&&Object.keys(d.targets).length)a.push({kind:'target',id:'daily',payload:{cal:d.targets.calories??null,protein:d.targets.protein??null,carbs:d.targets.carbs??null,fat:d.targets.fat??null}});
-return a.filter(r=>/^[\w-]{1,100}$/.test(r.id))}
-function stage(){if(!initialized)return;const current=JSON.stringify(read());if(current===lastSnapshot)return;lastSnapshot=current;
+for(const [day,c] of Object.entries(closures()))if(/^\d{4}-\d{2}-\d{2}$/.test(day)&&c)a.push({kind:'day_status',id:day,payload:{day,closed:true,closedAt:c.closedAt||null,automatic:!!c.automatic}});return a.filter(r=>/^[\w-]{1,100}$/.test(r.id))}
+function stage(){if(!initialized)return;const current=JSON.stringify([read(),closures()]);if(current===lastSnapshot)return;lastSnapshot=current;
 const local=new Map(recs(read()).map(r=>[key(r),r])),known=shadow(),pending=queue();
 // D1 tombstones are authoritative for the same record ID. Never queue a resurrection.
 for(const [k,r] of local){if(known[k]?.deleted){delete pending[k];continue}if(JSON.stringify(r.payload)!==JSON.stringify(known[k]?.payload))pending[k]={...r,deleted:false,mutationId:crypto.randomUUID()}}
@@ -16884,25 +16931,29 @@ if(!saved.has(String(x.id))){legacy.push(x);saved.add(String(x.id))}}
 if(legacy.length)put(QUARANTINE,legacy);d.entries=keep;
 }
 for(const [k,r] of server){if(r.deleted){if(r.kind==='food')d.entries=d.entries.filter(x=>String(x.id)!==r.id);
+if(r.kind==='day_status'){const c=closures();delete c[r.id];put(CLOSE,c)}
 if(r.kind==='favorite')d.favorites=d.favorites.filter(x=>String(x.id).replace(/[^\w-]/g,'_')!==r.id);
 // A stale queued create/update must never resurrect a D1 tombstone.
 if(pending[k]&&!pending[k].deleted)delete pending[k];
 continue}
 if(pending[k])continue;
+if(r.kind==='day_status'){const c=closures();if(r.payload.closed)c[r.id]={closedAt:r.payload.closedAt,automatic:!!r.payload.automatic};else delete c[r.id];put(CLOSE,c)}
 if(r.kind==='food'){const i=d.entries.findIndex(x=>String(x.id)===r.id);if(i<0)d.entries.push(r.payload);
-else if(!known[k]||JSON.stringify(d.entries[i])===JSON.stringify(known[k]?.payload))d.entries[i]=r.payload}
+else d.entries[i]=r.payload}
 if(r.kind==='favorite'){const i=d.favorites.findIndex(x=>String(x.id).replace(/[^\w-]/g,'_')===r.id);if(i<0)d.favorites.push(r.payload);
 else if(!known[k]||JSON.stringify(d.favorites[i])===JSON.stringify(known[k]?.payload))d.favorites[i]=r.payload}
 if(r.kind==='target'&&r.id==='daily'){if(!d.targets||!Object.keys(d.targets).length)d.targets={calories:r.payload.cal??null,protein:r.payload.protein??null,carbs:r.payload.carbs??null,fat:r.payload.fat??null}}}
-put(PENDING,pending);put(KEY,d);lastSnapshot=JSON.stringify(d);window.nzNutritionReloadFromCloud?.();window.dispatchEvent(new Event('nz-nutrition-cloud-updated'))}
+put(PENDING,pending);put(KEY,d);lastSnapshot=JSON.stringify([d,closures()]);window.nzNutritionReloadFromCloud?.();window.dispatchEvent(new Event('nz-nutrition-cloud-updated'))}
 async function sync(){if(busy){syncAgain=true;return}if(!cfg().url||!cfg().token){status('Local only · connect to sync');return}busy=true;try{
 // Capture phone-first edits before fetching remote state; never archive an unsent edit.
 if(initialized)stage();
 const response=await api('/v1/records');if(response.truncated)throw Error('Cloud record limit reached');const remote=response.records,old=shadow(),pending=queue();
+// Retain local day completions made before initial cloud connection; remote wins if already present.
+if(!initialized){const ids=new Set(remote.filter(r=>r.kind==='day_status').map(r=>r.id));for(const [day,c] of Object.entries(closures()))if(c&&!ids.has(day)&&!pending['day_status:'+day])pending['day_status:'+day]={kind:'day_status',id:day,payload:{day,closed:true,closedAt:c.closedAt||null,automatic:!!c.automatic},deleted:false,mutationId:crypto.randomUUID()};put(PENDING,pending)}
 // Pull before staging. Existing pending edits are retained, never silently discarded.
 merge(remote,old,pending,!initialized);
 const known={...old};for(const r of remote)known[key(r)]={kind:r.kind,id:r.id,payload:r.payload,revision:r.revision,deleted:!!r.deleted};put(SHADOW,known);
-initialized=true;lastSnapshot=JSON.stringify(read());const changes=queue(),remoteMap=new Map(remote.map(r=>[key(r),r]));
+initialized=true;lastSnapshot=JSON.stringify([read(),closures()]);const changes=queue(),remoteMap=new Map(remote.map(r=>[key(r),r]));
 for(const [k,change] of Object.entries(changes)){
 const current=remoteMap.get(k),prior=old[k];
 if(current?.deleted&&!change.deleted){delete changes[k];put(PENDING,changes);status('Cloud deletion applied: '+k);continue}
@@ -16932,7 +16983,7 @@ $('nzCloudCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('nz
 $('nzCloudPaste').onclick=async()=>{try{$('nzCloudToken').value=await navigator.clipboard.readText();status('Key pasted; select Connect')}catch{status('Paste unavailable; use browser paste')}};
 $('nzCloudConnect').onclick=()=>{const url=$('nzCloudUrl').value.trim(),token=$('nzCloudToken').value.trim();if(!/^https:\/\/[a-z0-9.-]+(?::443)?\/?$/i.test(url)||!token){status('Enter valid HTTPS Worker URL and token');return}put(CFG,{url,token});initialized=false;void sync()};
 $('nzCloudForget').onclick=()=>{localStorage.removeItem(CFG);$('nzCloudToken').value='';status('Credentials removed; local food preserved')};
-$('nzCloudSync').onclick=()=>void sync();window.addEventListener('nz-nutrition-local-saved',()=>{stage();schedule()});
+$('nzCloudSync').onclick=()=>void sync();window.addEventListener('nz-nutrition-local-saved',()=>{stage();schedule()});window.addEventListener('nz-nutrition-day-changed',()=>{stage();schedule()});
 window.addEventListener('storage',e=>{if(e.key===KEY){window.nzNutritionReloadFromCloud?.();stage()} });
 // Automatic synchronization while this web app is running. iOS may suspend timers in the background.
 setInterval(()=>{if(document.visibilityState==='hidden')return;stage();if(cfg().url&&cfg().token&&navigator.onLine!==false)void sync()},60000);
