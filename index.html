@@ -3972,6 +3972,19 @@ body.trainingFocus .focusToolbar span {
 #nzNutritionModal #nzCloudDetails .nzRow button{flex:0 0 auto!important}
 @media(max-width:600px){#nzNutritionModal .nzPanel{padding:14px 12px 90px!important}#nzNutritionModal #nzModalStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}#nzNutritionModal #nzCloudDetails .nzRow input{flex-basis:100%!important}}
 </style>
+
+<style id="nz-wall-quick-style">
+#nzWallQuick{position:fixed;right:12px;top:calc(10px + env(safe-area-inset-top));z-index:2147480000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf2f7}
+#nzWallQuick button{font:inherit;cursor:pointer}
+#nzWallQuick .nz-wq-pill{display:flex;align-items:center;gap:7px;width:auto;min-height:32px;padding:5px 10px;border:1px solid #3c5260;border-radius:999px;background:#101e29;box-shadow:0 4px 18px #0007;color:#eaf2f7;font-size:11px;font-weight:750;letter-spacing:0;white-space:nowrap}
+#nzWallQuick .nz-wq-dot{width:7px;height:7px;border-radius:50%;background:#8b98a6;flex:none}
+#nzWallQuick[data-health="ok"] .nz-wq-dot{background:#64d8a5}#nzWallQuick[data-health="warn"] .nz-wq-dot{background:#e6b955}#nzWallQuick[data-health="bad"] .nz-wq-dot{background:#e77979}
+#nzWallQuick .nz-wq-panel{position:absolute;right:0;top:40px;width:min(340px,calc(100vw - 24px));padding:14px;border:1px solid #3b5060;border-radius:17px;background:#101c29;box-shadow:0 18px 48px #000b;color:#eaf2f7;font-size:13px;line-height:1.45}
+#nzWallQuick .nz-wq-panel[hidden]{display:none!important}#nzWallQuick .nz-wq-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}#nzWallQuick .nz-wq-head strong{font-size:15px}#nzWallQuick .nz-wq-close{width:30px;height:30px;padding:0;border:1px solid #425465;border-radius:9px;background:#1a2a38;color:#fff}
+#nzWallQuick .nz-wq-note{font-size:11px;color:#a8b9c9;margin:6px 0 12px}#nzWallQuick .nz-wq-main{display:block;width:100%;min-height:45px;border:0;border-radius:11px;background:#d6b961;color:#101923;font-size:13px;font-weight:850}#nzWallQuick .nz-wq-secondary{width:100%;margin-top:8px;min-height:40px;border:1px solid #41566a;border-radius:11px;background:#172a3a;color:#eaf2f7;font-size:12px}
+#nzWallQuick label{display:block;margin:12px 0 5px;font-size:11px;color:#a8b9c9}#nzWallQuick input{display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #42576a;border-radius:9px;background:#09131e;color:#fff;font-size:14px}#nzWallQuick .nz-wq-feedback{font-size:11px;color:#b4c5d4;margin-top:8px;overflow-wrap:anywhere}#nzWallQuick .nz-wq-link{font-size:11px;color:#9dd8f6;overflow-wrap:anywhere}
+body.trainingFocus #nzWallQuick{display:none!important}
+</style>
 </head>
   <body class="todayFlow" data-today-scene="home">
     <div class="wrap">
@@ -19645,5 +19658,33 @@ body .tabbar > button{min-width:0!important;overflow-wrap:normal!important}
 <style id="nzPhoneWorkerBridgeStyle">
 #nzConvAlternatives{display:grid;gap:8px;margin:8px 0}#nzConvAlternatives p{font-size:13px;color:#c8d8df;margin:6px 0}#nzConvAlternatives .nzConvCandidate{display:block;width:100%;text-align:left;min-height:48px;padding:12px;border-radius:12px;border:1px solid #66838b;background:#173840;color:#f1faf7;font:inherit}#nzConvAlternatives .nzConvCandidate:focus-visible{outline:3px solid #9ee6ce;outline-offset:2px}
 </style>
+
+<div id="nzWallQuick" data-health="unknown">
+  <button type="button" id="nzWqToggle" class="nz-wq-pill" aria-expanded="false" aria-controls="nzWqPanel" aria-label="Wall status and diagnostics"><span class="nz-wq-dot"></span><span id="nzWqLabel">Wall · Checking</span></button>
+  <section id="nzWqPanel" class="nz-wq-panel" hidden aria-label="Pi Diagnostic Command Center quick access">
+    <div class="nz-wq-head"><strong>Pi Wall</strong><button type="button" class="nz-wq-close" id="nzWqClose" aria-label="Close">×</button></div>
+    <div id="nzWqDetail" class="nz-wq-note">Wall heartbeat status is checked through your existing cloud connection.</div>
+    <button type="button" class="nz-wq-main" id="nzWqOpen">Open Diagnostic Command Center ↗</button>
+    <button type="button" class="nz-wq-secondary" id="nzWqCheck">Refresh Wall status</button>
+    <label for="nzWqAddress">Pi address (saved on this device)</label><input id="nzWqAddress" type="text" inputmode="url" autocomplete="off" spellcheck="false" value="192.168.1.208" placeholder="192.168.1.208" />
+    <div id="nzWqFeedback" class="nz-wq-feedback" role="status">Connect to the same home network as the Pi to open local diagnostics.</div>
+  </section>
+</div>
+<script id="nz-wall-quick-script">
+(()=>{'use strict';
+const root=document.getElementById('nzWallQuick'),toggle=document.getElementById('nzWqToggle'),panel=document.getElementById('nzWqPanel'),label=document.getElementById('nzWqLabel'),detail=document.getElementById('nzWqDetail'),address=document.getElementById('nzWqAddress'),feedback=document.getElementById('nzWqFeedback');
+const KEY='nonzero.pi.quickAccess.address.v1';
+try{address.value=localStorage.getItem(KEY)||'192.168.1.208'}catch(_){}
+function base(){let v=address.value.trim();if(!v)throw Error('Enter the Pi address.');if(!/^https?:\/\//i.test(v))v='http://'+v;let u=new URL(v);if(!/^https?:$/.test(u.protocol)||!u.hostname||u.username||u.password)throw Error('Enter a valid Pi IP address or hostname.');if(!u.port)u.port='8787';return u.origin}
+function save(){try{localStorage.setItem(KEY,address.value.trim())}catch(_){}}
+function openPanel(on){panel.hidden=!on;toggle.setAttribute('aria-expanded',String(on));if(on)refresh()}
+toggle.addEventListener('click',()=>openPanel(panel.hidden));document.getElementById('nzWqClose').addEventListener('click',()=>openPanel(false));
+address.addEventListener('change',()=>{save();feedback.textContent='Pi address saved.'});
+document.getElementById('nzWqOpen').addEventListener('click',()=>{try{save();let url=base()+'/diagnostics.html';let w=window.open(url,'_blank','noopener,noreferrer');if(!w)window.location.href=url;feedback.textContent='Opening '+url}catch(e){feedback.textContent=e.message}});
+document.getElementById('nzWqCheck').addEventListener('click',async()=>{feedback.textContent='Refreshing cloud Wall heartbeat…';try{if(typeof fetchWallHealth==='function')await fetchWallHealth();refresh();feedback.textContent='Wall heartbeat checked. This does not test the Pi local web port.'}catch(e){feedback.textContent='Status check failed: '+e.message}});
+function refresh(){try{let h=typeof systemHealth!=='undefined'?systemHealth:null;let isFresh=!!h?.wall;let seen=!!h?.lastCheckedAt;let status=isFresh?'ok':seen?'bad':'unknown';root.dataset.health=status;label.textContent=isFresh?'Wall · Online':seen?'Wall · Attention':'Wall · Unverified';detail.textContent=isFresh?'Recent Wall heartbeat received via Cloudflare. Local diagnostics may still be unreachable.':seen?'No fresh Wall heartbeat. Open diagnostics or check Pi network connection.':'Waiting for Wall heartbeat. This is not a direct Pi connection test.'}catch(_){root.dataset.health='unknown';label.textContent='Wall · Unverified'}}
+refresh();setInterval(refresh,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+})();
+</script>
 </body>
 </html>
