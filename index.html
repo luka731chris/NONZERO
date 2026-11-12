@@ -3974,22 +3974,16 @@ body.trainingFocus .focusToolbar span {
 </style>
 
 <style id="nz-wall-quick-style">
-#nzWallQuick{position:relative;left:auto;bottom:auto;z-index:2147480000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf2f7}
+#nzWallQuick{position:fixed;right:12px;top:calc(10px + env(safe-area-inset-top));z-index:2147480000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf2f7}
 #nzWallQuick button{font:inherit;cursor:pointer}
 #nzWallQuick .nz-wq-pill{display:flex;align-items:center;gap:7px;width:auto;min-height:32px;padding:5px 10px;border:1px solid #3c5260;border-radius:999px;background:#101e29;box-shadow:0 4px 18px #0007;color:#eaf2f7;font-size:11px;font-weight:750;letter-spacing:0;white-space:nowrap}
 #nzWallQuick .nz-wq-dot{width:7px;height:7px;border-radius:50%;background:#8b98a6;flex:none}
 #nzWallQuick[data-health="ok"] .nz-wq-dot{background:#64d8a5}#nzWallQuick[data-health="warn"] .nz-wq-dot{background:#e6b955}#nzWallQuick[data-health="bad"] .nz-wq-dot{background:#e77979}
-#nzWallQuick .nz-wq-panel{position:absolute;left:0;top:calc(100% + 8px);bottom:auto;max-height:min(70dvh,540px);overflow-y:auto;width:min(340px,calc(100vw - 24px));padding:14px;border:1px solid #3b5060;border-radius:17px;background:#101c29;box-shadow:0 18px 48px #000b;color:#eaf2f7;font-size:13px;line-height:1.45}
+#nzWallQuick .nz-wq-panel{position:absolute;right:0;top:40px;width:min(340px,calc(100vw - 24px));padding:14px;border:1px solid #3b5060;border-radius:17px;background:#101c29;box-shadow:0 18px 48px #000b;color:#eaf2f7;font-size:13px;line-height:1.45}
 #nzWallQuick .nz-wq-panel[hidden]{display:none!important}#nzWallQuick .nz-wq-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}#nzWallQuick .nz-wq-head strong{font-size:15px}#nzWallQuick .nz-wq-close{width:30px;height:30px;padding:0;border:1px solid #425465;border-radius:9px;background:#1a2a38;color:#fff}
 #nzWallQuick .nz-wq-note{font-size:11px;color:#a8b9c9;margin:6px 0 12px}#nzWallQuick .nz-wq-main{display:block;width:100%;min-height:45px;border:0;border-radius:11px;background:#d6b961;color:#101923;font-size:13px;font-weight:850}#nzWallQuick .nz-wq-secondary{width:100%;margin-top:8px;min-height:40px;border:1px solid #41566a;border-radius:11px;background:#172a3a;color:#eaf2f7;font-size:12px}
 #nzWallQuick label{display:block;margin:12px 0 5px;font-size:11px;color:#a8b9c9}#nzWallQuick input{display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #42576a;border-radius:9px;background:#09131e;color:#fff;font-size:14px}#nzWallQuick .nz-wq-feedback{font-size:11px;color:#b4c5d4;margin-top:8px;overflow-wrap:anywhere}#nzWallQuick .nz-wq-link{font-size:11px;color:#9dd8f6;overflow-wrap:anywhere}
 body.trainingFocus #nzWallQuick{display:none!important}
-@media (max-height:540px){#nzWallQuick .nz-wq-panel{max-height:65dvh}}
-
-.nzDateStatusRow{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;min-width:0}
-.nzWallStatusSlot{display:inline-flex;align-items:center;position:relative;flex:0 0 auto}
-#nzWallQuick .nz-wq-pill{min-height:27px;padding:4px 8px;font-size:10px;box-shadow:none}
-@media (max-width:420px){#nzWallQuick .nz-wq-panel{left:0;width:min(310px,calc(100vw - 30px))}}
 </style>
 </head>
   <body class="todayFlow" data-today-scene="home">
@@ -3999,7 +3993,7 @@ body.trainingFocus #nzWallQuick{display:none!important}
         <header class="todayHeader">
           <div>
             <span class="flowBrand">NONZERO <small>v7.23.4</small></span>
-            <div class="nzDateStatusRow"><h1 id="homeDate"></h1><span id="nzWallStatusSlot" class="nzWallStatusSlot"></span></div>
+            <h1 id="homeDate"></h1>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
             Connections
@@ -6525,6 +6519,30 @@ let state = normalizeSavedSessions(
   }
 );
 if (!/^\d{4}-\d{2}-\d{2}$/.test(state.startDate || '')) state.startDate = localDateStr();
+// A restored browser timer is never proof that a workout is still underway.
+// Freeze its elapsed duration on hydration; only an explicit Start/Resume or
+// trusted PM5 live event may begin advancing it again.
+function nonzeroFreezeRestoredPhoneTimer(saved, now = Date.now()) {
+  const a = saved?.activeWorkout;
+  if (!a || !a.timer?.running || a.source === 'pm5' || a.source === 'concept2') return false;
+  const t = a.timer;
+  const start = Number(t.startedAt);
+  const prior = Number(t.elapsedMs);
+  const safePrior = Number.isFinite(prior) && prior >= 0 ? prior : 0;
+  // Do not credit unattended time after the last observed timer update.
+  const last = Number(a.timerUpdatedAt || a.updatedAt || start);
+  const end = Number.isFinite(last) && last >= start && last <= now ? last : start;
+  t.elapsedMs = safePrior + (Number.isFinite(start) && start > 0 && start <= now ? Math.min(end - start, 60000) : 0);
+  t.running = false;
+  t.startedAt = null;
+  if (a.status === 'active' || a.status === 'running') a.status = 'paused';
+  a.timerRecoveryNotice = true;
+  return true;
+}
+const nonzeroRestoredTimerFrozen = nonzeroFreezeRestoredPhoneTimer(state);
+if (nonzeroRestoredTimerFrozen) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+}
 if (!state._meta) state._meta = { updatedAt: Date.now(), schema: 12, revision: 0 };
 if (!state.wallSchedule)
   state.wallSchedule = { enabled: true, ambient: '06:00', night: '20:30', deep: '01:00' };
@@ -7937,12 +7955,11 @@ async function toggleSet(exIndex, setIndex) {
   a.progressUpdatedAt = Date.now();
   a.setUpdatedAt = Date.now();
   a.manualFocusIndex = a.checks[exIndex] ? nextIncompleteIndex(a, exIndex, items) : exIndex;
-  if (!a.timer?.running) {
-    a.timer = { elapsedMs: Number(a.timer?.elapsedMs || 0), running: true, startedAt: Date.now() };
-    a.timerUpdatedAt = Date.now();
+  // Progress edits do not imply that the phone workout timer was started.
+  if (a.timer?.running) {
+    a.status = 'active';
+    a.statusUpdatedAt = Date.now();
   }
-  a.status = 'active';
-  a.statusUpdatedAt = Date.now();
   a.updatedAt = Date.now();
   recordEvent('set_toggle', {
     exercise: items[exIndex]?.[0],
@@ -9454,14 +9471,8 @@ async function handleExerciseCheckChange(e) {
   a.progressUpdatedAt = now;
   a.setUpdatedAt = now;
   a.updatedAt = now;
-  if (!['active', 'paused', 'running'].includes(String(a.status || '').toLowerCase())) {
-    a.status = 'active';
-    a.statusUpdatedAt = now;
-    if (!a.timer?.running) {
-      a.timer = { elapsedMs: Number(a.timer?.elapsedMs || 0), running: true, startedAt: now };
-      a.timerUpdatedAt = now;
-    }
-  }
+  // Checking an exercise records progress, but must not start a workout timer.
+  // The explicit Start control owns the transition to a running phone session.
   recordEvent('exercise_toggle', {
     index: i,
     name: items[i]?.[0],
@@ -9484,12 +9495,11 @@ async function togglePartnerSet(exIndex, setIndex) {
   a.partnerProgramSnapshot = currentPartnerProgram();
   a.setUpdatedAt = Date.now();
   a.updatedAt = Date.now();
-  if (!a.timer?.running) {
-    a.timer = { elapsedMs: Number(a.timer?.elapsedMs || 0), running: true, startedAt: Date.now() };
-    a.timerUpdatedAt = Date.now();
+  // Progress edits do not imply that the phone workout timer was started.
+  if (a.timer?.running) {
+    a.status = 'active';
+    a.statusUpdatedAt = Date.now();
   }
-  a.status = 'active';
-  a.statusUpdatedAt = Date.now();
   recordEvent('partner_set_toggle', {
     partner: 'Sam',
     exercise: items[exIndex]?.[0],
@@ -19763,13 +19773,6 @@ $('nzDiagCapture').onclick=()=>execute($('nzDiagCapture'),async()=>{status('Capt
 $('nzDiagHistory').onclick=()=>execute($('nzDiagHistory'),async()=>{status('Loading report archive…');const d=await(await req('/api/diagnostics/archive')).json();const root=$('nzDiagReports');root.replaceChildren();if(!Array.isArray(d))throw Error('Unexpected archive response');$('nzDiagArchive').textContent=d.length+' saved';for(const item of d){if(!/^[a-zA-Z0-9_.-]+\.zip$/.test(item.name))continue;const b=document.createElement('button');b.type='button';b.style.cssText='display:block;width:100%;margin-top:8px;text-align:left';b.textContent=item.name+' · Download';b.onclick=()=>execute(b,async()=>{const r=await req('/api/diagnostics/archive/download?name='+encodeURIComponent(item.name));await download(r,item.name)});root.appendChild(b)}status('Report history loaded.')});
 async function download(r,name){const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
 $('nzDiagDownload').onclick=()=>execute($('nzDiagDownload'),async()=>{status('Generating report ZIP…');const r=await req('/api/diagnostics/download');await download(r,'NONZERO-Diagnostic-Report.zip');status('ZIP requested. Check Safari downloads.')});
-})();
-</script>
-<script id="nz-wall-status-header-placement">
-(function(){
-  const slot=document.getElementById('nzWallStatusSlot');
-  const widget=document.getElementById('nzWallQuick');
-  if(slot&&widget)slot.appendChild(widget);
 })();
 </script>
 </body>
