@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
 
-    <title>NONZERO v7.23.7 · Connected Action Coach</title>
+    <title>NONZERO v7.23.4 · Connected Action Coach</title>
     <style>
 .wj-panel {
   color: #eaf0f8;
@@ -3974,16 +3974,22 @@ body.trainingFocus .focusToolbar span {
 </style>
 
 <style id="nz-wall-quick-style">
-#nzWallQuick{position:fixed;right:12px;top:calc(10px + env(safe-area-inset-top));z-index:2147480000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf2f7}
+#nzWallQuick{position:relative;left:auto;bottom:auto;z-index:2147480000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf2f7}
 #nzWallQuick button{font:inherit;cursor:pointer}
 #nzWallQuick .nz-wq-pill{display:flex;align-items:center;gap:7px;width:auto;min-height:32px;padding:5px 10px;border:1px solid #3c5260;border-radius:999px;background:#101e29;box-shadow:0 4px 18px #0007;color:#eaf2f7;font-size:11px;font-weight:750;letter-spacing:0;white-space:nowrap}
 #nzWallQuick .nz-wq-dot{width:7px;height:7px;border-radius:50%;background:#8b98a6;flex:none}
 #nzWallQuick[data-health="ok"] .nz-wq-dot{background:#64d8a5}#nzWallQuick[data-health="warn"] .nz-wq-dot{background:#e6b955}#nzWallQuick[data-health="bad"] .nz-wq-dot{background:#e77979}
-#nzWallQuick .nz-wq-panel{position:absolute;right:0;top:40px;width:min(340px,calc(100vw - 24px));padding:14px;border:1px solid #3b5060;border-radius:17px;background:#101c29;box-shadow:0 18px 48px #000b;color:#eaf2f7;font-size:13px;line-height:1.45}
+#nzWallQuick .nz-wq-panel{position:absolute;left:0;top:calc(100% + 8px);bottom:auto;max-height:min(70dvh,540px);overflow-y:auto;width:min(340px,calc(100vw - 24px));padding:14px;border:1px solid #3b5060;border-radius:17px;background:#101c29;box-shadow:0 18px 48px #000b;color:#eaf2f7;font-size:13px;line-height:1.45}
 #nzWallQuick .nz-wq-panel[hidden]{display:none!important}#nzWallQuick .nz-wq-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}#nzWallQuick .nz-wq-head strong{font-size:15px}#nzWallQuick .nz-wq-close{width:30px;height:30px;padding:0;border:1px solid #425465;border-radius:9px;background:#1a2a38;color:#fff}
 #nzWallQuick .nz-wq-note{font-size:11px;color:#a8b9c9;margin:6px 0 12px}#nzWallQuick .nz-wq-main{display:block;width:100%;min-height:45px;border:0;border-radius:11px;background:#d6b961;color:#101923;font-size:13px;font-weight:850}#nzWallQuick .nz-wq-secondary{width:100%;margin-top:8px;min-height:40px;border:1px solid #41566a;border-radius:11px;background:#172a3a;color:#eaf2f7;font-size:12px}
 #nzWallQuick label{display:block;margin:12px 0 5px;font-size:11px;color:#a8b9c9}#nzWallQuick input{display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #42576a;border-radius:9px;background:#09131e;color:#fff;font-size:14px}#nzWallQuick .nz-wq-feedback{font-size:11px;color:#b4c5d4;margin-top:8px;overflow-wrap:anywhere}#nzWallQuick .nz-wq-link{font-size:11px;color:#9dd8f6;overflow-wrap:anywhere}
 body.trainingFocus #nzWallQuick{display:none!important}
+@media (max-height:540px){#nzWallQuick .nz-wq-panel{max-height:65dvh}}
+
+.nzDateStatusRow{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;min-width:0}
+.nzWallStatusSlot{display:inline-flex;align-items:center;position:relative;flex:0 0 auto}
+#nzWallQuick .nz-wq-pill{min-height:27px;padding:4px 8px;font-size:10px;box-shadow:none}
+@media (max-width:420px){#nzWallQuick .nz-wq-panel{left:0;width:min(310px,calc(100vw - 30px))}}
 </style>
 </head>
   <body class="todayFlow" data-today-scene="home">
@@ -3993,7 +3999,7 @@ body.trainingFocus #nzWallQuick{display:none!important}
         <header class="todayHeader">
           <div>
             <span class="flowBrand">NONZERO <small>v7.23.4</small></span>
-            <h1 id="homeDate"></h1>
+            <div class="nzDateStatusRow"><h1 id="homeDate"></h1><span id="nzWallStatusSlot" class="nzWallStatusSlot"></span></div>
           </div>
           <button id="homeConnections" aria-label="Open connection settings" type="button">
             Connections
@@ -4478,7 +4484,7 @@ body.trainingFocus #nzWallQuick{display:none!important}
             ＋ Log activity
           </button>
           <h2 id="sessionListTitle">Recent sessions</h2>
-          <div id="recentSessions"></div>
+          <div class="nzWorkoutHistoryTools"><label for="nzWorkoutHistorySearch">Find a workout</label><input id="nzWorkoutHistorySearch" type="search" placeholder="Search date, name or source" autocomplete="off"/><p class="small">Every saved session is shown below. Edit or delete individual records; cloud confirmation appears in the sync status.</p></div><div id="recentSessions"></div>
         </section>
         <div class="small" id="healthWeekMinutes" style="margin: 8px 0"></div>
         <button id="todayEditTimeBtn" class="editTimeBtn hidden">EDIT TODAY'S SESSION</button>
@@ -5599,7 +5605,17 @@ unit=lb</pre>
       r = new Map((remote?.sessions || []).map((x) => [key(x), x]));
     for (const [id] of b) if (!l.has(id)) r.delete(id);
     for (const [id, x] of l) if (!equal(x, b.get(id))) r.set(id, clone(x));
-    out.sessions = [...r.values()];
+    // A deletion must survive a concurrent cloud revision and stale-device writes.
+    // Tombstones are retained in canonical /state until every client has converged.
+    const deleted = { ...(remote?.sessionTombstones || {}), ...(local?.sessionTombstones || {}) };
+    for (const [id, at] of Object.entries(base?.sessionTombstones || {}))
+      if (!(id in deleted)) deleted[id] = at;
+    const restored = { ...(remote?.sessionRestorations || {}), ...(local?.sessionRestorations || {}) };
+    out.sessionRestorations = restored;
+    for (const [id, at] of Object.entries(restored)) if (Number(at) > Number(deleted[id] || 0)) delete deleted[id];
+    out.sessionTombstones = deleted;
+    out.sessions = [...r.values()].filter(x => !deleted[key(x)]);
+    if (out.activeWorkout && deleted[key(out.activeWorkout)]) out.activeWorkout = null;
     const bm = base?.pm5Analytics || {},
       lm = local?.pm5Analytics || {},
       rm = remote?.pm5Analytics || {};
@@ -6734,6 +6750,11 @@ function applyCanonicalState(payload, { render = true } = {}) {
   const priorLive = NonZeroWorkoutPolicy.active(state),
     nextLive = NonZeroWorkoutPolicy.active(remoteState);
   state = remoteState;
+  if (!state.sessionTombstones || typeof state.sessionTombstones !== 'object') state.sessionTombstones = {};
+  for (const [id, at] of Object.entries(state.sessionRestorations || {}))
+    if (Number(at) > Number(state.sessionTombstones[id] || 0)) delete state.sessionTombstones[id];
+  state.sessions = state.sessions.filter(x => !state.sessionTombstones[sessionKey(x)]);
+  if (state.activeWorkout && state.sessionTombstones[sessionKey(state.activeWorkout)]) state.activeWorkout = null;
   if (nextLive && ['full', 'minimum', 'flare'].includes(nextLive.mode)) mode = nextLive.mode;
   if (nextLive && nextLive.sessionId !== priorLive?.sessionId) {
     focusDismissed = false;
@@ -7077,21 +7098,14 @@ document.getElementById('checkWeightNow')?.addEventListener('click', async () =>
   const button = document.getElementById('checkWeightNow');
   button.disabled = true;
   try {
-    if (!cloudReady()) {
-      button.title = 'Cloud URL or sync key missing. Configure More → Connections.';
-      return;
-    }
-    button.textContent = 'Checking…';
+    if (!cloudReady()) return;
     const ok = await pullCloudState({ force: true });
-    weightCloudFailure = !ok;
-    button.title = ok ? 'Cloud read completed; inspect latest weight date above' : 'Cloud read failed; check Worker and connection';
+    if (!ok) weightCloudFailure = true;
     renderSurgeryReadiness();
-  } catch (error) {
+  } catch {
     weightCloudFailure = true;
-    button.title = error?.message || 'Weight refresh failed';
     renderSurgeryReadiness();
   } finally {
-    button.disabled = false;
     renderWeightDailyStatus();
   }
 });
@@ -7731,6 +7745,7 @@ function deleteEditedSession() {
         : null,
     date = editingSessionDate;
   state.sessions.splice(index, 1);
+  state.sessionTombstones = { ...(state.sessionTombstones || {}), [sessionKey(before)]: Date.now() };
   if (beforeActive?.status === 'complete') state.activeWorkout = null;
   NonZeroHealthImport.suppress(state, before);
   recordEvent('session_deleted', { date });
@@ -7745,6 +7760,11 @@ function undoSessionMutation() {
   const index = state.sessions.findIndex((x) => sessionKey(x) === mutation.date);
   if (index >= 0) state.sessions[index] = mutation.before;
   else state.sessions.push(mutation.before);
+  if (mutation.kind === 'delete') {
+    const id = sessionKey(mutation.before);
+    state.sessionRestorations = { ...(state.sessionRestorations || {}), [id]: Date.now() + 1 };
+    if (state.sessionTombstones) delete state.sessionTombstones[id];
+  }
   if (mutation.before.healthKit?.uuid)
     delete state.healthImport?.decisions?.[mutation.before.healthKit.uuid];
   if (mutation.beforeActive) state.activeWorkout = mutation.beforeActive;
@@ -7958,7 +7978,7 @@ async function shiftMovement(dir) {
   if (cloudReady()) await pushCloudState();
 }
 async function sendWallCommand(action) {
-  if (action === 'performance' && !NonZeroWorkoutPolicy.active(state)) await startTimer();
+  // Display-mode changes must never start a workout timer. Starting requires an explicit workout action.
   const a = state.activeWorkout?.date === localDateStr() ? state.activeWorkout : null;
   const command = {
     action,
@@ -10335,6 +10355,7 @@ function renderWeek() {
 }
 
 let historyRange = 'all';
+let nzWorkoutHistoryQuery = '';
 function renderProgress() {
   const all = [...state.sessions].sort((a, b) => b.date.localeCompare(a.date)),
     s =
@@ -10376,8 +10397,7 @@ function renderProgress() {
   }
   document.getElementById('trendSummary').textContent = trend;
   document.getElementById('recentSessions').innerHTML =
-    s
-      .slice(0, 10)
+    s.filter(x => !nzWorkoutHistoryQuery || [x.date, x.name, x.type, x.completionSource, x.sourceName].some(v => String(v || '').toLowerCase().includes(nzWorkoutHistoryQuery)))
       .map((x) => {
         const source =
           x.completionSource === 'apple-health'
@@ -10389,7 +10409,7 @@ function renderProgress() {
                 : x.completionSource === 'concept2' || x.concept2?.id
                   ? 'Concept2'
                   : 'App timer';
-        return `<div class="dayrow sessionRow"><span>${fmtDate(x.date)}</span><span>${escapeActivity(x.name)}<br><span class="small">${String(x.mode || 'full').toUpperCase()} · pain ${x.pain ?? '—'}/10 · ${source}</span></span><span class="sessionTimeCell"><b>${fmtDuration(x.duration)}</b><button class="editTimeBtn" data-edit-session-time="${escapeActivity(sessionKey(x))}">EDIT</button></span></div>`;
+        return `<div class="dayrow sessionRow"><span>${fmtDate(x.date)}</span><span>${escapeActivity(x.name)}<br><span class="small">${String(x.mode || 'full').toUpperCase()} · pain ${x.pain ?? '—'}/10 · ${source}</span></span><span class="sessionTimeCell"><b>${fmtDuration(x.duration)}</b><button class="editTimeBtn" data-edit-session-time="${escapeActivity(sessionKey(x))}">Edit</button><button class="editTimeBtn nzDeleteWorkout" data-delete-workout="${escapeActivity(sessionKey(x))}" aria-label="Delete ${escapeActivity(x.name)} on ${escapeActivity(x.date)}">Delete</button></span></div>`;
       })
       .join('') || '<p>No sessions saved yet.</p>';
 }
@@ -10500,8 +10520,19 @@ document.getElementById('todayEditTimeBtn')?.addEventListener('click', () => {
   if (rec) openSessionTimeEditor(sessionKey(rec));
 });
 document.getElementById('recentSessions')?.addEventListener('click', (e) => {
+  const del = e.target.closest('[data-delete-workout]');
+  if (del) {
+    const key = del.dataset.deleteWorkout;
+    const record = state.sessions.find(x => sessionKey(x) === key);
+    if (record) { openSessionTimeEditor(key); deleteEditedSession(); }
+    return;
+  }
   const btn = e.target.closest('[data-edit-session-time]');
   if (btn) openSessionTimeEditor(btn.dataset.editSessionTime);
+});
+document.getElementById('nzWorkoutHistorySearch')?.addEventListener('input', e => {
+  nzWorkoutHistoryQuery = String(e.target.value || '').trim().toLowerCase();
+  renderProgress();
 });
 document.getElementById('cancelSessionTimeBtn')?.addEventListener('click', closeSessionTimeEditor);
 document.getElementById('saveSessionTimeBtn')?.addEventListener('click', saveSessionTimeCorrection);
@@ -11461,26 +11492,9 @@ renderHealthReview();
     $('suiteStartWorkout').onclick = () =>
       start(NonZeroSuite.opportunity(agenda()).mode === 'minimum');
     $('nz325Refresh').onclick = async () => {
-      const button = $('nz325Refresh');
-      const previous = button.textContent;
-      button.disabled = true;
-      button.textContent = 'Refreshing…';
-      try {
-        if (!cloudReady()) throw Error('Cloud is not configured. Open More → Connections.');
-        const ok = await pullCloudState({force:true});
-        if (!ok) throw Error('Cloud read failed. Check the connection and sync key.');
-        render();
-        await SuiteConnect.refreshChanges();
-        const hasPlan = Boolean(state.autopilotAgenda?.days?.length || state.autopilotAgenda?.date);
-        button.textContent = hasPlan ? 'Plan updated ✓' : 'No published plan';
-        button.title = hasPlan ? 'Cloud refreshed; AutoPilot agenda present' : 'Cloud connected but no AutoPilot agenda was returned';
-      } catch (error) {
-        button.textContent = 'Refresh failed';
-        button.title = error?.message || 'Refresh failed';
-      } finally {
-        button.disabled = false;
-        window.setTimeout(() => { button.textContent = previous; }, 4000);
-      }
+      await pullCloudState();
+      render();
+      await SuiteConnect.refreshChanges();
     };
     const changes = document.createElement('section');
     changes.id = 'suiteChanges';
@@ -17281,7 +17295,7 @@ function initQuantity(f,count=1,alreadyTotal=true){
 }
 function recalculate(f){for(const k of MACROS){const b=f.baseMacros?.[k];f[k]=b===null||b===undefined?null:Math.round(b*f.quantity*10)/10}}
 function timeValue(f){if(f.eatingMode==='custom'&&/^\d{2}:\d{2}$/.test(f.eatingTime||''))return f.eatingTime;const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
-function renderDraft(){const list=$('nzConvResults');if(!list)return;list.replaceChildren();draft.forEach((f,i)=>{if(!f.baseMacros)initQuantity(f);if(!f.eatingMode)f.eatingMode='now';const wrap=document.createElement('div');wrap.className='nzConvItem nzConvCompact';const editing=!!f.expanded;wrap.innerHTML=`<div class="nzConvLine nzConvHeadline"><strong>${esc(f.name||'Food '+(i+1))}</strong><button type="button" data-remove="${i}" aria-label="Remove ${esc(f.name)}">×</button></div><div class="nzConvLine nzConvQuick"><button type="button" class="${f.eatingMode==='now'?'nzConvSelected':''}" data-index="${i}" data-time="now">Just finished</button><button type="button" class="${f.eatingMode==='custom'?'nzConvSelected':''}" data-index="${i}" data-time="custom">What time?</button>${f.eatingMode==='custom'?`<input type="time" aria-label="Time eaten" data-index="${i}" data-field="eatingTime" value="${esc(timeValue(f))}">`:''}</div><div class="nzConvLine nzConvSummary"><span><b>${f.quantity}</b> ${esc(f.unit||'serving')}${f.quantity===1?'':'s'} · <b>${Math.round(Number(f.cal)||0)} kcal</b> · P ${Math.round(Number(f.protein)||0)}g · C ${Math.round(Number(f.carbs)||0)}g · F ${Math.round(Number(f.fat)||0)}g</span></div><div class="nzConvLine nzConvActions"><button type="button" data-index="${i}" data-expand="1">${editing?'Hide details':'Edit quantity / macros'}</button><button type="button" class="nzConvPrimary" data-index="${i}" data-logone="1">Log food</button></div><div class="nzConvDetails" ${editing?'':'hidden'}><label>Food name<input data-index="${i}" data-field="name" value="${esc(f.name)}"></label><div class="nzConvNote">${esc(f.quantityDescription||'')} · ${esc(f.basis||'estimate')}</div><div class="nzConvQuantity"><label>Quantity<input type="number" min="0.01" max="100" step="0.25" inputmode="decimal" data-index="${i}" data-field="quantity" value="${f.quantity}"></label><span>${esc(f.unit||'serving')}</span></div>${f.quantityNeedsReview?`<label class="nzConvNote"><input type="checkbox" data-index="${i}" data-field="perUnitToggle" ${f.quantityPerUnit?'checked':''}> AI macros are per serving</label>`:''}<div class="nzConvNumbers">${['cal','protein','carbs','fat'].map(k=>`<label>${k==='cal'?'Calories':k==='protein'?'Protein g':k==='carbs'?'Carbs g':'Fat g'}<input type="number" min="0" step="0.1" data-index="${i}" data-field="${k}" value="${f[k]??''}"></label>`).join('')}</div><label>Meal<select data-index="${i}" data-field="meal">${['Breakfast','Lunch','Dinner','Snack'].map(m=>`<option ${f.meal===m?'selected':''}>${m}</option>`).join('')}</select></label></div>`;list.append(wrap)});$('nzConvSave').hidden=!draft.length;$('nzConvRecipeSave').hidden=!draft.length;if(draft.length){$('nzConvRecipeSave').disabled=false;$('nzConvRecipeSave').textContent='Save all ingredients as one reusable recipe';}$('nzConvSave').textContent=`Log all ${draft.length} foods`}
+function renderDraft(){const list=$('nzConvResults');if(!list)return;list.replaceChildren();draft.forEach((f,i)=>{if(!f.baseMacros)initQuantity(f);if(!f.eatingMode)f.eatingMode='now';const wrap=document.createElement('div');wrap.className='nzConvItem nzConvCompact';const editing=!!f.expanded;wrap.innerHTML=`<div class="nzConvLine nzConvHeadline"><strong>${esc(f.name||'Food '+(i+1))}</strong><button type="button" data-remove="${i}" aria-label="Remove ${esc(f.name)}">×</button></div><div class="nzConvLine nzConvQuick"><button type="button" class="${f.eatingMode==='now'?'nzConvSelected':''}" data-index="${i}" data-time="now">Just finished</button><button type="button" class="${f.eatingMode==='custom'?'nzConvSelected':''}" data-index="${i}" data-time="custom">What time?</button>${f.eatingMode==='custom'?`<input type="time" aria-label="Time eaten" data-index="${i}" data-field="eatingTime" value="${esc(timeValue(f))}">`:''}</div><div class="nzConvLine nzConvSummary"><span><b>${f.quantity}</b> ${esc(f.unit||'serving')}${f.quantity===1?'':'s'} · <b>${Math.round(Number(f.cal)||0)} kcal</b> · P ${Math.round(Number(f.protein)||0)}g · C ${Math.round(Number(f.carbs)||0)}g · F ${Math.round(Number(f.fat)||0)}g</span></div><div class="nzConvLine nzConvActions"><button type="button" data-index="${i}" data-expand="1">${editing?'Hide details':'Edit quantity / macros'}</button><button type="button" class="nzConvPrimary" data-index="${i}" data-logone="1">Log food</button></div><div class="nzConvDetails" ${editing?'':'hidden'}><label>Food name<input data-index="${i}" data-field="name" value="${esc(f.name)}"></label><div class="nzConvNote">${esc(f.quantityDescription||'')} · ${esc(f.basis||'estimate')}</div><div class="nzConvQuantity"><label>Quantity<input type="number" min="0.01" max="100" step="0.25" inputmode="decimal" data-index="${i}" data-field="quantity" value="${f.quantity}"></label><span>${esc(f.unit||'serving')}</span></div>${f.quantityNeedsReview?`<label class="nzConvNote"><input type="checkbox" data-index="${i}" data-field="perUnitToggle" ${f.quantityPerUnit?'checked':''}> AI macros are per serving</label>`:''}<div class="nzConvNumbers">${['cal','protein','carbs','fat'].map(k=>`<label>${k==='cal'?'Calories':k==='protein'?'Protein g':k==='carbs'?'Carbs g':'Fat g'}<input type="number" min="0" step="0.1" data-index="${i}" data-field="${k}" value="${f[k]??''}"></label>`).join('')}</div><label>Meal<select data-index="${i}" data-field="meal">${['Breakfast','Lunch','Dinner','Snack'].map(m=>`<option ${f.meal===m?'selected':''}>${m}</option>`).join('')}</select></label></div>`;list.append(wrap)});$('nzConvSave').hidden=!draft.length;$('nzConvSave').textContent=`Log all ${draft.length} foods`}
 function timestampFor(f){const now=new Date();if(f.eatingMode!=='custom'){const day=$('nzDay')?.value||today();if(day!==today())return null;return now.toISOString();}const t=timeValue(f);const day=$('nzDay')?.value||today();const d=new Date(day+'T'+t+':00');if(!/^\d{2}:\d{2}$/.test(t)||!Number.isFinite(d.getTime())||d.getTime()>now.getTime()+60000||d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')!==day)return null;return d.toISOString()}
 function logOne(f){if(busy)return false;const status=$('nzConvStatus');if(!f.name||!(f.quantity>0&&f.quantity<=100)||['cal','protein','carbs','fat'].some(k=>!Number.isFinite(Number(f[k]))||Number(f[k])<0||f[k]===null||f[k]==='')||!(Number(f.cal)>0)||![f.protein,f.carbs,f.fat].some(v=>Number(v)>0)){status.textContent='Review food name, quantity and macros first.';return false}const stamp=timestampFor(f);if(!stamp){status.textContent='Choose a valid eating time that is not in the future.';return false}const day=$('nzDay')?.value||today();let d;try{d=read();if(!Array.isArray(d.entries))d.entries=[];const id=typeof crypto.randomUUID==='function'?crypto.randomUUID():String(Date.now())+'-'+Math.random();const entry={id,day,name:f.name.trim(),meal:f.meal||'Snack',source:f.basis==='database_match'?'database':f.source==='barcode'?'barcode':'estimate',eatenAt:stamp,loggedAt:new Date().toISOString(),portions:f.quantity,portionUnit:f.unit||'serving'};for(const k of MACROS)entry[k]=f[k]===null||f[k]===undefined?null:Number(f[k]);d.entries.push(entry);localStorage.setItem(KEY,JSON.stringify(d));const verify=read().entries||[];if(!verify.some(x=>x.id===id&&x.eatenAt===stamp)){status.textContent='Save verification failed. Check the journal before retrying.';return false}window.dispatchEvent(new Event('nz-nutrition-local-saved'));return true}catch(e){status.textContent='Food was not saved: '+(e.message||'storage unavailable');return false}}
 
@@ -17292,33 +17306,10 @@ if(!draft.length){draft=[];renderDraft();throw Error('Nutrition analysis returne
 const invalid=draft.filter(f=>!usable(f));
 if(invalid.length){draft=[];renderDraft();throw Error('Nutrition analysis returned missing or zero macros for '+invalid.length+' food(s). Nothing was logged. Retry, or enter macros manually; this is a failed analysis, not a zero-calorie meal.');}
 draft.forEach(f=>{const q=qtyForItem(text,f,draft.length);if(q){f.unit=q.unit;initQuantity(f,q.count,true);f.notes=[f.notes,'AI nutrition is treated as the total for the described amount; edit quantity to scale from this total.'].filter(Boolean).join(' ')}else{initQuantity(f,1,true);if(allQuantities(text).length)f.notes=[f.notes,'Quantity could not be assigned confidently to this food; review before logging.'].filter(Boolean).join(' ')}});renderDraft();const choices=$('nzConvAlternatives');if(choices){choices.replaceChildren();const alts=Array.isArray(j.alternatives)?j.alternatives:[];if(alts.length){const label=document.createElement('p');label.textContent='Select the exact product and check its serving size. These are database candidates, not verified restaurant menu facts.';choices.append(label);alts.slice(0,5).forEach(f=>{const m=f.servingMacros||{},b=document.createElement('button');b.type='button';b.className='nzConvCandidate';b.textContent=[f.name||f.shortName||'Product',f.serving||((f.grams||'')+' g'),Number.isFinite(m.cal)?m.cal+' kcal':'Nutrition unavailable'].filter(Boolean).join(' · ');b.onclick=()=>{if(!['cal','protein','carbs','fat'].every(k=>Number.isFinite(m[k])))return;draft=[{name:f.name||f.shortName||text,meal:'Snack',quantityDescription:f.serving||((f.grams||'')+' g'),...m,source:f.source||'database',sourceId:f.fdcId||f.code||null,basis:'database_match',confidence:'medium',notes:'Selected database candidate; confirm product and serving.'}];const q=requestedQuantity(text);draft[0].unit=q?.unit||'serving';initQuantity(draft[0],q?.count||1,false);choices.replaceChildren();renderDraft();$('nzConvStatus').textContent='Database candidate selected. Confirm the exact product, serving and macros before logging.'};choices.append(b)})}}const matched=draft.some(f=>f.basis==='database_match');$('nzConvStatus').textContent=(j.requiresConfirmation?'Choose a matching product below, or search by barcode. ':matched?'Database nutrition match: verify product and serving before logging. ':'Review estimated values before logging. ')+(j.assumptions||[]).join(' ')+(j.clarification?' '+j.clarification:'');}catch(e){$('nzConvStatus').textContent=e.message}finally{busy=false;$('nzConvAnalyze').disabled=false}}
-async function saveDraftRecipe(){
- const status=$('nzConvStatus');if(busy||!draft.length){status.textContent='Analyze and review ingredients first.';return;}
- const name=prompt('Recipe name (save all ingredients as one reusable recipe)', $('nzConvText')?.value.trim().slice(0,60)||'Protein Cookie Dough');if(name===null)return;
- if(!name.trim()){status.textContent='Enter a recipe name.';return;}
- const servingsText=prompt('How many servings does the entire recipe make?','1');if(servingsText===null)return;
- const servings=Number(servingsText);if(!Number.isFinite(servings)||servings<=0||servings>1000){status.textContent='Enter a valid number of servings.';return;}
- if(draft.some(f=>!f.name||['cal','protein','carbs','fat'].some(k=>f[k]===null||f[k]===undefined||f[k]===''||!Number.isFinite(Number(f[k]))||Number(f[k])<0))){status.textContent='Review ingredient macros before saving. No recipe was saved.';return;}
- const id='nzrecipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,9);
- const keys=['cal','protein','carbs','fat','fiber'];const totals=Object.fromEntries(keys.map(k=>[k,draft.reduce((n,f)=>n+(Number(f[k])||0),0)]));
- const per=Object.fromEntries(keys.map(k=>[k,Math.round(totals[k]/servings*10)/10]));
- const ingredients=draft.map(f=>({name:f.name,quantity:f.quantity,unit:f.unit||'serving',cal:f.cal,protein:f.protein,carbs:f.carbs,fat:f.fat,fiber:f.fiber??null,notes:f.notes||''}));
- const payload={name:name.trim().slice(0,180),servings,ingredients,items:draft.map(f=>({name:f.name,qty:1,cal:Number(f.cal),protein:Number(f.protein),carbs:Number(f.carbs),fat:Number(f.fat),fiber:Number(f.fiber)||0})),instructions:[],nutritionPerServing:per,nutritionVerified:false,source:'AI ingredient review',createdAt:new Date().toISOString()};
- const record={kind:'recipe',id,payload,revision:0,deleted:0,origin:'local',syncStatus:'pending'};
- const key='nonzero.recipes.offline.v1';let list;
- try{list=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(list))list=[];localStorage.setItem(key,JSON.stringify([...list,record]));if(!JSON.parse(localStorage.getItem(key)||'[]').some(x=>x.id===id))throw Error('Local verification failed');}
- catch(e){status.textContent='Recipe not saved: '+e.message;return;}
- status.textContent='Recipe saved locally: '+payload.name+'. Cloud synchronization pending.';
- const button=$('nzConvRecipeSave');if(button){button.textContent='Saved locally ✓';button.disabled=true;}
- const cfg=(()=>{try{return JSON.parse(localStorage.getItem('nonzero.nutrition.cloud.config')||'{}')}catch{return {}}})();
- if(!/^https:\/\//.test(cfg.url||'')||!cfg.token)return;
- try{const r=await fetch(cfg.url.replace(/\/$/,'')+'/v1/records',{method:'POST',headers:{Authorization:'Bearer '+cfg.token,'Content-Type':'application/json'},body:JSON.stringify({kind:'recipe',id,payload,mutationId:id,expectedRevision:0})});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||'HTTP '+r.status);const current=JSON.parse(localStorage.getItem(key)||'[]');localStorage.setItem(key,JSON.stringify(current.map(x=>x.id===id?{...x,revision:j.revision||1,syncStatus:'synced'}:x)));status.textContent='Recipe saved and synced: '+payload.name+'. Find it in Recipe Library.';}
- catch(e){status.textContent='Recipe saved on this phone; cloud sync pending ('+e.message+').';}
-}
 function saveAll(){if(busy||!draft.length)return;busy=true;let count=0;while(draft.length){if(!logOneInternal(draft[0]))break;draft.shift();count++}busy=false;renderDraft();if(!draft.length)$('nzConvText').value='';$('nzConvStatus').textContent=count?`Logged ${count} food${count===1?'':'s'} with eating times. ${draft.length?'Review remaining items.':'Cloud sync follows the existing app workflow.'}`:$('nzConvStatus').textContent;renderHistory()}
 function logOneInternal(f){busy=false;const ok=logOne(f);busy=true;return ok}
 
-function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel||$('nzConversational'))return;const section=document.createElement('section');section.id='nzConversational';section.innerHTML=`<strong style="font-size:19px">Describe what you ate</strong><p class="nzConvNote">Type a sentence, full meal, or recipe. Quantities are preserved from your description; AI nutrition totals are not multiplied twice. Review each food in one compact row: choose Just finished or What time?, then Log food. Expand only to edit quantity or macros.</p><textarea id="nzConvText" placeholder="e.g. Dinner: taco casserole, 2 servings Doritos, and half my protein cookie dough recipe"></textarea><div class="nzConvLine"><button type="button" class="nzConvPrimary" id="nzConvAnalyze">Analyze meal</button><button type="button" id="nzConvClear">Clear</button></div><div id="nzConvStatus" role="status"></div><div id="nzConvResults"></div><div id="nzConvAlternatives" aria-live="polite"></div><button type="button" class="nzConvPrimary" id="nzConvRecipeSave" hidden>Save all ingredients as one reusable recipe</button><button type="button" class="nzConvPrimary" id="nzConvSave" hidden>Log all reviewed foods</button><hr><div id="nzConvHistory"></div>`;const quick=$('nzNutritionPlus')||$('nzFoodIntelligence')||panel.querySelector('h3');(quick||panel.firstElementChild).before(section);$('nzConvAnalyze').onclick=analyze;$('nzConvClear').onclick=()=>{$('nzConvText').value='';draft=[];renderDraft();$('nzConvAlternatives')?.replaceChildren();$('nzConvStatus').textContent='';};$('nzConvSave').onclick=saveAll;$('nzConvRecipeSave').onclick=saveDraftRecipe;$('nzConvResults').addEventListener('change',e=>{const x=e.target,idx=Number(x.dataset.index),field=x.dataset.field,f=draft[idx];if(!f||!field)return;if(field==='eatingTime'){f.eatingTime=x.value;return}if(field==='perUnitToggle'){const current={...f.baseMacros};if(x.checked&&!f.quantityPerUnit){for(const k of MACROS)if(current[k]!==null)f.baseMacros[k]=current[k]*f.quantity;f.quantityPerUnit=true}else if(!x.checked&&f.quantityPerUnit){for(const k of MACROS)if(current[k]!==null)f.baseMacros[k]=current[k]/f.quantity;f.quantityPerUnit=false}recalculate(f);renderDraft();return}if(field==='quantity'){const n=Number(x.value);if(!Number.isFinite(n)||n<=0||n>100){$('nzConvStatus').textContent='Quantity must be greater than 0 and no more than 100.';renderDraft();return}f.quantity=n;recalculate(f);renderDraft();return}if(MACROS.includes(field)){const v=x.value===''?null:Number(x.value);f.baseMacros[field]=v===null?null:v/f.quantity;recalculate(f);renderDraft();return}f[field]=x.value});$('nzConvResults').addEventListener('change',e=>{const x=e.target;if(x.dataset.field==='meal'&&draft[Number(x.dataset.index)])draft[Number(x.dataset.index)].meal=x.value});$('nzConvResults').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=Number(b.dataset.index);if(b.hasAttribute('data-remove')){draft.splice(Number(b.dataset.remove),1);renderDraft();return}const f=draft[i];if(!f)return;if(b.dataset.time){f.eatingMode=b.dataset.time;if(f.eatingMode==='custom'&&!f.eatingTime)f.eatingTime=timeValue(f);renderDraft();return}if(b.dataset.expand){f.expanded=!f.expanded;renderDraft();return}if(b.dataset.logone){if(logOne(f)){draft.splice(i,1);renderDraft();$('nzConvStatus').textContent='Food logged with eating time. Cloud sync follows the existing workflow.';renderHistory()}}});$('nzOpenNutrition')?.addEventListener('click',renderHistory);$('nzAddFood')?.addEventListener('click',()=>setTimeout(renderHistory,0));$('nzSaveTargets')?.addEventListener('click',renderHistory);window.addEventListener('nz-nutrition-cloud-rendered',renderHistory);window.addEventListener('nz-nutrition-local-saved',renderHistory);renderHistory();}
+function init(){const panel=$('nzNutritionModal')?.querySelector('.nzPanel');if(!panel||$('nzConversational'))return;const section=document.createElement('section');section.id='nzConversational';section.innerHTML=`<strong style="font-size:19px">Describe what you ate</strong><p class="nzConvNote">Type a sentence, full meal, or recipe. Quantities are preserved from your description; AI nutrition totals are not multiplied twice. Review each food in one compact row: choose Just finished or What time?, then Log food. Expand only to edit quantity or macros.</p><textarea id="nzConvText" placeholder="e.g. Dinner: taco casserole, 2 servings Doritos, and half my protein cookie dough recipe"></textarea><div class="nzConvLine"><button type="button" class="nzConvPrimary" id="nzConvAnalyze">Analyze meal</button><button type="button" id="nzConvClear">Clear</button></div><div id="nzConvStatus" role="status"></div><div id="nzConvResults"></div><div id="nzConvAlternatives" aria-live="polite"></div><button type="button" class="nzConvPrimary" id="nzConvSave" hidden>Log all reviewed foods</button><hr><div id="nzConvHistory"></div>`;const quick=$('nzNutritionPlus')||$('nzFoodIntelligence')||panel.querySelector('h3');(quick||panel.firstElementChild).before(section);$('nzConvAnalyze').onclick=analyze;$('nzConvClear').onclick=()=>{$('nzConvText').value='';draft=[];renderDraft();$('nzConvAlternatives')?.replaceChildren();$('nzConvStatus').textContent='';};$('nzConvSave').onclick=saveAll;$('nzConvResults').addEventListener('change',e=>{const x=e.target,idx=Number(x.dataset.index),field=x.dataset.field,f=draft[idx];if(!f||!field)return;if(field==='eatingTime'){f.eatingTime=x.value;return}if(field==='perUnitToggle'){const current={...f.baseMacros};if(x.checked&&!f.quantityPerUnit){for(const k of MACROS)if(current[k]!==null)f.baseMacros[k]=current[k]*f.quantity;f.quantityPerUnit=true}else if(!x.checked&&f.quantityPerUnit){for(const k of MACROS)if(current[k]!==null)f.baseMacros[k]=current[k]/f.quantity;f.quantityPerUnit=false}recalculate(f);renderDraft();return}if(field==='quantity'){const n=Number(x.value);if(!Number.isFinite(n)||n<=0||n>100){$('nzConvStatus').textContent='Quantity must be greater than 0 and no more than 100.';renderDraft();return}f.quantity=n;recalculate(f);renderDraft();return}if(MACROS.includes(field)){const v=x.value===''?null:Number(x.value);f.baseMacros[field]=v===null?null:v/f.quantity;recalculate(f);renderDraft();return}f[field]=x.value});$('nzConvResults').addEventListener('change',e=>{const x=e.target;if(x.dataset.field==='meal'&&draft[Number(x.dataset.index)])draft[Number(x.dataset.index)].meal=x.value});$('nzConvResults').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=Number(b.dataset.index);if(b.hasAttribute('data-remove')){draft.splice(Number(b.dataset.remove),1);renderDraft();return}const f=draft[i];if(!f)return;if(b.dataset.time){f.eatingMode=b.dataset.time;if(f.eatingMode==='custom'&&!f.eatingTime)f.eatingTime=timeValue(f);renderDraft();return}if(b.dataset.expand){f.expanded=!f.expanded;renderDraft();return}if(b.dataset.logone){if(logOne(f)){draft.splice(i,1);renderDraft();$('nzConvStatus').textContent='Food logged with eating time. Cloud sync follows the existing workflow.';renderHistory()}}});$('nzOpenNutrition')?.addEventListener('click',renderHistory);$('nzAddFood')?.addEventListener('click',()=>setTimeout(renderHistory,0));$('nzSaveTargets')?.addEventListener('click',renderHistory);window.addEventListener('nz-nutrition-cloud-rendered',renderHistory);window.addEventListener('nz-nutrition-local-saved',renderHistory);renderHistory();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
@@ -18332,8 +18323,8 @@ setTimeout(schedule,1100);
 #nzNutritionModal #nzMacroRings .nzRingSvg{display:block!important;width:112px!important;height:112px!important;flex:none!important;overflow:visible!important}
 #nzNutritionModal #nzMacroRings .nzRingNum{font-size:19px!important;font-weight:800!important;letter-spacing:-.06em!important}
 #nzNutritionModal #nzMacroRings .nzRingCaption{font-size:14px!important;font-weight:750!important;line-height:1.2!important;color:#e7f1f2!important}
-#nzNutritionModal #nzMacroRings .nzRingStatus{font-size:13px!important;font-weight:550!important;color:#bcd1d7!important;line-height:1.35!important;white-space:normal!important}
-#nzNutritionModal #nzMacroRings .nzRingStatus{display:none!important}
+#nzNutritionModal #nzMacroRings .nzRingStatus{font-size:13px!important;font-weight:550!important;color:#bcd1d7!important;line-height:1.35!important;white-space:normal!important
+display:none!important}
 #nzNutritionModal #nzMacroRings .nzRingGoalLine{font-size:13px;font-weight:650;color:#c6d9de;line-height:1.3;text-align:center;font-variant-numeric:tabular-nums}
 #nzNutritionModal #nzMacroRings .nzRingFoot{font-size:12px!important;min-height:0!important}
 #nzNutritionModal #nzMacroRings .nzRingActions button{font-size:13px!important;min-height:43px!important}
@@ -19214,10 +19205,8 @@ function opening(mode){panel().hidden=false;showStatus('Saved nutrition is reuse
 async function request(path,method='GET',body){const c=config();if(!/^https:\/\//.test(c.url||'')||!c.token)throw Error('Nutrition Cloud credentials unavailable');const r=await fetch(c.url.replace(/\/$/,'')+path,{method,headers:{Authorization:'Bearer '+c.token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store'});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||`HTTP ${r.status}`);return j}
 async function pull(){if(state.busy)return;state.busy=true;try{const [m,r]=await Promise.all([request('/v1/coaching/meals').catch(e=>({error:e.message})),request('/v1/records').catch(e=>({error:e.message}))]);if(!m.error&&Array.isArray(m.meals))state.cloud=m.meals;const allr=Array.isArray(r.records)?r.records:[];if(!r.error)state.recipes=allr.filter(x=>x.kind==='recipe'&&!x.deleted);state.cloudError=[m.error,r.error].filter(Boolean).join('; ');state.loaded=true;const view=$('nzLibView');if(view?.dataset.mode==='browse')browse(false);showStatus(state.cloudError?'Local library available. Cloud library could not fully load: '+state.cloudError:'Saved library connected · recipes and meals refreshed.');}finally{state.busy=false}}
 function browse(reset=true){const v=$('nzLibView');if(!v)return;v.dataset.mode='browse';v.replaceChildren();const entries=all();if(!entries.length)row('p','No saved items found here. Use “Save a group” to create one.',v);for(const m of entries){const wrap=row('article','',v,'nzLibCard');row('strong',m.name,wrap);row('small',m.missing?'Nutrition not available · add verified macros before logging':sums(m.items)+(m.recipeServing?' · '+m.recipeServing:''),wrap);const actions=row('div','',wrap,'nzLibActions');btn('Log',()=>logDialog(m),actions).disabled=!!m.missing;btn('Edit',()=>edit(m),actions).disabled=m.origin==='recipe';btn('Delete',()=>remove(m),actions).disabled=m.origin==='recipe';if(m.origin==='recipe')row('small','Recipe source is read-only here. Edit it in its original recipe library.',wrap)}if(state.cloudError)row('small','Cloud library unavailable. Local favorites and saved groups remain usable.',v)}
-function logDialog(m){const v=$('nzLibView');v.dataset.mode='log';v.replaceChildren();row('h3','Log '+m.name,v);row('p',sums(m.items),v);if(m.recipeServing)row('small',m.recipeServing,v);const lbl=row('label','Servings',v);const qty=document.createElement('input');qty.type='number';qty.min='.1';qty.max='100';qty.step='.25';qty.value='1';lbl.append(qty);const meal=row('label','Meal',v),sel=document.createElement('select');categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.append(o)});sel.value=m.category||'Snack';meal.append(sel);
-const whenLabel=row('label','When did you eat it?',v),when=document.createElement('select');[['now','Just finished · today'],['earlier','Earlier today'],['yesterday','Yesterday'],['other','Another day']].forEach(([value,label])=>{const o=document.createElement('option');o.value=value;o.textContent=label;when.append(o)});whenLabel.append(when);const dateLabel=row('label','Date',v),dateInput=document.createElement('input');dateInput.type='date';dateLabel.append(dateInput);const timeLabel=row('label','Time (optional)',v),timeInput=document.createElement('input');timeInput.type='time';timeLabel.append(timeInput);function updateWhen(){dateLabel.hidden=when.value!=='other';timeLabel.hidden=when.value==='now';if(when.value!=='now'&&!timeInput.value)timeInput.value='12:00'}when.onchange=updateWhen;updateWhen();
-const preview=row('p','',v);qty.oninput=()=>{const q=Number(qty.value);preview.textContent=q>0?sums(m.items.map(x=>({...x,qty:x.qty*q}))):'Enter a valid serving amount.'};qty.oninput();const actions=row('div','',v,'nzLibActions');const save=btn('Log '+m.name,()=>{const q=Number(qty.value);if(!(q>0&&q<=100)){showStatus('Enter servings between 0.1 and 100.');return}let at=new Date();if(when.value==='yesterday')at.setDate(at.getDate()-1);if(when.value==='other'){const parts=dateInput.value.split('-').map(Number);if(parts.length!==3||parts.some(x=>!Number.isFinite(x))){showStatus('Select a valid date.');return}at=new Date(parts[0],parts[1]-1,parts[2],12,0)}if(when.value!=='now'){const hm=(timeInput.value||'12:00').split(':').map(Number);at.setHours(hm[0],hm[1],0,0)}if(!Number.isFinite(at.getTime())){showStatus('Select a valid date and time.');return}save.disabled=true;try{log(m,q,sel.value,at)}finally{save.disabled=false}},actions,'nzLibPrimary');btn('Back',()=>browse(),actions)}
-function log(m,q,meal,at=new Date()){if(!m.items.length||!m.items.every(complete)){showStatus('Macros missing. Nothing was logged.');return}const d=getLocal(),existing=Array.isArray(d.entries)?d.entries:[],batch=id(),day=[at.getFullYear(),String(at.getMonth()+1).padStart(2,'0'),String(at.getDate()).padStart(2,'0')].join('-');const t=totals(m.items);const e={id:id(),day,name:m.name,meal,source:m.origin==='recipe'?'saved-recipe':'saved-meal',recipeId:m.originalId||m.id,recipeRevision:m.revision||0,savedMealName:m.name,savedMealBatch:batch,portions:q,portionUnit:'recipe serving',eatenAt:at.toISOString(),loggedAt:new Date().toISOString(),ingredientSnapshot:m.items.map(x=>({...x}))};for(const k of ['cal','protein','carbs','fat','fiber'])e[k]=fmt(t[k]*q);try{setLocal({...d,entries:[...existing,e]});showStatus(`Saved ${m.name} for ${day} (${q} serving${q===1?'':'s'}) · one entry. Cloud sync not yet confirmed.`);browse();window.dispatchEvent(new Event('nz-nutrition-local-saved'))}catch(err){showStatus('Save failed. Your prior food log was not changed: '+err.message)}}
+function logDialog(m){const v=$('nzLibView');v.dataset.mode='log';v.replaceChildren();row('h3','Log '+m.name,v);row('p',sums(m.items),v);if(m.recipeServing)row('small',m.recipeServing,v);const lbl=row('label','Servings',v);const qty=document.createElement('input');qty.type='number';qty.min='.1';qty.max='100';qty.step='.25';qty.value='1';lbl.append(qty);const meal=row('label','Meal',v),sel=document.createElement('select');categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.append(o)});sel.value=m.category||'Snack';meal.append(sel);const preview=row('p','',v);qty.oninput=()=>{const q=Number(qty.value);preview.textContent=q>0?sums(m.items.map(x=>({...x,qty:x.qty*q}))):'Enter a valid serving amount.'};qty.oninput();const actions=row('div','',v,'nzLibActions');btn('Log '+m.name,()=>{const q=Number(qty.value);if(!(q>0&&q<=100)){showStatus('Enter servings between 0.1 and 100.');return}log(m,q,sel.value)},actions,'nzLibPrimary');btn('Back',()=>browse(),actions)}
+function log(m,q,meal){if(!m.items.length||!m.items.every(complete)){showStatus('Macros missing. Nothing was logged.');return}const d=getLocal(),existing=Array.isArray(d.entries)?d.entries:[],batch=id(),day=$('nzDay')?.value||date();const added=m.items.map(it=>{const e={id:id(),day,name:it.name,meal,source:m.origin==='recipe'?'saved-recipe':'saved-meal',savedMealName:m.name,savedMealBatch:batch,portions:num(it.qty)*q};for(const k of ['cal','protein','carbs','fat','fiber'])e[k]=it[k]==null?null:fmt(it[k]*it.qty*q);return e});try{setLocal({...d,entries:[...existing,...added]});showStatus(`Logged ${m.name} (${q} serving${q===1?'':'s'}) · ${added.length} food item${added.length===1?'':'s'}. Cloud sync follows normal schedule.`);browse()}catch(e){showStatus('Save failed. Your prior food log was not changed: '+e.message)}}
 function builder(seed){const v=$('nzLibView');v.dataset.mode='build';v.replaceChildren();row('h3',seed?'Edit saved meal':'Save a group of foods',v);row('p','Choose food entries from your log or previously saved foods. Their existing macros are reused; no API analysis.',v);if(!seed)btn('Add all foods logged today',()=>{const todays=clean().filter(x=>x.day===($('nzDay')?.value||date())).map(normItem).slice(0,30);if(!todays.length){showStatus('No complete food entries for today. Add known foods below.');return}items.push(...todays);draw();showStatus(todays.length+' logged food items selected. Review portions and remove anything not part of this meal.')},v);const nameLabel=row('label','Meal name',v),name=document.createElement('input');name.placeholder='e.g. Protein cookie dough';name.maxLength=80;name.value=seed?.name||'';nameLabel.append(name);const mealLabel=row('label','Category',v),cat=document.createElement('select');categories.forEach(c=>{let o=document.createElement('option');o.value=c;o.textContent=c;cat.append(o)});cat.value=seed?.category||'Snack';mealLabel.append(cat);let items=seed?.items.map(x=>({...x}))||[];const list=row('div','',v),selected=row('div','',v),search=document.createElement('input');search.placeholder='Filter food history or favorites';search.setAttribute('aria-label','Find a saved food');v.append(search);const sources=[];const dedup=new Map();for(const x of [...clean(),...(getLocal().favorites||[])]){const it=normItem(x);if(!complete(it))continue;const key=it.name.toLowerCase()+'|'+it.cal+'|'+it.protein+'|'+it.carbs+'|'+it.fat;if(!dedup.has(key))dedup.set(key,it)}sources.push(...dedup.values());function draw(){list.replaceChildren();row('h4','Selected ingredients',list);if(!items.length)row('p','Choose at least one ingredient below.',list);items.forEach((x,i)=>{const line=row('div','',list,'nzLibIngredient');row('span',x.name,line);const q=document.createElement('input');q.type='number';q.min='.1';q.max='100';q.step='.25';q.value=x.qty;q.setAttribute('aria-label','Portions for '+x.name);q.onchange=()=>{if(Number(q.value)>0&&Number(q.value)<=50){items[i].qty=Number(q.value);draw()}else{q.value=String(x.qty);showStatus('Portions must be between 0.1 and 50.')}};line.append(q);btn('Remove',()=>{items.splice(i,1);draw()},line)});row('p',sums(items),list);selected.replaceChildren();row('h4','Add ingredients',selected);let found=sources.filter(x=>x.name.toLowerCase().includes(search.value.toLowerCase())).slice(0,30);found.forEach(it=>{const line=row('div','',selected,'nzLibChoice');row('span',it.name+' · '+fmt(it.cal)+' kcal',line);btn('+ Add',()=>{items.push({...it,qty:1});draw()},line)});if(!found.length)row('small','No matching known foods. Log it once manually to make its saved nutrition available.',selected)}search.oninput=draw;draw();const actions=row('div','',v,'nzLibActions');btn(seed?'Save changes':'Save meal',async()=>{const label=name.value.trim();if(!label||!items.length||!items.every(complete)){showStatus('Enter a meal name and select foods with complete saved macros.');return}const payload={id:seed?.originalId||id(),name:label,category:cat.value,items:items.map(x=>({...x}))};await saveMeal(payload,seed)},actions,'nzLibPrimary');btn('Cancel',()=>browse(),actions)}
 async function saveMeal(p,seed){if(state.busy)return;state.busy=true;showStatus('Saving saved meal…');try{if(seed?.origin==='favorite'){const d=getLocal();const f=(d.favorites||[]).find(x=>String(x.id)===String(seed.originalId));if(!f)throw Error('Favorite no longer exists');if(p.items.length!==1)throw Error('Favorites support one food. Use a named saved meal for groups.');const it=p.items[0];const revised={...f,name:p.name,meal:p.category,cal:it.cal,protein:it.protein,carbs:it.carbs,fat:it.fat,fiber:it.fiber};setLocal({...d,favorites:d.favorites.map(x=>String(x.id)===String(f.id)?revised:x)});showStatus('Favorite updated. Cloud sync follows the normal schedule.');browse();return}
 if(seed?.origin==='local'){const list=getMeals();setMeals(list.map(x=>String(x.id)===String(seed.originalId)?{...p,id:seed.originalId}:x));showStatus('Saved meal updated locally.');browse();return}
@@ -19738,6 +19727,9 @@ refresh();setInterval(refresh,15000);document.addEventListener('visibilitychange
 
 <style id="nzIntegratedDiagnosticsStyles">
 #nzDiagOverlay[hidden]{display:none!important}#nzDiagOverlay{position:fixed;inset:0;z-index:2147483600;background:#0b121d;color:#eaf6f5;overflow:auto;overscroll-behavior:contain;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}#nzDiagOverlay *{box-sizing:border-box}#nzDiagOverlay .nzdc{max-width:720px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 17px calc(30px + env(safe-area-inset-bottom))}#nzDiagOverlay .nzdcTop{display:flex;justify-content:space-between;align-items:center;gap:10px}#nzDiagOverlay .nzdcBrand{letter-spacing:.19em;font-size:11px;color:#8de8d9;font-weight:800}#nzDiagOverlay h2{font-size:clamp(30px,7vw,44px);letter-spacing:-.05em;margin:12px 0 8px;color:#f1faf9}#nzDiagOverlay h3{font-size:17px;margin:0 0 8px}#nzDiagOverlay p{color:#abc1ca;font-size:13px;line-height:1.5}#nzDiagOverlay .nzdcGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}#nzDiagOverlay .nzdcTile,#nzDiagOverlay .nzdcCard{background:#142333;border:1px solid #2b4051;border-radius:16px;padding:16px}#nzDiagOverlay .nzdcTile small{font-size:11px;color:#9eb8c3;letter-spacing:.05em}#nzDiagOverlay .nzdcTile strong{display:block;font-size:17px;margin-top:10px;overflow-wrap:anywhere}#nzDiagOverlay button{min-height:46px;padding:12px 14px;border-radius:11px;border:1px solid #45616a;background:#243b49;color:#f1faf9;font-weight:750;font-size:14px;cursor:pointer}#nzDiagOverlay button:disabled{opacity:.5}#nzDiagOverlay button.nzdcPrimary{background:#8de8d9;color:#102b31;border-color:#8de8d9;width:100%}#nzDiagOverlay .nzdcActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}#nzDiagOverlay .nzdcActions button{width:100%}#nzDiagOverlay .nzdcClose{background:transparent;border-color:#435768;min-width:70px}#nzDiagOverlay .nzdcNote{color:#9fb8c4;font-size:12px}#nzDiagOverlay .nzdcStatus{min-height:32px;padding:10px 0;color:#b6d2d8;font-size:13px}#nzDiagOverlay pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:370px;overflow:auto;font-size:12px;line-height:1.5;color:#d7e7e9;background:#09141e;border-radius:10px;padding:12px}#nzDiagOverlay input{width:100%;min-height:44px;border-radius:10px;border:1px solid #45616a;background:#0b1926;color:white;font-size:16px;padding:12px}#nzDiagOverlay .nzdcCode{margin:12px 0}#nzDiagOverlay .nzdcCode label{display:block;font-size:12px;color:#b8cbd0;margin-bottom:7px}#nzDiagOverlay .nzdcLink{background:transparent!important;color:#8de8d9!important;border:0!important;text-decoration:underline;font-size:12px}#nzDiagOverlay .nzdcFoot{margin-top:16px}#nzDiagOverlay .nzdcHidden{display:none!important}
+
+/* Workout history: one component-owned control row, no global overrides */
+.nzWorkoutHistoryTools{display:grid;gap:8px;margin:12px 0 16px}.nzWorkoutHistoryTools input{width:100%;min-height:44px;border-radius:10px;padding:10px 12px}.sessionTimeCell .nzDeleteWorkout{border:1px solid #a43d3d;color:#f3b2b2;background:transparent;margin-left:6px}.sessionRow{min-height:56px}
 </style>
 <section id="nzDiagOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="nzDiagTitle"><div class="nzdc">
 <div class="nzdcTop"><span class="nzdcBrand">NONZERO / SYSTEMS</span><button class="nzdcClose" type="button" id="nzDiagClose">Done ✕</button></div>
@@ -19773,110 +19765,12 @@ async function download(r,name){const blob=await r.blob();const url=URL.createOb
 $('nzDiagDownload').onclick=()=>execute($('nzDiagDownload'),async()=>{status('Generating report ZIP…');const r=await req('/api/diagnostics/download');await download(r,'NONZERO-Diagnostic-Report.zip');status('ZIP requested. Check Safari downloads.')});
 })();
 </script>
-
-<style id="nzManualFixStyle">
-#nzManualFix[hidden]{display:none!important}#nzManualFix{position:fixed;inset:0;z-index:2147483646;background:#07111be8;display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}#nzManualFix .sheet{background:#142434;color:#f1f6fa;border:1px solid #456071;border-radius:20px;width:min(100%,480px);max-height:94dvh;overflow:auto;padding:20px;box-sizing:border-box;box-shadow:0 18px 55px #0009}#nzManualFix label{display:block;font-size:13px;margin:9px 0;color:#d7e3ec}#nzManualFix input,#nzManualFix select{display:block;width:100%;margin-top:5px;background:#0c1b29;color:white;border:1px solid #536979;border-radius:9px;padding:12px;font-size:16px;box-sizing:border-box}#nzManualFix .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}#nzManualFix button{border:1px solid #637c89;border-radius:10px;padding:12px;color:white;background:#294457;font-size:15px}#nzManualFix .save{background:#087c73;border-color:#11aa9b;font-weight:700;width:100%;margin-top:12px}#nzManualFix .head{display:flex;align-items:center;justify-content:space-between;gap:12px}#nzManualFix .head h2{margin:0}#nzManualFix small{color:#b5c9d2}#nzManualFixStatus{min-height:20px;color:#bde8df;margin-top:9px}
-</style>
-<script id="nzManualFixScript">
-(()=>{'use strict';const $=id=>document.getElementById(id);const KEY='nonzero.nutrition.v1';let active=false;
-function make(){if($('nzManualFix'))return;const el=document.createElement('section');el.id='nzManualFix';el.hidden=true;el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Manual food entry');el.innerHTML=`<div class="sheet"><div class="head"><h2>Manual food entry</h2><button type="button" id="nzMFclose">Close</button></div><p><small>Enter values per serving. Saved locally first, independently of AI and cloud connectivity.</small></p><label>Food or meal name<input id="nzMFname" autocomplete="off" placeholder="What did you eat?"></label><div class="two"><label>Meal<select id="nzMFmeal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label>Servings<input id="nzMFservings" type="number" min="0.1" max="100" step="any" value="1"></label></div><div class="two"><label>Calories<input id="nzMFcal" type="number" min="0" step="any" placeholder="kcal"></label><label>Protein (g)<input id="nzMFprotein" type="number" min="0" step="any" placeholder="g"></label><label>Carbs (g)<input id="nzMFcarbs" type="number" min="0" step="any" placeholder="g"></label><label>Fat (g)<input id="nzMFfat" type="number" min="0" step="any" placeholder="g"></label></div><label>Fiber (g, optional)<input id="nzMFfiber" type="number" min="0" step="any" placeholder="Optional"></label><label>When eaten<select id="nzMFwhen"><option value="now">Just finished · today</option><option value="earlier">Earlier today</option><option value="yesterday">Yesterday</option><option value="other">Another day</option></select></label><label id="nzMFdateWrap" hidden>Day<input id="nzMFdate" type="date"></label><label id="nzMFtimeWrap" hidden>Time (optional)<input id="nzMFtime" type="time"></label><button class="save" type="button" id="nzMFsave">Save food</button><p id="nzManualFixStatus" role="status" aria-live="polite"></p></div>`;document.body.append(el);$('nzMFclose').onclick=close;$('nzMFwhen').onchange=()=>{const mode=$('nzMFwhen').value;$('nzMFdateWrap').hidden=mode!=='other';$('nzMFtimeWrap').hidden=mode==='now';if(mode==='earlier'&&!$('nzMFtime').value)$('nzMFtime').value='12:00';if(mode==='yesterday'&&!$('nzMFtime').value)$('nzMFtime').value='12:00';if(mode==='other'&&!$('nzMFdate').value){const d=new Date();$('nzMFdate').value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}};$('nzMFsave').onclick=save;el.addEventListener('click',e=>{if(e.target===el)close()});}
-function open(){make();const el=$('nzManualFix');el.hidden=false;active=true;$('nzManualFixStatus').textContent='';$('nzMFname').focus();}
-function close(){active=false;if($('nzManualFix'))$('nzManualFix').hidden=true;}
-function save(){const status=$('nzManualFixStatus');const name=$('nzMFname').value.trim(),servings=Number($('nzMFservings').value);if(!name||!Number.isFinite(servings)||servings<=0||servings>100){status.textContent='Enter a food name and servings between 0 and 100.';return}const values={};for(const k of ['cal','protein','carbs','fat','fiber']){const raw=$('nzMF'+k).value.trim();if(!raw&&k!=='fiber'){status.textContent='Enter each macro, using 0 only when confirmed.';return}const n=raw===''?null:Number(raw);if(n!==null&&(!Number.isFinite(n)||n<0)){status.textContent='Nutrition values must be zero or positive.';return}values[k]=n}
-const mode=$('nzMFwhen').value;const time=new Date();if(mode==='yesterday')time.setDate(time.getDate()-1);if(mode==='other'){const parts=($('nzMFdate').value||'').split('-').map(Number);if(parts.length!==3||!parts.every(Number.isFinite)){status.textContent='Choose a day.';return}time.setFullYear(parts[0],parts[1]-1,parts[2]);}if(mode!=='now'){const hm=($('nzMFtime').value||'12:00').split(':').map(Number);time.setHours(hm[0],hm[1],0,0);}if(!Number.isFinite(time.getTime())){status.textContent='Select a valid eating time.';return}if(time.getTime()>Date.now()+60000){status.textContent='Eating time cannot be in the future.';return}
-// Use the existing canonical add handler; never replace its storage schema or synchronization path.
-const original=$('nzAddFood');if(!original){status.textContent='Food logging is unavailable.';return}const fieldMap={nzName:name,nzMeal:$('nzMFmeal').value,nzServings:String(servings),nzCal:String(values.cal),nzProtein:String(values.protein),nzCarbs:String(values.carbs),nzFat:String(values.fat),nzFiber:values.fiber===null?'':String(values.fiber),nzSource:'estimate'};for(const [id,v] of Object.entries(fieldMap)){if(!$(id)){status.textContent='Required nutrition field is unavailable: '+id;return}$(id).value=v}const day=[time.getFullYear(),String(time.getMonth()+1).padStart(2,'0'),String(time.getDate()).padStart(2,'0')].join('-');$('nzDay').value=day;
-let before;try{before=JSON.parse(localStorage.getItem(KEY)||'{}').entries||[]}catch{before=[]}status.textContent='Saving…';$('nzMFsave').disabled=true;try{original.click()}finally{$('nzMFsave').disabled=false}let after;try{after=JSON.parse(localStorage.getItem(KEY)||'{}').entries||[]}catch{after=[]}if(after.length<=before.length){status.textContent=$('nzMessage')?.textContent||'Could not verify the saved entry. No success reported.';return}const entry=after[after.length-1];if(entry&&entry.name===name){try{const state=JSON.parse(localStorage.getItem(KEY)||'{}');const found=state.entries.find(x=>x.id===entry.id);if(found){found.eatenAt=time.toISOString();found.eatingTime=time.toISOString();localStorage.setItem(KEY,JSON.stringify(state));window.dispatchEvent(new Event('nz-nutrition-local-saved'));}}catch{}}
-status.textContent='Saved on this phone. Cloud sync is separate.';for(const id of ['nzMFname','nzMFcal','nzMFprotein','nzMFcarbs','nzMFfat','nzMFfiber'])$(id).value='';setTimeout(close,900);}
-document.addEventListener('click',e=>{const b=e.target.closest?.('button');if(!b)return;if(['nz7212Manual','nz7210Manual'].includes(b.id)){e.preventDefault();e.stopImmediatePropagation();open()}},true);document.addEventListener('keydown',e=>{if(active&&e.key==='Escape'){e.preventDefault();close()}});
-window.nzOpenManualFoodEntry=open;
+<script id="nz-wall-status-header-placement">
+(function(){
+  const slot=document.getElementById('nzWallStatusSlot');
+  const widget=document.getElementById('nzWallQuick');
+  if(slot&&widget)slot.appendChild(widget);
 })();
 </script>
-<script id="nz-nutrition-history-and-chart-inspector">
-(()=>{'use strict';function init(){const day=document.getElementById('nzDay');if(day&&!document.getElementById('nzHistoryNav')){const nav=document.createElement('div');nav.id='nzHistoryNav';nav.style.cssText='display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap';const make=(label,delta)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='min-height:44px;padding:8px 12px;border-radius:10px';b.onclick=()=>{const parts=(day.value||'').split('-').map(Number);const d=parts.length===3&&parts.every(Number.isFinite)?new Date(parts[0],parts[1]-1,parts[2]):new Date();d.setDate(d.getDate()+delta);day.value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');day.dispatchEvent(new Event('input',{bubbles:true}));day.dispatchEvent(new Event('change',{bubbles:true}))};nav.append(b)};make('← Previous day',-1);make('Next day →',1);const today=document.createElement('button');today.type='button';today.textContent='Today';today.style.cssText='min-height:44px;padding:8px 12px;border-radius:10px';today.onclick=()=>{const d=new Date();day.value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');day.dispatchEvent(new Event('input',{bubbles:true}));day.dispatchEvent(new Event('change',{bubbles:true}))};nav.append(today);day.insertAdjacentElement('afterend',nav)}
-const tooltip=document.createElement('div');tooltip.id='nzChartInspector';tooltip.setAttribute('role','status');tooltip.style.cssText='position:fixed;z-index:2147483645;max-width:270px;background:#142b39;color:#f4f7fa;border:1px solid #76919e;border-radius:12px;padding:10px 12px;box-shadow:0 8px 24px #0009;pointer-events:none;display:none;font:13px system-ui';document.body.append(tooltip);let timer=null;const find=e=>e.target.closest?.('svg,canvas,[role="img"]');document.addEventListener('pointerdown',e=>{const chart=find(e);if(!chart||chart.closest('button,a'))return;clearTimeout(timer);timer=setTimeout(()=>{const r=chart.getBoundingClientRect();const x=Math.max(0,Math.min(1,(e.clientX-r.left)/Math.max(r.width,1)));const labels=[...chart.querySelectorAll('text,[aria-label],title')].map(n=>(n.textContent||n.getAttribute('aria-label')||'').trim()).filter(Boolean).slice(0,12);tooltip.textContent='Chart details'+(labels.length?' · '+labels.join(' · ').slice(0,170):' · This chart does not expose underlying point values');tooltip.style.left=Math.max(8,Math.min(innerWidth-290,e.clientX-110))+'px';tooltip.style.top=Math.max(8,e.clientY-85)+'px';tooltip.style.display='block'},450)},true);['pointerup','pointercancel','scroll'].forEach(ev=>document.addEventListener(ev,()=>{clearTimeout(timer);if(ev==='scroll')tooltip.style.display='none'},true));document.addEventListener('pointerdown',e=>{if(!find(e))tooltip.style.display='none'},true)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()})();
-</script>
-
-<style id="nz-ux-consolidation-v72311">
-/* One consistent interaction language, scoped to existing controls. */
-.tabbar{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;align-items:stretch}
-.tabbar>button:not(.nzLegacyNav){min-width:0;min-height:52px;padding:10px 2px;font-size:clamp(11px,2.7vw,14px);border-radius:12px;touch-action:manipulation}
-.tabbar>.nzLegacyNav{display:none!important}
-#nzManualFix button,#nzHistoryNav button,#nz7210FoodHub button{touch-action:manipulation;min-height:44px}
-#nzManualFix input:focus-visible,#nzManualFix select:focus-visible,#nzManualFix button:focus-visible,.tabbar button:focus-visible,#nzHistoryNav button:focus-visible{outline:3px solid #f4d35e;outline-offset:2px}
-#nzManualFix .save{background:#f4d35e;color:#14252c;border-color:#f4d35e}
-#nzManualFix .save:disabled{opacity:.65;cursor:wait}
-#nzHistoryNav button{background:#1c3b48;color:#edf5f7;border:1px solid #496775;font-weight:650}
-#nzHistoryNav button[aria-current="date"]{border-color:#f4d35e;color:#f4d35e}
-@media(prefers-reduced-motion:reduce){.tabbar *,#nzManualFix *{transition:none!important;animation:none!important}}
-</style>
-<script id="nz-ux-consolidation-script-v72311">
-(()=>{'use strict';
-const ready=()=>{
- const tabbar=document.querySelector('.tabbar');if(tabbar){tabbar.setAttribute('aria-label','Primary navigation');
- const buttons=[...tabbar.querySelectorAll('button:not(.nzLegacyNav)')];
- const sync=()=>{for(const b of buttons){const active=b.classList.contains('active')||b.getAttribute('aria-selected')==='true';b.setAttribute('aria-current',active?'page':'false')}};
- buttons.forEach(b=>b.addEventListener('click',()=>queueMicrotask(sync)));sync();
- }
- const day=document.getElementById('nzDay');const history=document.getElementById('nzHistoryNav');if(day&&history){history.setAttribute('aria-label','Food log date navigation');
- const buttons=[...history.querySelectorAll('button')];const sync=()=>{const now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');if(buttons[2])buttons[2].setAttribute('aria-current',day.value===today?'date':'false');if(buttons[1])buttons[1].disabled=day.value>=today};
- day.addEventListener('change',sync);history.addEventListener('click',()=>queueMicrotask(sync));sync();
- }
- // Escape closes inspection without changing underlying data or charts.
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){const tip=document.getElementById('nzChartInspector');if(tip)tip.style.display='none'}});
-};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready);else ready();
-})();
-</script>
-
-<script id="nzActionReliabilityPatch">
-(()=>{'use strict';
-const $=id=>document.getElementById(id);
-function notify(message){
- let n=$('nzActionFeedback');
- if(!n){n=document.createElement('div');n.id='nzActionFeedback';n.setAttribute('role','status');n.style.cssText='position:fixed;bottom:85px;left:16px;right:16px;z-index:2147483646;background:#1d3541;color:#f4f8f8;border:1px solid #d6b961;border-radius:12px;padding:12px 16px;font:600 14px system-ui;box-shadow:0 8px 25px #0008';document.body.append(n)}
- n.textContent=message;n.hidden=false;clearTimeout(notify.t);notify.t=setTimeout(()=>n.hidden=true,3500);
-}
-function goals(){
- let sheet=$('nzMacroTargetSheet');
- // The full four-macro editor is the authoritative destination.
- if(!sheet){
-  const coach=$('nzCoachAdjust');
-  if(coach && coach!==document.activeElement){coach.click();sheet=$('nzMacroTargetSheet')}
- }
- if(sheet){
-  sheet.hidden=false;sheet.removeAttribute('inert');
-  sheet.style.setProperty('display','flex','important');
-  sheet.style.setProperty('visibility','visible','important');
-  sheet.style.setProperty('z-index','2147483645','important');
-  const close=$('nzTargetClose');
-  if(close&&!close.dataset.nzReliabilityClose){
-   close.dataset.nzReliabilityClose='1';
-   close.addEventListener('click',()=>{sheet.hidden=true;sheet.style.removeProperty('display')});
-  }
-  const first=$('nzGoalCalories');
-  if(first){sheet.scrollTop=0;first.focus({preventScroll:true})}
-  return true;
- }
- // Fallback to native two-target editor if the richer editor did not initialize.
- const nav=$('nzNutritionNav');nav?.click();
- const details=$('nz3Targets');
- if(details){details.open=true;details.scrollIntoView({block:'center'});$('nzTargetCalories')?.focus();return true}
- notify('Nutrition goals are unavailable. Please reopen Nutrition and retry.');
- return false;
-}
-document.addEventListener('click',e=>{
- const b=e.target.closest?.('button');
- if(!b)return;
- if(b.id==='nzRingGoals'||b.id==='nzCoachAdjust'){
-  e.preventDefault();e.stopImmediatePropagation();goals();
- }
-},true);
-document.addEventListener('keydown',e=>{
- if(e.key==='Escape'){const sheet=$('nzMacroTargetSheet');if(sheet&&!sheet.hidden){sheet.hidden=true;sheet.style.removeProperty('display')}}
-});
-window.NONZEROActions={openNutritionGoals:goals};
-})();
-</script>
-
 </body>
 </html>
