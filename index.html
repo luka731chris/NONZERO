@@ -3985,6 +3985,33 @@ body.trainingFocus .focusToolbar span {
 #nzWallQuick label{display:block;margin:12px 0 5px;font-size:11px;color:#a8b9c9}#nzWallQuick input{display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #42576a;border-radius:9px;background:#09131e;color:#fff;font-size:14px}#nzWallQuick .nz-wq-feedback{font-size:11px;color:#b4c5d4;margin-top:8px;overflow-wrap:anywhere}#nzWallQuick .nz-wq-link{font-size:11px;color:#9dd8f6;overflow-wrap:anywhere}
 body.trainingFocus #nzWallQuick{display:none!important}
 </style>
+<style id="nzPhoneVisualOptimization20261112">
+/* NONZERO Phone — visual optimization patch, 2026-11-12.
+   Presentation only; no event handlers, storage, timers or network behavior. */
+:root{--nz-ui-focus:#e6c56d;--nz-ui-radius:18px;--nz-ui-muted:#a9bdc8}
+body.todayFlow{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body.todayFlow button,body.todayFlow input,body.todayFlow select,body.todayFlow textarea{font-family:inherit}
+body.todayFlow button{touch-action:manipulation}
+body.todayFlow button:focus-visible,body.todayFlow a:focus-visible,body.todayFlow input:focus-visible,body.todayFlow select:focus-visible,body.todayFlow textarea:focus-visible{outline:2px solid var(--nz-ui-focus)!important;outline-offset:3px}
+body.todayFlow .todayHeader{gap:12px;align-items:center;min-width:0}
+body.todayFlow .todayHeader>div{min-width:0}
+body.todayFlow .todayHeader h1{overflow-wrap:anywhere;line-height:1.12}
+body.todayFlow #nzWallQuick .nz-wq-pill{box-shadow:none;min-height:30px;border-color:rgba(185,210,222,.25);font-size:11px}
+body.todayFlow #nzWallQuick .nz-wq-panel{max-width:calc(100vw - 24px);max-height:min(70dvh,540px);overflow-y:auto;overscroll-behavior:contain}
+body.todayFlow #nzKpiDashboard{gap:12px}
+body.todayFlow #nzKpiDashboard>*{border-radius:var(--nz-ui-radius)!important;min-width:0}
+body.todayFlow #nzKpiDashboard .nzKpiTile,body.todayFlow #nzKpiDashboard #homeProgress,body.todayFlow #nzKpiDashboard #nzNutritionCard{padding:16px!important}
+body.todayFlow #nzKpiDashboard .nzKpiEyebrow{letter-spacing:.09em;line-height:1.3}
+body.todayFlow #nzKpiDashboard .nzKpiNumber{font-variant-numeric:tabular-nums;line-height:1.16}
+body.todayFlow #nzKpiDashboard .nzKpiSub{min-height:0;overflow-wrap:anywhere}
+body.todayFlow #nzKpiDashboard button{min-height:42px}
+body.todayFlow .tabbar{padding-bottom:max(7px,env(safe-area-inset-bottom));isolation:isolate}
+body.todayFlow .tabbar button{min-height:46px;line-height:1.15;white-space:normal;overflow-wrap:normal}
+@media(max-width:390px){body.todayFlow #nzKpiDashboard{gap:9px}body.todayFlow #nzKpiDashboard .nzKpiTile,body.todayFlow #nzKpiDashboard #homeProgress,body.todayFlow #nzKpiDashboard #nzNutritionCard{padding:12px!important}body.todayFlow .tabbar button{font-size:11px!important}}
+@media(min-width:700px){body.todayFlow #tabToday .todayLanding{max-width:880px}}
+@media(prefers-reduced-motion:reduce){body.todayFlow *,body.todayFlow *::before,body.todayFlow *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+</style>
 </head>
   <body class="todayFlow" data-today-scene="home">
     <div class="wrap">
@@ -6620,12 +6647,14 @@ function syncWorkoutView(a, inProgress) {
   if (key !== focusSessionKey) {
     focusSessionKey = key;
     lastMainTab = document.body.dataset.page || 'Today';
-    focusDismissed = false;
+    // Never force immersive workout mode on startup or cloud rehydration.
+    // The user can explicitly open it using the workout dock.
+    focusDismissed = true;
     mainAppScroll = 0;
     try {
       const saved = JSON.parse(sessionStorage.getItem(WORKOUT_VIEW_KEY) || 'null');
       if (saved?.session === key) {
-        focusDismissed = saved.main === true;
+        focusDismissed = true; // restoring state must not force workout view
         if (['Today', 'Plan', 'History', 'Settings', 'Coach'].includes(saved.tab))
           lastMainTab = saved.tab;
         mainAppScroll = Math.max(0, Number(saved.scroll) || 0);
@@ -10452,7 +10481,7 @@ document.getElementById('quoteBtn')?.addEventListener('click', () => sendWallCom
 document
   .getElementById('wallModeBtn')
   ?.addEventListener('click', () =>
-    sendWallCommand(state.activeWorkout?.status === 'active' ? 'performance' : 'ambient')
+    sendWallCommand('ambient')
   );
 document.getElementById('makeNonzeroBtn')?.addEventListener('click', makeItNonzero);
 document.getElementById('adaptiveBtn')?.addEventListener('click', () => buildAdaptiveWorkout(30));
